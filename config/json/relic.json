@@ -1,0 +1,301 @@
+{
+  "base": [
+    {
+      "id": "R0001",
+      "legacy_key": "iron_heart",
+      "name": "铁之心",
+      "rarity": "RA1",
+      "trigger": "TR06",
+      "description": "获得5点护甲",
+      "effect_group": "EG1001",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0002",
+      "legacy_key": "healing_herb",
+      "name": "治愈草药",
+      "rarity": "RA1",
+      "trigger": "TR06",
+      "description": "战斗开始时恢复10HP",
+      "effect_group": "EG1002",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0003",
+      "legacy_key": "sharp_blade",
+      "name": "锋利之刃",
+      "rarity": "RA1",
+      "trigger": "TR01",
+      "description": "每次出牌+3伤害",
+      "effect_group": "EG1003",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0004",
+      "legacy_key": "lucky_coin",
+      "name": "幸运金币",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "金币获取+20%",
+      "effect_group": "EG1004",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0005",
+      "legacy_key": "hourglass",
+      "name": "时光沙漏",
+      "rarity": "RA3",
+      "trigger": "TR09",
+      "description": "致命伤害时免死一次，消耗此遗物",
+      "effect_group": "EG1005",
+      "flag_consume": true,
+      "flag_unique": true
+    },
+    {
+      "id": "R0006",
+      "legacy_key": "fortune_wheel_relic",
+      "name": "命运之轮",
+      "rarity": "RA2",
+      "trigger": "TR99",
+      "description": "首次出牌后保留手牌一次",
+      "effect_group": "EG1006",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0007",
+      "legacy_key": "blood_pact",
+      "name": "血之契约",
+      "rarity": "RA3",
+      "trigger": "TR05",
+      "description": "回合结束保留1颗最高点骰子",
+      "effect_group": "EG1007",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0008",
+      "legacy_key": "magic_glove",
+      "name": "魔法手套",
+      "rarity": "RA2",
+      "trigger": "TR05",
+      "description": "每场战斗下回合+1手牌",
+      "effect_group": "EG1008",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0009",
+      "legacy_key": "whetstone",
+      "name": "磨砺石",
+      "rarity": "RA3",
+      "trigger": "TR05",
+      "description": "每场战斗下回合+1出牌",
+      "effect_group": "EG1009",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0010",
+      "legacy_key": "rage_fire",
+      "name": "怒火燎原",
+      "rarity": "RA2",
+      "trigger": "TR08",
+      "description": "受到伤害后下次出牌+5伤害",
+      "effect_group": "EG1010",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0011",
+      "legacy_key": "prism_focus",
+      "name": "棱镜聚焦",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "锁定一个元素，同元素牌型伤害+30%",
+      "effect_group": "EG1011",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0012",
+      "legacy_key": "limit_breaker",
+      "name": "突破极限",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "小丑骰子可掷出10-12",
+      "effect_group": "EG1012",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0013",
+      "legacy_key": "pair_upgrade",
+      "name": "对子大师",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "对子视为三条",
+      "effect_group": "EG1013",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0014",
+      "legacy_key": "straight_master",
+      "name": "顺子大师",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "顺子牌型等级+1",
+      "effect_group": "EG1014",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0015",
+      "legacy_key": "soul_crystal",
+      "name": "魂晶之心",
+      "rarity": "RA4",
+      "trigger": "TR02",
+      "description": "溢出伤害×倍率×15%转化为魂晶",
+      "effect_group": "EG1015",
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0016",
+      "legacy_key": "life_furnace",
+      "name": "生命熔炉",
+      "rarity": "RA4",
+      "trigger": "TR01",
+      "description": "每出牌5次恢复15HP",
+      "effect_group": "EG1016",
+      "flag_consume": false,
+      "flag_unique": false
+    }
+  ],
+  "effects": [
+    {
+      "effect_group": "EG1001",
+      "effect_type": "ET03",
+      "param_key": "armor",
+      "param_value": "5",
+      "note": "铁之心 +5 护甲"
+    },
+    {
+      "effect_group": "EG1002",
+      "effect_type": "ET04",
+      "param_key": "heal",
+      "param_value": "10",
+      "note": "草药 回 10 HP"
+    },
+    {
+      "effect_group": "EG1003",
+      "effect_type": "ET01",
+      "param_key": "damage",
+      "param_value": "3",
+      "note": "锋利 +3 伤害"
+    },
+    {
+      "effect_group": "EG1004",
+      "effect_type": "ET20",
+      "param_key": "gold_bonus",
+      "param_value": "20",
+      "note": "+20% 金币"
+    },
+    {
+      "effect_group": "EG1005",
+      "effect_type": "ET12",
+      "param_key": "prevent_death",
+      "param_value": "1",
+      "note": "免死一次"
+    },
+    {
+      "effect_group": "EG1006",
+      "effect_type": "ET12",
+      "param_key": "keep_unplayed_once",
+      "param_value": "1",
+      "note": "保留未出牌一次"
+    },
+    {
+      "effect_group": "EG1007",
+      "effect_type": "ET12",
+      "param_key": "keep_highest_die",
+      "param_value": "1",
+      "note": "保留最高点 1 颗"
+    },
+    {
+      "effect_group": "EG1008",
+      "effect_type": "ET12",
+      "param_key": "temp_draw_bonus",
+      "param_value": "1",
+      "note": "+1 手牌（下回合）"
+    },
+    {
+      "effect_group": "EG1009",
+      "effect_type": "ET12",
+      "param_key": "grant_extra_play",
+      "param_value": "1",
+      "note": "+1 出牌（下回合）"
+    },
+    {
+      "effect_group": "EG1010",
+      "effect_type": "ET01",
+      "param_key": "damage",
+      "param_value": "5",
+      "note": "受伤后 +5 伤害"
+    },
+    {
+      "effect_group": "EG1011",
+      "effect_type": "ET02",
+      "param_key": "multiplier",
+      "param_value": "0.3",
+      "note": "同元素 +30%"
+    },
+    {
+      "effect_group": "EG1012",
+      "effect_type": "ET12",
+      "param_key": "max_points_unlocked",
+      "param_value": "1",
+      "note": "小丑骰突破上限"
+    },
+    {
+      "effect_group": "EG1013",
+      "effect_type": "ET12",
+      "param_key": "pair_as_triplet",
+      "param_value": "1",
+      "note": "对子视为三条"
+    },
+    {
+      "effect_group": "EG1014",
+      "effect_type": "ET12",
+      "param_key": "straight_upgrade",
+      "param_value": "1",
+      "note": "顺子等级+1"
+    },
+    {
+      "effect_group": "EG1015",
+      "effect_type": "ET02",
+      "param_key": "multiplier",
+      "param_value": "0.15",
+      "note": "溢伤 ×15% 转魂晶"
+    },
+    {
+      "effect_group": "EG1016",
+      "effect_type": "ET04",
+      "param_key": "heal",
+      "param_value": "15",
+      "note": "每 5 出牌回 15 HP"
+    },
+    {
+      "effect_group": "EG1016",
+      "effect_type": "ET12",
+      "param_key": "max_counter",
+      "param_value": "5",
+      "note": "计数上限"
+    }
+  ]
+}

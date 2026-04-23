@@ -1,0 +1,985 @@
+{
+  "id_map": [
+    {
+      "id": "RA1",
+      "type": "稀有度",
+      "name": "普通",
+      "legacy_key": "COMMON",
+      "note": ""
+    },
+    {
+      "id": "RA2",
+      "type": "稀有度",
+      "name": "不凡",
+      "legacy_key": "UNCOMMON",
+      "note": ""
+    },
+    {
+      "id": "RA3",
+      "type": "稀有度",
+      "name": "稀有",
+      "legacy_key": "RARE",
+      "note": ""
+    },
+    {
+      "id": "RA4",
+      "type": "稀有度",
+      "name": "传说",
+      "legacy_key": "LEGENDARY",
+      "note": ""
+    },
+    {
+      "id": "RA5",
+      "type": "稀有度",
+      "name": "诅咒",
+      "legacy_key": "CURSE",
+      "note": "仅骰子有此级"
+    },
+    {
+      "id": "EL0",
+      "type": "元素",
+      "name": "无",
+      "legacy_key": "NORMAL",
+      "note": ""
+    },
+    {
+      "id": "EL1",
+      "type": "元素",
+      "name": "火",
+      "legacy_key": "FIRE",
+      "note": ""
+    },
+    {
+      "id": "EL2",
+      "type": "元素",
+      "name": "冰",
+      "legacy_key": "ICE",
+      "note": ""
+    },
+    {
+      "id": "EL3",
+      "type": "元素",
+      "name": "雷",
+      "legacy_key": "THUNDER",
+      "note": ""
+    },
+    {
+      "id": "EL4",
+      "type": "元素",
+      "name": "毒",
+      "legacy_key": "POISON",
+      "note": ""
+    },
+    {
+      "id": "EL5",
+      "type": "元素",
+      "name": "圣",
+      "legacy_key": "HOLY",
+      "note": ""
+    },
+    {
+      "id": "EL6",
+      "type": "元素",
+      "name": "暗",
+      "legacy_key": "SHADOW",
+      "note": ""
+    },
+    {
+      "id": "C00",
+      "type": "职业",
+      "name": "通用",
+      "legacy_key": "",
+      "note": "表示非职业专属，所有职业可用"
+    },
+    {
+      "id": "C01",
+      "type": "职业",
+      "name": "嗜血狂战",
+      "legacy_key": "warrior",
+      "note": ""
+    },
+    {
+      "id": "C02",
+      "type": "职业",
+      "name": "星界魔导",
+      "legacy_key": "mage",
+      "note": ""
+    },
+    {
+      "id": "C03",
+      "type": "职业",
+      "name": "影锋刺客",
+      "legacy_key": "rogue",
+      "note": ""
+    },
+    {
+      "id": "D0001",
+      "type": "骰子",
+      "name": "普通骰子",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "id": "D0002",
+      "type": "骰子",
+      "name": "锋刃骰子",
+      "legacy_key": "blade",
+      "note": ""
+    },
+    {
+      "id": "D0003",
+      "type": "骰子",
+      "name": "倍增骰子",
+      "legacy_key": "amplify",
+      "note": ""
+    },
+    {
+      "id": "D0004",
+      "type": "骰子",
+      "name": "分裂骰子",
+      "legacy_key": "split",
+      "note": ""
+    },
+    {
+      "id": "D0005",
+      "type": "骰子",
+      "name": "磁吸骰子",
+      "legacy_key": "magnet",
+      "note": ""
+    },
+    {
+      "id": "D0006",
+      "type": "骰子",
+      "name": "小丑骰子",
+      "legacy_key": "joker",
+      "note": ""
+    },
+    {
+      "id": "D0007",
+      "type": "骰子",
+      "name": "混沌骰子",
+      "legacy_key": "chaos",
+      "note": ""
+    },
+    {
+      "id": "D0008",
+      "type": "骰子",
+      "name": "诅咒骰子",
+      "legacy_key": "cursed",
+      "note": ""
+    },
+    {
+      "id": "D0009",
+      "type": "骰子",
+      "name": "碎裂骰子",
+      "legacy_key": "cracked",
+      "note": ""
+    },
+    {
+      "id": "D0010",
+      "type": "骰子",
+      "name": "暗影残骰",
+      "legacy_key": "temp_rogue",
+      "note": ""
+    },
+    {
+      "id": "D0011",
+      "type": "骰子",
+      "name": "灌铅骰子",
+      "legacy_key": "heavy",
+      "note": ""
+    },
+    {
+      "id": "D0101",
+      "type": "骰子",
+      "name": "嗜血骰子",
+      "legacy_key": "w_bloodthirst",
+      "note": ""
+    },
+    {
+      "id": "D0102",
+      "type": "骰子",
+      "name": "铁壁骰子",
+      "legacy_key": "w_ironwall",
+      "note": ""
+    },
+    {
+      "id": "D0103",
+      "type": "骰子",
+      "name": "怒火骰子",
+      "legacy_key": "w_fury",
+      "note": ""
+    },
+    {
+      "id": "D0104",
+      "type": "骰子",
+      "name": "处刑骰子",
+      "legacy_key": "w_execute",
+      "note": ""
+    },
+    {
+      "id": "D0105",
+      "type": "骰子",
+      "name": "狂暴骰子",
+      "legacy_key": "w_berserker",
+      "note": ""
+    },
+    {
+      "id": "D0201",
+      "type": "骰子",
+      "name": "元素骰子",
+      "legacy_key": "mage_elemental",
+      "note": ""
+    },
+    {
+      "id": "D0202",
+      "type": "骰子",
+      "name": "逆转骰子",
+      "legacy_key": "mage_reverse",
+      "note": ""
+    },
+    {
+      "id": "D0203",
+      "type": "骰子",
+      "name": "水晶骰子",
+      "legacy_key": "mage_crystal",
+      "note": ""
+    },
+    {
+      "id": "D0204",
+      "type": "骰子",
+      "name": "星尘骰子",
+      "legacy_key": "mage_stardust",
+      "note": ""
+    },
+    {
+      "id": "D0301",
+      "type": "骰子",
+      "name": "快攻骰子",
+      "legacy_key": "r_quickdraw",
+      "note": ""
+    },
+    {
+      "id": "D0302",
+      "type": "骰子",
+      "name": "连击心得",
+      "legacy_key": "r_combomastery",
+      "note": ""
+    },
+    {
+      "id": "D0303",
+      "type": "骰子",
+      "name": "毒镖骰子",
+      "legacy_key": "r_poisondart",
+      "note": ""
+    },
+    {
+      "id": "D0304",
+      "type": "骰子",
+      "name": "影分身",
+      "legacy_key": "r_shadowclone",
+      "note": ""
+    },
+    {
+      "id": "R0001",
+      "type": "遗物",
+      "name": "铁之心",
+      "legacy_key": "iron_heart",
+      "note": ""
+    },
+    {
+      "id": "R0002",
+      "type": "遗物",
+      "name": "治愈草药",
+      "legacy_key": "healing_herb",
+      "note": ""
+    },
+    {
+      "id": "R0003",
+      "type": "遗物",
+      "name": "锋利之刃",
+      "legacy_key": "sharp_blade",
+      "note": ""
+    },
+    {
+      "id": "R0004",
+      "type": "遗物",
+      "name": "幸运金币",
+      "legacy_key": "lucky_coin",
+      "note": ""
+    },
+    {
+      "id": "R0005",
+      "type": "遗物",
+      "name": "时光沙漏",
+      "legacy_key": "hourglass",
+      "note": ""
+    },
+    {
+      "id": "R0006",
+      "type": "遗物",
+      "name": "命运之轮",
+      "legacy_key": "fortune_wheel_relic",
+      "note": ""
+    },
+    {
+      "id": "R0007",
+      "type": "遗物",
+      "name": "血之契约",
+      "legacy_key": "blood_pact",
+      "note": ""
+    },
+    {
+      "id": "R0008",
+      "type": "遗物",
+      "name": "魔法手套",
+      "legacy_key": "magic_glove",
+      "note": ""
+    },
+    {
+      "id": "R0009",
+      "type": "遗物",
+      "name": "磨砺石",
+      "legacy_key": "whetstone",
+      "note": ""
+    },
+    {
+      "id": "R0010",
+      "type": "遗物",
+      "name": "怒火燎原",
+      "legacy_key": "rage_fire",
+      "note": ""
+    },
+    {
+      "id": "R0011",
+      "type": "遗物",
+      "name": "棱镜聚焦",
+      "legacy_key": "prism_focus",
+      "note": ""
+    },
+    {
+      "id": "R0012",
+      "type": "遗物",
+      "name": "突破极限",
+      "legacy_key": "limit_breaker",
+      "note": ""
+    },
+    {
+      "id": "R0013",
+      "type": "遗物",
+      "name": "对子大师",
+      "legacy_key": "pair_upgrade",
+      "note": ""
+    },
+    {
+      "id": "R0014",
+      "type": "遗物",
+      "name": "顺子大师",
+      "legacy_key": "straight_master",
+      "note": ""
+    },
+    {
+      "id": "R0015",
+      "type": "遗物",
+      "name": "魂晶之心",
+      "legacy_key": "soul_crystal",
+      "note": ""
+    },
+    {
+      "id": "R0016",
+      "type": "遗物",
+      "name": "生命熔炉",
+      "legacy_key": "life_furnace",
+      "note": ""
+    },
+    {
+      "id": "E0001",
+      "type": "敌人",
+      "name": "食尸鬼",
+      "legacy_key": "forest_ghoul",
+      "note": ""
+    },
+    {
+      "id": "E0002",
+      "type": "敌人",
+      "name": "剧毒蛛母",
+      "legacy_key": "forest_spider",
+      "note": ""
+    },
+    {
+      "id": "E0003",
+      "type": "敌人",
+      "name": "腐化树人",
+      "legacy_key": "forest_treant",
+      "note": ""
+    },
+    {
+      "id": "E0004",
+      "type": "敌人",
+      "name": "哀嚎女妖",
+      "legacy_key": "forest_banshee",
+      "note": ""
+    },
+    {
+      "id": "E0005",
+      "type": "敌人",
+      "name": "月光狼灵",
+      "legacy_key": "forest_wolf_priest",
+      "note": ""
+    },
+    {
+      "id": "E0101",
+      "type": "敌人",
+      "name": "雪原雪人",
+      "legacy_key": "ice_yeti",
+      "note": ""
+    },
+    {
+      "id": "E0102",
+      "type": "敌人",
+      "name": "霜寒女巫",
+      "legacy_key": "ice_mage",
+      "note": ""
+    },
+    {
+      "id": "E0103",
+      "type": "敌人",
+      "name": "霜鬃狼",
+      "legacy_key": "ice_wolf",
+      "note": ""
+    },
+    {
+      "id": "E0104",
+      "type": "敌人",
+      "name": "寒冰石像",
+      "legacy_key": "ice_golem",
+      "note": ""
+    },
+    {
+      "id": "E0201",
+      "type": "敌人",
+      "name": "地狱火犬",
+      "legacy_key": "lava_hound",
+      "note": ""
+    },
+    {
+      "id": "E0202",
+      "type": "敌人",
+      "name": "小恶魔",
+      "legacy_key": "lava_imp",
+      "note": ""
+    },
+    {
+      "id": "E0203",
+      "type": "敌人",
+      "name": "黑铁卫士",
+      "legacy_key": "lava_guardian",
+      "note": ""
+    },
+    {
+      "id": "E0204",
+      "type": "敌人",
+      "name": "火焰萨满",
+      "legacy_key": "lava_shaman",
+      "note": ""
+    },
+    {
+      "id": "E0301",
+      "type": "敌人",
+      "name": "暗影刺客",
+      "legacy_key": "shadow_assassin",
+      "note": ""
+    },
+    {
+      "id": "E0302",
+      "type": "敌人",
+      "name": "邪能卫兵",
+      "legacy_key": "shadow_felguard",
+      "note": ""
+    },
+    {
+      "id": "E0303",
+      "type": "敌人",
+      "name": "邪能术士",
+      "legacy_key": "shadow_warlock",
+      "note": ""
+    },
+    {
+      "id": "E0304",
+      "type": "敌人",
+      "name": "堕落死亡骑士",
+      "legacy_key": "shadow_knight",
+      "note": ""
+    },
+    {
+      "id": "E0401",
+      "type": "敌人",
+      "name": "光铸哨兵",
+      "legacy_key": "eternal_sentinel",
+      "note": ""
+    },
+    {
+      "id": "E0402",
+      "type": "敌人",
+      "name": "时光龙人",
+      "legacy_key": "eternal_chrono",
+      "note": ""
+    },
+    {
+      "id": "E0403",
+      "type": "敌人",
+      "name": "星界游侠",
+      "legacy_key": "eternal_archer",
+      "note": ""
+    },
+    {
+      "id": "E0404",
+      "type": "敌人",
+      "name": "泰坦祭司",
+      "legacy_key": "eternal_priest",
+      "note": ""
+    },
+    {
+      "id": "E9001",
+      "type": "敌人",
+      "name": "亡灵巫师",
+      "legacy_key": "elite_necromancer",
+      "note": ""
+    },
+    {
+      "id": "E9002",
+      "type": "敌人",
+      "name": "狼人首领",
+      "legacy_key": "elite_alpha_wolf",
+      "note": ""
+    },
+    {
+      "id": "E9003",
+      "type": "敌人",
+      "name": "霜龙幼崽",
+      "legacy_key": "elite_frost_wyrm",
+      "note": ""
+    },
+    {
+      "id": "E9004",
+      "type": "敌人",
+      "name": "冰霜巨人王",
+      "legacy_key": "elite_ice_lord",
+      "note": ""
+    },
+    {
+      "id": "E9005",
+      "type": "敌人",
+      "name": "地狱火",
+      "legacy_key": "elite_infernal",
+      "note": ""
+    },
+    {
+      "id": "E9006",
+      "type": "敌人",
+      "name": "黑铁议员",
+      "legacy_key": "elite_dark_iron",
+      "note": ""
+    },
+    {
+      "id": "E9007",
+      "type": "敌人",
+      "name": "末日守卫",
+      "legacy_key": "elite_doomguard",
+      "note": ""
+    },
+    {
+      "id": "E9008",
+      "type": "敌人",
+      "name": "暗影大主教",
+      "legacy_key": "elite_shadow_priest",
+      "note": ""
+    },
+    {
+      "id": "E9009",
+      "type": "敌人",
+      "name": "泰坦守护者",
+      "legacy_key": "elite_titan_construct",
+      "note": ""
+    },
+    {
+      "id": "E9010",
+      "type": "敌人",
+      "name": "虚空行者",
+      "legacy_key": "elite_void_walker",
+      "note": ""
+    },
+    {
+      "id": "E9101",
+      "type": "敌人",
+      "name": "枯骨巫妖",
+      "legacy_key": "boss_lich_forest",
+      "note": ""
+    },
+    {
+      "id": "E9102",
+      "type": "敌人",
+      "name": "远古树王",
+      "legacy_key": "boss_ancient_treant",
+      "note": ""
+    },
+    {
+      "id": "E9103",
+      "type": "敌人",
+      "name": "霜寒女王",
+      "legacy_key": "boss_frost_queen",
+      "note": ""
+    },
+    {
+      "id": "E9104",
+      "type": "敌人",
+      "name": "霜之巫妖王",
+      "legacy_key": "boss_frost_lich",
+      "note": ""
+    },
+    {
+      "id": "E9105",
+      "type": "敌人",
+      "name": "炎魔之王",
+      "legacy_key": "boss_ragnaros",
+      "note": ""
+    },
+    {
+      "id": "E9106",
+      "type": "敌人",
+      "name": "熔火死翼",
+      "legacy_key": "boss_deathwing",
+      "note": ""
+    },
+    {
+      "id": "E9107",
+      "type": "敌人",
+      "name": "深渊领主",
+      "legacy_key": "boss_archimonde",
+      "note": ""
+    },
+    {
+      "id": "E9108",
+      "type": "敌人",
+      "name": "暗影之王",
+      "legacy_key": "boss_kiljaeden",
+      "note": ""
+    },
+    {
+      "id": "E9109",
+      "type": "敌人",
+      "name": "泰坦看守者",
+      "legacy_key": "boss_titan_watcher",
+      "note": ""
+    },
+    {
+      "id": "E9110",
+      "type": "敌人",
+      "name": "永恒主宰",
+      "legacy_key": "boss_eternal_lord",
+      "note": ""
+    }
+  ],
+  "enum_effect_type": [
+    {
+      "code": "ET01",
+      "key": "damage",
+      "desc": "造成伤害（加法）对应 DiceDef.bonus_damage / RelicDef.damage"
+    },
+    {
+      "code": "ET02",
+      "key": "damage_mult",
+      "desc": "伤害倍率（乘法）对应 DiceDef.bonus_mult / RelicDef.multiplier"
+    },
+    {
+      "code": "ET03",
+      "key": "armor",
+      "desc": "获得护甲 对应 DiceDef.armor / RelicDef.armor"
+    },
+    {
+      "code": "ET04",
+      "key": "heal",
+      "desc": "恢复生命 对应 DiceDef.heal / RelicDef.heal"
+    },
+    {
+      "code": "ET05",
+      "key": "pierce",
+      "desc": "穿甲 对应 DiceDef.pierce / RelicDef.pierce"
+    },
+    {
+      "code": "ET06",
+      "key": "self_damage",
+      "desc": "自残 对应 DiceDef.self_damage"
+    },
+    {
+      "code": "ET07",
+      "key": "status_to_enemy",
+      "desc": "给敌人施加状态，param_ref 用 ST紧凑编码"
+    },
+    {
+      "code": "ET08",
+      "key": "status_to_self",
+      "desc": "给自身施加状态，param_ref 用 ST紧凑编码"
+    },
+    {
+      "code": "ET09",
+      "key": "extra_dice",
+      "desc": "衍生骰子，param_key 常用：grant_shadow_die / clone_self"
+    },
+    {
+      "code": "ET10",
+      "key": "bonus_on_keep",
+      "desc": "保留到下回合的加成 对应 DiceDef.bonus_on_keep / bonus_per_turn_kept"
+    },
+    {
+      "code": "ET11",
+      "key": "scale_flag",
+      "desc": "缩放标记（条件触发类）param_key 指具体字段名"
+    },
+    {
+      "code": "ET12",
+      "key": "special",
+      "desc": "特殊逻辑（代码写死）param_key = 字段名，param_value = 值"
+    },
+    {
+      "code": "ET20",
+      "key": "gold_bonus",
+      "desc": "金币加成 对应 RelicDef.gold_bonus"
+    },
+    {
+      "code": "ET21",
+      "key": "draw_bonus",
+      "desc": "抽牌加成 对应 RelicDef.draw_count_bonus"
+    },
+    {
+      "code": "ET22",
+      "key": "shop_discount",
+      "desc": "商店折扣 对应 RelicDef.shop_discount"
+    },
+    {
+      "code": "ET23",
+      "key": "free_rerolls",
+      "desc": "免费重投 对应 RelicDef.free_rerolls"
+    },
+    {
+      "code": "ET24",
+      "key": "extra_play",
+      "desc": "额外出牌 对应 RelicDef.extra_play"
+    },
+    {
+      "code": "ET25",
+      "key": "extra_reroll",
+      "desc": "额外重投 对应 RelicDef.extra_reroll"
+    },
+    {
+      "code": "ET26",
+      "key": "extra_draw",
+      "desc": "额外抽牌 对应 RelicDef.extra_draw"
+    }
+  ],
+  "enum_status_type": [
+    {
+      "code": "ST01",
+      "key": "POISON",
+      "name_cn": "中毒",
+      "desc": "每回合扣等层数血量"
+    },
+    {
+      "code": "ST02",
+      "key": "BURN",
+      "name_cn": "灼烧",
+      "desc": "每回合扣等层数血量（可与 POISON 叠加不同机制）"
+    },
+    {
+      "code": "ST03",
+      "key": "DODGE",
+      "name_cn": "闪避",
+      "desc": "下次受伤豁免"
+    },
+    {
+      "code": "ST04",
+      "key": "VULNERABLE",
+      "name_cn": "易伤",
+      "desc": "受到伤害 +50%"
+    },
+    {
+      "code": "ST05",
+      "key": "STRENGTH",
+      "name_cn": "力量",
+      "desc": "造成伤害 +等层数"
+    },
+    {
+      "code": "ST06",
+      "key": "WEAK",
+      "name_cn": "虚弱",
+      "desc": "造成伤害 -25%"
+    },
+    {
+      "code": "ST07",
+      "key": "ARMOR",
+      "name_cn": "护甲",
+      "desc": "抵挡伤害"
+    },
+    {
+      "code": "ST08",
+      "key": "SLOW",
+      "name_cn": "缓慢",
+      "desc": "部分行动延迟"
+    },
+    {
+      "code": "ST09",
+      "key": "FREEZE",
+      "name_cn": "冻结",
+      "desc": "跳过回合"
+    }
+  ],
+  "enum_trigger": [
+    {
+      "code": "TR01",
+      "key": "ON_PLAY",
+      "desc": "每次出牌触发"
+    },
+    {
+      "code": "TR02",
+      "key": "ON_KILL",
+      "desc": "击杀敌人触发"
+    },
+    {
+      "code": "TR03",
+      "key": "ON_REROLL",
+      "desc": "重投骰子触发"
+    },
+    {
+      "code": "TR04",
+      "key": "ON_TURN_START",
+      "desc": "回合开始"
+    },
+    {
+      "code": "TR05",
+      "key": "ON_TURN_END",
+      "desc": "回合结束"
+    },
+    {
+      "code": "TR06",
+      "key": "ON_BATTLE_START",
+      "desc": "战斗开始"
+    },
+    {
+      "code": "TR07",
+      "key": "ON_BATTLE_END",
+      "desc": "战斗结束"
+    },
+    {
+      "code": "TR08",
+      "key": "ON_DAMAGE_TAKEN",
+      "desc": "受伤触发"
+    },
+    {
+      "code": "TR09",
+      "key": "ON_FATAL",
+      "desc": "致命伤害时触发（免死类）"
+    },
+    {
+      "code": "TR10",
+      "key": "ON_FLOOR_CLEAR",
+      "desc": "通关一层触发"
+    },
+    {
+      "code": "TR11",
+      "key": "ON_MOVE",
+      "desc": "地图移动触发"
+    },
+    {
+      "code": "TR99",
+      "key": "PASSIVE",
+      "desc": "被动（常驻）"
+    }
+  ],
+  "enum_hand_type": [
+    {
+      "idx": 0,
+      "key": "NORMAL_ATTACK",
+      "name_cn": "普通攻击"
+    },
+    {
+      "idx": 1,
+      "key": "PAIR",
+      "name_cn": "对子"
+    },
+    {
+      "idx": 2,
+      "key": "DOUBLE_PAIR",
+      "name_cn": "连对"
+    },
+    {
+      "idx": 3,
+      "key": "TRIPLE_PAIR",
+      "name_cn": "三连对"
+    },
+    {
+      "idx": 4,
+      "key": "TRIPLET",
+      "name_cn": "三条"
+    },
+    {
+      "idx": 5,
+      "key": "STRAIGHT_3",
+      "name_cn": "顺子3"
+    },
+    {
+      "idx": 6,
+      "key": "STRAIGHT_4",
+      "name_cn": "顺子4"
+    },
+    {
+      "idx": 7,
+      "key": "STRAIGHT_5",
+      "name_cn": "顺子5"
+    },
+    {
+      "idx": 8,
+      "key": "STRAIGHT_6",
+      "name_cn": "顺子6"
+    },
+    {
+      "idx": 9,
+      "key": "SAME_ELEMENT",
+      "name_cn": "同元素"
+    },
+    {
+      "idx": 10,
+      "key": "FULL_HOUSE",
+      "name_cn": "葫芦"
+    },
+    {
+      "idx": 11,
+      "key": "FOUR_OF_KIND",
+      "name_cn": "四条"
+    },
+    {
+      "idx": 12,
+      "key": "FIVE_OF_KIND",
+      "name_cn": "五条"
+    },
+    {
+      "idx": 13,
+      "key": "SIX_OF_KIND",
+      "name_cn": "六条"
+    },
+    {
+      "idx": 14,
+      "key": "ELEMENT_STRAIGHT",
+      "name_cn": "元素顺"
+    },
+    {
+      "idx": 15,
+      "key": "ELEMENT_FULL_HOUSE",
+      "name_cn": "元素葫芦"
+    },
+    {
+      "idx": 16,
+      "key": "ROYAL_ELEMENT_STRAIGHT",
+      "name_cn": "皇家元素顺"
+    }
+  ]
+}

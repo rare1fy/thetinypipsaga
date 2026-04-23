@@ -131,6 +131,25 @@ function stepGate() {
   return godot;
 }
 
+function stepConvertExcel() {
+  const toolsDir = path.join(PROJECT_ROOT, 'config', 'tools');
+  const script = path.join(toolsDir, 'excel_to_json.py');
+  if (!fs.existsSync(script)) {
+    log('EXCEL', 'config/tools/excel_to_json.py 不存在，跳过 Excel 转换', 'yellow');
+    return;
+  }
+  log('EXCEL', 'Excel → JSON 转换...', 'yellow');
+  const result = spawnSync('python', [script], {
+    cwd: PROJECT_ROOT,
+    stdio: 'inherit',
+    encoding: 'utf8',
+  });
+  if (result.status !== 0) {
+    die(`Excel → JSON 转换失败，退出码 ${result.status}。请检查 config/excel/ 中的文件是否合法。`);
+  }
+  log('EXCEL', 'JSON 已更新', 'green');
+}
+
 function stepBuild(godot) {
   log('BUILD', 'Godot 导出 Web 版...', 'yellow');
 
@@ -264,6 +283,7 @@ function main() {
   const godot = stepGate();
 
   if (!skipBuild) {
+    stepConvertExcel();
     stepBuild(godot);
     stepPatchBuild();
   } else {

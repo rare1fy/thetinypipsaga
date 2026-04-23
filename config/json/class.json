@@ -1,0 +1,235 @@
+{
+  "base": [
+    {
+      "id": "C01",
+      "legacy_key": "warrior",
+      "name": "嗜血狂战",
+      "title": "铁血征服者",
+      "description": "以鲜血为代价，换取毁天灭地的一击。嗜血越多，伤害越高。",
+      "color": "#c04040",
+      "color_light": "#ff6060",
+      "color_dark": "#601010",
+      "hp": 120,
+      "draw_count": 3,
+      "max_plays": 1,
+      "free_rerolls": 1,
+      "flag_blood_reroll": true,
+      "flag_keep_unplayed": false,
+      "flag_multi_select": true,
+      "passive_desc": "【血怒战意】嗜血每次+15%最终伤害（最多5层+75%）；叠满后卖血改为+5护甲；血量≤50%手牌+1；手牌溢出上限时按受伤百分比加伤害倍率；普攻可多选"
+    },
+    {
+      "id": "C02",
+      "legacy_key": "mage",
+      "name": "星界魔导",
+      "title": "星界禁咒师",
+      "description": "耐心吟唱，两三回合攒齐完美手牌，打出毁天灭地的大招。",
+      "color": "#7040c0",
+      "color_light": "#a070ff",
+      "color_dark": "#301060",
+      "hp": 100,
+      "draw_count": 3,
+      "max_plays": 1,
+      "free_rerolls": 1,
+      "flag_blood_reroll": false,
+      "flag_keep_unplayed": true,
+      "flag_multi_select": false,
+      "passive_desc": "【星界吟唱】未出牌骰子保留到下回合（3→4→5→6递增）；吟唱回合获得递增护甲；满6后继续吟唱每次+10%伤害；出牌后重置"
+    },
+    {
+      "id": "C03",
+      "legacy_key": "rogue",
+      "name": "影锋刺客",
+      "title": "暗影连击者",
+      "description": "一回合出牌两次，连击加成层层递增。暗影残骰是连击的灵魂。",
+      "color": "#30a050",
+      "color_light": "#60d080",
+      "color_dark": "#104020",
+      "hp": 90,
+      "draw_count": 3,
+      "max_plays": 2,
+      "free_rerolls": 1,
+      "flag_blood_reroll": false,
+      "flag_keep_unplayed": false,
+      "flag_multi_select": false,
+      "passive_desc": "【连击】每回合出牌2次；第2次伤害+20%；同牌型再+25%；暗影残骰是连击核心"
+    }
+  ],
+  "starting_items": [
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0101",
+      "legacy_key": "w_bloodthirst",
+      "note": ""
+    },
+    {
+      "class_id": "C01",
+      "item_type": "dice",
+      "item_id": "D0102",
+      "legacy_key": "w_ironwall",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0201",
+      "legacy_key": "mage_elemental",
+      "note": ""
+    },
+    {
+      "class_id": "C02",
+      "item_type": "dice",
+      "item_id": "D0202",
+      "legacy_key": "mage_reverse",
+      "note": ""
+    },
+    {
+      "class_id": "C03",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C03",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C03",
+      "item_type": "dice",
+      "item_id": "D0001",
+      "legacy_key": "standard",
+      "note": ""
+    },
+    {
+      "class_id": "C03",
+      "item_type": "dice",
+      "item_id": "D0301",
+      "legacy_key": "r_quickdraw",
+      "note": ""
+    },
+    {
+      "class_id": "C03",
+      "item_type": "dice",
+      "item_id": "D0302",
+      "legacy_key": "r_combomastery",
+      "note": ""
+    }
+  ],
+  "skills": [
+    {
+      "class_id": "C01",
+      "skill_idx": 0,
+      "name": "血怒战意",
+      "description": "每次嗜血，最终伤害+15%（最多叠加5层+75%），叠满后卖血获得5点护甲"
+    },
+    {
+      "class_id": "C01",
+      "skill_idx": 1,
+      "name": "狂暴本能",
+      "description": "血量≤50%时手牌上限+1颗；手牌达到6颗上限时，按受伤百分比获得等比例伤害倍率加成"
+    },
+    {
+      "class_id": "C01",
+      "skill_idx": 2,
+      "name": "铁拳连打",
+      "description": "普攻牌型可多选骰子，一次打出所有选中骰子的伤害"
+    },
+    {
+      "class_id": "C02",
+      "skill_idx": 0,
+      "name": "星界吟唱",
+      "description": "未出牌的骰子保留到下回合，手牌上限逐层递增（3→4→5→6）"
+    },
+    {
+      "class_id": "C02",
+      "skill_idx": 1,
+      "name": "吟唱护盾",
+      "description": "每次吟唱（不出牌）获得递增护甲（6/8/10/12...），层数越高护甲越厚"
+    },
+    {
+      "class_id": "C02",
+      "skill_idx": 2,
+      "name": "过充释放",
+      "description": "手牌满6颗后继续吟唱，每回合额外+10%伤害倍率；出牌后重置"
+    },
+    {
+      "class_id": "C03",
+      "skill_idx": 0,
+      "name": "双刃连击",
+      "description": "每回合可出牌2次，第2次出牌伤害+20%"
+    },
+    {
+      "class_id": "C03",
+      "skill_idx": 1,
+      "name": "精准连击",
+      "description": "两次出牌使用相同牌型时（非普攻），额外+25%伤害加成"
+    },
+    {
+      "class_id": "C03",
+      "skill_idx": 2,
+      "name": "暗影残骰",
+      "description": "连击触发时补充暗影残骰；连击奖励的残骰可保留到下回合"
+    }
+  ]
+}

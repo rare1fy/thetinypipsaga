@@ -3,6 +3,9 @@
 class_name ClassDef
 extends Resource
 
+# 开关：true=从 Excel → JSON 加载，false=走硬编码函数
+const USE_JSON_CONFIG: bool = true
+
 @export var id: String = ""  ## warrior / mage / rogue
 @export var name: String = ""
 @export var title: String = ""
@@ -120,6 +123,11 @@ static func get_rogue() -> ClassDef:
 
 
 static func get_all() -> Dictionary:
+	if USE_JSON_CONFIG:
+		var loaded := ConfigLoader.load_class_defs()
+		if not loaded.is_empty():
+			return loaded
+		push_warning("[ClassDef] JSON 加载失败，fallback 到硬编码")
 	return {
 		"warrior": get_warrior(),
 		"mage": get_mage(),

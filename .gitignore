@@ -39,3 +39,8 @@ desktop.ini
 *.log
 *.tmp
 *.bak
+
+# Python（config/tools/）
+__pycache__/
+*.pyc
+config/tools/.venv/

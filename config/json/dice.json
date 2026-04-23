@@ -1,0 +1,698 @@
+{
+  "base": [
+    {
+      "id": "D0001",
+      "legacy_key": "standard",
+      "class": "C00",
+      "name": "普通骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA1",
+      "element": "EL0",
+      "description": "标准六面骰",
+      "effect_group": "",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0002",
+      "legacy_key": "blade",
+      "class": "C00",
+      "name": "锋刃骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时追加5点固定伤害",
+      "effect_group": "EG0002",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0003",
+      "legacy_key": "amplify",
+      "class": "C00",
+      "name": "倍增骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时最终伤害提升20%",
+      "effect_group": "EG0003",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0004",
+      "legacy_key": "split",
+      "class": "C00",
+      "name": "分裂骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时分裂出1颗相同点数的临时骰子",
+      "effect_group": "EG0004",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0005",
+      "legacy_key": "magnet",
+      "class": "C00",
+      "name": "磁吸骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时随机将1颗同伴骰子点数变为与本骰子相同",
+      "effect_group": "EG0005",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0006",
+      "legacy_key": "joker",
+      "class": "C00",
+      "name": "小丑骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "点数1到9随机，突破六面骰限制",
+      "effect_group": "EG0006",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0007",
+      "legacy_key": "chaos",
+      "class": "C00",
+      "name": "混沌骰子",
+      "faces": [
+        1,
+        1,
+        1,
+        6,
+        6,
+        6
+      ],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "只会掷出1或6",
+      "effect_group": "EG0007",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0008",
+      "legacy_key": "cursed",
+      "class": "C00",
+      "name": "诅咒骰子",
+      "faces": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "点数固定0",
+      "effect_group": "",
+      "flag_cursed": true,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0009",
+      "legacy_key": "cracked",
+      "class": "C00",
+      "name": "碎裂骰子",
+      "faces": [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "出牌后受2点反噬",
+      "effect_group": "EG0009",
+      "flag_cursed": false,
+      "flag_cracked": true
+    },
+    {
+      "id": "D0010",
+      "legacy_key": "temp_rogue",
+      "class": "C00",
+      "name": "暗影残骰",
+      "faces": [
+        1,
+        1,
+        2,
+        2,
+        3,
+        3
+      ],
+      "rarity": "RA1",
+      "element": "EL0",
+      "description": "连击奖励临时骰子",
+      "effect_group": "",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0011",
+      "legacy_key": "heavy",
+      "class": "C00",
+      "name": "灌铅骰子",
+      "faces": [
+        4,
+        4,
+        5,
+        5,
+        6,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "只会掷出4/5/6",
+      "effect_group": "",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0101",
+      "legacy_key": "w_bloodthirst",
+      "class": "C01",
+      "name": "嗜血骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "卖血重投时+3伤害",
+      "effect_group": "EG0101",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0102",
+      "legacy_key": "w_ironwall",
+      "class": "C01",
+      "name": "铁壁骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "出牌时获得等同点数的护甲",
+      "effect_group": "EG0102",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0103",
+      "legacy_key": "w_fury",
+      "class": "C01",
+      "name": "怒火骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "受到敌人攻击时永久+1伤害",
+      "effect_group": "EG0103",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0104",
+      "legacy_key": "w_execute",
+      "class": "C01",
+      "name": "处刑骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "敌人HP≤30%时伤害翻倍",
+      "effect_group": "EG0104",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0105",
+      "legacy_key": "w_berserker",
+      "class": "C01",
+      "name": "狂暴骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "自残5点HP，伤害+50%",
+      "effect_group": "EG0105",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0201",
+      "legacy_key": "mage_elemental",
+      "class": "C02",
+      "name": "元素骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "每回合随机变为火/冰/雷/毒/圣元素",
+      "effect_group": "EG0201",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0202",
+      "legacy_key": "mage_reverse",
+      "class": "C02",
+      "name": "逆转骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "出牌时点数翻转(7-点数)",
+      "effect_group": "EG0202",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0203",
+      "legacy_key": "mage_crystal",
+      "class": "C02",
+      "name": "水晶骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "保留到下回合时点数+1",
+      "effect_group": "EG0203",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0204",
+      "legacy_key": "mage_stardust",
+      "class": "C02",
+      "name": "星尘骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "每保留1回合+1点(上限5)",
+      "effect_group": "EG0204",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0301",
+      "legacy_key": "r_quickdraw",
+      "class": "C03",
+      "name": "快攻骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "连击时+20%伤害",
+      "effect_group": "EG0301",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0302",
+      "legacy_key": "r_combomastery",
+      "class": "C03",
+      "name": "连击心得",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "连击时获得暗影残骰",
+      "effect_group": "EG0302",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0303",
+      "legacy_key": "r_poisondart",
+      "class": "C03",
+      "name": "毒镖骰子",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "附加2层中毒",
+      "effect_group": "EG0303",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0304",
+      "legacy_key": "r_shadowclone",
+      "class": "C03",
+      "name": "影分身",
+      "faces": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时复制自身一同结算",
+      "effect_group": "EG0304",
+      "flag_cursed": false,
+      "flag_cracked": false
+    }
+  ],
+  "effects": [
+    {
+      "effect_group": "EG0002",
+      "effect_type": "ET01",
+      "param_key": "bonus_damage",
+      "param_value": "5",
+      "param_ref": "",
+      "note": "锋刃 +5 固定伤害"
+    },
+    {
+      "effect_group": "EG0003",
+      "effect_type": "ET02",
+      "param_key": "bonus_mult",
+      "param_value": "1.2",
+      "param_ref": "",
+      "note": "倍增 ×1.2"
+    },
+    {
+      "effect_group": "EG0004",
+      "effect_type": "ET12",
+      "param_key": "split_dice",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "分裂骰子（特殊逻辑，代码里判断）"
+    },
+    {
+      "effect_group": "EG0005",
+      "effect_type": "ET12",
+      "param_key": "magnet_dice",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "磁吸骰子（特殊逻辑）"
+    },
+    {
+      "effect_group": "EG0006",
+      "effect_type": "ET12",
+      "param_key": "joker_dice",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "小丑骰子 faces 特殊"
+    },
+    {
+      "effect_group": "EG0007",
+      "effect_type": "ET12",
+      "param_key": "chaos_dice",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "混沌骰 faces 特殊"
+    },
+    {
+      "effect_group": "EG0009",
+      "effect_type": "ET06",
+      "param_key": "self_damage",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "碎裂 -2 HP"
+    },
+    {
+      "effect_group": "EG0101",
+      "effect_type": "ET11",
+      "param_key": "scale_with_blood_rerolls",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "嗜血重投时生效"
+    },
+    {
+      "effect_group": "EG0101",
+      "effect_type": "ET01",
+      "param_key": "bonus_damage",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "嗜血 +3 伤害"
+    },
+    {
+      "effect_group": "EG0102",
+      "effect_type": "ET11",
+      "param_key": "armor_from_value",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "护甲 = 点数"
+    },
+    {
+      "effect_group": "EG0103",
+      "effect_type": "ET12",
+      "param_key": "fury_stack",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "受击永久+1伤害（代码写死）"
+    },
+    {
+      "effect_group": "EG0104",
+      "effect_type": "ET11",
+      "param_key": "execute_threshold",
+      "param_value": "0.3",
+      "param_ref": "",
+      "note": "敌人 HP <= 30% 触发"
+    },
+    {
+      "effect_group": "EG0104",
+      "effect_type": "ET02",
+      "param_key": "execute_mult",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "处刑 ×2"
+    },
+    {
+      "effect_group": "EG0105",
+      "effect_type": "ET06",
+      "param_key": "self_damage",
+      "param_value": "5",
+      "param_ref": "",
+      "note": "狂暴自残 5"
+    },
+    {
+      "effect_group": "EG0105",
+      "effect_type": "ET11",
+      "param_key": "self_berserk",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "狂暴标记"
+    },
+    {
+      "effect_group": "EG0105",
+      "effect_type": "ET02",
+      "param_key": "bonus_mult",
+      "param_value": "1.5",
+      "param_ref": "",
+      "note": "狂暴 ×1.5"
+    },
+    {
+      "effect_group": "EG0201",
+      "effect_type": "ET11",
+      "param_key": "is_elemental",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "每回合随机元素"
+    },
+    {
+      "effect_group": "EG0202",
+      "effect_type": "ET11",
+      "param_key": "reverse_value",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "点数 = 7 - 原点数"
+    },
+    {
+      "effect_group": "EG0203",
+      "effect_type": "ET10",
+      "param_key": "bonus_on_keep",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "保留 +1 点"
+    },
+    {
+      "effect_group": "EG0204",
+      "effect_type": "ET10",
+      "param_key": "bonus_per_turn_kept",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "每保留1回合 +1"
+    },
+    {
+      "effect_group": "EG0204",
+      "effect_type": "ET10",
+      "param_key": "keep_bonus_cap",
+      "param_value": "5",
+      "param_ref": "",
+      "note": "保留加成上限 5"
+    },
+    {
+      "effect_group": "EG0301",
+      "effect_type": "ET11",
+      "param_key": "combo_bonus",
+      "param_value": "0.2",
+      "param_ref": "",
+      "note": "连击 +20%"
+    },
+    {
+      "effect_group": "EG0302",
+      "effect_type": "ET09",
+      "param_key": "grant_shadow_die",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "连击获得暗影残骰"
+    },
+    {
+      "effect_group": "EG0303",
+      "effect_type": "ET11",
+      "param_key": "poison_base",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "毒镖基础毒值"
+    },
+    {
+      "effect_group": "EG0303",
+      "effect_type": "ET07",
+      "param_key": "status_to_enemy",
+      "param_value": "",
+      "param_ref": "ST01x2x3",
+      "note": "施加 2 层中毒（类型ST01/POISON）持续3回合"
+    },
+    {
+      "effect_group": "EG0304",
+      "effect_type": "ET11",
+      "param_key": "shadow_clone_play",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "复制自身结算"
+    }
+  ],
+  "status": []
+}

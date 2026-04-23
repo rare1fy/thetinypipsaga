@@ -1,0 +1,3867 @@
+{
+  "base": [
+    {
+      "id": "E0001",
+      "legacy_key": "forest_ghoul",
+      "name": "食尸鬼",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "WARRIOR",
+      "base_hp": 28,
+      "base_dmg": 7,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0001"
+    },
+    {
+      "id": "E0002",
+      "legacy_key": "forest_spider",
+      "name": "剧毒蛛母",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "RANGER",
+      "base_hp": 18,
+      "base_dmg": 3,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0002",
+      "quote_group": "QG0002"
+    },
+    {
+      "id": "E0003",
+      "legacy_key": "forest_treant",
+      "name": "腐化树人",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 42,
+      "base_dmg": 4,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0003",
+      "quote_group": "QG0003"
+    },
+    {
+      "id": "E0004",
+      "legacy_key": "forest_banshee",
+      "name": "哀嚎女妖",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 16,
+      "base_dmg": 3,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0004",
+      "quote_group": "QG0004"
+    },
+    {
+      "id": "E0005",
+      "legacy_key": "forest_wolf_priest",
+      "name": "月光狼灵",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "PRIEST",
+      "base_hp": 20,
+      "base_dmg": 2,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0005",
+      "quote_group": "QG0005"
+    },
+    {
+      "id": "E0101",
+      "legacy_key": "ice_yeti",
+      "name": "雪原雪人",
+      "chapter": 2,
+      "category": "NORMAL",
+      "combat_type": "WARRIOR",
+      "base_hp": 36,
+      "base_dmg": 9,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0101",
+      "quote_group": "QG0101"
+    },
+    {
+      "id": "E0102",
+      "legacy_key": "ice_mage",
+      "name": "霜寒女巫",
+      "chapter": 2,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 18,
+      "base_dmg": 4,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0102",
+      "quote_group": "QG0102"
+    },
+    {
+      "id": "E0103",
+      "legacy_key": "ice_wolf",
+      "name": "霜鬃狼",
+      "chapter": 2,
+      "category": "NORMAL",
+      "combat_type": "RANGER",
+      "base_hp": 22,
+      "base_dmg": 5,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0103",
+      "quote_group": "QG0103"
+    },
+    {
+      "id": "E0104",
+      "legacy_key": "ice_golem",
+      "name": "寒冰石像",
+      "chapter": 2,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 44,
+      "base_dmg": 4,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0104",
+      "quote_group": "QG0104"
+    },
+    {
+      "id": "E0201",
+      "legacy_key": "lava_hound",
+      "name": "地狱火犬",
+      "chapter": 3,
+      "category": "NORMAL",
+      "combat_type": "WARRIOR",
+      "base_hp": 30,
+      "base_dmg": 8,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0201",
+      "quote_group": "QG0201"
+    },
+    {
+      "id": "E0202",
+      "legacy_key": "lava_imp",
+      "name": "小恶魔",
+      "chapter": 3,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 16,
+      "base_dmg": 4,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0202",
+      "quote_group": "QG0202"
+    },
+    {
+      "id": "E0203",
+      "legacy_key": "lava_guardian",
+      "name": "黑铁卫士",
+      "chapter": 3,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 48,
+      "base_dmg": 5,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0203",
+      "quote_group": "QG0203"
+    },
+    {
+      "id": "E0204",
+      "legacy_key": "lava_shaman",
+      "name": "火焰萨满",
+      "chapter": 3,
+      "category": "NORMAL",
+      "combat_type": "PRIEST",
+      "base_hp": 22,
+      "base_dmg": 3,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0204",
+      "quote_group": "QG0204"
+    },
+    {
+      "id": "E0301",
+      "legacy_key": "shadow_assassin",
+      "name": "暗影刺客",
+      "chapter": 4,
+      "category": "NORMAL",
+      "combat_type": "RANGER",
+      "base_hp": 24,
+      "base_dmg": 12,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0301",
+      "quote_group": "QG0301"
+    },
+    {
+      "id": "E0302",
+      "legacy_key": "shadow_felguard",
+      "name": "邪能卫兵",
+      "chapter": 4,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 46,
+      "base_dmg": 6,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0302",
+      "quote_group": "QG0302"
+    },
+    {
+      "id": "E0303",
+      "legacy_key": "shadow_warlock",
+      "name": "邪能术士",
+      "chapter": 4,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 20,
+      "base_dmg": 5,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0303",
+      "quote_group": "QG0303"
+    },
+    {
+      "id": "E0304",
+      "legacy_key": "shadow_knight",
+      "name": "堕落死亡骑士",
+      "chapter": 4,
+      "category": "NORMAL",
+      "combat_type": "WARRIOR",
+      "base_hp": 34,
+      "base_dmg": 10,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0304",
+      "quote_group": "QG0304"
+    },
+    {
+      "id": "E0401",
+      "legacy_key": "eternal_sentinel",
+      "name": "光铸哨兵",
+      "chapter": 5,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 40,
+      "base_dmg": 8,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0401",
+      "quote_group": "QG0401"
+    },
+    {
+      "id": "E0402",
+      "legacy_key": "eternal_chrono",
+      "name": "时光龙人",
+      "chapter": 5,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 26,
+      "base_dmg": 7,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0402",
+      "quote_group": "QG0402"
+    },
+    {
+      "id": "E0403",
+      "legacy_key": "eternal_archer",
+      "name": "星界游侠",
+      "chapter": 5,
+      "category": "NORMAL",
+      "combat_type": "RANGER",
+      "base_hp": 22,
+      "base_dmg": 10,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0403",
+      "quote_group": "QG0403"
+    },
+    {
+      "id": "E0404",
+      "legacy_key": "eternal_priest",
+      "name": "泰坦祭司",
+      "chapter": 5,
+      "category": "NORMAL",
+      "combat_type": "PRIEST",
+      "base_hp": 24,
+      "base_dmg": 3,
+      "drop_gold": 20,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0404",
+      "quote_group": "QG0404"
+    },
+    {
+      "id": "E9001",
+      "legacy_key": "elite_necromancer",
+      "name": "亡灵巫师",
+      "chapter": 1,
+      "category": "ELITE",
+      "combat_type": "CASTER",
+      "base_hp": 85,
+      "base_dmg": 8,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9001",
+      "quote_group": "QG9001"
+    },
+    {
+      "id": "E9002",
+      "legacy_key": "elite_alpha_wolf",
+      "name": "狼人首领",
+      "chapter": 1,
+      "category": "ELITE",
+      "combat_type": "WARRIOR",
+      "base_hp": 100,
+      "base_dmg": 11,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9002",
+      "quote_group": "QG9002"
+    },
+    {
+      "id": "E9003",
+      "legacy_key": "elite_frost_wyrm",
+      "name": "霜龙幼崽",
+      "chapter": 2,
+      "category": "ELITE",
+      "combat_type": "CASTER",
+      "base_hp": 95,
+      "base_dmg": 10,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9003",
+      "quote_group": "QG9003"
+    },
+    {
+      "id": "E9004",
+      "legacy_key": "elite_ice_lord",
+      "name": "冰霜巨人王",
+      "chapter": 2,
+      "category": "ELITE",
+      "combat_type": "GUARDIAN",
+      "base_hp": 120,
+      "base_dmg": 7,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9004",
+      "quote_group": "QG9004"
+    },
+    {
+      "id": "E9005",
+      "legacy_key": "elite_infernal",
+      "name": "地狱火",
+      "chapter": 3,
+      "category": "ELITE",
+      "combat_type": "WARRIOR",
+      "base_hp": 100,
+      "base_dmg": 12,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9005",
+      "quote_group": "QG9005"
+    },
+    {
+      "id": "E9006",
+      "legacy_key": "elite_dark_iron",
+      "name": "黑铁议员",
+      "chapter": 3,
+      "category": "ELITE",
+      "combat_type": "CASTER",
+      "base_hp": 90,
+      "base_dmg": 9,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9006",
+      "quote_group": "QG9006"
+    },
+    {
+      "id": "E9007",
+      "legacy_key": "elite_doomguard",
+      "name": "末日守卫",
+      "chapter": 4,
+      "category": "ELITE",
+      "combat_type": "WARRIOR",
+      "base_hp": 110,
+      "base_dmg": 11,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9007",
+      "quote_group": "QG9007"
+    },
+    {
+      "id": "E9008",
+      "legacy_key": "elite_shadow_priest",
+      "name": "暗影大主教",
+      "chapter": 4,
+      "category": "ELITE",
+      "combat_type": "PRIEST",
+      "base_hp": 80,
+      "base_dmg": 8,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9008",
+      "quote_group": "QG9008"
+    },
+    {
+      "id": "E9009",
+      "legacy_key": "elite_titan_construct",
+      "name": "泰坦守护者",
+      "chapter": 5,
+      "category": "ELITE",
+      "combat_type": "GUARDIAN",
+      "base_hp": 130,
+      "base_dmg": 10,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9009",
+      "quote_group": "QG9009"
+    },
+    {
+      "id": "E9010",
+      "legacy_key": "elite_void_walker",
+      "name": "虚空行者",
+      "chapter": 5,
+      "category": "ELITE",
+      "combat_type": "CASTER",
+      "base_hp": 90,
+      "base_dmg": 13,
+      "drop_gold": 50,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9010",
+      "quote_group": "QG9010"
+    },
+    {
+      "id": "E9101",
+      "legacy_key": "boss_lich_forest",
+      "name": "枯骨巫妖",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 150,
+      "base_dmg": 10,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9101",
+      "quote_group": "QG9101"
+    },
+    {
+      "id": "E9102",
+      "legacy_key": "boss_ancient_treant",
+      "name": "远古树王",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "GUARDIAN",
+      "base_hp": 300,
+      "base_dmg": 15,
+      "drop_gold": 0,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9102",
+      "quote_group": "QG9102"
+    },
+    {
+      "id": "E9103",
+      "legacy_key": "boss_frost_queen",
+      "name": "霜寒女王",
+      "chapter": 2,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 160,
+      "base_dmg": 10,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9103",
+      "quote_group": "QG9103"
+    },
+    {
+      "id": "E9104",
+      "legacy_key": "boss_frost_lich",
+      "name": "霜之巫妖王",
+      "chapter": 2,
+      "category": "BOSS",
+      "combat_type": "WARRIOR",
+      "base_hp": 320,
+      "base_dmg": 15,
+      "drop_gold": 0,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9104",
+      "quote_group": "QG9104"
+    },
+    {
+      "id": "E9105",
+      "legacy_key": "boss_ragnaros",
+      "name": "炎魔之王",
+      "chapter": 3,
+      "category": "BOSS",
+      "combat_type": "WARRIOR",
+      "base_hp": 200,
+      "base_dmg": 12,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9105",
+      "quote_group": "QG9105"
+    },
+    {
+      "id": "E9106",
+      "legacy_key": "boss_deathwing",
+      "name": "熔火死翼",
+      "chapter": 3,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 380,
+      "base_dmg": 16,
+      "drop_gold": 0,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9106",
+      "quote_group": "QG9106"
+    },
+    {
+      "id": "E9107",
+      "legacy_key": "boss_archimonde",
+      "name": "深渊领主",
+      "chapter": 4,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 200,
+      "base_dmg": 11,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9107",
+      "quote_group": "QG9107"
+    },
+    {
+      "id": "E9108",
+      "legacy_key": "boss_kiljaeden",
+      "name": "暗影之王",
+      "chapter": 4,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 380,
+      "base_dmg": 16,
+      "drop_gold": 0,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9108",
+      "quote_group": "QG9108"
+    },
+    {
+      "id": "E9109",
+      "legacy_key": "boss_titan_watcher",
+      "name": "泰坦看守者",
+      "chapter": 5,
+      "category": "BOSS",
+      "combat_type": "GUARDIAN",
+      "base_hp": 200,
+      "base_dmg": 12,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9109",
+      "quote_group": "QG9109"
+    },
+    {
+      "id": "E9110",
+      "legacy_key": "boss_eternal_lord",
+      "name": "永恒主宰",
+      "chapter": 5,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 480,
+      "base_dmg": 18,
+      "drop_gold": 0,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG9110",
+      "quote_group": "QG9110"
+    }
+  ],
+  "phases": [
+    {
+      "phase_group": "PG0001",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG00010"
+    },
+    {
+      "phase_group": "PG0002",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG00020"
+    },
+    {
+      "phase_group": "PG0003",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG00030"
+    },
+    {
+      "phase_group": "PG0004",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG00040"
+    },
+    {
+      "phase_group": "PG0005",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG00050"
+    },
+    {
+      "phase_group": "PG0101",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG01010"
+    },
+    {
+      "phase_group": "PG0102",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG01020"
+    },
+    {
+      "phase_group": "PG0103",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG01030"
+    },
+    {
+      "phase_group": "PG0104",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG01040"
+    },
+    {
+      "phase_group": "PG0201",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG02010"
+    },
+    {
+      "phase_group": "PG0202",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG02020"
+    },
+    {
+      "phase_group": "PG0203",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG02030"
+    },
+    {
+      "phase_group": "PG0204",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG02040"
+    },
+    {
+      "phase_group": "PG0301",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG03010"
+    },
+    {
+      "phase_group": "PG0302",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG03020"
+    },
+    {
+      "phase_group": "PG0303",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG03030"
+    },
+    {
+      "phase_group": "PG0304",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG03040"
+    },
+    {
+      "phase_group": "PG0401",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG04010"
+    },
+    {
+      "phase_group": "PG0402",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG04020"
+    },
+    {
+      "phase_group": "PG0403",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG04030"
+    },
+    {
+      "phase_group": "PG0404",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG04040"
+    },
+    {
+      "phase_group": "PG9001",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG90010"
+    },
+    {
+      "phase_group": "PG9001",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG90011"
+    },
+    {
+      "phase_group": "PG9002",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG90020"
+    },
+    {
+      "phase_group": "PG9003",
+      "phase_idx": 0,
+      "hp_threshold": 0.3,
+      "action_group": "AG90030"
+    },
+    {
+      "phase_group": "PG9003",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG90031"
+    },
+    {
+      "phase_group": "PG9004",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG90040"
+    },
+    {
+      "phase_group": "PG9005",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG90050"
+    },
+    {
+      "phase_group": "PG9006",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG90060"
+    },
+    {
+      "phase_group": "PG9006",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG90061"
+    },
+    {
+      "phase_group": "PG9007",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG90070"
+    },
+    {
+      "phase_group": "PG9008",
+      "phase_idx": 0,
+      "hp_threshold": 0.3,
+      "action_group": "AG90080"
+    },
+    {
+      "phase_group": "PG9008",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG90081"
+    },
+    {
+      "phase_group": "PG9009",
+      "phase_idx": 0,
+      "hp_threshold": 0.0,
+      "action_group": "AG90090"
+    },
+    {
+      "phase_group": "PG9010",
+      "phase_idx": 0,
+      "hp_threshold": 0.35,
+      "action_group": "AG90100"
+    },
+    {
+      "phase_group": "PG9010",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG90101"
+    },
+    {
+      "phase_group": "PG9101",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG91010"
+    },
+    {
+      "phase_group": "PG9101",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91011"
+    },
+    {
+      "phase_group": "PG9102",
+      "phase_idx": 0,
+      "hp_threshold": 0.5,
+      "action_group": "AG91020"
+    },
+    {
+      "phase_group": "PG9102",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91021"
+    },
+    {
+      "phase_group": "PG9103",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG91030"
+    },
+    {
+      "phase_group": "PG9103",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91031"
+    },
+    {
+      "phase_group": "PG9104",
+      "phase_idx": 0,
+      "hp_threshold": 0.5,
+      "action_group": "AG91040"
+    },
+    {
+      "phase_group": "PG9104",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91041"
+    },
+    {
+      "phase_group": "PG9105",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG91050"
+    },
+    {
+      "phase_group": "PG9105",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91051"
+    },
+    {
+      "phase_group": "PG9106",
+      "phase_idx": 0,
+      "hp_threshold": 0.5,
+      "action_group": "AG91060"
+    },
+    {
+      "phase_group": "PG9106",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91061"
+    },
+    {
+      "phase_group": "PG9107",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG91070"
+    },
+    {
+      "phase_group": "PG9107",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91071"
+    },
+    {
+      "phase_group": "PG9108",
+      "phase_idx": 0,
+      "hp_threshold": 0.5,
+      "action_group": "AG91080"
+    },
+    {
+      "phase_group": "PG9108",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91081"
+    },
+    {
+      "phase_group": "PG9109",
+      "phase_idx": 0,
+      "hp_threshold": 0.4,
+      "action_group": "AG91090"
+    },
+    {
+      "phase_group": "PG9109",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91091"
+    },
+    {
+      "phase_group": "PG9110",
+      "phase_idx": 0,
+      "hp_threshold": 0.5,
+      "action_group": "AG91100"
+    },
+    {
+      "phase_group": "PG9110",
+      "phase_idx": 1,
+      "hp_threshold": 0.0,
+      "action_group": "AG91101"
+    }
+  ],
+  "actions": [
+    {
+      "action_group": "AG00010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 7,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00010",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "撕咬",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00010",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00020",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00020",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 4,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00020",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 4,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00030",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00030",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00030",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 6,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00030",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 7,
+      "description": "根须缠绕",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00040",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00040",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG00040",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00050",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00050",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG00050",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 4,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01010",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 11,
+      "description": "冰拳",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01020",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG01020",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 6,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01020",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG01030",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01030",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 7,
+      "description": "冰霜撕咬",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01030",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG01040",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01040",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG01040",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02010",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "烈焰撕咬",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02010",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG02020",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG02020",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02020",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG02020",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 6,
+      "description": "火球",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02030",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02030",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 6,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02030",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02030",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "锻造重击",
+      "scalable": true
+    },
+    {
+      "action_group": "AG02040",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG02040",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "力量",
+      "scalable": false
+    },
+    {
+      "action_group": "AG02040",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 5,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "背刺",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03010",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG03010",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03020",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 7,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03020",
+      "action_idx": 1,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03020",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "邪能重斩",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03030",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG03030",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 6,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03030",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG03030",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 7,
+      "description": "暗影箭",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03040",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG03040",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG03040",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "凋零打击",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04010",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04010",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04010",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04010",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "圣光裁决",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04020",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG04020",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "时光冲击",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04020",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG04030",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04030",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "星辰之箭",
+      "scalable": true
+    },
+    {
+      "action_group": "AG04030",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG04040",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "力量",
+      "scalable": false
+    },
+    {
+      "action_group": "AG04040",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG04040",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 6,
+      "description": "圣光惩击",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "亡灵大军",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90010",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90011",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90011",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90011",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90020",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 11,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90020",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "狂暴撕咬",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90020",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "力量",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90020",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90030",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "寒冰吐息",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90030",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90031",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90031",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90031",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90031",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90040",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 20,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90040",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90040",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "冰锤粉碎",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90040",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90050",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90050",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "烈焰冲击",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90050",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90050",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90060",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "熔岩之怒",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90060",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "诅咒锻造",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90061",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90061",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90061",
+      "action_idx": 2,
+      "type": "DEFEND",
+      "base_value": 16,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90070",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 11,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90070",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "末日审判",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90070",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90070",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90070",
+      "action_idx": 4,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "诅咒注入",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90080",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90080",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90081",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90081",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90081",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "精神鞭笞",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90081",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90090",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 22,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90090",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90090",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "泰坦之锤",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90090",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90100",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "虚空爆裂",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90100",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "诅咒注入",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90101",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 13,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90101",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG90101",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG90101",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91010",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "亡灵风暴",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91010",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91010",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "骸骨之矛",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91010",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "诅咒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91010",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 15,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91011",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91011",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 8,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91011",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91011",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91011",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 15,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91020",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 22,
+      "description": "大地之怒",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91020",
+      "action_idx": 1,
+      "type": "DEFEND",
+      "base_value": 30,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91020",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91020",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91021",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 20,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91021",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91021",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91021",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 15,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91030",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "暴风雪",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91030",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91030",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91030",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "碎裂诅咒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91030",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 16,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91031",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91031",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91031",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91031",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91031",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91040",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 28,
+      "description": "霜之哀伤",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91040",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91040",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91040",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 28,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91041",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91041",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "冻结",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91041",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91041",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91050",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "岩浆之锤",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91050",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91050",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "烈焰之手",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91050",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91051",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91051",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91051",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91051",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91060",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 30,
+      "description": "大灾变",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91060",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 22,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91060",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 4,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91060",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 30,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91061",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91061",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91061",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91061",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "熔岩吐息",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91070",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "暗影之手",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91070",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91070",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "邪能风暴",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91070",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 1,
+      "description": "诅咒注入",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91070",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 16,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91071",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91071",
+      "action_idx": 1,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91071",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 9,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91071",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91071",
+      "action_idx": 4,
+      "type": "DEFEND",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91080",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 28,
+      "description": "黑暗终焉",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91080",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 22,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91080",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91080",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 30,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91081",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 4,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91081",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91081",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91081",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "邪能陨石",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91090",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 18,
+      "description": "泰坦审判",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91090",
+      "action_idx": 1,
+      "type": "DEFEND",
+      "base_value": 22,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91090",
+      "action_idx": 2,
+      "type": "ATTACK",
+      "base_value": 16,
+      "description": "秩序之光",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91090",
+      "action_idx": 3,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "易伤",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91091",
+      "action_idx": 0,
+      "type": "DEFEND",
+      "base_value": 18,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91091",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 10,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91091",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91091",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 12,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91100",
+      "action_idx": 0,
+      "type": "ATTACK",
+      "base_value": 28,
+      "description": "终极之光",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91100",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 22,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91100",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 3,
+      "description": "剧毒",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91100",
+      "action_idx": 3,
+      "type": "DEFEND",
+      "base_value": 30,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91101",
+      "action_idx": 0,
+      "type": "SKILL",
+      "base_value": 4,
+      "description": "灼烧",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91101",
+      "action_idx": 1,
+      "type": "ATTACK",
+      "base_value": 14,
+      "description": "",
+      "scalable": true
+    },
+    {
+      "action_group": "AG91101",
+      "action_idx": 2,
+      "type": "SKILL",
+      "base_value": 2,
+      "description": "虚弱",
+      "scalable": false
+    },
+    {
+      "action_group": "AG91101",
+      "action_idx": 3,
+      "type": "ATTACK",
+      "base_value": 20,
+      "description": "",
+      "scalable": true
+    }
+  ],
+  "quotes": [
+    {
+      "quote_group": "QG0001",
+      "event": "enter",
+      "text": "嘎嘎……新鲜的肉……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "enter",
+      "text": "从坟墓里爬出来了……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "death",
+      "text": "骨头……散了……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "death",
+      "text": "回到……土里……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "attack",
+      "text": "撕！"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "attack",
+      "text": "咬碎你！"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "attack",
+      "text": "嘎嘎嘎！"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "hurt",
+      "text": "嘎！"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "hurt",
+      "text": "腐肉……掉了……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "low_hp",
+      "text": "不……还没吃饱……"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "enter",
+      "text": "嘶嘶……陷阱已经布好了……"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "death",
+      "text": "嘶……蛛卵……会替我……"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "attack",
+      "text": "毒牙！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "attack",
+      "text": "吐丝！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "attack",
+      "text": "缠住你！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "hurt",
+      "text": "嘶！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "hurt",
+      "text": "我的……腿！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "low_hp",
+      "text": "蛛巢……不会忘记你……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "enter",
+      "text": "这片……森林……不欢迎你……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "death",
+      "text": "森林……会记住……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "attack",
+      "text": "根须！"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "attack",
+      "text": "大地之力！"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "hurt",
+      "text": "树皮……裂了……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "low_hp",
+      "text": "我的根……断了……"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "enter",
+      "text": "啊啊啊——！"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "death",
+      "text": "终于……安息了……"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "attack",
+      "text": "尖叫！"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "attack",
+      "text": "死亡之歌！"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "hurt",
+      "text": "（刺耳尖啸）"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "low_hp",
+      "text": "最后……一曲……"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "enter",
+      "text": "呜——月光指引着我……"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "death",
+      "text": "月光……暗了……"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "attack",
+      "text": "狼牙！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "attack",
+      "text": "月光之噬！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "hurt",
+      "text": "嗷！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "low_hp",
+      "text": "月光……给我力量……"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "enter",
+      "text": "吼————！"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "death",
+      "text": "冰……碎了……"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "attack",
+      "text": "砸！"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "attack",
+      "text": "冰拳！"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "attack",
+      "text": "吼！"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "hurt",
+      "text": "吼！疼！"
+    },
+    {
+      "quote_group": "QG0101",
+      "event": "low_hp",
+      "text": "不会……倒下……"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "enter",
+      "text": "冰霜……会冻结一切……"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "death",
+      "text": "冰……碎了……"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "attack",
+      "text": "冰锥！"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "attack",
+      "text": "寒冰箭！"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "hurt",
+      "text": "冰盾……裂了……"
+    },
+    {
+      "quote_group": "QG0102",
+      "event": "low_hp",
+      "text": "暴风雪……最后的咏唱……"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "enter",
+      "text": "（低沉的咆哮）"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "death",
+      "text": "呜……"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "attack",
+      "text": "嗷！"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "attack",
+      "text": "撕咬！"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "attack",
+      "text": "冰牙！"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "hurt",
+      "text": "嗷呜！"
+    },
+    {
+      "quote_group": "QG0103",
+      "event": "low_hp",
+      "text": "群狼……会替我报仇……"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "enter",
+      "text": "（冰晶嘎吱作响）"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "death",
+      "text": "（碎裂成冰块）"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "attack",
+      "text": "碾压！"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "attack",
+      "text": "冰拳！"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "hurt",
+      "text": "裂缝……"
+    },
+    {
+      "quote_group": "QG0104",
+      "event": "low_hp",
+      "text": "还能……守住……"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "enter",
+      "text": "（烈焰从口中喷出）"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "death",
+      "text": "火……灭了……"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "attack",
+      "text": "烈焰！"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "attack",
+      "text": "烧！"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "attack",
+      "text": "吞噬！"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "hurt",
+      "text": "（痛苦嚎叫）"
+    },
+    {
+      "quote_group": "QG0201",
+      "event": "low_hp",
+      "text": "最后……一口火焰……"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "enter",
+      "text": "嘻嘻嘻！又来送死的！"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "death",
+      "text": "嘻……不好玩了……"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "attack",
+      "text": "接火球！"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "attack",
+      "text": "嘻嘻！烫吧！"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "hurt",
+      "text": "哎呀！"
+    },
+    {
+      "quote_group": "QG0202",
+      "event": "low_hp",
+      "text": "不行了……要逃了……才怪！"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "enter",
+      "text": "黑铁之盾，坚不可摧！"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "death",
+      "text": "盾……碎了……"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "attack",
+      "text": "锤击！"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "attack",
+      "text": "黑铁之力！"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "hurt",
+      "text": "叮！"
+    },
+    {
+      "quote_group": "QG0203",
+      "event": "low_hp",
+      "text": "只要……盾还在……就不会倒！"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "enter",
+      "text": "烈焰之灵……降临吧！"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "death",
+      "text": "火灵……离开了我……"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "attack",
+      "text": "烈焰冲击！"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "attack",
+      "text": "焚烧！"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "hurt",
+      "text": "火盾……碎了……"
+    },
+    {
+      "quote_group": "QG0204",
+      "event": "low_hp",
+      "text": "最后的祈祷……"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "enter",
+      "text": "（从阴影中浮现）"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "death",
+      "text": "影子……消散了……"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "attack",
+      "text": "背刺！"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "attack",
+      "text": "影杀！"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "hurt",
+      "text": "嘶……被发现了……"
+    },
+    {
+      "quote_group": "QG0301",
+      "event": "low_hp",
+      "text": "影遁……最后一击……"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "enter",
+      "text": "受主人之命……消灭一切入侵者！"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "death",
+      "text": "主人……恕我……"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "attack",
+      "text": "邪能斩！"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "attack",
+      "text": "毁灭！"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "hurt",
+      "text": "邪能护甲……"
+    },
+    {
+      "quote_group": "QG0302",
+      "event": "low_hp",
+      "text": "主人的力量……赐予我……"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "enter",
+      "text": "邪能……是最强大的力量！"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "death",
+      "text": "不……我的灵魂……"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "attack",
+      "text": "暗影箭！"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "attack",
+      "text": "燃烧吧！"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "hurt",
+      "text": "灵魂石……碎了……"
+    },
+    {
+      "quote_group": "QG0303",
+      "event": "low_hp",
+      "text": "生命分流！"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "enter",
+      "text": "曾经……我也是光明的骑士……"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "death",
+      "text": "光……我又看到了……光……"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "attack",
+      "text": "凋零！"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "attack",
+      "text": "黑暗之力！"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "hurt",
+      "text": "这具身体……已经不怕痛了……"
+    },
+    {
+      "quote_group": "QG0304",
+      "event": "low_hp",
+      "text": "即便倒下……黑暗……也不会消失……"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "enter",
+      "text": "此地……不可侵犯。"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "death",
+      "text": "任务……失败……"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "attack",
+      "text": "裁决！"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "attack",
+      "text": "净化！"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "hurt",
+      "text": "圣光护盾……动摇了……"
+    },
+    {
+      "quote_group": "QG0401",
+      "event": "low_hp",
+      "text": "即使倒下……光明……永不熄灭……"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "enter",
+      "text": "你的时间线……出了偏差……"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "death",
+      "text": "时间线……修复了……"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "attack",
+      "text": "时光逆转！"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "attack",
+      "text": "沙漏之力！"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "hurt",
+      "text": "时间流……紊乱了……"
+    },
+    {
+      "quote_group": "QG0402",
+      "event": "low_hp",
+      "text": "最后的沙粒……"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "enter",
+      "text": "星光……指引我的箭矢……"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "death",
+      "text": "星辰……暗了……"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "attack",
+      "text": "星箭！"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "attack",
+      "text": "穿透！"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "hurt",
+      "text": "嘶……"
+    },
+    {
+      "quote_group": "QG0403",
+      "event": "low_hp",
+      "text": "最后一箭……"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "enter",
+      "text": "泰坦的意志……不容亵渎。"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "death",
+      "text": "泰坦……我……回来了……"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "attack",
+      "text": "惩击！"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "attack",
+      "text": "圣光！"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "hurt",
+      "text": "信仰……不会动摇……"
+    },
+    {
+      "quote_group": "QG0404",
+      "event": "low_hp",
+      "text": "圣光……赐予我……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "enter",
+      "text": "死者……听从我的召唤！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "death",
+      "text": "我的……亡灵们……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "亡灵术！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "腐蚀！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "黑暗吞噬！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "hurt",
+      "text": "骨盾……碎了？"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "low_hp",
+      "text": "用我的骸骨……召唤最后的亡灵！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "enter",
+      "text": "月光之下……狼群为王！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "death",
+      "text": "狼王……倒下了……"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "撕碎！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "狂暴！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "嗷——！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "hurt",
+      "text": "疼痛……让我更愤怒！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "low_hp",
+      "text": "月光……赐予我……"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "enter",
+      "text": "（冰冷的咆哮响彻山谷）"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "death",
+      "text": "（碎裂成无数冰晶）"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "attack",
+      "text": "冰息！"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "attack",
+      "text": "冻住吧！"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "hurt",
+      "text": "龙鳞……裂了？"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "low_hp",
+      "text": "最后的……寒冰吐息……"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "enter",
+      "text": "渺小的生物……敢闯冰封王座？"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "death",
+      "text": "冰……不灭……"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "attack",
+      "text": "碾碎！"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "attack",
+      "text": "冰锤！"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "hurt",
+      "text": "蚊虫叮咬……"
+    },
+    {
+      "quote_group": "QG9004",
+      "event": "low_hp",
+      "text": "冰封王座……不会倒塌！"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "enter",
+      "text": "（从天而降，地面龟裂）"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "death",
+      "text": "烈焰……熄灭了……"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "attack",
+      "text": "烈焰！"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "attack",
+      "text": "毁灭！"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "attack",
+      "text": "焚烧一切！"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "hurt",
+      "text": "石皮……裂了……"
+    },
+    {
+      "quote_group": "QG9005",
+      "event": "low_hp",
+      "text": "最后的爆发……"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "enter",
+      "text": "黑铁议会……判你死刑！"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "death",
+      "text": "议会……散了……"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "attack",
+      "text": "熔岩之怒！"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "attack",
+      "text": "黑铁审判！"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "hurt",
+      "text": "黑铁……不碎！"
+    },
+    {
+      "quote_group": "QG9006",
+      "event": "low_hp",
+      "text": "启动……自毁程序……"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "enter",
+      "text": "末日……已经降临。"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "death",
+      "text": "军团……不灭……"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "attack",
+      "text": "末日审判！"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "attack",
+      "text": "灵魂撕裂！"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "hurt",
+      "text": "邪能护甲……动摇了？"
+    },
+    {
+      "quote_group": "QG9007",
+      "event": "low_hp",
+      "text": "用我的生命……召唤更强大的恶魔！"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "enter",
+      "text": "暗影的低语……你听到了吗？"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "death",
+      "text": "暗影……弥散了……"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "attack",
+      "text": "精神鞭笞！"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "attack",
+      "text": "暗影之触！"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "hurt",
+      "text": "心灵屏障……裂了……"
+    },
+    {
+      "quote_group": "QG9008",
+      "event": "low_hp",
+      "text": "暗影……形态——最终手段！"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "enter",
+      "text": "入侵者检测完毕。启动消灭程序。"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "death",
+      "text": "系统……崩溃……"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "attack",
+      "text": "泰坦之锤！"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "attack",
+      "text": "消灭目标！"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "hurt",
+      "text": "护盾……承受冲击……"
+    },
+    {
+      "quote_group": "QG9009",
+      "event": "low_hp",
+      "text": "核心过载……启动自毁倒计时……"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "enter",
+      "text": "虚空……无处不在……"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "death",
+      "text": "虚空……会记住你……"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "attack",
+      "text": "虚空爆裂！"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "attack",
+      "text": "维度撕裂！"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "hurt",
+      "text": "虚空……波动了……"
+    },
+    {
+      "quote_group": "QG9010",
+      "event": "low_hp",
+      "text": "虚空的全部力量……释放！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "enter",
+      "text": "哈哈哈……又一个活人，送上门来了。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "我的……灵魂宝石……不——！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "attack",
+      "text": "亡灵风暴！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "attack",
+      "text": "骸骨之矛！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "hurt",
+      "text": "灵魂宝石……动摇了……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "low_hp",
+      "text": "灵魂宝石……碎裂吧——！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "enter",
+      "text": "千年……未曾有人……走到这里。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "你……是第一个……砍倒我的人……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "attack",
+      "text": "大地之怒！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "attack",
+      "text": "根须绞杀！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "hurt",
+      "text": "不过是……树皮划痕……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "low_hp",
+      "text": "大地啊……赐予我……最后的力量——！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "enter",
+      "text": "冰封山脉的女王……亲自迎接你。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "（冰雕碎裂）"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "attack",
+      "text": "暴风雪！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "attack",
+      "text": "冰封！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "hurt",
+      "text": "我的冰甲……裂了？"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "low_hp",
+      "text": "冰封……整个世界吧——！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "enter",
+      "text": "跪下……在巫妖王面前。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "永恒的寒冬……终结了？"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "attack",
+      "text": "霜之哀伤！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "attack",
+      "text": "臣服于寒冰！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "不过是……暖风拂面。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "low_hp",
+      "text": "所有人……都将臣服于寒冰王座——！"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "enter",
+      "text": "太早了……你唤醒我太早了！"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "death",
+      "text": "我会……回来的……"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "attack",
+      "text": "岩浆之锤！"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "attack",
+      "text": "烈焰冲击！"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "hurt",
+      "text": "渣渣！你敢伤我？"
+    },
+    {
+      "quote_group": "QG9105",
+      "event": "low_hp",
+      "text": "烈焰……最后的爆发——！"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "enter",
+      "text": "大灾变……来临了！"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "death",
+      "text": "（咆哮着坠入岩浆）"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "attack",
+      "text": "大灾变！"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "attack",
+      "text": "熔岩吐息！"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "hurt",
+      "text": "你伤到了……我的钢铁之躯？"
+    },
+    {
+      "quote_group": "QG9106",
+      "event": "low_hp",
+      "text": "即使我倒下……世界……也已面目全非——！"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "enter",
+      "text": "燃烧军团……势不可挡！"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "death",
+      "text": "我会……在扭曲虚空中……重生！"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "attack",
+      "text": "暗影之手！"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "attack",
+      "text": "邪能风暴！"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "hurt",
+      "text": "你……竟敢？"
+    },
+    {
+      "quote_group": "QG9107",
+      "event": "low_hp",
+      "text": "燃烧吧——！"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "enter",
+      "text": "欺骗者……来了。"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "death",
+      "text": "不可能……欺骗者……怎会被欺骗……"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "attack",
+      "text": "黑暗终焉！"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "attack",
+      "text": "邪能陨石！"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "hurt",
+      "text": "有趣……你确实……有些能耐。"
+    },
+    {
+      "quote_group": "QG9108",
+      "event": "low_hp",
+      "text": "用虚空的全部力量——毁灭这个世界！"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "enter",
+      "text": "泰坦的秩序……不容亵渎。"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "death",
+      "text": "秩序……被打破了……"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "attack",
+      "text": "泰坦审判！"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "attack",
+      "text": "秩序之光！"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "hurt",
+      "text": "损伤……在可控范围内……"
+    },
+    {
+      "quote_group": "QG9109",
+      "event": "low_hp",
+      "text": "启动……最终审判协议——！"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "enter",
+      "text": "永恒……在此。渺小的骰子掷者，你的终点……就是今天。"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "death",
+      "text": "你……究竟……是什么？"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "attack",
+      "text": "终极之光！"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "attack",
+      "text": "永恒之力，碾碎你！"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "hurt",
+      "text": "哼……有点意思。"
+    },
+    {
+      "quote_group": "QG9110",
+      "event": "low_hp",
+      "text": "永恒……动摇了……但我绝不会……就此终结！终极之光——爆发！"
+    }
+  ]
+}

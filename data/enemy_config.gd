@@ -64,10 +64,19 @@ class EnemyQuotes:
 ## 所有敌人配置注册表
 ## ============================================================
 
+# 开关：true=从 Excel → JSON 加载，false=走硬编码构建
+const USE_JSON_CONFIG: bool = true
+
 static var _all_configs: Dictionary = {}
 
 static func _static_init() -> void:
-	_build_all_configs()
+	if USE_JSON_CONFIG:
+		_all_configs = ConfigLoader.load_enemy_configs()
+		if _all_configs.is_empty():
+			push_warning("[EnemyConfig] JSON 加载失败，fallback 到硬编码")
+			_build_all_configs()
+	else:
+		_build_all_configs()
 
 static func get_config(id: String) -> EnemyConfig:
 	if _all_configs.has(id):

@@ -3,6 +3,9 @@
 
 extends Node
 
+# 开关：true=从 Excel → JSON 加载（推荐），false=走下面的硬编码注册函数
+const USE_JSON_CONFIG: bool = true
+
 # ============================================================
 # 骰子定义注册表
 # ============================================================
@@ -10,13 +13,25 @@ extends Node
 var _dice_defs: Dictionary = {}
 var _relic_defs: Dictionary = {}
 
-
 func _ready() -> void:
-	_register_base_dice()
-	_register_warrior_dice()
-	_register_mage_dice()
-	_register_rogue_dice()
-	_register_relics()
+	if USE_JSON_CONFIG:
+		_dice_defs = ConfigLoader.load_dice_defs()
+		_relic_defs = ConfigLoader.load_relic_defs()
+		if _dice_defs.is_empty():
+			push_warning("[GameData] JSON 加载失败，fallback 到硬编码注册")
+			_register_base_dice()
+			_register_warrior_dice()
+			_register_mage_dice()
+			_register_rogue_dice()
+		if _relic_defs.is_empty():
+			_register_relics()
+	else:
+		_register_base_dice()
+		_register_warrior_dice()
+		_register_mage_dice()
+		_register_rogue_dice()
+		_register_relics()
+	print("[GameData] dice=%d relics=%d (json=%s)" % [_dice_defs.size(), _relic_defs.size(), str(USE_JSON_CONFIG)])
 
 
 ## 获取骰子定义
