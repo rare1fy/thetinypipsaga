@@ -10,11 +10,16 @@ var _map_nodes: Array = []
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
+	# Godot 版 main.gd 采用"每次切场景 free + instantiate"模式，
+	# 进入时当前 phase 就已经是 MAP，phase_changed 不会再触发 → 必须手动兜底生成。
+	if GameManager.phase == GameTypes.GamePhase.MAP and _map_nodes.is_empty():
+		_generate_map()
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
-	visible = new_phase == GameTypes.GamePhase.MAP
-	if visible and _map_nodes.is_empty():
+	# 保留此信号回调以兼容"未来不走 free/instantiate"的切换方式；
+	# 当前 main.gd 走销毁重建，此处实际不会触发。
+	if new_phase == GameTypes.GamePhase.MAP and _map_nodes.is_empty():
 		_generate_map()
 
 
@@ -83,8 +88,7 @@ func _on_node_clicked(node) -> void:
 	# 进入对应场景
 	match node.type:
 		GameTypes.NodeType.ENEMY, GameTypes.NodeType.ELITE, GameTypes.NodeType.BOSS:
-			GameManager.set_phase(GameTypes.GamePhase.BATTLE)
-			# 生成波次数据
+			# 先生成波次数据写入 GameManager.pending_wave，内部再切 BATTLE phase
 			_spawn_battle(node.type)
 		GameTypes.NodeType.CAMPFIRE:
 			GameManager.set_phase(GameTypes.GamePhase.CAMPFIRE)
@@ -117,9 +121,9 @@ func _spawn_battle(node_type: GameTypes.NodeType) -> void:
 			if bosses.size() > 0:
 				wave_ids.append(bosses[randi() % bosses.size()].id)
 	
-	# 通知战斗场景
+	# 先写入 GameManager 再切 phase，保证 BattleScene 实例化时能读到波次
+	GameManager.pending_wave = wave_ids
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
-	# 战斗场景通过信号接收波次数据
 
 
 static func _node_type_short(type: GameTypes.NodeType) -> String:

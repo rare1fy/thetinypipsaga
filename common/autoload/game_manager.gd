@@ -47,6 +47,9 @@ var locked_element: String = ""       ## 棱镜锁定元素
 var last_play_hand_type: String = ""   ## 盗贼上次出牌牌型
 var warrior_rage_mult: float = 0.0    ## 战士狂暴倍率
 
+# 地图 → 战斗 数据桥（MapScreen 写入，BattleScene 读取消费）
+var pending_wave: Array[String] = []
+
 # 骰子库系统
 var owned_dice: Array[Dictionary] = []   ## [{defId, level}]
 var dice_bag: Array[String] = []         ## 骰子库（待抽）

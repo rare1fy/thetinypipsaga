@@ -37,6 +37,8 @@ const EVENTS: Array[Dictionary] = [
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
+	# 兜底：main.gd 走销毁重建，进场景时 phase 已就位，手动触发一次内容生成
+	_on_phase_changed(GameManager.phase)
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:

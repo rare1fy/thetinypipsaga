@@ -43,6 +43,11 @@ func _ready() -> void:
 	EventBus.screen_shake.connect(_on_screen_shake)
 	EventBus.enemy_damaged.connect(_on_enemy_damaged)
 	EventBus.enemy_died.connect(_on_enemy_died)
+	
+	# 消费 MapScreen 写入的波次（main.gd 走销毁重建，start_battle 必须由场景自己触发）
+	if not GameManager.pending_wave.is_empty():
+		start_battle(GameManager.pending_wave)
+		GameManager.pending_wave = []
 
 
 func start_battle(wave_data: Array) -> void:
