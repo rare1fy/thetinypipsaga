@@ -45,6 +45,10 @@ project/assembly_name="Dice Hero"
 
 class_name_hash={}
 
+[gui]
+
+theme/custom="res://data/pixel_theme.tres"
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true

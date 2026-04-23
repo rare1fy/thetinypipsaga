@@ -1,11 +1,7 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://fonts/AaWeiWeiDianZhenTi-2.ttf" id="1_pixel_font"]
 
 [resource]
-## 全局像素风主题 — 暗黑地牢色调
-## 引用 Fusion Pixel 字体 + 地牢色板
-
 default_font = ExtResource("1_pixel_font")
-default_font_size = 12
-
-[resource]
-# 字体、颜色等将在 Godot 编辑器中进一步配置
+default_font_size = 14
