@@ -14,7 +14,7 @@ static func execute_enemy_turn(game: Node, enemies: Array[EnemyInstance], _dice:
 	game.is_enemy_turn = true
 	
 	# 1. 玩家中毒结算
-	var poison := game.get_status_value(GameTypes.StatusType.POISON)
+	var poison: int = game.get_status_value(GameTypes.StatusType.POISON)
 	if poison > 0:
 		game.take_damage(poison)
 		game.add_status(GameTypes.StatusType.POISON, poison - 1, 1)  # 递减
@@ -76,7 +76,7 @@ static func execute_enemy_turn(game: Node, enemies: Array[EnemyInstance], _dice:
 	game.is_enemy_turn = false
 	
 	# 灼烧结算
-	var burn := game.get_status_value(GameTypes.StatusType.BURN)
+	var burn: int = game.get_status_value(GameTypes.StatusType.BURN)
 	if burn > 0:
 		game.take_damage(burn)
 		# 灼烧一次性

@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Dice Hero"
+config/name="TheTiny-pipSaga"
 config/description="竖屏 Roguelike 骰子构筑游戏 - Godot 版"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
@@ -23,14 +23,24 @@ EventBus="*res://common/autoload/event_bus.gd"
 SoundPlayer="*res://common/autoload/sound_player.gd"
 GameData="*res://common/autoload/game_data.gd"
 
+[debug]
+
+file_logging/enable_file_logging=true
+gdscript/warnings/unused_signal=0
+gdscript/warnings/shadowed_variable=0
+gdscript/warnings/shadowed_variable_base_class=0
+
 [display]
 
 window/size/viewport_width=360
 window/size/viewport_height=640
 window/size/mode=2
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 window/handheld/orientation=1
+
+[dotnet]
+
+project/assembly_name="Dice Hero"
 
 [global]
 

@@ -24,9 +24,9 @@ static func shake(node: Node, intensity: float = 8.0, duration: float = 0.3, dec
 ## 全向震动 — Boss出场/大伤害
 static func shake_heavy(node: Node, intensity: float = 12.0, duration: float = 0.5) -> void:
 	var tween := node.create_tween()
-	var offsets := [Vector2(-3, 4), Vector2(4, -3), Vector2(-2, 2), Vector2(3, -1), Vector2(0, 0)]
+	var offsets: Array[Vector2] = [Vector2(-3, 4), Vector2(4, -3), Vector2(-2, 2), Vector2(3, -1), Vector2(0, 0)]
 	for offset in offsets:
-		var scaled := offset * (intensity / 10.0)
+		var scaled: Vector2 = offset * (intensity / 10.0)
 		tween.tween_property(node, "position", node.position + scaled, duration / offsets.size())
 	tween.tween_property(node, "position", node.position, duration / offsets.size())
 
@@ -206,7 +206,7 @@ static func selected_pulse(control: Control, color: Color = Color.YELLOW, period
 static func poison_pulse(control: Control, period: float = 1.2) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(0.7, 0.3, 1.0), period * 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.7).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.7).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -214,7 +214,7 @@ static func poison_pulse(control: Control, period: float = 1.2) -> Tween:
 static func burn_edge(control: Control, period: float = 1.0) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(1.2, 0.7, 0.3), period * 0.2).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.8).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.8).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -222,7 +222,7 @@ static func burn_edge(control: Control, period: float = 1.0) -> Tween:
 static func heal_glow(control: Control, duration: float = 0.8) -> void:
 	var tween := control.create_tween()
 	tween.tween_property(control, "modulate", Color(0.5, 1.2, 0.5), duration * 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, duration * 0.7).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, duration * 0.7).set_trans(Tween.TRANS_SINE)
 
 
 ## ==========================================
@@ -302,7 +302,7 @@ static func warning_flash(control: Control, count: int = 3, period: float = 0.5)
 static func fire_glow(control: Control, period: float = 1.5) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(1.3, 0.8, 0.3), period * 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.7).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.7).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -310,7 +310,7 @@ static func fire_glow(control: Control, period: float = 1.5) -> Tween:
 static func ice_sparkle(control: Control, period: float = 2.0) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(0.7, 0.9, 1.3), period * 0.2).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.8).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.8).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -318,14 +318,14 @@ static func ice_sparkle(control: Control, period: float = 2.0) -> Tween:
 static func thunder_flash(control: Control) -> void:
 	control.modulate = Color(1.5, 1.5, 0.5)
 	var tween := control.create_tween()
-	tween.tween_property(control, "modulate", Color.ONE, 0.1)
+	tween.tween_property(control, "modulate", Color.WHITE, 0.1)
 
 
 ## 暗影脉动
 static func shadow_pulse(control: Control, period: float = 1.8) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(0.5, 0.3, 0.8), period * 0.4).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.6).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.6).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -333,7 +333,7 @@ static func shadow_pulse(control: Control, period: float = 1.8) -> Tween:
 static func holy_pulse(control: Control, period: float = 2.0) -> Tween:
 	var tween := control.create_tween().set_loops()
 	tween.tween_property(control, "modulate", Color(1.2, 1.2, 0.8), period * 0.3).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(control, "modulate", Color.ONE, period * 0.7).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(control, "modulate", Color.WHITE, period * 0.7).set_trans(Tween.TRANS_SINE)
 	return tween
 
 
@@ -469,10 +469,11 @@ static func firefly_float(control: Control, period: float = 4.0, amplitude: floa
 ## ==========================================
 
 ## 停止节点上所有 Tween
-static func stop_all(node: Node) -> void:
-	for child in node.get_children():
-		if child is Tween:
-			child.kill()
+## 注意：Godot 4 的 Tween 是 RefCounted，不会成为节点的 child。
+## 如需停止 Tween，调用方应自行持有 Tween 引用并调用 tween.kill()。
+## 这里保留函数仅为 API 兼容，实际什么都不做。
+static func stop_all(_node: Node) -> void:
+	pass
 
 ## 安全移除节点（先淡出再删除）
 static func safe_remove(control: Control, duration: float = 0.2) -> void:

@@ -21,7 +21,7 @@ static func get_effective_attack_dmg(enemy: EnemyInstance, player_statuses: Arra
 	var val := enemy.attack_dmg
 	
 	# 1. combatType 乘数
-	var combat_str := GameTypes.EnemyCombatType.keys()[enemy.combat_type].to_lower()
+	var combat_str: String = GameTypes.EnemyCombatType.keys()[enemy.combat_type].to_lower()
 	if combat_str == "warrior":
 		val = int(val * ENEMY_ATTACK_MULT.warrior)
 	if combat_str == "ranger":

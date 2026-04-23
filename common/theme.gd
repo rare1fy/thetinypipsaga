@@ -1,7 +1,7 @@
 ## 像素风主题配色 — 从原版 index.css CSS变量移植
 ## 暗黑地牢 8-Bit 像素风调色板
 
-class_name Theme
+class_name PixelTheme
 
 ## 地牢基调
 const DUNGEON_BG := Color("#0a0908")

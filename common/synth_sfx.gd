@@ -481,7 +481,7 @@ static func _find_free_player_and_play(stream: AudioStreamGenerator, data: Packe
 	var sp := _get_sound_player()
 	if not sp:
 		return
-	var player := sp._get_next_sfx_player()
+	var player: AudioStreamPlayer = sp._get_next_sfx_player()
 	if not player:
 		return
 	player.stream = stream

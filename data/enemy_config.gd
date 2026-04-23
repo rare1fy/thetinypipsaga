@@ -249,7 +249,7 @@ static func _build_all_configs() -> void:
 
 ## === 辅助构造函数 ===
 
-static func _register(id: String, name: String, chapter: int, base_hp: int, base_dmg: int, category: EnemyCategory, combat_type: int, drop_gold: int, phases: Array, quotes: EnemyQuotes, drop_relic: bool = false, drop_reroll: int = 0) -> void:
+static func _register(id: String, name: String, chapter: int, base_hp: int, base_dmg: int, category: EnemyCategory, combat_type: GameTypes.EnemyCombatType, drop_gold: int, phases: Array[EnemyPhase], quotes: EnemyQuotes, drop_relic: bool = false, drop_reroll: int = 0) -> void:
 	var c := EnemyConfig.new()
 	c.id = id; c.name = name; c.chapter = chapter; c.base_hp = base_hp; c.base_dmg = base_dmg
 	c.category = category; c.combat_type = combat_type; c.drop_gold = drop_gold
@@ -257,7 +257,7 @@ static func _register(id: String, name: String, chapter: int, base_hp: int, base
 	c.phases = phases; c.quotes = quotes
 	_all_configs[id] = c
 
-static func _phase(hp_threshold: float, actions: Array) -> EnemyPhase:
+static func _phase(hp_threshold: float, actions: Array[EnemyAction]) -> EnemyPhase:
 	var p := EnemyPhase.new()
 	p.hp_threshold = hp_threshold; p.actions = actions
 	return p
@@ -267,7 +267,7 @@ static func _action(type: int, base_value: int, description: String = "", scalab
 	a.type = type; a.base_value = base_value; a.description = description; a.scalable = scalable
 	return a
 
-static func _quotes(enter: Array, death: Array, attack: Array, hurt: Array, low_hp: Array) -> EnemyQuotes:
+static func _quotes(enter: Array[String], death: Array[String], attack: Array[String], hurt: Array[String], low_hp: Array[String]) -> EnemyQuotes:
 	var q := EnemyQuotes.new()
 	q.enter = enter; q.death = death; q.attack = attack; q.hurt = hurt; q.low_hp = low_hp
 	return q
