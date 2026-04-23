@@ -1,0 +1,41 @@
+# Godot 4+ 官方推荐忽略清单
+# https://github.com/github/gitignore/blob/main/Godot.gitignore
+
+# Godot 4+ 特定的忽略规则
+.godot/
+/android/
+
+# Godot 4+: 导入产物与编辑器临时文件
+*.translation
+
+# 编辑器用户配置
+*.cfg.user
+editor_settings-*.tres
+
+# 构建产物
+/build/
+/bin/
+/export/
+*.pck
+*.zip
+*.apk
+*.exe
+*.dmg
+*.app
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志与临时文件
+*.log
+*.tmp
+*.bak

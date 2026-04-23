@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/campfire/campfire_screen.gd" id="1"]
+
+[node name="CampfireScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.04, 0.02, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 30.0
+offset_right = -16.0
+offset_bottom = -30.0
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.7, 0.2, 1)
+text = "营火"
+horizontal_alignment = 1
+
+[node name="HealLabel" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "休息可恢复 40 HP"
+
+[node name="RestBtn" type="Button" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "休息"
+
+[node name="HSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="UpgradeTitle" type="Label" parent="VBox"]
+layout_mode = 2
+text = "升级遗物:"
+
+[node name="RelicList" type="VBoxContainer" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackBtn" type="Button" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回地图"
