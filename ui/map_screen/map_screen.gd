@@ -33,14 +33,14 @@ func _refresh_map_ui() -> void:
 	for child in map_container.get_children():
 		child.queue_free()
 	
-	# 按层显示
+	# 按层显示（自下而上：depth 最大的在最上方，玩家从屏幕底部向上推进）
 	var layers: Dictionary = {}
 	for node in _map_nodes:
 		if not layers.has(node.depth):
 			layers[node.depth] = []
 		layers[node.depth].append(node)
 	
-	for depth in range(15):
+	for depth in range(14, -1, -1):
 		if not layers.has(depth):
 			continue
 		var hbox := HBoxContainer.new()
@@ -76,8 +76,10 @@ func _refresh_map_ui() -> void:
 
 func _on_node_clicked(node) -> void:
 	if not node.available:
+		print("[MAP] 节点不可用，忽略点击: ", node.id)
 		return
 	
+	print("[MAP] 点击节点: id=%s depth=%d type=%s" % [node.id, node.depth, GameTypes.NodeType.keys()[node.type]])
 	SoundPlayer.play_sound("click")
 	MapGenerator.visit_node(_map_nodes, node.id)
 	GameManager.current_node = node.depth
@@ -89,14 +91,19 @@ func _on_node_clicked(node) -> void:
 	match node.type:
 		GameTypes.NodeType.ENEMY, GameTypes.NodeType.ELITE, GameTypes.NodeType.BOSS:
 			# 先生成波次数据写入 GameManager.pending_wave，内部再切 BATTLE phase
+			print("[MAP] 触发战斗路径 (_spawn_battle)")
 			_spawn_battle(node.type)
 		GameTypes.NodeType.CAMPFIRE:
+			print("[MAP] 切换 CAMPFIRE")
 			GameManager.set_phase(GameTypes.GamePhase.CAMPFIRE)
 		GameTypes.NodeType.MERCHANT:
+			print("[MAP] 切换 MERCHANT")
 			GameManager.set_phase(GameTypes.GamePhase.MERCHANT)
 		GameTypes.NodeType.EVENT:
+			print("[MAP] 切换 EVENT")
 			GameManager.set_phase(GameTypes.GamePhase.EVENT)
 		GameTypes.NodeType.TREASURE:
+			print("[MAP] 切换 TREASURE")
 			GameManager.set_phase(GameTypes.GamePhase.TREASURE)
 	
 	_refresh_map_ui()
@@ -123,6 +130,9 @@ func _spawn_battle(node_type: GameTypes.NodeType) -> void:
 	
 	# 先写入 GameManager 再切 phase，保证 BattleScene 实例化时能读到波次
 	GameManager.pending_wave = wave_ids
+	print("[MAP] _spawn_battle: type=%s wave_ids=%s chapter=%d" % [battle_type, str(wave_ids), GameManager.chapter])
+	if wave_ids.is_empty():
+		push_warning("[MAP] wave_ids 为空，EnemyConfig 可能没返回数据，章节 %d 类型 %s" % [GameManager.chapter, battle_type])
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
 
 

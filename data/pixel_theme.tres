@@ -1,7 +1,11 @@
-[gd_resource type="Theme" load_steps=2 format=3]
+[gd_resource type="Theme" load_steps=3 format=3]
 
-[ext_resource type="FontFile" path="res://fonts/AaWeiWeiDianZhenTi-2.ttf" id="1_pixel_font"]
+[ext_resource type="FontFile" path="res://fonts/fusion-pixel-12px-monospaced-zh_hans.woff2" id="1_body_font"]
+[ext_resource type="FontFile" path="res://fonts/AaWeiWeiDianZhenTi-2.ttf" id="2_title_font"]
 
 [resource]
-default_font = ExtResource("1_pixel_font")
-default_font_size = 14
+default_font = ExtResource("1_body_font")
+default_font_size = 20
+TitleLabel/base_type = &"Label"
+TitleLabel/fonts/font = ExtResource("2_title_font")
+TitleLabel/font_sizes/font_size = 32
