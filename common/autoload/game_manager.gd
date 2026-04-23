@@ -132,8 +132,11 @@ func start_run(class_id: String) -> void:
 	hand_dice = []
 	
 	# 初始化骰子库
-	owned_dice = class_def.initial_dice.map(func(id): return {"defId": id, "level": 1})
-	dice_bag = _shuffle(class_def.initial_dice.duplicate())
+	owned_dice.clear()
+	for dice_id in class_def.initial_dice:
+		owned_dice.append({"defId": dice_id, "level": 1})
+	var initial_dice_copy: Array[String] = class_def.initial_dice.duplicate()
+	dice_bag = _shuffle(initial_dice_copy)
 	discard_pile = []
 	
 	# 初始化地图
@@ -160,9 +163,9 @@ func set_phase(new_phase: GameTypes.GamePhase) -> void:
 # 骰子库操作
 # ============================================================
 
-## Fisher-Yates 洗牌
-func _shuffle(arr: Array) -> Array:
-	var result := arr.duplicate()
+## Fisher-Yates 洗牌（当前仅用于骰子库，返回 Array[String]）
+func _shuffle(arr: Array[String]) -> Array[String]:
+	var result: Array[String] = arr.duplicate()
 	for i in range(result.size() - 1, 0, -1):
 		var j = randi() % (i + 1)
 		var tmp = result[i]
@@ -173,17 +176,19 @@ func _shuffle(arr: Array) -> Array:
 
 ## 从骰子库抽取骰子
 func draw_from_bag(count: int) -> Dictionary:
-	var bag := dice_bag.duplicate()
-	var discard := discard_pile.duplicate()
+	var bag: Array[String] = dice_bag.duplicate()
+	var discard: Array[String] = discard_pile.duplicate()
 	var shuffled := false
 	
 	if bag.size() < count:
-		bag = bag + _shuffle(discard)
+		bag.append_array(_shuffle(discard))
 		discard = []
 		shuffled = true
 	
 	var drawn_ids := bag.slice(0, count)
-	bag = bag.slice(count)
+	var remaining: Array[String] = []
+	remaining.assign(bag.slice(count))
+	bag = remaining
 	
 	var drawn: Array[Dictionary] = []
 	for def_id in drawn_ids:
@@ -227,7 +232,9 @@ func discard_hand_dice(dice_ids: Array[String]) -> void:
 
 ## 初始化骰子库
 func init_dice_bag() -> void:
-	var ids := owned_dice.map(func(d): return d.defId)
+	var ids: Array[String] = []
+	for d in owned_dice:
+		ids.append(d.defId)
 	dice_bag = _shuffle(ids)
 	discard_pile = []
 
@@ -303,12 +310,17 @@ func execute_draw_phase() -> void:
 		else:
 			# 吟唱 → 保留手牌
 			var hand_limit = mini(6, draw_count + charge_stacks)
-			kept_dice = hand_dice.filter(func(d): return not d.spent)
+			kept_dice.clear()
+			for d in hand_dice:
+				if not d.spent:
+					kept_dice.append(d)
 			if kept_dice.size() > hand_limit:
 				var excess = kept_dice.slice(0, kept_dice.size() - hand_limit)
 				for d in excess:
 					discard_ids.append(d.defId)
-				kept_dice = kept_dice.slice(kept_dice.size() - hand_limit)
+				var trimmed: Array[Dictionary] = []
+				trimmed.assign(kept_dice.slice(kept_dice.size() - hand_limit))
+				kept_dice = trimmed
 	elif player_class == "rogue":
 		# 持久暗影残骰保留，临时销毁
 		for d in hand_dice:
