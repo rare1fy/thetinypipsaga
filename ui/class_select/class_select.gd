@@ -21,12 +21,13 @@ func _ready() -> void:
 	mage_btn.mouse_entered.connect(func(): _show_class_info("mage"))
 	rogue_btn.mouse_entered.connect(func(): _show_class_info("rogue"))
 	
-	# 弹入动画
-	VFX.pop_in(warrior_btn, 0.4, 0.1)
-	VFX.pop_in(mage_btn, 0.4, 0.2)
-	VFX.pop_in(rogue_btn, 0.4, 0.3)
-	VFX.slide_in_from_bottom(desc_label, 20.0, 0.3, 0.3)
-	VFX.slide_in_from_bottom(skill_label, 20.0, 0.3, 0.4)
+	# 进场动画：Container 子节点禁用 scale/position tween，只做 modulate 淡入
+	# 避免与 HBoxContainer/VBoxContainer 的自动布局冲突导致遮挡和按钮失效
+	VFX.fade_in(warrior_btn, 0.4, 0.1)
+	VFX.fade_in(mage_btn, 0.4, 0.2)
+	VFX.fade_in(rogue_btn, 0.4, 0.3)
+	VFX.fade_in(desc_label, 0.3, 0.3)
+	VFX.fade_in(skill_label, 0.3, 0.4)
 	
 	_show_class_info("warrior")
 
