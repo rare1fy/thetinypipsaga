@@ -1,7 +1,6 @@
 ## 职业选择画面
 
-extends Control
-
+extends Node2D
 signal class_selected(class_id: String)
 
 @onready var warrior_btn: Button = %WarriorBtn

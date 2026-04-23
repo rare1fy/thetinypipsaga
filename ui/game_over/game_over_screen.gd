@@ -1,7 +1,6 @@
 ## 游戏结束画面
 
-extends Control
-
+extends Node2D
 @onready var stats_label: RichTextLabel = %StatsLabel
 @onready var retry_btn: Button = %RetryBtn
 

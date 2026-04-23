@@ -1,7 +1,6 @@
 ## 骰子奖励选择界面
 
-extends Control
-
+extends Node2D
 @onready var dice_container: VBoxContainer = %DiceContainer
 @onready var skip_btn: Button = %SkipBtn
 

@@ -1,7 +1,7 @@
 ## 胜利画面
 
-extends Control
-
+extends Node2D
+@onready var ui_root: Control = %Root
 @onready var stats_label: RichTextLabel = %StatsLabel
 @onready var restart_btn: Button = %RestartBtn
 
@@ -19,7 +19,7 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 		_show_stats()
 		# 胜利特效
 		VFX.pop_in(stats_label, 0.5)
-		VFX.victory_burst(self, size * 0.5, 25)
+		VFX.victory_burst(ui_root, ui_root.size * 0.5, 25)
 		VFX.pop_in(restart_btn, 0.4, 0.5)
 
 

@@ -1,7 +1,6 @@
 ## 事件界面 — 随机事件选择
 
-extends Control
-
+extends Node2D
 @onready var event_label: RichTextLabel = %EventLabel
 @onready var choice_container: VBoxContainer = %ChoiceContainer
 

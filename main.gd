@@ -4,7 +4,7 @@
 extends Control
 
 var _scenes: Dictionary = {}
-var _current_scene: Control = null
+var _current_scene: Node = null
 var _transitioning: bool = false
 
 ## 过渡遮罩层（全屏 ColorRect，用于淡入淡出）
@@ -24,13 +24,13 @@ func _ready() -> void:
 	
 	# 预加载所有场景
 	_scenes = {
-		GameTypes.GamePhase.START: preload("res://ui/start_screen/start_screen.tscn"),
-		GameTypes.GamePhase.CLASS_SELECT: preload("res://ui/class_select/class_select.tscn"),
-		GameTypes.GamePhase.MAP: preload("res://ui/map_screen/map_screen.tscn"),
-		GameTypes.GamePhase.BATTLE: preload("res://ui/battle/battle_scene.tscn"),
-		GameTypes.GamePhase.MERCHANT: preload("res://ui/merchant/merchant_screen.tscn"),
-		GameTypes.GamePhase.CAMPFIRE: preload("res://ui/campfire/campfire_screen.tscn"),
-		GameTypes.GamePhase.EVENT: preload("res://ui/event/event_screen.tscn"),
+		GameTypes.GamePhase.START: preload("res://gameplay/start/start_screen.tscn"),
+		GameTypes.GamePhase.CLASS_SELECT: preload("res://gameplay/class_select/class_select.tscn"),
+		GameTypes.GamePhase.MAP: preload("res://gameplay/map/map_screen.tscn"),
+		GameTypes.GamePhase.BATTLE: preload("res://gameplay/battle/battle_scene.tscn"),
+		GameTypes.GamePhase.MERCHANT: preload("res://gameplay/merchant/merchant_screen.tscn"),
+		GameTypes.GamePhase.CAMPFIRE: preload("res://gameplay/campfire/campfire_screen.tscn"),
+		GameTypes.GamePhase.EVENT: preload("res://gameplay/event/event_screen.tscn"),
 		GameTypes.GamePhase.LOOT: preload("res://ui/loot/loot_screen.tscn"),
 		GameTypes.GamePhase.DICE_REWARD: preload("res://ui/dice_reward/dice_reward_screen.tscn"),
 		GameTypes.GamePhase.VICTORY: preload("res://ui/victory/victory_screen.tscn"),
@@ -43,7 +43,8 @@ func _ready() -> void:
 	
 	# 初始显示开始画面（无过渡）
 	_instantiate_scene(GameTypes.GamePhase.START)
-	VFX.fade_in(_current_scene, 0.5)
+	if _current_scene is CanvasItem:
+		VFX.fade_in(_current_scene as CanvasItem, 0.5)
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
@@ -97,5 +98,4 @@ func _instantiate_scene(phase: GameTypes.GamePhase) -> void:
 	
 	if scene_packed:
 		_current_scene = scene_packed.instantiate()
-		_current_scene.z_index = 0
 		add_child(_current_scene)

@@ -1,7 +1,6 @@
 ## 商店界面
 
-extends Control
-
+extends Node2D
 @onready var relic_container: VBoxContainer = %RelicContainer
 @onready var gold_label: Label = %GoldLabel
 @onready var remove_btn: Button = %RemoveBtn

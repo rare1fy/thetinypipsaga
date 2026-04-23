@@ -36,7 +36,7 @@ static func shake_heavy(node: Node, intensity: float = 12.0, duration: float = 0
 ## ==========================================
 
 ## 淡入
-static func fade_in(control: Control, duration: float = 0.25, delay: float = 0.0) -> void:
+static func fade_in(control: CanvasItem, duration: float = 0.25, delay: float = 0.0) -> void:
 	control.modulate.a = 0.0
 	control.visible = true
 	var tween := control.create_tween()
@@ -46,7 +46,7 @@ static func fade_in(control: Control, duration: float = 0.25, delay: float = 0.0
 
 
 ## 淡出
-static func fade_out(control: Control, duration: float = 0.25, callback: Callable = Callable()) -> void:
+static func fade_out(control: CanvasItem, duration: float = 0.25, callback: Callable = Callable()) -> void:
 	var tween := control.create_tween()
 	tween.tween_property(control, "modulate:a", 0.0, duration)
 	if callback.is_valid():
@@ -342,7 +342,7 @@ static func holy_pulse(control: Control, period: float = 2.0) -> Tween:
 ## ==========================================
 
 ## 像素粒子爆发 — 在指定位置生成N个方块粒子
-static func pixel_burst(parent: Control, center: Vector2, count: int = 12, colors: Array[Color] = [Color.RED, Color.ORANGE, Color.YELLOW], speed: float = 80.0, life: float = 0.5) -> void:
+static func pixel_burst(parent: Node, center: Vector2, count: int = 12, colors: Array[Color] = [Color.RED, Color.ORANGE, Color.YELLOW], speed: float = 80.0, life: float = 0.5) -> void:
 	for i in count:
 		var p := ColorRect.new()
 		var color := colors[i % colors.size()]
@@ -363,7 +363,7 @@ static func pixel_burst(parent: Control, center: Vector2, count: int = 12, color
 
 
 ## 治疗粒子（绿色上飘）
-static func heal_burst(parent: Control, center: Vector2, count: int = 8) -> void:
+static func heal_burst(parent: Node, center: Vector2, count: int = 8) -> void:
 	var colors: Array[Color] = [Color.GREEN, Color(0.5, 1.0, 0.3), Color(0.3, 0.8, 0.3)]
 	for i in count:
 		var p := ColorRect.new()
@@ -380,7 +380,7 @@ static func heal_burst(parent: Control, center: Vector2, count: int = 8) -> void
 
 
 ## 金币粒子（金色上飘）
-static func coin_burst(parent: Control, center: Vector2, count: int = 6) -> void:
+static func coin_burst(parent: Node, center: Vector2, count: int = 6) -> void:
 	var colors: Array[Color] = [Color(1.0, 0.85, 0.3), Color(1.0, 0.7, 0.2), Color.WHITE]
 	for i in count:
 		var p := ColorRect.new()
@@ -397,7 +397,7 @@ static func coin_burst(parent: Control, center: Vector2, count: int = 6) -> void
 
 
 ## 毒系粒子（紫色下滴）
-static func poison_drip(parent: Control, center: Vector2, count: int = 4) -> void:
+static func poison_drip(parent: Node, center: Vector2, count: int = 4) -> void:
 	for i in count:
 		var p := ColorRect.new()
 		p.color = Color(0.6, 0.2, 0.8)
@@ -415,7 +415,7 @@ static func poison_drip(parent: Control, center: Vector2, count: int = 4) -> voi
 
 
 ## 胜利粒子（多色爆发+重力下落）
-static func victory_burst(parent: Control, center: Vector2, count: int = 15) -> void:
+static func victory_burst(parent: Node, center: Vector2, count: int = 15) -> void:
 	var colors: Array[Color] = [
 		Color(1.0, 0.85, 0.3), Color.RED, Color.CYAN,
 		Color(0.6, 0.2, 0.8), Color.GREEN, Color.WHITE

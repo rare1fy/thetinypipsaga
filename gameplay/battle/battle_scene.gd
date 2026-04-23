@@ -1,9 +1,9 @@
 ## 战斗场景 — 核心游戏循环
 ## 对应原版 DiceHeroGame.tsx，管理战斗UI和交互
 
-extends Control
-
+extends Node2D
 # UI 引用
+@onready var ui_root: Control = %Root
 @onready var hp_bar: ProgressBar = %HpBar
 @onready var hp_label: Label = %HpLabel
 @onready var armor_label: Label = %ArmorLabel
@@ -312,7 +312,7 @@ func _on_battle_victory() -> void:
 	GameManager.stats.battlesWon += 1
 	SoundPlayer.play_sound("victory")
 	# 胜利粒子特效
-	VFX.victory_burst(self, size * 0.5, 20)
+	VFX.victory_burst(ui_root, ui_root.size * 0.5, 20)
 	VFX.shake_heavy(self, 6.0, 0.3)
 	GameManager.set_phase(GameTypes.GamePhase.LOOT)
 
@@ -491,12 +491,12 @@ func _show_floating_text(text: String, color: Color, target: String, _icon: Stri
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var spawn_pos := Vector2(randi_range(80, 280), 200 if target == "player" else 80)
 	label.position = spawn_pos
-	add_child(label)
+	ui_root.add_child(label)
 	
 	VFX.damage_pop(label, 0.25)
 	# 治疗类文字附带绿色粒子
 	if color == Color.GREEN or text.begins_with("+"):
-		VFX.heal_burst(self, spawn_pos, 6)
+		VFX.heal_burst(ui_root, spawn_pos, 6)
 	var tween := create_tween()
 	tween.tween_property(label, "position:y", label.position.y - 50, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.0)
@@ -534,7 +534,7 @@ func _on_enemy_died(enemy_uid: String) -> void:
 	var panel := enemy_container.get_child(idx) as Control
 	if panel:
 		var center := panel.position + panel.size * 0.5
-		VFX.pixel_burst(self, center, 12, [Color.RED, Color.ORANGE, Color.YELLOW])
+		VFX.pixel_burst(ui_root, center, 12, [Color.RED, Color.ORANGE, Color.YELLOW])
 
 
 ## 受击VFX（攻击敌人时内部调用）
@@ -549,7 +549,7 @@ func _hit_enemy_vfx(enemy: EnemyInstance, damage: int) -> void:
 	if damage >= 30:
 		VFX.shake_heavy(self, 8.0, 0.3)
 		SoundPlayer.play_heavy_impact(minf(2.0, damage / 30.0))
-		VFX.pixel_burst(self, panel.position + panel.size * 0.5, 10, [Color.RED, Color.ORANGE, Color.YELLOW])
+		VFX.pixel_burst(ui_root, panel.position + panel.size * 0.5, 10, [Color.RED, Color.ORANGE, Color.YELLOW])
 	else:
 		VFX.shake(self, 4.0, 0.15)
 
@@ -561,7 +561,7 @@ func _apply_enemy_status_vfx(panel: Control, enemy: EnemyInstance) -> void:
 		match s.type:
 			GameTypes.StatusType.POISON:
 				tw = VFX.poison_pulse(panel)
-				VFX.poison_drip(self, panel.position + panel.size * 0.5, 3)
+				VFX.poison_drip(ui_root, panel.position + panel.size * 0.5, 3)
 			GameTypes.StatusType.BURN:
 				tw = VFX.burn_edge(panel)
 		if tw:

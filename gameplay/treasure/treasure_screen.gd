@@ -1,7 +1,7 @@
 ## 宝藏界面
 
-extends Control
-
+extends Node2D
+@onready var ui_root: Control = %Root
 @onready var treasure_label: Label = %TreasureLabel
 @onready var reward_container: VBoxContainer = %RewardContainer
 @onready var take_btn: Button = %TakeBtn
@@ -19,7 +19,7 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 	if visible:
 		_generate_treasure()
 		VFX.pop_in(treasure_label, 0.4)
-		VFX.coin_burst(self, treasure_label.position + treasure_label.size * 0.5, 10)
+		VFX.coin_burst(ui_root, treasure_label.position + treasure_label.size * 0.5, 10)
 		VFX.slide_in_from_bottom(reward_container, 20.0, 0.3, 0.2)
 
 

@@ -1,7 +1,6 @@
 ## 营火界面 — 休息恢复 or 升级遗物
 
-extends Control
-
+extends Node2D
 @onready var rest_btn: Button = %RestBtn
 @onready var heal_label: Label = %HealLabel
 @onready var back_btn: Button = %BackBtn

@@ -1,7 +1,7 @@
 ## 战利品界面
 
-extends Control
-
+extends Node2D
+@onready var ui_root: Control = %Root
 @onready var gold_label: Label = %GoldLabel
 @onready var relic_container: VBoxContainer = %RelicContainer
 @onready var dice_container: VBoxContainer = %DiceContainer
@@ -23,7 +23,7 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 		VFX.pop_in(gold_label, 0.3)
 		VFX.slide_in_from_bottom(relic_container, 25.0, 0.3, 0.15)
 		VFX.slide_in_from_bottom(dice_container, 25.0, 0.3, 0.25)
-		VFX.coin_burst(self, gold_label.position + gold_label.size * 0.5, 8)
+		VFX.coin_burst(ui_root, gold_label.position + gold_label.size * 0.5, 8)
 
 
 func _generate_loot() -> void:

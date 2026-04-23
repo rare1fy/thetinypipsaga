@@ -1,7 +1,6 @@
 ## 地图界面 — 显示地图节点和导航
 
-extends Control
-
+extends Node2D
 @onready var map_container: VBoxContainer = %MapContainer
 @onready var chapter_label: Label = %ChapterLabel
 
