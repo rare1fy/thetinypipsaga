@@ -72,7 +72,7 @@ func _start_new_turn() -> void:
 	_refresh_ui()
 	
 	# 抽骰子
-	GameManager._execute_draw_phase()
+	GameManager.execute_draw_phase()
 	
 	# 遗物触发：回合开始
 	RelicEngine.on_battle_start(GameManager.relics, GameManager)
@@ -87,7 +87,7 @@ func _on_play_pressed() -> void:
 	if GameManager.plays_left <= 0:
 		return
 	
-	SoundPlayer.play_sound("dice_play")
+	SoundPlayer.play_sound("player_attack")
 	
 	# 牌型判定
 	var hand_result := HandEvaluator.check_hands(selected_dice)
@@ -146,14 +146,14 @@ func _on_play_pressed() -> void:
 
 
 func _on_reroll_pressed() -> void:
+	const BLOOD_COST := 3
 	if GameManager.free_rerolls_left > 0:
 		GameManager.free_rerolls_left -= 1
-	elif GameManager.player_class == "warrior" and GameManager.can_blood_reroll:
+	elif GameManager.can_blood_reroll and GameManager.hp > BLOOD_COST:
 		# 卖血重投
 		GameManager.blood_reroll_count += 1
-		var blood_cost := 3
-		GameManager.take_damage(blood_cost)
-		SoundPlayer.play_sound("blood_reroll")
+		GameManager.take_damage(BLOOD_COST)
+		SoundPlayer.play_sound("hit")
 	else:
 		return  # 没有免费重投也没有卖血
 	
@@ -180,7 +180,7 @@ func _on_end_turn_pressed() -> void:
 	if GameManager.is_enemy_turn:
 		return
 	
-	SoundPlayer.play_sound("end_turn")
+	SoundPlayer.play_sound("turn_end")
 	_execute_enemy_turn()
 
 
@@ -219,7 +219,7 @@ func _attack_enemy(enemy: EnemyInstance, damage: int, hand_result: Dictionary) -
 	_hit_enemy_vfx(enemy, damage)
 	
 	_show_floating_text("-%d" % damage, Color.RED, "enemy")
-	SoundPlayer.play_sound("attack")
+	SoundPlayer.play_sound("hit")
 
 
 func _apply_element_effects(enemy: EnemyInstance, hand_result: Dictionary, base_damage: int) -> void:
@@ -426,16 +426,15 @@ func _refresh_enemies_ui() -> void:
 		panel.add_child(vbox)
 		enemy_container.add_child(panel)
 		
-		# 按敌人类型应用呼吸动画
+		# 按敌人战斗类型应用呼吸动画
 		var breathe_tween: Tween = null
-		var e_type: String = e.get("enemy_type", "")
-		match e_type:
-			"warrior", "brute", "boss_warrior":
+		match e.combat_type:
+			GameTypes.EnemyCombatType.WARRIOR:
 				breathe_tween = VFX.breathe_warrior(panel)
-			"caster", "mage", "boss_caster":
-				breathe_tween = VFX.breathe_caster(panel)
-			"guardian", "tank":
+			GameTypes.EnemyCombatType.GUARDIAN:
 				breathe_tween = VFX.breathe_guardian(panel)
+			GameTypes.EnemyCombatType.CASTER, GameTypes.EnemyCombatType.PRIEST:
+				breathe_tween = VFX.breathe_caster(panel)
 			_:
 				breathe_tween = VFX.breathe(panel)
 		if breathe_tween:

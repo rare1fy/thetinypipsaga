@@ -39,6 +39,7 @@ var is_enemy_turn: bool = false
 
 # 职业专属
 var blood_reroll_count: int = 0       ## 战士卖血次数
+var can_blood_reroll: bool = false     ## 是否有卖血资格（从 ClassDef 复制，只有战士为 true）
 var charge_stacks: int = 0            ## 法师蓄力层
 var mage_overcharge_mult: float = 0.0 ## 法师过充倍率
 var combo_count: int = 0              ## 盗贼连击数
@@ -120,6 +121,7 @@ func start_run(class_id: String) -> void:
 	free_rerolls_per_turn = class_def.free_rerolls
 	free_rerolls_left = free_rerolls_per_turn
 	blood_reroll_count = 0
+	can_blood_reroll = class_def.can_blood_reroll
 	charge_stacks = 0
 	mage_overcharge_mult = 0.0
 	combo_count = 0
@@ -282,11 +284,11 @@ func end_player_turn() -> void:
 	_discard_hand()
 	
 	# 抽新骰子
-	_execute_draw_phase()
+	execute_draw_phase()
 
 
 ## 抽牌阶段
-func _execute_draw_phase() -> void:
+func execute_draw_phase() -> void:
 	var kept_dice: Array[Dictionary] = []
 	var discard_ids: Array[String] = []
 	
@@ -355,7 +357,7 @@ func _execute_draw_phase() -> void:
 
 
 func _discard_hand() -> void:
-	# 弃牌逻辑在 _execute_draw_phase 中处理
+	# 弃牌逻辑在 execute_draw_phase 中处理
 	pass
 
 
