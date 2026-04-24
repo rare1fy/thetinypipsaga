@@ -169,9 +169,11 @@ func _on_play_pressed() -> void:
 	_attack_enemy(target, total_damage, hand_result)
 	
 	# 标记已出的骰子
+	var played_defs: Array[String] = []
 	for d in selected_dice:
 		d.spent = true
-		GameManager.discard_pile.append(d.defId)
+		played_defs.append(d.defId)
+	GameManager.discard_hand_dice(played_defs)
 	selected_dice.clear()
 	
 	# 骰子特效（分裂、暗影残骰等）
@@ -249,7 +251,7 @@ func _on_reroll_pressed() -> void:
 			defs_to_discard.append(d.defId)
 	
 	# 2) defId 入弃骰库
-	GameManager.discard_pile.append_array(defs_to_discard)
+	GameManager.discard_hand_dice(defs_to_discard)
 	
 	# 3) 从骰子库抽等量新骰子（draw_from_bag 会在 bag 不够时自动洗 discard）
 	var draw_result: Dictionary = GameManager.draw_from_bag(defs_to_discard.size())

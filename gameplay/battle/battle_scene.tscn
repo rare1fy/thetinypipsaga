@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://k3rief1ge1hd"]
 
-[ext_resource type="Script" path="res://gameplay/battle/battle_scene.gd" id="1"]
+[ext_resource type="Script" uid="uid://cm2inv87j4igv" path="res://gameplay/battle/battle_scene.gd" id="1"]
 
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1")
@@ -22,6 +22,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.06, 0.06, 0.1, 1)
 
 [node name="VBox" type="VBoxContainer" parent="UILayer/Root"]
@@ -33,6 +35,8 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = -8.0
 offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="TopBar" type="HBoxContainer" parent="UILayer/Root/VBox"]
 layout_mode = 2
@@ -48,7 +52,6 @@ text = "HP: 100/100"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 100.0
 value = 100.0
 show_percentage = false
 
@@ -56,7 +59,6 @@ show_percentage = false
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = ""
 
 [node name="GoldLabel" type="Label" parent="UILayer/Root/VBox/TopBar"]
 unique_name_in_owner = true
@@ -78,17 +80,16 @@ alignment = 1
 
 [node name="HandLabel" type="Label" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 28)
-theme_override_font_sizes/font_size = 16
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
-text = ""
+theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
 [node name="DiceContainer" type="HBoxContainer" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
 alignment = 1
 
 [node name="BtnBar" type="HBoxContainer" parent="UILayer/Root/VBox"]
@@ -97,18 +98,18 @@ alignment = 1
 
 [node name="PlayBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
 text = "出牌"
 
 [node name="RerollBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
 text = "重投(1)"
 
 [node name="EndTurnBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
 text = "结束回合"

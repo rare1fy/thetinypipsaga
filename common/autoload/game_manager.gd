@@ -139,7 +139,7 @@ func start_run(class_id: String) -> void:
 	for dice_id in class_def.initial_dice:
 		owned_dice.append({"defId": dice_id, "level": 1})
 	var initial_dice_copy: Array[String] = class_def.initial_dice.duplicate()
-	dice_bag = _shuffle(initial_dice_copy)
+	dice_bag = DiceBagService.shuffle(initial_dice_copy)
 	discard_pile = []
 	
 	# 初始化地图
@@ -163,68 +163,23 @@ func set_phase(new_phase: GameTypes.GamePhase) -> void:
 
 
 # ============================================================
-# 骰子库操作
+# 骰子库操作（thin wrapper → DiceBagService）
 # ============================================================
 
-## Fisher-Yates 洗牌（当前仅用于骰子库，返回 Array[String]）
-func _shuffle(arr: Array[String]) -> Array[String]:
-	var result: Array[String] = arr.duplicate()
-	for i in range(result.size() - 1, 0, -1):
-		var j = randi() % (i + 1)
-		var tmp = result[i]
-		result[i] = result[j]
-		result[j] = tmp
-	return result
-
-
-## 从骰子库抽取骰子
+## 从骰子库抽取 count 个骰子
+## 返回 {drawn: Array[Dictionary], shuffled: bool}（保持旧契约，调用方零改动）
 func draw_from_bag(count: int) -> Dictionary:
-	var bag: Array[String] = dice_bag.duplicate()
-	var discard: Array[String] = discard_pile.duplicate()
-	var shuffled := false
-	
-	if bag.size() < count:
-		bag.append_array(_shuffle(discard))
-		discard = []
-		shuffled = true
-	
-	var drawn_ids := bag.slice(0, count)
-	var remaining: Array[String] = []
-	remaining.assign(bag.slice(count))
-	bag = remaining
-	
-	var drawn: Array[Dictionary] = []
-	for def_id in drawn_ids:
-		var def: DiceDef = GameData.get_dice_def(def_id)
-		var value = _roll_dice_def(def)
-		drawn.append({
-			"id": randi(), "defId": def_id, "value": value,
-			"element": GameTypes.DiceElement.keys()[def.element].to_lower(),
-			"selected": false, "spent": false, "rolling": false,
-			"kept": false, "isShadowRemnant": false, "isTemp": false,
-			"shadowRemnantPersistent": false, "keptBonusAccum": 0,
-		})
-	
-	dice_bag = bag
-	discard_pile = discard
-	
-	if shuffled:
+	var result := DiceBagService.draw_from_bag(dice_bag, discard_pile, count)
+	dice_bag = result.bag
+	discard_pile = result.discard
+	if result.shuffled:
 		toast_requested.emit("弃骰库已洗回骰子库!", "buff")
-	
-	return {"drawn": drawn, "shuffled": shuffled}
-
-
-## 掷骰子定义
-func _roll_dice_def(def: DiceDef) -> int:
-	if def.faces.is_empty():
-		return 1
-	return def.faces[randi() % def.faces.size()]
+	return {"drawn": result.drawn, "shuffled": result.shuffled}
 
 
 ## 重掷单个骰子
 func reroll_die(die: Dictionary) -> int:
-	var def: DiceDef = GameData.get_dice_def(die.defId)
-	return _roll_dice_def(def)
+	return DiceBagService.reroll_die(die)
 
 
 ## 将骰子放入弃骰库
@@ -235,10 +190,7 @@ func discard_hand_dice(dice_ids: Array[String]) -> void:
 
 ## 初始化骰子库
 func init_dice_bag() -> void:
-	var ids: Array[String] = []
-	for d in owned_dice:
-		ids.append(d.defId)
-	dice_bag = _shuffle(ids)
+	dice_bag = DiceBagService.init_bag_from_owned(owned_dice)
 	discard_pile = []
 
 
@@ -432,41 +384,23 @@ func spend_gold(amount: int) -> bool:
 
 
 # ============================================================
-# 状态效果
+# 状态效果（thin wrapper → StatusService）
 # ============================================================
 
 func add_status(type: GameTypes.StatusType, value: int, duration: int) -> void:
-	for s in statuses:
-		if s.type == type:
-			s.value = maxi(s.value, value)
-			s.duration = maxi(s.duration, duration)
-			return
-	var new_status := StatusEffect.new()
-	new_status.type = type
-	new_status.value = value
-	new_status.duration = duration
-	statuses.append(new_status)
+	StatusService.add(statuses, type, value, duration)
 
 
 func has_status(type: GameTypes.StatusType) -> bool:
-	return statuses.any(func(s): return s.type == type and s.duration > 0)
+	return StatusService.has(statuses, type)
 
 
 func get_status_value(type: GameTypes.StatusType) -> int:
-	for s in statuses:
-		if s.type == type:
-			return s.value
-	return 0
+	return StatusService.get_value(statuses, type)
 
 
 func tick_statuses() -> void:
-	var to_remove: Array[int] = []
-	for i in statuses.size():
-		statuses[i].duration -= 1
-		if statuses[i].duration <= 0:
-			to_remove.append(i)
-	for i in range(to_remove.size() - 1, -1, -1):
-		statuses.remove_at(to_remove[i])
+	StatusService.tick(statuses)
 
 
 # ============================================================
