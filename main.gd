@@ -22,6 +22,11 @@ func _ready() -> void:
 	_overlay.modulate.a = 0.0
 	add_child(_overlay)
 	
+	# 挂载 Toast 管理器（监听 GameManager.toast_requested，跨场景全局可用）
+	var toast_layer: ToastManager = ToastManager.new()
+	toast_layer.name = "ToastLayer"
+	add_child(toast_layer)
+	
 	# 预加载所有场景
 	_scenes = {
 		GameTypes.GamePhase.START: preload("res://gameplay/start/start_screen.tscn"),

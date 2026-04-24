@@ -24,12 +24,30 @@ var _battle_active: bool = false
 var _enemy_breath_tweens: Array[Tween] = []
 var _dice_anim_tweens: Array[Tween] = []
 
+# P0.2/P0.3 UI 组件（代码动态创建，避免场景文件侵入）
+var _damage_preview: DamagePreview = null
+var _settlement_player: SettlementPlayer = null
+var _playing_hand: bool = false  # 结算演出期间禁止二次出牌
+
 
 func _ready() -> void:
 	# 连接信号
 	play_btn.pressed.connect(_on_play_pressed)
 	reroll_btn.pressed.connect(_on_reroll_pressed)
 	end_turn_btn.pressed.connect(_on_end_turn_pressed)
+	
+	# 挂载伤害预览面板（放在 HandLabel 上方）
+	_damage_preview = DamagePreview.new()
+	_damage_preview.name = "DamagePreview"
+	_damage_preview.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_damage_preview.position = Vector2(-120, 220)
+	_damage_preview.custom_minimum_size = Vector2(240, 0)
+	ui_root.add_child(_damage_preview)
+	
+	# 挂载结算演出层（独立 CanvasLayer，叠在场景最上层）
+	_settlement_player = SettlementPlayer.new()
+	_settlement_player.name = "SettlementPlayer"
+	add_child(_settlement_player)
 	
 	GameManager.hp_changed.connect(_on_hp_changed)
 	GameManager.armor_changed.connect(_on_armor_changed)
@@ -93,6 +111,10 @@ func _on_play_pressed() -> void:
 	if GameManager.is_enemy_turn:
 		return
 	
+	if _playing_hand:
+		return  # 结算演出期间不响应
+	
+	_playing_hand = true
 	SoundPlayer.play_sound("player_attack")
 	
 	# 牌型判定
@@ -107,19 +129,40 @@ func _on_play_pressed() -> void:
 		if GameManager.last_play_hand_type == hand_result.bestHand and hand_result.bestHand != "普通攻击":
 			bonus_mult += 0.25  # 同牌型再+25%
 	
-	# 计算总伤害
+	# 计算总伤害（注意：get_bonus_damage 会修改 life_furnace counter，只能调一次）
 	var bonus_damage := RelicEngine.get_bonus_damage(GameManager.relics, GameManager)
 	bonus_damage += GameManager.fury_bonus_damage
 	var total_damage := HandEvaluator.calculate_damage(selected_dice, hand_result, bonus_mult, bonus_damage)
 	
-	# 清除临时加成
-	GameManager.rage_fire_bonus = 0
-	GameManager.fury_bonus_damage = 0
-	
-	# 选择目标敌人
+	# 选择目标敌人（演出开始前锁定，避免中途死亡）
 	var target := _get_target_enemy()
 	if not target:
+		_playing_hand = false
 		return
+	
+	# 收集用于演出的数据
+	var dice_values: Array = []
+	for d in selected_dice:
+		dice_values.append(int(d.value))
+	var has_aoe := BattleHelpers.detect_aoe(selected_dice, hand_result)
+	
+	# 隐藏伤害预览（演出期间不再提示）
+	if _damage_preview:
+		_damage_preview.visible = false
+	
+	# 播放结算演出（4 阶段 await）
+	await _settlement_player.play({
+		"hand_name": hand_result.bestHand,
+		"dice_values": dice_values,
+		"bonus_mult": bonus_mult,
+		"bonus_damage": bonus_damage,
+		"total_damage": total_damage,
+		"has_aoe": has_aoe,
+	})
+	
+	# 清除临时加成（演出结束后再清，确保预览时看得到）
+	GameManager.rage_fire_bonus = 0
+	GameManager.fury_bonus_damage = 0
 	
 	# 执行攻击
 	_attack_enemy(target, total_damage, hand_result)
@@ -149,14 +192,21 @@ func _on_play_pressed() -> void:
 	# 检查胜利
 	if enemies.all(func(e): return e.hp <= 0):
 		_on_battle_victory()
+	
+	_playing_hand = false
+
+
+## ========== 以下辅助逻辑抽到 BattleHelpers（A4-DRY）==========
 
 
 func _on_reroll_pressed() -> void:
 	const BLOOD_COST := 3
-	# 入口校验：敌方回合 / 出牌用尽 禁止操作
+	# 入口校验：敌方回合 / 出牌用尽 / 结算演出期间 禁止操作
 	if GameManager.is_enemy_turn:
 		return
 	if GameManager.plays_left <= 0:
+		return
+	if _playing_hand:
 		return
 	
 	# 必须选中至少一个骰子（对齐原版 useReroll.rerollSelected）
@@ -229,12 +279,18 @@ func _on_reroll_pressed() -> void:
 	selected_dice.clear()
 	hand_label.text = ""
 	
+	# 刷新伤害预览（重投后清空）
+	if _damage_preview:
+		_damage_preview.refresh(selected_dice)
+	
 	_refresh_dice_ui()
 	_refresh_ui()
 
 
 func _on_end_turn_pressed() -> void:
 	if GameManager.is_enemy_turn:
+		return
+	if _playing_hand:
 		return
 	
 	SoundPlayer.play_sound("turn_end")
@@ -266,8 +322,8 @@ func _attack_enemy(enemy: EnemyInstance, damage: int, hand_result: Dictionary) -
 	var hp_damage := damage - absorbed
 	enemy.hp = maxi(0, enemy.hp - hp_damage)
 	
-	# 元素效果
-	_apply_element_effects(enemy, hand_result, damage)
+	# 元素效果（抽到 BattleHelpers）
+	BattleHelpers.apply_element_effects(enemy, selected_dice, enemies)
 	
 	# 统计
 	GameManager.record_damage(damage, true)
@@ -279,84 +335,20 @@ func _attack_enemy(enemy: EnemyInstance, damage: int, hand_result: Dictionary) -
 	SoundPlayer.play_sound("hit")
 
 
-func _apply_element_effects(enemy: EnemyInstance, hand_result: Dictionary, base_damage: int) -> void:
-	for d in selected_dice:
-		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
-		match elem:
-			"fire":
-				# 火：摧毁护甲 + 灼烧
-				enemy.armor = 0
-				var burn_val := maxi(1, int(d.value * 0.5))
-				enemy.statuses.append(StatusEffect.new())
-				enemy.statuses[-1].type = GameTypes.StatusType.BURN
-				enemy.statuses[-1].value = burn_val
-				enemy.statuses[-1].duration = 3
-			"ice":
-				# 冰：冻结1回合
-				enemy.statuses.append(StatusEffect.new())
-				enemy.statuses[-1].type = GameTypes.StatusType.FREEZE
-				enemy.statuses[-1].value = 1
-				enemy.statuses[-1].duration = 1
-			"thunder":
-				# 雷：AOE穿透其他敌人
-				for other in enemies:
-					if other.uid != enemy.uid and other.hp > 0:
-						other.hp = maxi(0, other.hp - d.value)
-			"poison":
-				# 毒：叠层
-				enemy.statuses.append(StatusEffect.new())
-				enemy.statuses[-1].type = GameTypes.StatusType.POISON
-				enemy.statuses[-1].value = d.value
-				enemy.statuses[-1].duration = 3
-			"holy":
-				# 圣：回血
-				GameManager.heal(d.value)
-
-
 func _check_enemy_deaths() -> void:
-	for e in enemies:
-		if e.hp <= 0 and e.hp > -9999:
-			# 击杀奖励
-			GameManager.add_gold(e.drop_gold)
-			GameManager.stats.enemiesKilled += 1
-			e.hp = -9999  # 标记已处理
+	BattleHelpers.settle_enemy_deaths(enemies)
 
 
 func _get_target_enemy() -> EnemyInstance:
-	# 优先攻击嘲讽目标
-	if GameManager.target_enemy_uid != "":
-		for e in enemies:
-			if e.uid == GameManager.target_enemy_uid and e.hp > 0:
-				return e
-	# 否则攻击第一个存活的
-	for e in enemies:
-		if e.hp > 0:
-			return e
-	return null
+	return BattleHelpers.pick_target(enemies, GameManager.target_enemy_uid)
 
 
 func _grant_shadow_remnant() -> void:
-	var shadow_die := {
-		"id": randi(), "defId": "temp_rogue", "value": randi_range(1, 3),
-		"element": "normal", "selected": false, "spent": false, "rolling": false,
-		"isShadowRemnant": true, "isTemp": true, "shadowRemnantPersistent": false,
-		"kept": false, "keptBonusAccum": 0,
-	}
-	GameManager.hand_dice.append(shadow_die)
+	GameManager.hand_dice.append(BattleHelpers.make_shadow_remnant())
 
 
 func _process_dice_on_play_effects() -> void:
-	# 分裂骰子、影分身等效果
-	var extra_dice: Array[Dictionary] = []
-	for d in selected_dice:
-		var def: DiceDef = GameData.get_dice_def(d.defId)
-		if def.shadow_clone_play:
-			var clone := d.duplicate()
-			clone.id = randi()
-			clone.spent = true
-			clone.isShadowRemnant = true
-			extra_dice.append(clone)
-	GameManager.hand_dice.append_array(extra_dice)
+	GameManager.hand_dice.append_array(BattleHelpers.compute_dice_on_play_extras(selected_dice))
 
 
 func _on_battle_victory() -> void:
@@ -387,7 +379,7 @@ func _refresh_ui() -> void:
 
 
 func _refresh_dice_ui() -> void:
-	# 停止旧骰子动画
+	# 停止旧骰子动画（DiceButton 本身不起 Tween，清单只做防御）
 	for tw in _dice_anim_tweens:
 		if is_instance_valid(tw):
 			tw.kill()
@@ -399,50 +391,11 @@ func _refresh_dice_ui() -> void:
 	for d in GameManager.hand_dice:
 		if d.spent:
 			continue
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(44, 44)
-		btn.text = str(d.value)
-		btn.tooltip_text = GameData.get_dice_def(d.defId).name
-		
-		if d.selected:
-			btn.modulate = Color(1.0, 1.0, 0.5)
-		if d.rolling:
-			btn.modulate = Color(0.7, 0.7, 1.0)
-			# 骰子滚动动画
-			var roll_tween := VFX.dice_roll(btn)
-			if roll_tween:
-				_dice_anim_tweens.append(roll_tween)
-		
-		# 元素着色 + 持续特效
-		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
-		var elem_tween: Tween = null
-		match elem:
-			"fire":
-				btn.modulate = Color(1.0, 0.5, 0.2)
-				elem_tween = VFX.fire_glow(btn)
-			"ice":
-				btn.modulate = Color(0.3, 0.7, 1.0)
-				elem_tween = VFX.ice_sparkle(btn)
-			"thunder":
-				btn.modulate = Color(1.0, 1.0, 0.3)
-			"poison":
-				btn.modulate = Color(0.4, 1.0, 0.4)
-				elem_tween = VFX.poison_pulse(btn)
-			"holy":
-				btn.modulate = Color(1.0, 1.0, 0.8)
-				elem_tween = VFX.holy_pulse(btn)
-			"shadow":
-				btn.modulate = Color(0.5, 0.3, 0.7)
-				elem_tween = VFX.shadow_pulse(btn)
-		if elem_tween:
-			_dice_anim_tweens.append(elem_tween)
-		
-		# 选中骰子动画
-		if d.selected:
-			VFX.dice_select(btn)
-		
-		btn.pressed.connect(_on_die_clicked.bind(d))
+		var btn: DiceButton = DiceButton.new()
 		dice_container.add_child(btn)
+		btn.setup(d)
+		btn.tooltip_text = GameData.get_dice_def(d.defId).name
+		btn.die_clicked.connect(_on_die_clicked)
 
 
 func _refresh_enemies_ui() -> void:
@@ -504,13 +457,24 @@ func _refresh_enemies_ui() -> void:
 		_apply_enemy_status_vfx(panel, e)
 
 
-func _on_die_clicked(die: Dictionary) -> void:
+func _on_die_clicked(die_id: int) -> void:
 	if GameManager.is_enemy_turn:
 		return
-	if die.spent:
+	if _playing_hand:
 		return
 	if GameManager.plays_left <= 0:
 		GameManager.toast_requested.emit("出牌次数已耗尽", "info")
+		return
+	
+	# 通过 id 定位 GameManager 里真正的骰子引用（DiceButton 只持数据快照）
+	var die: Dictionary = {}
+	for d in GameManager.hand_dice:
+		if int(d.get("id", -1)) == die_id:
+			die = d
+			break
+	if die.is_empty():
+		return
+	if die.spent:
 		return
 	
 	die.selected = not die.selected
@@ -526,6 +490,10 @@ func _on_die_clicked(die: Dictionary) -> void:
 		hand_label.text = hand.bestHand
 	else:
 		hand_label.text = ""
+	
+	# 刷新伤害预览（P0.2）
+	if _damage_preview:
+		_damage_preview.refresh(selected_dice)
 	
 	_refresh_dice_ui()
 	_refresh_ui()
