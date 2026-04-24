@@ -354,7 +354,8 @@ func _refresh_dice_ui() -> void:
 			btn.modulate = Color(0.7, 0.7, 1.0)
 			# 骰子滚动动画
 			var roll_tween := VFX.dice_roll(btn)
-			_dice_anim_tweens.append(roll_tween)
+			if roll_tween:
+				_dice_anim_tweens.append(roll_tween)
 		
 		# 元素着色 + 持续特效
 		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
@@ -495,10 +496,11 @@ func _show_floating_text(text: String, color: Color, target: String, _icon: Stri
 	# 治疗类文字附带绿色粒子
 	if color == Color.GREEN or text.begins_with("+"):
 		VFX.heal_burst(ui_root, spawn_pos, 6)
-	var tween := create_tween()
-	tween.tween_property(label, "position:y", label.position.y - 50, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(label.queue_free)
+	# 动画已全局关闭：静止显示 0.8s 后回收
+	get_tree().create_timer(0.8).timeout.connect(func():
+		if is_instance_valid(label):
+			label.queue_free()
+	)
 
 
 ## 屏幕震动响应

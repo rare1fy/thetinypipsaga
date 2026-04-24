@@ -29,10 +29,8 @@ func _on_start_pressed() -> void:
 
 
 func _process(_delta: float) -> void:
-	# 标题脉动动画（使用 _process 正弦比 Tween 循环更平滑）
-	if title_label:
-		var t := Time.get_ticks_msec() / 1000.0
-		title_label.modulate.a = 0.8 + 0.2 * sin(t * 2.0)
+	# 标题脉动已随全局 VFX 禁用一起关闭
+	pass
 
 
 ## 生成背景闪烁星星
@@ -48,4 +46,5 @@ func _spawn_stars() -> void:
 		# 移到最底层（标题后面）
 		ui_root.move_child(star, 0)
 		var tw := VFX.star_twinkle(star, randf_range(2.0, 4.0))
-		_star_tweens.append(tw)
+		if tw:
+			_star_tweens.append(tw)
