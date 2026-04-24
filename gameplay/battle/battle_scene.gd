@@ -15,8 +15,6 @@ extends Node2D
 @onready var reroll_btn: Button = %RerollBtn
 @onready var end_turn_btn: Button = %EndTurnBtn
 @onready var enemy_container: VBoxContainer = %EnemyContainer
-@onready var log_panel: PanelContainer = %LogPanel
-@onready var log_label: RichTextLabel = %LogLabel
 
 # 状态
 var enemies: Array[EnemyInstance] = []
