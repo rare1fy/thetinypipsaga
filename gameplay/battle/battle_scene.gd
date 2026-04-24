@@ -90,6 +90,9 @@ func _on_play_pressed() -> void:
 	if GameManager.plays_left <= 0:
 		return
 	
+	if GameManager.is_enemy_turn:
+		return
+	
 	SoundPlayer.play_sound("player_attack")
 	
 	# 牌型判定
@@ -150,33 +153,84 @@ func _on_play_pressed() -> void:
 
 func _on_reroll_pressed() -> void:
 	const BLOOD_COST := 3
+	# 入口校验：敌方回合 / 出牌用尽 禁止操作
+	if GameManager.is_enemy_turn:
+		return
+	if GameManager.plays_left <= 0:
+		return
+	
+	# 必须选中至少一个骰子（对齐原版 useReroll.rerollSelected）
+	var to_reroll: Array[Dictionary] = []
+	for d in GameManager.hand_dice:
+		if d.selected and not d.spent:
+			to_reroll.append(d)
+	if to_reroll.is_empty():
+		GameManager.toast_requested.emit("请先选中要重投的骰子", "info")
+		return
+	
+	# 消费免费次数 / 卖血
 	if GameManager.free_rerolls_left > 0:
 		GameManager.free_rerolls_left -= 1
 	elif GameManager.can_blood_reroll and GameManager.hp > BLOOD_COST:
-		# 卖血重投
 		GameManager.blood_reroll_count += 1
 		GameManager.take_damage(BLOOD_COST)
 		SoundPlayer.play_sound("hit")
 	else:
-		return  # 没有免费重投也没有卖血
+		# 对齐原版：给玩家明确反馈，而不是静默无响应
+		if GameManager.can_blood_reroll:
+			GameManager.toast_requested.emit("血量不足！卖血重投需要 %d HP" % BLOOD_COST, "damage")
+		else:
+			GameManager.toast_requested.emit("免费重投次数已用完", "info")
+		return  # 没有免费重投也没有卖血资格
 	
 	reroll_count += 1
+	GameManager.stats.totalRerolls += 1
 	SoundPlayer.play_sound("reroll")
 	
-	# 重投未选中的骰子
-	for d in GameManager.hand_dice:
-		if not d.selected and not d.spent:
+	# === 牌库循环：选中骰子的 defId 丢进弃骰库，从骰子库抽同等数量的新骰子替换 ===
+	# 1) 记录要替换的骰子 id（UI 插槽身份）和 defId（回到弃骰库）
+	var replace_ids: Array[int] = []
+	var defs_to_discard: Array[String] = []
+	for d in to_reroll:
+		replace_ids.append(d.id)
+		# 临时盗贼骰（isTemp 且非 temp_rogue）不进弃骰库
+		if not d.get("isTemp", false) or d.defId == "temp_rogue":
+			defs_to_discard.append(d.defId)
+	
+	# 2) defId 入弃骰库
+	GameManager.discard_pile.append_array(defs_to_discard)
+	
+	# 3) 从骰子库抽等量新骰子（draw_from_bag 会在 bag 不够时自动洗 discard）
+	var draw_result: Dictionary = GameManager.draw_from_bag(defs_to_discard.size())
+	var fresh_dice: Array = draw_result.drawn
+	
+	# 4) 把 hand_dice 里对应 id 的骰子替换成新抽的（保持 UI 插槽位置和 id 不变）
+	var fresh_idx := 0
+	for i in GameManager.hand_dice.size():
+		var d: Dictionary = GameManager.hand_dice[i]
+		if not replace_ids.has(d.id):
+			continue
+		# 临时盗贼骰：原地重摇（不进弃骰库，不抽新）
+		if d.get("isTemp", false) and d.defId != "temp_rogue":
 			d.value = GameManager.reroll_die(d)
-			d.rolling = true
+			d.selected = false
+			d.rolling = false
+			continue
+		# 正常骰：用新抽的替换（保留原 id 作为 UI 插槽身份）
+		if fresh_idx < fresh_dice.size():
+			var fresh: Dictionary = fresh_dice[fresh_idx]
+			fresh_idx += 1
+			fresh["id"] = d.id
+			fresh["selected"] = false
+			fresh["rolling"] = false
+			GameManager.hand_dice[i] = fresh
+	
+	# 5) 清空选中列表（对齐原版 selected 清零）
+	selected_dice.clear()
+	hand_label.text = ""
 	
 	_refresh_dice_ui()
-	
-	# 短暂动画后停止
-	get_tree().create_timer(0.3).timeout.connect(func():
-		for d in GameManager.hand_dice:
-			d.rolling = false
-		_refresh_dice_ui()
-	)
+	_refresh_ui()
 
 
 func _on_end_turn_pressed() -> void:
@@ -325,7 +379,9 @@ func _refresh_ui() -> void:
 	gold_label.text = "金币: %d" % GameManager.gold
 	turn_label.text = "回合 %d" % GameManager.battle_turn
 	play_btn.disabled = selected_dice.is_empty() or GameManager.plays_left <= 0 or GameManager.is_enemy_turn
-	reroll_btn.disabled = GameManager.free_rerolls_left <= 0 and not (GameManager.player_class == "warrior")
+	# 卖血重投条件：有卖血资格 AND 血量够扣（与 _on_reroll_pressed 的校验保持一致）
+	var can_blood_afford := GameManager.can_blood_reroll and GameManager.hp > 3  # BLOOD_COST == 3
+	reroll_btn.disabled = (GameManager.free_rerolls_left <= 0 and not can_blood_afford) or GameManager.is_enemy_turn or GameManager.plays_left <= 0
 	reroll_btn.text = "重投(%d)" % GameManager.free_rerolls_left if GameManager.free_rerolls_left > 0 else "卖血重投"
 	end_turn_btn.disabled = GameManager.is_enemy_turn
 
@@ -449,7 +505,12 @@ func _refresh_enemies_ui() -> void:
 
 
 func _on_die_clicked(die: Dictionary) -> void:
-	if GameManager.is_enemy_turn or die.spent:
+	if GameManager.is_enemy_turn:
+		return
+	if die.spent:
+		return
+	if GameManager.plays_left <= 0:
+		GameManager.toast_requested.emit("出牌次数已耗尽", "info")
 		return
 	
 	die.selected = not die.selected
@@ -467,6 +528,7 @@ func _on_die_clicked(die: Dictionary) -> void:
 		hand_label.text = ""
 	
 	_refresh_dice_ui()
+	_refresh_ui()
 
 
 func _on_hp_changed(new_hp: int, new_max: int) -> void:
