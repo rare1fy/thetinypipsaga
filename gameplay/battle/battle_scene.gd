@@ -28,6 +28,7 @@ var _dice_anim_tweens: Array[Tween] = []
 var _damage_preview: DamagePreview = null
 var _settlement_player: SettlementPlayer = null
 var _playing_hand: bool = false  # 结算演出期间禁止二次出牌
+var _hp_bar_initialized: bool = false  # 首次填值时跳过脉冲动画
 
 
 func _ready() -> void:
@@ -500,9 +501,18 @@ func _on_die_clicked(die_id: int) -> void:
 
 
 func _on_hp_changed(new_hp: int, new_max: int) -> void:
+	# 首次填值：只更新不脉冲（ProgressBar 默认 max=100，不能用作判据）
+	if not _hp_bar_initialized:
+		_hp_bar_initialized = true
+		hp_bar.max_value = new_max
+		hp_bar.value = new_hp
+		hp_label.text = "HP: %d/%d" % [new_hp, new_max]
+		return
+	var was_damage: bool = new_hp < int(hp_bar.value)
 	hp_bar.max_value = new_max
 	hp_bar.value = new_hp
 	hp_label.text = "HP: %d/%d" % [new_hp, new_max]
+	VFX.hp_pulse(hp_bar, was_damage)
 
 
 func _on_armor_changed(new_armor: int) -> void:
@@ -523,10 +533,8 @@ func _show_floating_text(text: String, color: Color, target: String, _icon: Stri
 	ui_root.add_child(label)
 	
 	VFX.damage_pop(label, 0.25)
-	# 治疗类文字附带绿色粒子
 	if color == Color.GREEN or text.begins_with("+"):
 		VFX.heal_burst(ui_root, spawn_pos, 6)
-	# 动画已全局关闭：静止显示 0.8s 后回收
 	get_tree().create_timer(0.8).timeout.connect(func():
 		if is_instance_valid(label):
 			label.queue_free()
@@ -540,62 +548,25 @@ func _on_screen_shake() -> void:
 
 ## 敌人受击VFX信号响应
 func _on_enemy_damaged(enemy_uid: String, damage: int, _is_crit: bool) -> void:
-	var enemy := _find_enemy_by_uid(enemy_uid)
-	if not enemy:
+	if _find_enemy_by_uid(enemy_uid) == null:
 		return
-	var idx := _find_enemy_panel_index(enemy_uid)
-	if idx < 0:
-		return
-	var panel := enemy_container.get_child(idx) as Control
-	if panel:
-		VFX.hit_flash(panel)
-		if damage >= 30:
-			VFX.shake_heavy(self, 10.0, 0.4)
-			SoundPlayer.play_heavy_impact(1.0)
-		else:
-			VFX.shake(self, 5.0, 0.15)
+	BattleVfx.on_enemy_damaged_signal(enemy_container, enemies, enemy_uid, damage, self)
 
 
 ## 敌人死亡信号响应
 func _on_enemy_died(enemy_uid: String) -> void:
-	var idx := _find_enemy_panel_index(enemy_uid)
-	if idx < 0:
-		return
-	var panel := enemy_container.get_child(idx) as Control
-	if panel:
-		var center := panel.position + panel.size * 0.5
-		VFX.pixel_burst(ui_root, center, 12, [Color.RED, Color.ORANGE, Color.YELLOW])
+	BattleVfx.on_enemy_died(enemy_container, enemies, ui_root, enemy_uid)
 
 
 ## 受击VFX（攻击敌人时内部调用）
 func _hit_enemy_vfx(enemy: EnemyInstance, damage: int) -> void:
-	var idx := _find_enemy_panel_index(enemy.uid)
-	if idx < 0:
-		return
-	var panel := enemy_container.get_child(idx) as Control
-	if not panel:
-		return
-	VFX.hit_flash(panel)
-	if damage >= 30:
-		VFX.shake_heavy(self, 8.0, 0.3)
-		SoundPlayer.play_heavy_impact(minf(2.0, damage / 30.0))
-		VFX.pixel_burst(ui_root, panel.position + panel.size * 0.5, 10, [Color.RED, Color.ORANGE, Color.YELLOW])
-	else:
-		VFX.shake(self, 4.0, 0.15)
+	BattleVfx.on_player_hit(enemy_container, enemies, ui_root, self, enemy.uid, damage, selected_dice)
 
 
 ## 给敌人面板应用状态持续特效（毒/灼烧等）
 func _apply_enemy_status_vfx(panel: Control, enemy: EnemyInstance) -> void:
-	for s in enemy.statuses:
-		var tw: Tween = null
-		match s.type:
-			GameTypes.StatusType.POISON:
-				tw = VFX.poison_pulse(panel)
-				VFX.poison_drip(ui_root, panel.position + panel.size * 0.5, 3)
-			GameTypes.StatusType.BURN:
-				tw = VFX.burn_edge(panel)
-		if tw:
-			_enemy_breath_tweens.append(tw)
+	for tw in BattleVfx.apply_status_tweens(panel, enemy, ui_root):
+		_enemy_breath_tweens.append(tw)
 
 
 ## 按uid查找敌人实例

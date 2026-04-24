@@ -97,3 +97,28 @@ static func detect_aoe(selected_dice: Array[Dictionary], hand_result: Dictionary
 		if h in aoe_hands:
 			return true
 	return false
+
+
+## 主导元素 — 取本次出牌中出现次数最多的非 normal 元素，用于受击粒子配色
+## 全 normal 返回 "physical"；平局时按 ELEMENT_PRIORITY 打破平局，保证同组牌输出同一粒子色
+static func dominant_element(selected_dice: Array) -> String:
+	var counts: Dictionary = {}
+	for d in selected_dice:
+		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
+		if elem == "normal" or elem == "":
+			continue
+		counts[elem] = counts.get(elem, 0) + 1
+	if counts.is_empty():
+		return "physical"
+	# 平局打破：火>雷>冰>毒>圣
+	var priority := ["fire", "thunder", "ice", "poison", "holy"]
+	var best := ""
+	var best_count := 0
+	var best_rank := 999
+	for k in counts.keys():
+		var rank: int = priority.find(k) if k in priority else 500
+		if counts[k] > best_count or (counts[k] == best_count and rank < best_rank):
+			best = k
+			best_count = counts[k]
+			best_rank = rank
+	return best
