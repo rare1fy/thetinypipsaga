@@ -85,13 +85,23 @@ static func get_config(id: String) -> EnemyConfig:
 	return _all_configs.values()[0] if _all_configs.size() > 0 else null
 
 static func get_normals_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.NORMAL and c.chapter == chapter)
+	return _filter_by_category_and_chapter(EnemyCategory.NORMAL, chapter)
 
 static func get_elites_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.ELITE and c.chapter == chapter)
+	return _filter_by_category_and_chapter(EnemyCategory.ELITE, chapter)
 
 static func get_bosses_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.BOSS and c.chapter == chapter)
+	return _filter_by_category_and_chapter(EnemyCategory.BOSS, chapter)
+
+## 显式构造 Array[EnemyConfig] 强类型数组
+## 原因: Dictionary.values() 和 Array.filter() 返回弱类型 Array, 
+##       直接返回会触发 GDScript 4.x 严格类型检查报错
+static func _filter_by_category_and_chapter(cat: EnemyCategory, chapter: int) -> Array[EnemyConfig]:
+	var result: Array[EnemyConfig] = []
+	for cfg in _all_configs.values():
+		if cfg is EnemyConfig and cfg.category == cat and cfg.chapter == chapter:
+			result.append(cfg)
+	return result
 
 static func _build_all_configs() -> void:
 	# ===== 章1: 幽暗森林 =====
