@@ -48,9 +48,7 @@ func _ready() -> void:
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
-	print("[MAIN] _on_phase_changed: new_phase=%s _transitioning=%s" % [GameTypes.GamePhase.keys()[new_phase], str(_transitioning)])
 	if _transitioning:
-		print("[MAIN] 过渡中，忽略本次切换请求 (潜在 bug：残留 _transitioning)")
 		return
 	_switch_to_with_transition(new_phase)
 
