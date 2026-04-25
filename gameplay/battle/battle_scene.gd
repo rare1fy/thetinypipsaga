@@ -1,7 +1,8 @@
-## 战斗场景 — 核心游戏循环
-## 对应原版 DiceHeroGame.tsx，管理战斗UI和交互
+## 战斗场景 — UI 绑定 + 信号转发层
+## 逻辑全部委托 BattleController，本文件只管 UI 刷新
 
 extends Node2D
+
 # UI 引用
 @onready var ui_root: Control = %Root
 @onready var hp_bar: ProgressBar = %HpBar
@@ -15,41 +16,55 @@ extends Node2D
 @onready var reroll_btn: Button = %RerollBtn
 @onready var end_turn_btn: Button = %EndTurnBtn
 @onready var enemy_container: VBoxContainer = %EnemyContainer
+@onready var class_icon: Label = %ClassIcon
 
-# 状态
-var enemies: Array[EnemyInstance] = []
-var selected_dice: Array[Dictionary] = []
-var reroll_count: int = 0
-var _battle_active: bool = false
-var _enemy_breath_tweens: Array[Tween] = []
-var _dice_anim_tweens: Array[Tween] = []
-
-# P0.2/P0.3 UI 组件（代码动态创建，避免场景文件侵入）
+# 子组件
+var _controller: BattleController = null
 var _damage_preview: DamagePreview = null
 var _settlement_player: SettlementPlayer = null
-var _playing_hand: bool = false  # 结算演出期间禁止二次出牌
-var _hp_bar_initialized: bool = false  # 首次填值时跳过脉冲动画
+
+# 动画缓存
+var _enemy_breath_tweens: Array[Tween] = []
+var _hp_bar_initialized: bool = false
 
 
 func _ready() -> void:
-	# 连接信号
-	play_btn.pressed.connect(_on_play_pressed)
-	reroll_btn.pressed.connect(_on_reroll_pressed)
-	end_turn_btn.pressed.connect(_on_end_turn_pressed)
-	
-	# 挂载伤害预览面板（放在 HandLabel 上方）
+	# 创建控制器子节点
+	_controller = BattleController.new()
+	_controller.name = "BattleController"
+	add_child(_controller)
+
+	# 挂载伤害预览面板
 	_damage_preview = DamagePreview.new()
 	_damage_preview.name = "DamagePreview"
 	_damage_preview.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	_damage_preview.position = Vector2(-120, 220)
 	_damage_preview.custom_minimum_size = Vector2(240, 0)
 	ui_root.add_child(_damage_preview)
-	
-	# 挂载结算演出层（独立 CanvasLayer，叠在场景最上层）
+
+	# 挂载结算演出层
 	_settlement_player = SettlementPlayer.new()
 	_settlement_player.name = "SettlementPlayer"
 	add_child(_settlement_player)
-	
+
+	# 按钮信号 → 转发 controller
+	play_btn.pressed.connect(_on_play_pressed)
+	reroll_btn.pressed.connect(_on_reroll_pressed)
+	end_turn_btn.pressed.connect(_on_end_turn_pressed)
+
+	# controller 信号 → UI 刷新
+	_controller.ui_refresh_requested.connect(_refresh_ui)
+	_controller.dice_ui_refresh_requested.connect(_refresh_dice_ui)
+	_controller.enemies_ui_refresh_requested.connect(_refresh_enemies_ui)
+	_controller.hand_label_updated.connect(_on_hand_label_updated)
+	_controller.damage_preview_refreshed.connect(_on_damage_preview_refreshed)
+	_controller.damage_preview_hidden.connect(_on_damage_preview_hidden)
+	_controller.floating_text_requested.connect(_show_floating_text)
+	_controller.settlement_started.connect(_on_settlement_started)
+	_controller.battle_victory.connect(_on_battle_victory_vfx)
+	_controller.game_over_triggered.connect(_on_game_over)
+
+	# 全局信号
 	GameManager.hp_changed.connect(_on_hp_changed)
 	GameManager.armor_changed.connect(_on_armor_changed)
 	GameManager.dice_updated.connect(_refresh_dice_ui)
@@ -60,308 +75,57 @@ func _ready() -> void:
 	EventBus.screen_shake.connect(_on_screen_shake)
 	EventBus.enemy_damaged.connect(_on_enemy_damaged)
 	EventBus.enemy_died.connect(_on_enemy_died)
-	
-	# 消费 MapScreen 写入的波次（main.gd 走销毁重建，start_battle 必须由场景自己触发）
+
+	# 消费 pending_wave
 	if not GameManager.pending_wave.is_empty():
-		start_battle(GameManager.pending_wave)
+		_controller.start_battle(GameManager.pending_wave)
 		GameManager.pending_wave = []
 
 
-func start_battle(wave_data: Array) -> void:
-	_battle_active = true
-	GameManager.battle_turn = 0
-	GameManager.hp_lost_this_battle = 0
-	enemies = []
-	
-	# 创建敌人
-	for config_id in wave_data:
-		var config := EnemyConfig.get_config(config_id)
-		if config:
-			var scaling := GameBalance.get_depth_scaling(maxi(0, GameManager.current_node))
-			var chapter_scale: Dictionary = GameBalance.CHAPTER_CONFIG.chapterScaling[mini(GameManager.chapter - 1, 4)]
-			var e := EnemyInstance.from_config(config,
-				scaling.hpMult * chapter_scale.hpMult,
-				scaling.dmgMult * chapter_scale.dmgMult)
-			enemies.append(e)
-	
-	_refresh_enemies_ui()
-	_start_new_turn()
-
-
-func _start_new_turn() -> void:
-	GameManager.start_turn()
-	reroll_count = 0
-	_refresh_ui()
-	
-	# 抽骰子
-	GameManager.execute_draw_phase()
-	
-	# 遗物触发：回合开始
-	RelicEngine.on_battle_start(GameManager.relics, GameManager)
-	
-	SoundPlayer.play_sound("roll")
-
+# ============================================================
+# 按钮回调 → 转发 controller
+# ============================================================
 
 func _on_play_pressed() -> void:
-	if selected_dice.is_empty():
-		return
-	
-	if GameManager.plays_left <= 0:
-		return
-	
-	if GameManager.is_enemy_turn:
-		return
-	
-	if _playing_hand:
-		return  # 结算演出期间不响应
-	
-	_playing_hand = true
-	SoundPlayer.play_sound("player_attack")
-	
-	# 牌型判定
-	var hand_result := HandEvaluator.check_hands(selected_dice)
-	var bonus_mult := RelicEngine.get_bonus_mult(GameManager.relics, hand_result.bestHand)
-	bonus_mult += GameManager.mage_overcharge_mult
-	bonus_mult += GameManager.warrior_rage_mult
-	
-	# 盗贼连击加成
-	if GameManager.player_class == "rogue" and GameManager.combo_count >= 1:
-		bonus_mult += 0.2  # 第2次出牌+20%
-		if GameManager.last_play_hand_type == hand_result.bestHand and hand_result.bestHand != "普通攻击":
-			bonus_mult += 0.25  # 同牌型再+25%
-	
-	# 计算总伤害（注意：get_bonus_damage 会修改 life_furnace counter，只能调一次）
-	var bonus_damage := RelicEngine.get_bonus_damage(GameManager.relics, GameManager)
-	bonus_damage += GameManager.fury_bonus_damage
-	var total_damage := HandEvaluator.calculate_damage(selected_dice, hand_result, bonus_mult, bonus_damage)
-	
-	# 选择目标敌人（演出开始前锁定，避免中途死亡）
-	var target := _get_target_enemy()
-	if not target:
-		_playing_hand = false
-		return
-	
-	# 收集用于演出的数据
-	var dice_values: Array = []
-	for d in selected_dice:
-		dice_values.append(int(d.value))
-	var has_aoe := BattleHelpers.detect_aoe(selected_dice, hand_result)
-	
-	# 隐藏伤害预览（演出期间不再提示）
-	if _damage_preview:
-		_damage_preview.visible = false
-	
-	# 播放结算演出（4 阶段 await）
-	await _settlement_player.play({
-		"hand_name": hand_result.bestHand,
-		"dice_values": dice_values,
-		"bonus_mult": bonus_mult,
-		"bonus_damage": bonus_damage,
-		"total_damage": total_damage,
-		"has_aoe": has_aoe,
-	})
-	
-	# 清除临时加成（演出结束后再清，确保预览时看得到）
-	GameManager.rage_fire_bonus = 0
-	GameManager.fury_bonus_damage = 0
-	
-	# 执行攻击
-	_attack_enemy(target, total_damage, hand_result)
-	
-	# 标记已出的骰子
-	var played_defs: Array[String] = []
-	for d in selected_dice:
-		d.spent = true
-		played_defs.append(d.defId)
-	GameManager.discard_hand_dice(played_defs)
-	selected_dice.clear()
-	
-	# 骰子特效（分裂、暗影残骰等）
-	_process_dice_on_play_effects()
-	
-	# 出牌后处理
-	GameManager.last_play_hand_type = hand_result.bestHand
-	GameManager.after_play()
-	
-	# 盗贼连击：补充暗影残骰
-	if GameManager.player_class == "rogue" and GameManager.combo_count >= 1:
-		_grant_shadow_remnant()
-	
-	# 检查敌人死亡
-	_check_enemy_deaths()
-	
-	_refresh_ui()
-	
-	# 检查胜利
-	if enemies.all(func(e): return e.hp <= 0):
-		_on_battle_victory()
-	
-	_playing_hand = false
-
-
-## ========== 以下辅助逻辑抽到 BattleHelpers（A4-DRY）==========
+	_controller.play_hand()
 
 
 func _on_reroll_pressed() -> void:
-	const BLOOD_COST := 3
-	# 入口校验：敌方回合 / 出牌用尽 / 结算演出期间 禁止操作
-	if GameManager.is_enemy_turn:
-		return
-	if GameManager.plays_left <= 0:
-		return
-	if _playing_hand:
-		return
-	
-	# 必须选中至少一个骰子（对齐原版 useReroll.rerollSelected）
-	var to_reroll: Array[Dictionary] = []
-	for d in GameManager.hand_dice:
-		if d.selected and not d.spent:
-			to_reroll.append(d)
-	if to_reroll.is_empty():
-		GameManager.toast_requested.emit("请先选中要重投的骰子", "info")
-		return
-	
-	# 消费免费次数 / 卖血
-	if GameManager.free_rerolls_left > 0:
-		GameManager.free_rerolls_left -= 1
-	elif GameManager.can_blood_reroll and GameManager.hp > BLOOD_COST:
-		GameManager.blood_reroll_count += 1
-		GameManager.take_damage(BLOOD_COST)
-		SoundPlayer.play_sound("hit")
-	else:
-		# 对齐原版：给玩家明确反馈，而不是静默无响应
-		if GameManager.can_blood_reroll:
-			GameManager.toast_requested.emit("血量不足！卖血重投需要 %d HP" % BLOOD_COST, "damage")
-		else:
-			GameManager.toast_requested.emit("免费重投次数已用完", "info")
-		return  # 没有免费重投也没有卖血资格
-	
-	reroll_count += 1
-	GameManager.stats.totalRerolls += 1
-	SoundPlayer.play_sound("reroll")
-	
-	# === 牌库循环：选中骰子的 defId 丢进弃骰库，从骰子库抽同等数量的新骰子替换 ===
-	# 1) 记录要替换的骰子 id（UI 插槽身份）和 defId（回到弃骰库）
-	var replace_ids: Array[int] = []
-	var defs_to_discard: Array[String] = []
-	for d in to_reroll:
-		replace_ids.append(d.id)
-		# 临时盗贼骰（isTemp 且非 temp_rogue）不进弃骰库
-		if not d.get("isTemp", false) or d.defId == "temp_rogue":
-			defs_to_discard.append(d.defId)
-	
-	# 2) defId 入弃骰库
-	GameManager.discard_hand_dice(defs_to_discard)
-	
-	# 3) 从骰子库抽等量新骰子（draw_from_bag 会在 bag 不够时自动洗 discard）
-	var draw_result: Dictionary = GameManager.draw_from_bag(defs_to_discard.size())
-	var fresh_dice: Array = draw_result.drawn
-	
-	# 4) 把 hand_dice 里对应 id 的骰子替换成新抽的（保持 UI 插槽位置和 id 不变）
-	var fresh_idx := 0
-	for i in GameManager.hand_dice.size():
-		var d: Dictionary = GameManager.hand_dice[i]
-		if not replace_ids.has(d.id):
-			continue
-		# 临时盗贼骰：原地重摇（不进弃骰库，不抽新）
-		if d.get("isTemp", false) and d.defId != "temp_rogue":
-			d.value = GameManager.reroll_die(d)
-			d.selected = false
-			d.rolling = false
-			continue
-		# 正常骰：用新抽的替换（保留原 id 作为 UI 插槽身份）
-		if fresh_idx < fresh_dice.size():
-			var fresh: Dictionary = fresh_dice[fresh_idx]
-			fresh_idx += 1
-			fresh["id"] = d.id
-			fresh["selected"] = false
-			fresh["rolling"] = false
-			GameManager.hand_dice[i] = fresh
-	
-	# 5) 清空选中列表（对齐原版 selected 清零）
-	selected_dice.clear()
-	hand_label.text = ""
-	
-	# 刷新伤害预览（重投后清空）
-	if _damage_preview:
-		_damage_preview.refresh(selected_dice)
-	
-	_refresh_dice_ui()
-	_refresh_ui()
+	_controller.reroll_selected()
 
 
 func _on_end_turn_pressed() -> void:
-	if GameManager.is_enemy_turn:
-		return
-	if _playing_hand:
-		return
-	
-	SoundPlayer.play_sound("turn_end")
-	_execute_enemy_turn()
+	_controller.end_player_turn()
 
 
-func _execute_enemy_turn() -> void:
-	GameManager.is_enemy_turn = true
-	_refresh_ui()
-	
-	var result := EnemyAI.execute_enemy_turn(GameManager, enemies, GameManager.hand_dice)
-	
-	if result.get("gameOver", false):
-		GameManager.game_over.emit()
-		return
-	
-	if result.get("waveTransition", false):
-		# 波次转换
-		pass
-	
-	_refresh_enemies_ui()
-	_start_new_turn()
+# ============================================================
+# Controller 信号回调
+# ============================================================
+
+func _on_hand_label_updated(text: String) -> void:
+	hand_label.text = text
 
 
-func _attack_enemy(enemy: EnemyInstance, damage: int, hand_result: Dictionary) -> void:
-	# 护甲吸收
-	var absorbed := mini(enemy.armor, damage)
-	enemy.armor -= absorbed
-	var hp_damage := damage - absorbed
-	enemy.hp = maxi(0, enemy.hp - hp_damage)
-	
-	# 元素效果（抽到 BattleHelpers）
-	BattleHelpers.apply_element_effects(enemy, selected_dice, enemies)
-	
-	# 统计
-	GameManager.record_damage(damage, true)
-	
-	# 受击特效：闪白 + 震动
-	_hit_enemy_vfx(enemy, damage)
-	
-	_show_floating_text("-%d" % damage, Color.RED, "enemy")
-	SoundPlayer.play_sound("hit")
+func _on_damage_preview_refreshed(dice: Array) -> void:
+	if _damage_preview:
+		_damage_preview.refresh(dice)
 
 
-func _check_enemy_deaths() -> void:
-	BattleHelpers.settle_enemy_deaths(enemies)
+func _on_damage_preview_hidden() -> void:
+	if _damage_preview:
+		_damage_preview.visible = false
 
 
-func _get_target_enemy() -> EnemyInstance:
-	return BattleHelpers.pick_target(enemies, GameManager.target_enemy_uid)
+func _on_settlement_started(data: Dictionary) -> void:
+	# 播放结算演出（4 阶段 await），完成后调 controller.finalize_play
+	await _settlement_player.play(data)
 
-
-func _grant_shadow_remnant() -> void:
-	GameManager.hand_dice.append(BattleHelpers.make_shadow_remnant())
-
-
-func _process_dice_on_play_effects() -> void:
-	GameManager.hand_dice.append_array(BattleHelpers.compute_dice_on_play_extras(selected_dice))
-
-
-func _on_battle_victory() -> void:
-	_battle_active = false
-	GameManager.stats.battlesWon += 1
-	SoundPlayer.play_sound("victory")
-	# 胜利粒子特效
-	VFX.victory_burst(ui_root, ui_root.size * 0.5, 20)
-	VFX.shake_heavy(self, 6.0, 0.3)
-	GameManager.set_phase(GameTypes.GamePhase.LOOT)
+	var hand_result := HandEvaluator.check_hands(_controller.selected_dice)
+	var target := BattleHelpers.pick_target(_controller.enemies, GameManager.target_enemy_uid)
+	if target:
+		_controller.finalize_play(hand_result, target, data.total_damage)
+	else:
+		_controller.playing_hand = false
 
 
 # ============================================================
@@ -373,24 +137,22 @@ func _refresh_ui() -> void:
 	_on_armor_changed(GameManager.armor)
 	gold_label.text = "金币: %d" % GameManager.gold
 	turn_label.text = "回合 %d" % GameManager.battle_turn
-	play_btn.disabled = selected_dice.is_empty() or GameManager.plays_left <= 0 or GameManager.is_enemy_turn
-	# 卖血重投条件：有卖血资格 AND 血量够扣（与 _on_reroll_pressed 的校验保持一致）
-	var can_blood_afford := GameManager.can_blood_reroll and GameManager.hp > 3  # BLOOD_COST == 3
+	match GameManager.player_class:
+		"warrior": class_icon.text = "⚔"
+		"mage": class_icon.text = "🔮"
+		"rogue": class_icon.text = "🗡"
+		_: class_icon.text = "?"
+	play_btn.disabled = _controller.selected_dice.is_empty() or GameManager.plays_left <= 0 or GameManager.is_enemy_turn
+	var can_blood_afford := GameManager.can_blood_reroll and GameManager.hp > 3
 	reroll_btn.disabled = (GameManager.free_rerolls_left <= 0 and not can_blood_afford) or GameManager.is_enemy_turn or GameManager.plays_left <= 0
 	reroll_btn.text = "重投(%d)" % GameManager.free_rerolls_left if GameManager.free_rerolls_left > 0 else "卖血重投"
 	end_turn_btn.disabled = GameManager.is_enemy_turn
 
 
 func _refresh_dice_ui() -> void:
-	# 停止旧骰子动画（DiceButton 本身不起 Tween，清单只做防御）
-	for tw in _dice_anim_tweens:
-		if is_instance_valid(tw):
-			tw.kill()
-	_dice_anim_tweens.clear()
-	
 	for child in dice_container.get_children():
 		child.queue_free()
-	
+
 	for d in GameManager.hand_dice:
 		if d.spent:
 			continue
@@ -402,24 +164,22 @@ func _refresh_dice_ui() -> void:
 
 
 func _refresh_enemies_ui() -> void:
-	# 停止旧呼吸动画
 	for tw in _enemy_breath_tweens:
 		if is_instance_valid(tw):
 			tw.kill()
 	_enemy_breath_tweens.clear()
-	
+
 	for child in enemy_container.get_children():
 		child.queue_free()
-	
-	for e in enemies:
+
+	for e in _controller.enemies:
 		if e.hp <= -9999:
 			continue
 		var view: EnemyView = EnemyView.new()
 		enemy_container.add_child(view)
 		view.setup(e)
 		view.enemy_clicked.connect(_on_enemy_clicked)
-		
-		# 按敌人战斗类型应用呼吸动画
+
 		var breathe_tween: Tween = null
 		match e.combat_type:
 			GameTypes.EnemyCombatType.WARRIOR:
@@ -432,55 +192,23 @@ func _refresh_enemies_ui() -> void:
 				breathe_tween = VFX.breathe(view)
 		if breathe_tween:
 			_enemy_breath_tweens.append(breathe_tween)
-		
-		# 按元素状态应用持续特效
+
 		_apply_enemy_status_vfx(view, e)
 
 
+# ============================================================
+# 全局信号回调
+# ============================================================
+
 func _on_die_clicked(die_id: int) -> void:
-	if GameManager.is_enemy_turn:
-		return
-	if _playing_hand:
-		return
-	if GameManager.plays_left <= 0:
-		GameManager.toast_requested.emit("出牌次数已耗尽", "info")
-		return
-	
-	# 通过 id 定位 GameManager 里真正的骰子引用（DiceButton 只持数据快照）
-	var die: Dictionary = {}
-	for d in GameManager.hand_dice:
-		if int(d.get("id", -1)) == die_id:
-			die = d
-			break
-	if die.is_empty():
-		return
-	if die.spent:
-		return
-	
-	die.selected = not die.selected
-	
-	if die.selected:
-		selected_dice.append(die)
-	else:
-		selected_dice.erase(die)
-	
-	# 更新牌型提示
-	if selected_dice.size() > 0:
-		var hand := HandEvaluator.check_hands(selected_dice)
-		hand_label.text = hand.bestHand
-	else:
-		hand_label.text = ""
-	
-	# 刷新伤害预览（P0.2）
-	if _damage_preview:
-		_damage_preview.refresh(selected_dice)
-	
-	_refresh_dice_ui()
-	_refresh_ui()
+	_controller.toggle_die_selection(die_id)
+
+
+func _on_enemy_clicked(enemy_uid: String) -> void:
+	_controller.set_target_enemy(enemy_uid)
 
 
 func _on_hp_changed(new_hp: int, new_max: int) -> void:
-	# 首次填值：只更新不脉冲（ProgressBar 默认 max=100，不能用作判据）
 	if not _hp_bar_initialized:
 		_hp_bar_initialized = true
 		hp_bar.max_value = new_max
@@ -510,7 +238,7 @@ func _show_floating_text(text: String, color: Color, target: String, _icon: Stri
 	var spawn_pos := Vector2(randi_range(80, 280), 200 if target == "player" else 80)
 	label.position = spawn_pos
 	ui_root.add_child(label)
-	
+
 	VFX.damage_pop(label, 0.25)
 	if color == Color.GREEN or text.begins_with("+"):
 		VFX.heal_burst(ui_root, spawn_pos, 6)
@@ -520,60 +248,45 @@ func _show_floating_text(text: String, color: Color, target: String, _icon: Stri
 	)
 
 
-## 屏幕震动响应
 func _on_screen_shake() -> void:
 	VFX.shake(self, 8.0, 0.3)
 
 
-## 敌人受击VFX信号响应
 func _on_enemy_damaged(enemy_uid: String, damage: int, _is_crit: bool) -> void:
 	if _find_enemy_by_uid(enemy_uid) == null:
 		return
-	BattleVfx.on_enemy_damaged_signal(enemy_container, enemies, enemy_uid, damage, self)
+	BattleVfx.on_enemy_damaged_signal(enemy_container, _controller.enemies, enemy_uid, damage, self)
 
 
-## 敌人死亡信号响应
 func _on_enemy_died(enemy_uid: String) -> void:
-	BattleVfx.on_enemy_died(enemy_container, enemies, ui_root, enemy_uid)
+	BattleVfx.on_enemy_died(enemy_container, _controller.enemies, ui_root, enemy_uid)
 
 
-## 点击敌人 — 设置嘲讽目标
-func _on_enemy_clicked(enemy_uid: String) -> void:
-	GameManager.target_enemy_uid = enemy_uid
-	_refresh_enemies_ui()
+func _on_battle_victory_vfx() -> void:
+	VFX.victory_burst(ui_root, ui_root.size * 0.5, 20)
+	VFX.shake_heavy(self, 6.0, 0.3)
 
 
-## 受击VFX（攻击敌人时内部调用）
+func _on_game_over() -> void:
+	_controller.battle_active = false
+	GameManager.set_phase(GameTypes.GamePhase.GAME_OVER)
+
+
+# ============================================================
+# 辅助
+# ============================================================
+
 func _hit_enemy_vfx(enemy: EnemyInstance, damage: int) -> void:
-	BattleVfx.on_player_hit(enemy_container, enemies, ui_root, self, enemy.uid, damage, selected_dice)
+	BattleVfx.on_player_hit(enemy_container, _controller.enemies, ui_root, self, enemy.uid, damage, _controller.selected_dice)
 
 
-## 给敌人面板应用状态持续特效（毒/灼烧等）
 func _apply_enemy_status_vfx(panel: Control, enemy: EnemyInstance) -> void:
 	for tw in BattleVfx.apply_status_tweens(panel, enemy, ui_root):
 		_enemy_breath_tweens.append(tw)
 
 
-## 按uid查找敌人实例
 func _find_enemy_by_uid(uid: String) -> EnemyInstance:
-	for e in enemies:
+	for e in _controller.enemies:
 		if e.uid == uid and e.hp > -9999:
 			return e
 	return null
-
-
-## 按uid查找敌人面板在container中的索引
-func _find_enemy_panel_index(uid: String) -> int:
-	var alive_idx := 0
-	for e in enemies:
-		if e.hp <= -9999:
-			continue
-		if e.uid == uid:
-			return alive_idx
-		alive_idx += 1
-	return -1
-
-
-func _on_game_over() -> void:
-	_battle_active = false
-	GameManager.set_phase(GameTypes.GamePhase.GAME_OVER)
