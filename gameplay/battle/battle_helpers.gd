@@ -122,3 +122,14 @@ static func dominant_element(selected_dice: Array) -> String:
 			best_count = counts[k]
 			best_rank = rank
 	return best
+
+
+## 距离纵深视觉参数 — 对应原版 battleHelpers.ts getDepthVisuals
+## 返回 {depth_scale, depth_y, depth_brightness, depth_z}
+## distance 0=贴脸 1=近 2=中 >=3=远
+static func get_depth_visuals(distance: int) -> Dictionary:
+	var depth_scale: float = 1.25 if distance == 0 else (0.95 if distance == 1 else (0.75 if distance == 2 else 0.6))
+	var depth_y: float = -50.0 if distance >= 3 else (-25.0 if distance == 2 else (-5.0 if distance == 1 else 30.0))
+	var depth_brightness: float = 0.82 if distance >= 3 else (0.9 if distance == 2 else (0.95 if distance == 1 else 1.0))
+	var depth_z: int = 1 if distance >= 3 else (3 if distance == 2 else (5 if distance == 1 else 7))
+	return {"depth_scale": depth_scale, "depth_y": depth_y, "depth_brightness": depth_brightness, "depth_z": depth_z}

@@ -414,50 +414,27 @@ func _refresh_enemies_ui() -> void:
 	for e in enemies:
 		if e.hp <= -9999:
 			continue
-		var panel := PanelContainer.new()
-		var vbox := VBoxContainer.new()
-		
-		var name_label := Label.new()
-		name_label.text = e.name
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		
-		var hp_bar_e := ProgressBar.new()
-		hp_bar_e.max_value = e.max_hp
-		hp_bar_e.value = maxi(0, e.hp)
-		hp_bar_e.custom_minimum_size = Vector2(100, 12)
-		
-		var hp_text := Label.new()
-		hp_text.text = "HP: %d/%d" % [maxi(0, e.hp), e.max_hp]
-		hp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		
-		if e.armor > 0:
-			var armor_l := Label.new()
-			armor_l.text = "护甲: %d" % e.armor
-			armor_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			vbox.add_child(armor_l)
-		
-		vbox.add_child(name_label)
-		vbox.add_child(hp_bar_e)
-		vbox.add_child(hp_text)
-		panel.add_child(vbox)
-		enemy_container.add_child(panel)
+		var view: EnemyView = EnemyView.new()
+		enemy_container.add_child(view)
+		view.setup(e)
+		view.enemy_clicked.connect(_on_enemy_clicked)
 		
 		# 按敌人战斗类型应用呼吸动画
 		var breathe_tween: Tween = null
 		match e.combat_type:
 			GameTypes.EnemyCombatType.WARRIOR:
-				breathe_tween = VFX.breathe_warrior(panel)
+				breathe_tween = VFX.breathe_warrior(view)
 			GameTypes.EnemyCombatType.GUARDIAN:
-				breathe_tween = VFX.breathe_guardian(panel)
+				breathe_tween = VFX.breathe_guardian(view)
 			GameTypes.EnemyCombatType.CASTER, GameTypes.EnemyCombatType.PRIEST:
-				breathe_tween = VFX.breathe_caster(panel)
+				breathe_tween = VFX.breathe_caster(view)
 			_:
-				breathe_tween = VFX.breathe(panel)
+				breathe_tween = VFX.breathe(view)
 		if breathe_tween:
 			_enemy_breath_tweens.append(breathe_tween)
 		
 		# 按元素状态应用持续特效
-		_apply_enemy_status_vfx(panel, e)
+		_apply_enemy_status_vfx(view, e)
 
 
 func _on_die_clicked(die_id: int) -> void:
@@ -558,6 +535,12 @@ func _on_enemy_damaged(enemy_uid: String, damage: int, _is_crit: bool) -> void:
 ## 敌人死亡信号响应
 func _on_enemy_died(enemy_uid: String) -> void:
 	BattleVfx.on_enemy_died(enemy_container, enemies, ui_root, enemy_uid)
+
+
+## 点击敌人 — 设置嘲讽目标
+func _on_enemy_clicked(enemy_uid: String) -> void:
+	GameManager.target_enemy_uid = enemy_uid
+	_refresh_enemies_ui()
 
 
 ## 受击VFX（攻击敌人时内部调用）

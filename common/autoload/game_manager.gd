@@ -315,9 +315,9 @@ func execute_draw_phase() -> void:
 	var result := draw_from_bag(need_draw)
 	var fresh_dice: Array = result.drawn
 	
-	# 标记新骰子为 rolling
-	for d in fresh_dice:
-		d["rolling"] = true
+	# 不再标 rolling=true：commit 8f16b4a 已关闭骰子动画层，
+	# rolling 标记没有清除者会导致骰子永远显示 "?" 且不可点击。
+	# DiceBagService.draw_from_bag 返回的骰子默认 rolling=false，保持即可。
 	
 	hand_dice = kept_dice + fresh_dice
 	dice_updated.emit()
