@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3 uid="uid://d28yr2vjpfnm4"]
+
+[ext_resource type="PackedScene" uid="uid://b8hq3ev7kx2er" path="res://entities/enemy/enemy_view.tscn" id="1_qae6u"]
+[ext_resource type="SpriteFrames" uid="uid://cwnh3ynq0mfgc" path="res://assets/characters/mobs/m10001/sprite_frames.tres" id="2_frames"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbjko"]
+resource_local_to_scene = true
+bg_color = Color(0.5, 0.3, 0.3, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y1ky6"]
+resource_local_to_scene = true
+bg_color = Color(0.25, 0.752941, 0.376471, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x243m"]
+resource_local_to_scene = true
+bg_color = Color(0.875, 0.25, 0.25, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="M10001" instance=ExtResource("1_qae6u")]
+
+[node name="ArtSprite" parent="VisualRoot" index="0"]
+visible = true
+position = Vector2(0, 15)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="AvatarShape" parent="VisualRoot" index="1"]
+visible = false
+
+[node name="AvatarStyle" parent="VisualRoot" index="2"]
+visible = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_nbjko")
+
+[node name="AvatarEyes" parent="VisualRoot" index="3"]
+visible = false
+
+[node name="HpBar" parent="VisualRoot/HeadUI/UIVBox/HpRow" index="1"]
+theme_override_styles/fill = SubResource("StyleBoxFlat_y1ky6")
+
+[node name="IntentIcon" parent="VisualRoot/HeadUI/UIVBox/BottomRow/IntentRow" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_x243m")

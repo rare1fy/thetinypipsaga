@@ -48,13 +48,19 @@ func get_action() -> Dictionary:
 	if not config:
 		return { type = "攻击", value = attack_dmg, description = "" }
 	for phase in config.phases:
+		# hp_threshold > 0 代表"血量低于阈值才启用该阶段"，hp 仍高于阈值则跳过
 		if phase.hp_threshold > 0 and hp >= max_hp * phase.hp_threshold:
 			continue
-		var actions: Array = phase.actions
-		var idx = battle_turn % actions.size()
+		var actions: Array = phase.actions  # [RULES-B2-EXEMPT] EnemyConfig.EnemyAction 内部类跨文件引用不稳定
+		if actions.is_empty():
+			continue
+		var idx: int = battle_turn % actions.size()
 		var action = actions[idx]
-		var val = attack_dmg if not action.scalable else int(action.base_value * _dmg_scale())
-		if not action.scalable:
+		# scalable=true 时 value 随当前 attack_dmg 缩放，false 时用配置写死的 base_value
+		var val: int
+		if action.scalable:
+			val = int(action.base_value * _dmg_scale())
+		else:
 			val = action.base_value
 		return { type = _action_type_str(action.type), value = val, description = action.description }
 	return { type = "攻击", value = attack_dmg }

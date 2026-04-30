@@ -61,7 +61,8 @@ func roll_dice(id: String) -> int:
 ## 获取骰子奖励池
 func get_dice_reward_pool(battle_type: String, p_class: String = "") -> Array[DiceDef]:
 	var pool: Array[DiceDef] = []
-	var all_defs := _dice_defs.values() as Array[DiceDef]
+	var all_defs: Array[DiceDef] = []
+	all_defs.assign(_dice_defs.values())
 	
 	# 职业骰子加权
 	var prefix := ""

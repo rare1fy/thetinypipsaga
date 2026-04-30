@@ -44,7 +44,7 @@ func _build_ui() -> void:
 	_final_label = _make_label(40, Color("#f07050"))
 	
 	# 竖排居中
-	for l in [_hand_label, _sum_label, _bonus_label, _final_label]:
+	for l: Label in [_hand_label, _sum_label, _bonus_label, _final_label]:
 		add_child(l)
 		l.visible = false
 
@@ -88,19 +88,26 @@ func play(data: Dictionary) -> void:
 	fade_tw.tween_property(_dim, "modulate:a", 1.0, 0.1)
 	
 	await _phase1_hand_display(data.get("hand_name", "普通攻击"))
-	await _phase2_dice_scoring(data.get("dice_values", []))
+	var raw_values: Variant = data.get("dice_values", [])
+	var dice_values: Array[int] = []
+	if raw_values is Array[int]:
+		dice_values = raw_values
+	elif raw_values is Array:
+		for v: int in raw_values:
+			dice_values.append(v)
+	await _phase2_dice_scoring(dice_values)
 	await _phase3_effects(data.get("bonus_mult", 0.0), data.get("bonus_damage", 0))
 	await _phase4_final_damage(data.get("total_damage", 0), data.get("has_aoe", false))
 	
 	# 收尾：全部淡出
 	var close_tw := create_tween()
 	close_tw.set_parallel(true)
-	for l in [_hand_label, _sum_label, _bonus_label, _final_label, _dim]:
+	for l: Control in [_hand_label, _sum_label, _bonus_label, _final_label, _dim]:
 		close_tw.tween_property(l, "modulate:a", 0.0, 0.18)
-	await close_tw.finished
+	await _safe_await_tween(close_tw, 0.5)
 	
 	_dim.visible = false
-	for l in [_hand_label, _sum_label, _bonus_label, _final_label]:
+	for l: Label in [_hand_label, _sum_label, _bonus_label, _final_label]:
 		l.visible = false
 	_running = false
 
@@ -117,11 +124,11 @@ func _phase1_hand_display(hand_name: String) -> void:
 	tw.set_parallel(true)
 	tw.tween_property(_hand_label, "modulate:a", 1.0, 0.15)
 	tw.tween_property(_hand_label, "scale", Vector2(1.1, 1.1), 0.2)
-	await tw.finished
+	await _safe_await_tween(tw, 0.5)
 	
 	var settle := create_tween()
 	settle.tween_property(_hand_label, "scale", Vector2(1.0, 1.0), 0.1)
-	await settle.finished
+	await _safe_await_tween(settle, 0.3)
 	
 	# 音效
 	if has_node("/root/SoundPlayer"):
@@ -131,14 +138,14 @@ func _phase1_hand_display(hand_name: String) -> void:
 
 
 ## ========== Phase 2: 骰子逐个累加 ==========
-func _phase2_dice_scoring(dice_values: Array) -> void:
+func _phase2_dice_scoring(dice_values: Array[int]) -> void:
 	if dice_values.is_empty():
 		return
 	
 	_sum_label.visible = true
 	_sum_label.modulate.a = 1.0
 	var running_sum := 0
-	for v in dice_values:
+	for v: int in dice_values:
 		running_sum += int(v)
 		_sum_label.text = "+ %d  =  %d" % [int(v), running_sum]
 		# 每次 tick 放大一下
@@ -170,7 +177,7 @@ func _phase3_effects(bonus_mult: float, bonus_damage: int) -> void:
 	
 	var tw := create_tween()
 	tw.tween_property(_bonus_label, "modulate:a", 1.0, 0.15)
-	await tw.finished
+	await _safe_await_tween(tw, 0.3)
 	
 	if has_node("/root/SoundPlayer"):
 		SoundPlayer.play_sound("multiplier")
@@ -190,7 +197,7 @@ func _phase4_final_damage(total_damage: int, has_aoe: bool) -> void:
 	tw.set_parallel(true)
 	tw.tween_property(_final_label, "modulate:a", 1.0, 0.15)
 	tw.tween_property(_final_label, "scale", Vector2(1.3, 1.3), 0.2)
-	await tw.finished
+	await _safe_await_tween(tw, 0.5)
 	
 	# 震屏 + 重击音
 	GameManager.screen_shake_requested.emit()
@@ -199,6 +206,18 @@ func _phase4_final_damage(total_damage: int, has_aoe: bool) -> void:
 	
 	var settle := create_tween()
 	settle.tween_property(_final_label, "scale", Vector2(1.0, 1.0), 0.12)
-	await settle.finished
+	await _safe_await_tween(settle, 0.3)
 	
 	await get_tree().create_timer(PHASE4_FINAL_MS / 1000.0).timeout
+
+
+## 安全 await tween：同时等 tween.finished 和超时计时器，防场景切换时协程永久挂起
+## [FIX-P0] 用轮询 tw.is_valid() + timer.time_left，不用 lambda 捕获，彻底消除 "Lambda capture was freed"
+func _safe_await_tween(tw: Tween, timeout_sec: float) -> void:
+	if not tw.is_valid():
+		return
+	var timer := get_tree().create_timer(timeout_sec)
+	while tw.is_valid() and timer.time_left > 0.0:
+		await get_tree().process_frame
+		if not is_instance_valid(self):
+			return

@@ -22,10 +22,15 @@ func _ready() -> void:
 	_overlay.modulate.a = 0.0
 	add_child(_overlay)
 	
-	# 挂载 Toast 管理器（监听 GameManager.toast_requested，跨场景全局可用）
-	var toast_layer: ToastManager = ToastManager.new()
-	toast_layer.name = "ToastLayer"
-	add_child(toast_layer)
+	# ToastManager 已注册为 autoload（见 project.godot），全局自动可用，不再手动 new
+	
+	# 挂载全局 ModalLayer（CanvasLayer, layer=80）
+	# 业务代码通过 ModalHub.open(...) 静态方法使用；独立于场景切换，生命周期贯穿全游戏
+	var modal_layer := CanvasLayer.new()
+	modal_layer.name = "ModalLayer"
+	modal_layer.add_to_group("modal_layer")    # ModalHub 通过 group 查找，避免硬编码路径
+	modal_layer.set_script(preload("res://common/ui/modal_manager.gd"))
+	add_child(modal_layer)
 	
 	# 预加载所有场景
 	_scenes = {
@@ -36,10 +41,13 @@ func _ready() -> void:
 		GameTypes.GamePhase.MERCHANT: preload("res://gameplay/merchant/merchant_screen.tscn"),
 		GameTypes.GamePhase.CAMPFIRE: preload("res://gameplay/campfire/campfire_screen.tscn"),
 		GameTypes.GamePhase.EVENT: preload("res://gameplay/event/event_screen.tscn"),
+		GameTypes.GamePhase.TREASURE: preload("res://gameplay/treasure/treasure_screen.tscn"),
 		GameTypes.GamePhase.LOOT: preload("res://ui/loot/loot_screen.tscn"),
 		GameTypes.GamePhase.DICE_REWARD: preload("res://ui/dice_reward/dice_reward_screen.tscn"),
+		GameTypes.GamePhase.SKILL_SELECT: preload("res://gameplay/skill_select/skill_select_screen.tscn"),
 		GameTypes.GamePhase.VICTORY: preload("res://ui/victory/victory_screen.tscn"),
 		GameTypes.GamePhase.GAME_OVER: preload("res://ui/game_over/game_over_screen.tscn"),
+		GameTypes.GamePhase.CHAPTER_TRANSITION: preload("res://gameplay/chapter_transition/chapter_transition.tscn"),
 	}
 	
 	GameManager.phase_changed.connect(_on_phase_changed)
@@ -54,6 +62,9 @@ func _ready() -> void:
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 	if _transitioning:
+		return
+	# 战斗内阶段切换（PLAYER_TURN / ENEMY_TURN）不触发场景切换
+	if new_phase == GameTypes.GamePhase.PLAYER_TURN or new_phase == GameTypes.GamePhase.ENEMY_TURN:
 		return
 	_switch_to_with_transition(new_phase)
 

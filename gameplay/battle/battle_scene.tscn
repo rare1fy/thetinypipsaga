@@ -1,11 +1,77 @@
-[gd_scene load_steps=2 format=3 uid="uid://k3rief1ge1hd"]
+[gd_scene load_steps=17 format=3 uid="uid://k3rief1ge1hd"]
 
 [ext_resource type="Script" uid="uid://cm2inv87j4igv" path="res://gameplay/battle/battle_scene.gd" id="1"]
+[ext_resource type="Script" uid="uid://d06pecgrappe2" path="res://gameplay/battle/battle_controller.gd" id="2_7u8ly"]
+[ext_resource type="Script" uid="uid://dajkn2v436ol8" path="res://gameplay/battle/ui/damage_preview.gd" id="3_8v9mz"]
+[ext_resource type="FontFile" uid="uid://daka4vfi861an" path="res://fonts/fusion-pixel-12px-monospaced-latin.woff2" id="3_t4vxl"]
+[ext_resource type="Script" uid="uid://cokr3bsquuylm" path="res://gameplay/battle/settlement/settlement_player.gd" id="4_settle"]
+[ext_resource type="PackedScene" uid="uid://cbpdyue7ujvi7" path="res://entities/player_hands/player_hands.tscn" id="5_hands"]
+[ext_resource type="Texture2D" uid="uid://cyv1b1gdqsm23" path="res://assets/scene/test/img_scene_sky.png" id="6_bg_sky"]
+[ext_resource type="Texture2D" uid="uid://dk7kv11o78h2t" path="res://assets/scene/test/img_scene_far_view.png" id="7_bg_far"]
+[ext_resource type="Texture2D" uid="uid://dt1e40t8dnmyq" path="res://assets/scene/test/img_scene_mid_view.png" id="8_bg_mid"]
+[ext_resource type="Texture2D" uid="uid://boo23rwtwtnvk" path="res://assets/scene/test/img_scene_ground.png" id="9_bg_ground"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22fma"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 40.0
+bg_color = Color(0.12897816, 0.12463347, 0.09741924, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8pa6"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oiajq"]
+bg_color = Color(0.2451376, 0.71216786, 0.12392544, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c466e"]
+bg_color = Color(0.6756737, 0.52175194, 0.26748648, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5qo3"]
+bg_color = Color(0.49004483, 0.6223236, 0.3461513, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3j50t"]
+bg_color = Color(0.5009828, 0.03327765, 0.028556649, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1")
+"中_距离0坐标" = Vector2(0, 400)
+"中_距离0缩放" = 1.5
+"中_距离0纵深Y偏移" = 0.0
+"中_距离1坐标" = Vector2(0, 200)
+"中_距离1缩放" = 1.0
+"中_距离1纵深Y偏移" = 0.0
+"中_距离2纵深Y偏移" = 0.0
+"中_距离3缩放" = 0.5
+"中_距离3纵深Y偏移" = 0.0
 
 [node name="UILayer" type="CanvasLayer" parent="."]
+layer = 1000
 
 [node name="Root" type="Control" parent="UILayer"]
 unique_name_in_owner = true
@@ -17,99 +83,221 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Background" type="ColorRect" parent="UILayer/Root"]
+[node name="GoldLabel" type="Label" parent="UILayer/Root"]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.06, 0.06, 0.1, 1)
+offset_left = 18.67
+offset_top = 3.75
+offset_right = 82.66996
+offset_bottom = 17.75
+theme_override_font_sizes/font_size = 13
+text = "金币: 0"
+
+[node name="StageLabel" type="Label" parent="UILayer/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 18.67
+offset_top = 21.98
+offset_right = 84.67
+offset_bottom = 36.484978
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "战斗舞台"
 
 [node name="VBox" type="VBoxContainer" parent="UILayer/Root"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 6
 
-[node name="TopBar" type="HBoxContainer" parent="UILayer/Root/VBox"]
-layout_mode = 2
-
-[node name="HpLabel" type="Label" parent="UILayer/Root/VBox/TopBar"]
+[node name="Spacer" type="Control" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-text = "HP: 100/100"
+size_flags_vertical = 3
 
-[node name="HpBar" type="ProgressBar" parent="UILayer/Root/VBox/TopBar"]
+[node name="DamagePreview" type="PanelContainer" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 86)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+script = ExtResource("3_8v9mz")
+
+[node name="HandPanel" type="PanelContainer" parent="UILayer/Root/VBox"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_22fma")
+
+[node name="HandVBox" type="VBoxContainer" parent="UILayer/Root/VBox/HandPanel"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="PlayerStatusBar" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel/HandVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="PlayerInfo" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ClassIcon" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar/PlayerInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "⚔"
+
+[node name="HpBar" type="ProgressBar" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar/PlayerInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_y8pa6")
+theme_override_styles/fill = SubResource("StyleBoxFlat_oiajq")
 value = 100.0
 show_percentage = false
 
-[node name="ArmorLabel" type="Label" parent="UILayer/Root/VBox/TopBar"]
+[node name="HpLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar/PlayerInfo/HpBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -7.0
+offset_right = 36.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_t4vxl")
+theme_override_font_sizes/font_size = 24
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArmorLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar/PlayerInfo"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 
-[node name="GoldLabel" type="Label" parent="UILayer/Root/VBox/TopBar"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "金币: 0"
-
-[node name="TurnLabel" type="Label" parent="UILayer/Root/VBox/TopBar"]
+[node name="TurnLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/PlayerStatusBar"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "回合 0"
 
-[node name="EnemyContainer" type="VBoxContainer" parent="UILayer/Root/VBox"]
+[node name="HandLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox"]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
-
-[node name="HandLabel" type="Label" parent="UILayer/Root/VBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 28)
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 
-[node name="DiceContainer" type="HBoxContainer" parent="UILayer/Root/VBox"]
+[node name="DiceContainer" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel/HandVBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
+theme_override_constants/separation = 8
 alignment = 1
 
-[node name="BtnBar" type="HBoxContainer" parent="UILayer/Root/VBox"]
+[node name="BtnBar" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel"]
+custom_minimum_size = Vector2(0, 66.58)
 layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="PlayBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
+[node name="RerollBtn" type="Button" parent="UILayer/Root/VBox/HandPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 40)
+custom_minimum_size = Vector2(120, 42)
 layout_mode = 2
-text = "出牌"
-
-[node name="RerollBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 40)
-layout_mode = 2
+theme_override_fonts/font = ExtResource("3_t4vxl")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_c466e")
 text = "重投(1)"
 
-[node name="EndTurnBtn" type="Button" parent="UILayer/Root/VBox/BtnBar"]
+[node name="PlayBtn" type="Button" parent="UILayer/Root/VBox/HandPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 40)
+custom_minimum_size = Vector2(400, 42)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_c5qo3")
+text = "出牌"
+
+[node name="EndTurnBtn" type="Button" parent="UILayer/Root/VBox/HandPanel/BtnBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_3j50t")
 text = "结束回合"
+
+[node name="WorldLayer" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="SceneBG" type="Node2D" parent="WorldLayer"]
+z_index = -40
+z_as_relative = false
+
+[node name="Sky" type="Sprite2D" parent="WorldLayer/SceneBG"]
+z_index = -40
+z_as_relative = false
+position = Vector2(360, 841.00006)
+scale = Vector2(0.731, 0.731)
+texture = ExtResource("6_bg_sky")
+
+[node name="FarView" type="Sprite2D" parent="WorldLayer/SceneBG"]
+z_index = -30
+z_as_relative = false
+position = Vector2(360, 754)
+scale = Vector2(0.646, 0.646)
+texture = ExtResource("7_bg_far")
+
+[node name="MidView" type="Sprite2D" parent="WorldLayer/SceneBG"]
+z_index = -20
+z_as_relative = false
+position = Vector2(360, 735)
+scale = Vector2(0.646, 0.646)
+texture = ExtResource("8_bg_mid")
+
+[node name="GroundBase" type="Sprite2D" parent="WorldLayer/SceneBG"]
+z_index = -10
+z_as_relative = false
+position = Vector2(360, 726)
+scale = Vector2(0.646, 0.646)
+texture = ExtResource("9_bg_ground")
+
+[node name="EnemyContainer" type="Node2D" parent="WorldLayer"]
+unique_name_in_owner = true
+position = Vector2(360, 360)
+
+[node name="SettlementPlayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_settle")
+
+[node name="PlayerHandsLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="PlayerHands" parent="PlayerHandsLayer" instance=ExtResource("5_hands")]
+unique_name_in_owner = true
+position = Vector2(360, 724)
+scale = Vector2(2, 2)
+left_hand_base_pos = Vector2(-40, 0)
+right_hand_base_pos = Vector2(60, 0)
+attack_swing_distance = 40.0
+
+[node name="BattleController" type="Node2D" parent="."]
+script = ExtResource("2_7u8ly")

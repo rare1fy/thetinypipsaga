@@ -1,4 +1,4 @@
-# TheTiny-PipSaga — Dice Hero Godot 版
+# TheTiny-PipSaga — 一点点史诗 (The Tiny-Pip Saga) Godot 版
 
 竖屏 Roguelike 骰子构筑游戏，从 React Web 版复刻到 Godot 4.3。
 

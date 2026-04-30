@@ -49,7 +49,8 @@ static func draw_from_bag(
 		discard = []
 		shuffled = true
 
-	var drawn_ids: Array = bag.slice(0, count)
+	var drawn_ids: Array[String] = []
+	drawn_ids.assign(bag.slice(0, count))
 	var remaining: Array[String] = []
 	remaining.assign(bag.slice(count))
 	bag = remaining
@@ -61,7 +62,7 @@ static func draw_from_bag(
 		drawn.append({
 			"id": randi(), "defId": def_id, "value": value,
 			"element": GameTypes.DiceElement.keys()[def.element].to_lower(),
-			"selected": false, "spent": false, "rolling": false,
+				"selected": false, "rolling": false,
 			"kept": false, "isShadowRemnant": false, "isTemp": false,
 			"shadowRemnantPersistent": false, "keptBonusAccum": 0,
 		})

@@ -30,12 +30,12 @@ signal player_armor_gained(amount: int)
 # 骰子事件
 # ============================================================
 
-signal dice_drawn(dice: Array)
-signal dice_rolled(dice: Array)
+signal dice_drawn(dice: Array)  # [RULES-B2-EXEMPT] 信号参数 typed array 支持不稳定
+signal dice_rolled(dice: Array)  # [RULES-B2-EXEMPT] 同上
 signal dice_selected(die_id: int)
 signal dice_deselected(die_id: int)
-signal dice_played(dice: Array, hand_type: String)
-signal dice_rerolled(dice: Array)
+signal dice_played(dice: Array, hand_type: String)  # [RULES-B2-EXEMPT] 同上
+signal dice_rerolled(dice: Array)  # [RULES-B2-EXEMPT] 同上
 signal reroll_count_changed(count: int)
 
 # ============================================================
@@ -55,8 +55,8 @@ signal chapter_changed(chapter: int)
 signal shop_opened
 signal campfire_opened
 signal event_opened(event_id: String)
-signal loot_opened(items: Array)
-signal dice_reward_opened(dice_pool: Array)
+signal loot_opened(items: Array)  # [RULES-B2-EXEMPT] 信号参数 typed array 支持不稳定
+signal dice_reward_opened(dice_pool: Array)  # [RULES-B2-EXEMPT] 同上
 signal skill_select_opened
 
 # ============================================================

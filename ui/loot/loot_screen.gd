@@ -11,6 +11,7 @@ extends Node2D
 func _ready() -> void:
 	continue_btn.pressed.connect(_on_continue)
 	GameManager.phase_changed.connect(_on_phase_changed)
+	SoundPlayer.play_music("explore")
 	# 兜底：main.gd 走销毁重建，进场景时 phase 已就位，手动触发一次内容生成
 	_on_phase_changed(GameManager.phase)
 
@@ -35,7 +36,8 @@ func _generate_loot() -> void:
 	gold_label.text = "获得金币: %d" % GameManager.gold
 	
 	# 生成3个随机遗物供选择
-	var all_relics: Array = GameData._relic_defs.values()
+	var all_relics: Array[RelicDef] = []
+	all_relics.assign(GameData._relic_defs.values())
 	all_relics.shuffle()
 	var count := mini(GameBalance.LOOT_CONFIG.relicChoiceCount, all_relics.size())
 	

@@ -3,6 +3,7 @@
     {
       "id": "E0001",
       "legacy_key": "forest_ghoul",
+      "art_id": "m10001",
       "name": "食尸鬼",
       "chapter": 1,
       "category": "NORMAL",
@@ -18,6 +19,7 @@
     {
       "id": "E0002",
       "legacy_key": "forest_spider",
+      "art_id": "m10001",
       "name": "剧毒蛛母",
       "chapter": 1,
       "category": "NORMAL",
@@ -33,6 +35,7 @@
     {
       "id": "E0003",
       "legacy_key": "forest_treant",
+      "art_id": "m10001",
       "name": "腐化树人",
       "chapter": 1,
       "category": "NORMAL",
@@ -48,6 +51,7 @@
     {
       "id": "E0004",
       "legacy_key": "forest_banshee",
+      "art_id": "m10001",
       "name": "哀嚎女妖",
       "chapter": 1,
       "category": "NORMAL",
@@ -63,6 +67,7 @@
     {
       "id": "E0005",
       "legacy_key": "forest_wolf_priest",
+      "art_id": "m10001",
       "name": "月光狼灵",
       "chapter": 1,
       "category": "NORMAL",
@@ -78,6 +83,7 @@
     {
       "id": "E0101",
       "legacy_key": "ice_yeti",
+      "art_id": "",
       "name": "雪原雪人",
       "chapter": 2,
       "category": "NORMAL",
@@ -93,6 +99,7 @@
     {
       "id": "E0102",
       "legacy_key": "ice_mage",
+      "art_id": "",
       "name": "霜寒女巫",
       "chapter": 2,
       "category": "NORMAL",
@@ -108,6 +115,7 @@
     {
       "id": "E0103",
       "legacy_key": "ice_wolf",
+      "art_id": "",
       "name": "霜鬃狼",
       "chapter": 2,
       "category": "NORMAL",
@@ -123,6 +131,7 @@
     {
       "id": "E0104",
       "legacy_key": "ice_golem",
+      "art_id": "",
       "name": "寒冰石像",
       "chapter": 2,
       "category": "NORMAL",
@@ -138,6 +147,7 @@
     {
       "id": "E0201",
       "legacy_key": "lava_hound",
+      "art_id": "",
       "name": "地狱火犬",
       "chapter": 3,
       "category": "NORMAL",
@@ -153,6 +163,7 @@
     {
       "id": "E0202",
       "legacy_key": "lava_imp",
+      "art_id": "",
       "name": "小恶魔",
       "chapter": 3,
       "category": "NORMAL",
@@ -168,6 +179,7 @@
     {
       "id": "E0203",
       "legacy_key": "lava_guardian",
+      "art_id": "",
       "name": "黑铁卫士",
       "chapter": 3,
       "category": "NORMAL",
@@ -183,6 +195,7 @@
     {
       "id": "E0204",
       "legacy_key": "lava_shaman",
+      "art_id": "",
       "name": "火焰萨满",
       "chapter": 3,
       "category": "NORMAL",
@@ -198,6 +211,7 @@
     {
       "id": "E0301",
       "legacy_key": "shadow_assassin",
+      "art_id": "",
       "name": "暗影刺客",
       "chapter": 4,
       "category": "NORMAL",
@@ -213,6 +227,7 @@
     {
       "id": "E0302",
       "legacy_key": "shadow_felguard",
+      "art_id": "",
       "name": "邪能卫兵",
       "chapter": 4,
       "category": "NORMAL",
@@ -228,6 +243,7 @@
     {
       "id": "E0303",
       "legacy_key": "shadow_warlock",
+      "art_id": "",
       "name": "邪能术士",
       "chapter": 4,
       "category": "NORMAL",
@@ -243,6 +259,7 @@
     {
       "id": "E0304",
       "legacy_key": "shadow_knight",
+      "art_id": "",
       "name": "堕落死亡骑士",
       "chapter": 4,
       "category": "NORMAL",
@@ -258,6 +275,7 @@
     {
       "id": "E0401",
       "legacy_key": "eternal_sentinel",
+      "art_id": "",
       "name": "光铸哨兵",
       "chapter": 5,
       "category": "NORMAL",
@@ -273,6 +291,7 @@
     {
       "id": "E0402",
       "legacy_key": "eternal_chrono",
+      "art_id": "",
       "name": "时光龙人",
       "chapter": 5,
       "category": "NORMAL",
@@ -288,6 +307,7 @@
     {
       "id": "E0403",
       "legacy_key": "eternal_archer",
+      "art_id": "",
       "name": "星界游侠",
       "chapter": 5,
       "category": "NORMAL",
@@ -303,6 +323,7 @@
     {
       "id": "E0404",
       "legacy_key": "eternal_priest",
+      "art_id": "",
       "name": "泰坦祭司",
       "chapter": 5,
       "category": "NORMAL",
@@ -318,6 +339,7 @@
     {
       "id": "E9001",
       "legacy_key": "elite_necromancer",
+      "art_id": "m10001",
       "name": "亡灵巫师",
       "chapter": 1,
       "category": "ELITE",
@@ -333,6 +355,7 @@
     {
       "id": "E9002",
       "legacy_key": "elite_alpha_wolf",
+      "art_id": "m10001",
       "name": "狼人首领",
       "chapter": 1,
       "category": "ELITE",
@@ -348,6 +371,7 @@
     {
       "id": "E9003",
       "legacy_key": "elite_frost_wyrm",
+      "art_id": "",
       "name": "霜龙幼崽",
       "chapter": 2,
       "category": "ELITE",
@@ -363,6 +387,7 @@
     {
       "id": "E9004",
       "legacy_key": "elite_ice_lord",
+      "art_id": "",
       "name": "冰霜巨人王",
       "chapter": 2,
       "category": "ELITE",
@@ -378,6 +403,7 @@
     {
       "id": "E9005",
       "legacy_key": "elite_infernal",
+      "art_id": "",
       "name": "地狱火",
       "chapter": 3,
       "category": "ELITE",
@@ -393,6 +419,7 @@
     {
       "id": "E9006",
       "legacy_key": "elite_dark_iron",
+      "art_id": "",
       "name": "黑铁议员",
       "chapter": 3,
       "category": "ELITE",
@@ -408,6 +435,7 @@
     {
       "id": "E9007",
       "legacy_key": "elite_doomguard",
+      "art_id": "",
       "name": "末日守卫",
       "chapter": 4,
       "category": "ELITE",
@@ -423,6 +451,7 @@
     {
       "id": "E9008",
       "legacy_key": "elite_shadow_priest",
+      "art_id": "",
       "name": "暗影大主教",
       "chapter": 4,
       "category": "ELITE",
@@ -438,6 +467,7 @@
     {
       "id": "E9009",
       "legacy_key": "elite_titan_construct",
+      "art_id": "",
       "name": "泰坦守护者",
       "chapter": 5,
       "category": "ELITE",
@@ -453,6 +483,7 @@
     {
       "id": "E9010",
       "legacy_key": "elite_void_walker",
+      "art_id": "",
       "name": "虚空行者",
       "chapter": 5,
       "category": "ELITE",
@@ -468,6 +499,7 @@
     {
       "id": "E9101",
       "legacy_key": "boss_lich_forest",
+      "art_id": "m10001",
       "name": "枯骨巫妖",
       "chapter": 1,
       "category": "BOSS",
@@ -483,6 +515,7 @@
     {
       "id": "E9102",
       "legacy_key": "boss_ancient_treant",
+      "art_id": "m10001",
       "name": "远古树王",
       "chapter": 1,
       "category": "BOSS",
@@ -498,6 +531,7 @@
     {
       "id": "E9103",
       "legacy_key": "boss_frost_queen",
+      "art_id": "",
       "name": "霜寒女王",
       "chapter": 2,
       "category": "BOSS",
@@ -513,6 +547,7 @@
     {
       "id": "E9104",
       "legacy_key": "boss_frost_lich",
+      "art_id": "",
       "name": "霜之巫妖王",
       "chapter": 2,
       "category": "BOSS",
@@ -528,6 +563,7 @@
     {
       "id": "E9105",
       "legacy_key": "boss_ragnaros",
+      "art_id": "",
       "name": "炎魔之王",
       "chapter": 3,
       "category": "BOSS",
@@ -543,6 +579,7 @@
     {
       "id": "E9106",
       "legacy_key": "boss_deathwing",
+      "art_id": "",
       "name": "熔火死翼",
       "chapter": 3,
       "category": "BOSS",
@@ -558,6 +595,7 @@
     {
       "id": "E9107",
       "legacy_key": "boss_archimonde",
+      "art_id": "",
       "name": "深渊领主",
       "chapter": 4,
       "category": "BOSS",
@@ -573,6 +611,7 @@
     {
       "id": "E9108",
       "legacy_key": "boss_kiljaeden",
+      "art_id": "",
       "name": "暗影之王",
       "chapter": 4,
       "category": "BOSS",
@@ -588,6 +627,7 @@
     {
       "id": "E9109",
       "legacy_key": "boss_titan_watcher",
+      "art_id": "",
       "name": "泰坦看守者",
       "chapter": 5,
       "category": "BOSS",
@@ -603,6 +643,7 @@
     {
       "id": "E9110",
       "legacy_key": "boss_eternal_lord",
+      "art_id": "",
       "name": "永恒主宰",
       "chapter": 5,
       "category": "BOSS",

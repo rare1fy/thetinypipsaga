@@ -4,6 +4,31 @@
 class_name RelicEngine
 
 
+# ============================================================
+# RelicContext 统一构建（铁律 C3）
+# ============================================================
+
+## 构建遗物触发上下文，所有触发入口必须调用此函数而非散写 dict
+## 参数：
+##   game: BattleController 引用（此处用 Node 因为 common/ 不能引用 gameplay/ 的 class_name）
+##   extra: 附加字段覆盖（可选）
+static func build_context(game: Node, extra: Dictionary = {}) -> Dictionary:
+	var ctx: Dictionary = {
+		"controller": game,
+		"hand_dice": DiceBag.hand_dice,
+		"player_class": PlayerState.player_class,
+		"hp": PlayerState.hp,
+		"max_hp": PlayerState.max_hp,
+		"armor": PlayerState.armor,
+		"gold": PlayerState.gold,
+		"combo_count": PlayerState.combo_count,
+		"plays_left": TurnManager.plays_left,
+		"battle_turn": TurnManager.battle_turn,
+	}
+	ctx.merge(extra, true)
+	return ctx
+
+
 ## 检查是否拥有指定ID的遗物
 static func has_relic(relics: Array[Dictionary], relic_id: String) -> bool:
 	return relics.any(func(r): return r.id == relic_id)
@@ -71,14 +96,14 @@ static func on_damage_taken(relics: Array[Dictionary], game: Node, damage: int) 
 
 
 ## 回合结束触发
-static func on_turn_end(relics: Array[Dictionary], game: Node) -> void:
+static func on_turn_end(relics: Array[Dictionary], _game: Node) -> void:
 	for r in relics:
 		var def: RelicDef = GameData.get_relic_def(r.id)
 		if def.trigger == GameTypes.RelicTrigger.ON_TURN_END:
 			if def.id == "magic_glove":
-				game.relic_temp_draw_bonus += def.temp_draw_bonus
+				PlayerState.relic_temp_draw_bonus = def.temp_draw_bonus
 			elif def.id == "whetstone":
-				game.relic_temp_extra_play += def.grant_extra_play
+				PlayerState.relic_temp_extra_play += def.grant_extra_play
 
 
 ## 楼层通过触发
@@ -130,11 +155,25 @@ static func get_extra_plays(relics: Array[Dictionary], game: Node) -> int:
 
 
 ## 计算额外免费重投
+## §7.1 对齐原版 sumPassiveRelicValue('extraReroll')
+##   当前代码 free_rerolls 和 extra_reroll 两个字段都要合流（数据表可能用任意一个）
 static func get_extra_free_rerolls(relics: Array[Dictionary]) -> int:
 	var total := 0
 	for r in relics:
 		var def: RelicDef = GameData.get_relic_def(r.id)
 		total += def.free_rerolls
+		total += def.extra_reroll
+	return total
+
+
+## §6.6 第 3 级 — onPlay 遗物 pierce 聚合
+## 所有 ON_PLAY 触发且 pierce > 0 的遗物叠加生效（对齐原版 postPlayEffects.pierce）
+static func get_on_play_pierce(relics: Array[Dictionary]) -> int:
+	var total: int = 0
+	for r: Dictionary in relics:
+		var def: RelicDef = GameData.get_relic_def(r.id)
+		if def and def.trigger == GameTypes.RelicTrigger.ON_PLAY and def.pierce > 0:
+			total += def.pierce
 	return total
 
 

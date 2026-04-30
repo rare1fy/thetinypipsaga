@@ -38,6 +38,8 @@ static func _ensure_registry() -> void:
 	_registry["player_aoe"] = _play_player_aoe
 	_registry["enemy_defend"] = _play_enemy_defend
 	_registry["enemy_skill"] = _play_enemy_skill
+	# — combo 连击 —
+	_registry["combo_hit"] = _play_combo_hit
 	# — 状态/持续效果 —
 	_registry["heal"] = _play_heal
 	_registry["poison"] = _play_poison
@@ -52,6 +54,13 @@ static func _ensure_registry() -> void:
 	_registry["boss_laugh"] = _play_boss_laugh
 	_registry["gate_close"] = _play_gate_close
 	_registry["enemy_speak"] = _play_enemy_speak
+	# — 别名映射（调用侧使用的ID → 已有生成函数）—
+	_registry["click"] = _play_select
+	_registry["buy"] = _play_shop_buy
+	_registry["upgrade"] = _play_levelup
+	_registry["relic_acquire"] = _play_relic_activate
+	_registry["dice_acquire"] = _play_roll
+	_registry["error"] = _play_error
 
 
 ## ==========================================
@@ -180,6 +189,12 @@ static func _play_levelup(p: AudioStreamPlayer) -> void:
 	_add_tone(d, 554.0, WaveType.SINE, 0.24, 0.1, 0.4, 0.0)
 	_add_tone(d, 659.0, WaveType.SINE, 0.24, 0.2, 0.4, 0.0)
 	_add_tone(d, 880.0, WaveType.SINE, 0.24, 0.3, 0.4, 0.0)
+	_commit(d)
+
+static func _play_error(p: AudioStreamPlayer) -> void:
+	var d := _begin(p)
+	_add_tone(d, 200.0, WaveType.SQUARE, 0.22, 0.0, 0.15, 100.0)
+	_add_tone(d, 150.0, WaveType.SQUARE, 0.22, 0.12, 0.2, 75.0)
 	_commit(d)
 
 
@@ -473,6 +488,19 @@ static func _commit(ctx: SynthCtx) -> void:
 	# 先停止当前播放
 	if ctx.notes.size() > 0:
 		_find_free_player_and_play(stream, data)
+
+
+static func _play_combo_hit(p: AudioStreamPlayer) -> void:
+	var d := _begin(p)
+	# 上行三连音：快速递增的打击感
+	_add_tone(d, 440.0, WaveType.SINE, 0.2, 0.0, 0.1, 0.0)
+	_add_tone(d, 554.0, WaveType.SINE, 0.2, 0.06, 0.1, 0.0)
+	_add_tone(d, 659.0, WaveType.SINE, 0.22, 0.12, 0.12, 0.0)
+	# 金色泛音
+	_add_tone(d, 1318.0, WaveType.TRIANGLE, 0.08, 0.12, 0.15, 100.0)
+	# 底部冲击
+	_add_tone(d, 80.0, WaveType.SINE, 0.12, 0.0, 0.25, 15.0)
+	_commit(d)
 
 
 ## 找到空闲播放器并播放

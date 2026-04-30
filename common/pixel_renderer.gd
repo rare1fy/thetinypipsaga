@@ -5,7 +5,7 @@
 class_name PixelRenderer
 
 ## 在父容器中绘制像素网格，返回创建的节点数量
-static func draw_pixels(parent: Control, pixels: Array, pixel_size: int = 4) -> int:
+static func draw_pixels(parent: Control, pixels: Array, pixel_size: int = 4) -> int:  # [RULES-B2-EXEMPT] 嵌套 Array 无法 typed
 	var count := 0
 	for row in pixels.size():
 		var row_data: Array = pixels[row]

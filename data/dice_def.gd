@@ -185,4 +185,6 @@ func has_on_play() -> bool:
 		or grant_persistent_shadow_remnant or grant_extra_play_on_combo \
 		or grant_shadow_remnant or combo_grant_extra_play \
 		or grant_play_on_third or purify_one_on_skip \
-		or ignore_for_hand_type or execute_heal > 0
+		or ignore_for_hand_type or execute_heal > 0 \
+		or devour_die or random_target or first_play_only \
+		or requires_triple or override_value > 0

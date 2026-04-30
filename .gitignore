@@ -40,7 +40,12 @@ desktop.ini
 *.tmp
 *.bak
 
-# Python（config/tools/）
+# Python (config/tools/)
 __pycache__/
 *.pyc
 config/tools/.venv/
+
+# 第三方美术素材（版权风险，不推仓库）
+# 这些素材仅用于本地开发期占位，正式发布前须全部替换
+/assets/characters/mobs/*/*.png
+/assets/characters/mobs/*/*.png.import

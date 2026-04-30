@@ -10,18 +10,28 @@ config_version=5
 
 [application]
 
-config/name="TheTiny-pipSaga"
-config/description="竖屏 Roguelike 骰子构筑游戏 - Godot 版"
+config/name="The Tiny-Pip Saga"
+config/description="竖屏 Roguelike 骰子构筑游戏"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/show_image=false
+config/icon="res://dice_icon.png"
 
 [autoload]
 
+PlayerState="*res://common/autoload/player_state.gd"
+DiceBag="*res://common/autoload/dice_bag.gd"
+TurnManager="*res://common/autoload/turn_manager.gd"
+StatsTracker="*res://common/autoload/stats_tracker.gd"
 GameManager="*res://common/autoload/game_manager.gd"
 EventBus="*res://common/autoload/event_bus.gd"
 SoundPlayer="*res://common/autoload/sound_player.gd"
 GameData="*res://common/autoload/game_data.gd"
+ToastManager="*res://common/autoload/toast_manager.gd"
+SaveManager="*res://common/autoload/save_manager.gd"
+MCPScreenshot="*res://addons/godot_mcp/mcp_screenshot_service.gd"
+MCPInputService="*res://addons/godot_mcp/mcp_input_service.gd"
+MCPGameInspector="*res://addons/godot_mcp/mcp_game_inspector_service.gd"
 
 [debug]
 
@@ -39,7 +49,11 @@ window/handheld/orientation=1
 
 [dotnet]
 
-project/assembly_name="Dice Hero"
+project/assembly_name="The Tiny-Pip Saga"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
 
 [global]
 

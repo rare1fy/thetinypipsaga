@@ -38,10 +38,14 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 		return {"bestHand": "普通攻击", "allHands": [], "activeHands": ["普通攻击"]}
 	
 	# 过滤掉 ignoreForHandType 的骰子
-	var hand_dice: Array[Dictionary] = dice.filter(func(d): return not _has_ignore_for_hand_type(d))
-	var values: Array[int] = (hand_dice if hand_dice.size() > 0 else dice).map(func(d): return d.value)
+	var hand_dice: Array[Dictionary] = []
+	hand_dice.assign(dice.filter(func(d): return not _has_ignore_for_hand_type(d)))
+	var source_dice: Array[Dictionary] = hand_dice if hand_dice.size() > 0 else dice
+	var values: Array[int] = []
+	values.assign(source_dice.map(func(d): return d.value))
 	values.sort()
-	var elements: Array[String] = (hand_dice if hand_dice.size() > 0 else dice).map(func(d): return d.get("collapsedElement", "") if d.get("collapsedElement", "") else d.get("element", "normal"))
+	var elements: Array[String] = []
+	elements.assign(source_dice.map(func(d): return d.get("collapsedElement", "") if d.get("collapsedElement", "") else d.get("element", "normal")))
 	var unique_elements: Dictionary = {}
 	for e in elements:
 		unique_elements[e] = true
@@ -54,7 +58,8 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	var counts: Dictionary = {}
 	for v in values:
 		counts[v] = counts.get(v, 0) + 1
-	var sorted_counts: Array[int] = counts.values()
+	var sorted_counts: Array[int] = []
+	sorted_counts.assign(counts.values())
 	sorted_counts.sort()
 	sorted_counts.reverse()
 	var max_count: int = sorted_counts[0] if sorted_counts.size() > 0 else 0
@@ -146,7 +151,8 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 		else:
 			return {"bestHand": "普通攻击", "allHands": ["普通攻击"], "activeHands": ["普通攻击"]}
 	
-	var all_hands: Array[String] = hands.keys()
+	var all_hands: Array[String] = []
+	all_hands.assign(hands.keys())
 	
 	# 确定生效牌型
 	var active_hands: Array[String] = []
@@ -188,33 +194,95 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	return {"bestHand": best_hand, "allHands": all_hands, "activeHands": active_hands}
 
 
-## 获取牌型基础伤害倍率
-static func get_hand_mult(hand_name: String) -> Dictionary:
-	if HAND_MULT.has(hand_name):
-		return HAND_MULT[hand_name]
-	return {"base": 0, "mult": 1.0}
+## 获取牌型基础伤害倍率（可选参数 upgrades 叠加升级加成）
+## upgrades 格式：{牌型名: 升级层数}，每级 +15 基础 / +0.1 倍率
+static func get_hand_mult(hand_name: String, upgrades: Dictionary = {}) -> Dictionary:
+	var base_mult: Dictionary = HAND_MULT.get(hand_name, {"base": 0, "mult": 1.0})
+	var upgrade_level: int = int(upgrades.get(hand_name, 0))
+	if upgrade_level <= 0:
+		return base_mult
+	return {
+		"base": int(base_mult.base) + 15 * upgrade_level,
+		"mult": float(base_mult.mult) + 0.1 * upgrade_level,
+	}
 
 
-## 计算总伤害
-static func calculate_damage(dice: Array[Dictionary], hand_result: Dictionary, bonus_mult: float = 0.0, bonus_damage: int = 0) -> int:
+## 计算 §6.6 第 1 级的 baseDamage：floor((X + handBase) × handMult)
+## 不含任何 bonus/修正，仅包含点数和 + 牌型基础 + 牌型倍率（含升级）
+## 用途：§6.6 第 2 级同元素系护甲转化、Debug 输出
+static func calculate_base_damage(
+	dice: Array[Dictionary],
+	hand_result: Dictionary,
+	upgrades: Dictionary = {}
+) -> int:
 	var total_points: int = 0
 	for d in dice:
 		total_points += d.value
-	
-	var active_hands: Array[String] = hand_result.get("activeHands", [])
+	var active_hands: Array[String] = []
+	active_hands.assign(hand_result.get("activeHands", []))
 	var best_base: int = 0
 	var best_mult: float = 1.0
-	
 	for h in active_hands:
-		var hm := get_hand_mult(h)
+		var hm := get_hand_mult(h, upgrades)
 		if hm.base > best_base:
 			best_base = hm.base
 		if hm.mult > best_mult:
 			best_mult = hm.mult
-	
-	# 总伤害 = (点数之和 + 牌型基础) × 牌型倍率 × (1 + 额外倍率) + 额外伤害
-	var damage := int((total_points + best_base) * best_mult * (1.0 + bonus_mult)) + bonus_damage
-	return maxi(1, damage)
+	return int(float(total_points + best_base) * best_mult)
+
+
+## 计算总伤害
+## §6.6 第 8 级 / 第 9 级修正因子（CH6）：
+##   player_weak=true  → ×0.75（玩家被虚弱）
+##   enemy_vulnerable=true → ×1.5（目标敌人易伤）
+##   rogue_combo_bonus=true → ×1.2（盗贼 comboCount≥1 且非普攻，规范 §6.6 第 9 级）
+##   precision_combo=true → ×1.25（盗贼同牌型精准连击，原版 calcComboFinisherBonus）
+## 注：战士血怒 / 狂暴 / 法师过充 已在 bonus_mult 里合流，此处不再重复。
+static func calculate_damage(
+	dice: Array[Dictionary],
+	hand_result: Dictionary,
+	bonus_mult: float = 0.0,
+	bonus_damage: int = 0,
+	upgrades: Dictionary = {},
+	player_weak: bool = false,
+	enemy_vulnerable: bool = false,
+	rogue_combo_bonus: bool = false,
+	precision_combo: bool = false
+) -> int:
+	var total_points: int = 0
+	for d in dice:
+		total_points += d.value
+
+	var active_hands: Array[String] = []
+	active_hands.assign(hand_result.get("activeHands", []))
+	var best_base: int = 0
+	var best_mult: float = 1.0
+
+	for h in active_hands:
+		var hm := get_hand_mult(h, upgrades)
+		if hm.base > best_base:
+			best_base = hm.base
+		if hm.mult > best_mult:
+			best_mult = hm.mult
+
+	# 基础伤害 = (点数之和 + 牌型基础) × 牌型倍率 × (1 + 额外倍率) + 额外伤害
+	var damage: float = float((total_points + best_base)) * best_mult * (1.0 + bonus_mult) + float(bonus_damage)
+
+	# §6.6 第 8 级：玩家虚弱 / 敌人易伤
+	if player_weak:
+		damage *= GameBalance.STATUS_EFFECT_MULT.weak
+	if enemy_vulnerable:
+		damage *= GameBalance.STATUS_EFFECT_MULT.vulnerable
+
+	# §6.6 第 9 级：盗贼连击（非普攻） ×1.2
+	if rogue_combo_bonus:
+		damage *= 1.2
+
+	# §6.6 第 9 级：盗贼同牌型精准连击 ×1.25（原版 calcComboFinisherBonus 独立乘算）
+	if precision_combo:
+		damage *= 1.25
+
+	return maxi(1, int(damage))
 
 
 static func _has_ignore_for_hand_type(d: Dictionary) -> bool:
@@ -224,7 +292,8 @@ static func _has_ignore_for_hand_type(d: Dictionary) -> bool:
 
 ## 查找可组成牌型的候选骰子
 static func find_hand_candidates(all_dice: Array[Dictionary], selected_id: int = -1) -> Dictionary:
-	var available: Array[Dictionary] = all_dice.filter(func(d): return not d.get("spent", false) and not d.get("rolling", false))
+	var available: Array[Dictionary] = []
+	available.assign(all_dice.filter(func(d): return not d.get("rolling", false)))
 	var result: Dictionary = {}  # 模拟 Set，key=id
 	
 	if available.size() < 2:
@@ -232,7 +301,8 @@ static func find_hand_candidates(all_dice: Array[Dictionary], selected_id: int =
 	
 	if selected_id >= 0:
 		# 模式B：找能和 selected_id 组成牌型的骰子
-		var anchor: Array[Dictionary] = available.filter(func(d): return d.id == selected_id)
+		var anchor: Array[Dictionary] = []
+		anchor.assign(available.filter(func(d): return d.id == selected_id))
 		if anchor.is_empty():
 			return result
 		result[selected_id] = true

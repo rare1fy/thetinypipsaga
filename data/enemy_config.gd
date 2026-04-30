@@ -13,6 +13,9 @@ enum EnemyCategory { NORMAL, ELITE, BOSS }
 @export var category: EnemyCategory = EnemyCategory.NORMAL
 @export var combat_type: GameTypes.EnemyCombatType = GameTypes.EnemyCombatType.WARRIOR
 @export var drop_gold: int = 20
+## 美术资源 ID（对应 res://assets/characters/mobs/{art_id}/sprite_frames.tres）
+## 空串表示走占位方块（ColorRect + emoji）
+@export var art_id: String = ""
 @export var drop_relic: bool = false
 @export var drop_reroll_reward: int = 0
 @export var phases: Array[EnemyPhase] = []

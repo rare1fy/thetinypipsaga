@@ -11,14 +11,15 @@ signal class_selected(class_id: String)
 
 
 func _ready() -> void:
-	warrior_btn.pressed.connect(func(): _on_class_picked("warrior"))
-	mage_btn.pressed.connect(func(): _on_class_picked("mage"))
-	rogue_btn.pressed.connect(func(): _on_class_picked("rogue"))
+	warrior_btn.pressed.connect(_on_class_picked.bind("warrior"))
+	mage_btn.pressed.connect(_on_class_picked.bind("mage"))
+	rogue_btn.pressed.connect(_on_class_picked.bind("rogue"))
+	SoundPlayer.play_music("start")
 	
 	# 悬停预览
-	warrior_btn.mouse_entered.connect(func(): _show_class_info("warrior"))
-	mage_btn.mouse_entered.connect(func(): _show_class_info("mage"))
-	rogue_btn.mouse_entered.connect(func(): _show_class_info("rogue"))
+	warrior_btn.mouse_entered.connect(_show_class_info.bind("warrior"))
+	mage_btn.mouse_entered.connect(_show_class_info.bind("mage"))
+	rogue_btn.mouse_entered.connect(_show_class_info.bind("rogue"))
 	
 	# 进场动画：Container 子节点禁用 scale/position tween，只做 modulate 淡入
 	# 避免与 HBoxContainer/VBoxContainer 的自动布局冲突导致遮挡和按钮失效
@@ -33,7 +34,10 @@ func _ready() -> void:
 
 func _on_class_picked(class_id: String) -> void:
 	SoundPlayer.play_sound("click")
+	# 新游戏开始前清空可能残留的旧存档
+	SaveManager.clear_run_save()
 	GameManager.start_run(class_id)
+	GameManager.set_phase(GameTypes.GamePhase.MAP)
 
 
 func _show_class_info(class_id: String) -> void:

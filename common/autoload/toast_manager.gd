@@ -1,8 +1,7 @@
 ## Toast 管理器 — 对应原版 addToast(msg, type)
-## 监听 GameManager.toast_requested，从屏幕底部冒出消息条
+## 监听 GameManager.toast_requested，在屏幕中上部堆叠显示消息条
 ## 单例 CanvasLayer 挂在 Main 下，跨场景复用
 
-class_name ToastManager
 extends CanvasLayer
 
 const MAX_TOAST_COUNT := 3           # 同屏最大 toast 数
@@ -10,7 +9,7 @@ const TOAST_LIFETIME := 2.2          # 单条显示总时长（秒）
 const FADE_DURATION := 0.25           # 淡入/淡出时长
 const TOAST_HEIGHT := 32              # 单条高度
 const TOAST_GAP := 6                  # 条间距
-const BOTTOM_MARGIN := 120            # 距屏幕底部偏移（避开按钮区）
+const TOP_MARGIN := 96                # 距屏幕顶部偏移（避开顶部 HP/金币条，位于屏幕中上部）
 
 # 活跃 toast 列表（顶层 Control 节点）
 var _toasts: Array[Control] = []
@@ -53,16 +52,15 @@ func _on_toast_expired(toast: Control) -> void:
 	_layout_toasts()
 
 
-## 布局所有 toast：从底向上依次堆叠
+## 布局所有 toast：从屏幕中上部向下依次堆叠（最新在最下，最老在最上）
 func _layout_toasts() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
 	for i in _toasts.size():
 		var t: Control = _toasts[i]
 		if not is_instance_valid(t):
 			continue
-		# 最新的在上面（索引大的 y 更靠下）
-		var stack_index := _toasts.size() - 1 - i
-		var y := vp_size.y - BOTTOM_MARGIN - (TOAST_HEIGHT + TOAST_GAP) * stack_index
+		# 索引大的更靠下：最老 (i=0) 在最上，最新 (i=last) 往下排
+		var y := TOP_MARGIN + (TOAST_HEIGHT + TOAST_GAP) * i
 		var x := (vp_size.x - t.custom_minimum_size.x) * 0.5
 		t.position = Vector2(x, y)
 

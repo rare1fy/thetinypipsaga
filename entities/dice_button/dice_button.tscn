@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8hq3ev7dk2bt"]
+
+[ext_resource type="Script" path="res://entities/dice_button/dice_button.gd" id="1_script"]
+
+[node name="DiceButton" type="Button"]
+custom_minimum_size = Vector2(64, 64)
+focus_mode = 0
+mouse_default_cursor_shape = 2
+clip_contents = false
+flat = true
+script = ExtResource("1_script")
+
+[node name="BorderRect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = -3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.15)
+
+[node name="BgRect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.1, 0.1, 0.12, 1)
+
+[node name="ValueLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ElementIcon" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 4.0
+offset_top = 46.0
+offset_right = 24.0
+offset_bottom = 66.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 14
+
+[node name="Badge" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 48.0
+offset_top = -4.0
+offset_right = 68.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.941176, 0.752941, 0.25098, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "◆"

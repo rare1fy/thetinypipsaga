@@ -32,7 +32,7 @@ static func execute_enemy_turn(game: Node, enemies: Array[EnemyInstance], _dice:
 		return {"hp": game.hp, "gameOver": false, "waveTransition": true}
 	
 	# 4. 每个存活敌人执行AI决策
-	for e in enemies:
+	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
 			continue
 		
@@ -81,7 +81,7 @@ static func execute_enemy_turn(game: Node, enemies: Array[EnemyInstance], _dice:
 		game.take_damage(burn)
 		# 灼烧一次性
 		var new_statuses: Array[StatusEffect] = []
-		for s in game.statuses:
+		for s: StatusEffect in game.statuses:
 			if s.type != GameTypes.StatusType.BURN:
 				new_statuses.append(s)
 		game.statuses = new_statuses
@@ -97,10 +97,10 @@ static func execute_enemy_turn(game: Node, enemies: Array[EnemyInstance], _dice:
 ## 灼烧DOT结算
 static func _settle_burn(enemies: Array[EnemyInstance]) -> bool:
 	var all_dead := true
-	for e in enemies:
+	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
 			continue
-		for s in e.statuses:
+		for s: StatusEffect in e.statuses:
 			if s.type == GameTypes.StatusType.BURN and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.value = 0
@@ -112,15 +112,15 @@ static func _settle_burn(enemies: Array[EnemyInstance]) -> bool:
 ## 中毒DOT结算
 static func _settle_poison(enemies: Array[EnemyInstance]) -> bool:
 	var all_dead := true
-	for e in enemies:
+	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
 			continue
-		for s in e.statuses:
+		for s: StatusEffect in e.statuses:
 			if s.type == GameTypes.StatusType.POISON and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.duration -= 1
 		# 移除过期状态
-		e.statuses = e.statuses.filter(func(s): return s.duration > 0)
+		e.statuses = e.statuses.filter(func(s: StatusEffect) -> bool: return s.duration > 0)
 		if e.hp > 0:
 			all_dead = false
 	return all_dead and enemies.size() > 0

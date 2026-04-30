@@ -4,15 +4,24 @@ extends Node2D
 @onready var map_container: VBoxContainer = %MapContainer
 @onready var chapter_label: Label = %ChapterLabel
 
-var _map_nodes: Array = []
+var _map_nodes: Array[MapGenerator.MapNode] = []
 
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
+	SoundPlayer.play_music("explore")
 	# Godot 版 main.gd 采用"每次切场景 free + instantiate"模式，
 	# 进入时当前 phase 就已经是 MAP，phase_changed 不会再触发 → 必须手动兜底生成。
-	if GameManager.phase == GameTypes.GamePhase.MAP and _map_nodes.is_empty():
-		_generate_map()
+	if GameManager.phase == GameTypes.GamePhase.MAP:
+		# 优先使用已有地图数据（存档恢复 / 进入过一次）；空则生成
+		if GameManager.map_nodes.is_empty():
+			_generate_map()
+		else:
+			_map_nodes = GameManager.map_nodes
+			chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[GameManager.chapter - 1]
+			_refresh_map_ui()
+		# 进入地图等于一次"稳定状态检查点"，自动存档
+		SaveManager.save_run()
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
@@ -24,6 +33,7 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 
 func _generate_map() -> void:
 	_map_nodes = MapGenerator.generate_chapter(GameManager.chapter)
+	GameManager.map_nodes = _map_nodes
 	chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[GameManager.chapter - 1]
 	_refresh_map_ui()
 

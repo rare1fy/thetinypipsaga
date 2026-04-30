@@ -195,6 +195,9 @@ static func load_dice_defs() -> Dictionary:
 	return defs
 
 ## 把 effects 数组应用到 DiceDef 对象上
+# effects 故意用裸 Array：来源是 Dictionary[eg_map[eg]] 的 value，
+# Godot 4.5 下 Dictionary 取值返回裸 Array，无法满足 Array[Dictionary] 的 runtime check。
+# 内部只做 eff.get(...) 鸭子式访问，元素类型无需约束。
 static func _apply_effects(d: DiceDef, effects: Array) -> void:
 	for eff in effects:
 		var key: String = eff.get("param_key", "")
@@ -270,6 +273,9 @@ static func load_relic_defs() -> Dictionary:
 	return defs
 
 static func _apply_relic_effects(r: RelicDef, effects: Array) -> void:
+	# effects 故意用裸 Array：来源是 Dictionary[eg_map[eg]] 的 value，
+	# Godot 4.5 下 Dictionary 取值返回裸 Array，无法满足 Array[Dictionary] 的 runtime check。
+	# 内部只做 eff.get(...) 鸭子式访问，元素类型无需约束。
 	for eff in effects:
 		var key: String = eff.get("param_key", "")
 		var value: Variant = eff.get("param_value", null)
@@ -334,7 +340,7 @@ static func load_class_defs() -> Dictionary:
 		c.passive_desc = row.get("passive_desc", "")
 
 		var cid: String = row.get("id", "")
-		var items: Array = start_items.get(cid, [])
+		var items: Array = start_items.get(cid, [])  # [RULES-B2-EXEMPT] dict.get 返回裸 Array
 		var typed: Array[String] = []
 		for it in items:
 			typed.append(str(it))
@@ -428,6 +434,7 @@ static func load_enemy_configs() -> Dictionary:
 		c.base_hp = int(row.get("base_hp", 30))
 		c.base_dmg = int(row.get("base_dmg", 5))
 		c.drop_gold = int(row.get("drop_gold", 20))
+		c.art_id = String(row.get("art_id", ""))
 		c.drop_relic = _as_bool(row.get("drop_relic", false))
 		c.drop_reroll_reward = int(row.get("drop_reroll_reward", 0))
 
@@ -442,14 +449,14 @@ static func load_enemy_configs() -> Dictionary:
 		# 组装 phases
 		var pg: String = row.get("phase_group", "")
 		var phases_arr: Array[EnemyConfig.EnemyPhase] = []
-		var raw_phases: Array = phase_map.get(pg, [])
+		var raw_phases: Array = phase_map.get(pg, [])  # [RULES-B2-EXEMPT] dict.get 返回裸 Array
 		raw_phases.sort_custom(func(a, b): return int(a.get("phase_idx", 0)) < int(b.get("phase_idx", 0)))
 		for p in raw_phases:
 			var phase := EnemyConfig.EnemyPhase.new()
 			phase.hp_threshold = float(p.get("hp_threshold", 0.0))
 			var ag: String = p.get("action_group", "")
 			var acts: Array[EnemyConfig.EnemyAction] = []
-			var raw_acts: Array = action_map.get(ag, [])
+			var raw_acts: Array = action_map.get(ag, [])  # [RULES-B2-EXEMPT] dict.get 返回裸 Array
 			raw_acts.sort_custom(func(a, b): return int(a.get("action_idx", 0)) < int(b.get("action_idx", 0)))
 			for a in raw_acts:
 				var act := EnemyConfig.EnemyAction.new()

@@ -33,14 +33,20 @@ static func shake_heavy(node: Node, intensity: float = 12.0, duration: float = 0
 
 
 static func _do_shake(target: CanvasItem, intensity: float, duration: float) -> void:
-	# 每次都读当前 position 作原点；避免与其它 tween 产生"脏 origin"
+	# Control 用 pivot_offset 偏移（不影响锚点布局）；Node2D 用 position 偏移
+	var use_pivot: bool = target is Control
 	var origin: Vector2
-	if target is Control:
-		origin = (target as Control).position
-	elif target is Node2D:
-		origin = (target as Node2D).position
+	var prop: String
+	
+	if use_pivot:
+		var ctrl: Control = target as Control
+		origin = ctrl.pivot_offset
+		prop = "pivot_offset"
+		ctrl.pivot_offset = ctrl.size * 0.5  # 先设到中心
+		origin = ctrl.pivot_offset  # 再读更新后的值
 	else:
-		return
+		origin = (target as Node2D).position
+		prop = "position"
 	
 	var tw := target.create_tween()
 	var steps := int(maxf(duration / 0.04, 4.0))
@@ -50,8 +56,8 @@ static func _do_shake(target: CanvasItem, intensity: float, duration: float) -> 
 			randf_range(-intensity, intensity) * decay,
 			randf_range(-intensity, intensity) * decay
 		)
-		tw.tween_property(target, "position", origin + offset, 0.04)
-	tw.tween_property(target, "position", origin, 0.04)
+		tw.tween_property(target, prop, origin + offset, 0.04)
+	tw.tween_property(target, prop, origin, 0.04)
 
 
 ## ==========================================
@@ -215,22 +221,153 @@ static func dice_deselect(control: Control, target_y: float, _duration: float = 
 
 
 ## ==========================================
-## 浮动文字 — 飘升+淡出真实实现
+## 浮动文字 — 多样式飘字真实实现
+## type: "damage" / "crit" / "heal" / "armor" / "combo" / "status"
 ## ==========================================
 
-static func damage_pop(label: Label, duration: float = 0.6) -> void:
+## 伤害飘字（红色，向上飘升淡出）
+static func damage_pop(label: Label, duration: float = 0.8) -> void:
+	_floating_pop(label, duration, Color("#f07050"), Vector2(1.3, 1.3), Vector2(0, -50))
+
+
+## 暴击飘字（橙红，更大缩放+更长停留）
+static func crit_pop(label: Label, duration: float = 1.0) -> void:
+	_floating_pop(label, duration, Color("#ff4020"), Vector2(1.8, 1.8), Vector2(0, -60))
+
+
+## 治疗飘字（绿色，温和上飘）
+static func heal_pop(label: Label, duration: float = 0.7) -> void:
+	_floating_pop(label, duration, Color("#50e880"), Vector2(1.1, 1.1), Vector2(0, -35))
+
+
+## 护甲飘字（蓝色，短距上飘）
+static func armor_pop(label: Label, duration: float = 0.6) -> void:
+	_floating_pop(label, duration, Color("#60a0f0"), Vector2(1.0, 1.0), Vector2(0, -30))
+
+
+## Combo 连击飘字（金色，弹性缩放+横向抖动）
+static func combo_pop(label: Label, hit_count: int, duration: float = 0.9) -> void:
 	if not ANIMATIONS_ENABLED:
 		return
 	if not is_instance_valid(label):
 		return
 	var start_pos := label.position
 	label.modulate.a = 1.0
-	label.scale = Vector2(1.2, 1.2)
+	# combo 数字越大，缩放和抖动越强
+	var intensity := mini(hit_count, 5)
+	var scale_target := Vector2(1.0 + 0.15 * intensity, 1.0 + 0.15 * intensity)
+	label.scale = scale_target * 1.3
+	label.add_theme_color_override("font_color", Color("#f0c850"))
 	var tw := label.create_tween()
 	tw.set_parallel(true)
-	tw.tween_property(label, "position", start_pos + Vector2(0, -40), duration)
+	tw.tween_property(label, "position", start_pos + Vector2(randf_range(-8, 8), -55), duration * 0.6)
+	tw.tween_property(label, "scale", scale_target, duration * 0.3)
+	tw.chain().tween_property(label, "modulate:a", 0.0, duration * 0.4)
+
+
+## 状态飘字（紫色，短距上飘）
+static func status_pop(label: Label, duration: float = 0.6) -> void:
+	_floating_pop(label, duration, Color("#c080f0"), Vector2(1.0, 1.0), Vector2(0, -30))
+
+
+## 飘字通用实现（类型特化函数的底层）
+static func _floating_pop(label: Label, duration: float, color: Color, start_scale: Vector2, drift: Vector2) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if not is_instance_valid(label):
+		return
+	var start_pos := label.position
+	label.modulate.a = 1.0
+	label.scale = start_scale
+	label.add_theme_color_override("font_color", color)
+	var tw := label.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(label, "position", start_pos + drift, duration)
 	tw.tween_property(label, "scale", Vector2(1.0, 1.0), duration * 0.3)
 	tw.chain().tween_property(label, "modulate:a", 0.0, duration * 0.4)
+
+
+## ==========================================
+## 飘字工厂 — 在指定父节点上创建飘字 Label 并自动播放动画后销毁
+## ==========================================
+
+## 在 target 位置创建伤害飘字
+static func spawn_damage_text(parent: Node, pos: Vector2, damage: int, is_crit: bool = false) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if damage <= 0:
+		return  # 0 伤害不生成飘字
+	var label := _create_floating_label(parent, pos, str(damage), 22 if is_crit else 18)
+	if is_crit:
+		crit_pop(label)
+	else:
+		damage_pop(label)
+
+
+## 在 target 位置创建治疗飘字
+static func spawn_heal_text(parent: Node, pos: Vector2, amount: int) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if amount <= 0:
+		return
+	var label := _create_floating_label(parent, pos, "+%d" % amount, 16)
+	heal_pop(label)
+
+
+## 在 target 位置创建护甲飘字
+static func spawn_armor_text(parent: Node, pos: Vector2, amount: int) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if amount <= 0:
+		return
+	var label := _create_floating_label(parent, pos, "🛡+%d" % amount, 14)
+	armor_pop(label)
+
+
+## 在 target 位置创建 combo 飘字
+static func spawn_combo_text(parent: Node, pos: Vector2, hit_count: int) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if hit_count <= 0:
+		return
+	var label := _create_floating_label(parent, pos, "COMBO x%d!" % hit_count, 20)
+	combo_pop(label, hit_count)
+
+
+## 在 target 位置创建状态/提示文本飘字（通用文本飘字，CH6 盗贼连击钩子等使用）
+static func spawn_status_text(parent: Node, pos: Vector2, text: String, font_size: int = 16) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if text.is_empty():
+		return
+	var label := _create_floating_label(parent, pos, text, font_size)
+	heal_pop(label)
+
+
+## 创建飘字 Label 节点（设置基础样式，定位到指定位置）
+## pos 为全局/屏幕坐标。通过设置 label.global_position 直接定位。
+## 居中逻辑：依赖 Label 自身测量后的实际宽度，消除硬编码偏移
+static func _create_floating_label(parent: Node, pos: Vector2, text: String, font_size: int) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 3)
+	parent.add_child(label)
+	# 强制测量后用实际尺寸居中，避免硬编码偏移造成偏右
+	label.reset_size()
+	var offset: Vector2 = Vector2(label.size.x * 0.5, 0)
+	label.global_position = pos - offset
+	label.z_index = 100
+	# [FIX-Lambda] 动画结束后自动销毁 — 用 WeakRef 包裹避免 "Lambda capture was freed"
+	var label_wr: WeakRef = weakref(label)
+	label.get_tree().create_timer(1.5).timeout.connect(func() -> void:
+		var lbl: Label = label_wr.get_ref() as Label
+		if is_instance_valid(lbl):
+			lbl.queue_free()
+	)
+	return label
 
 
 ## ==========================================
@@ -355,11 +492,13 @@ static func _spawn_particles(parent: Node, center: Vector2, count: int, colors: 
 	p.color = colors[0]
 	parent.add_child(p)
 	p.emitting = true
-	# 粒子结束后自销毁（lifetime + 缓冲）
+	# [FIX-Lambda] 粒子结束后自销毁 — 用 WeakRef 包裹避免 "Lambda capture was freed"
 	var cleanup_time: float = life + 0.3
+	var p_wr: WeakRef = weakref(p)
 	p.get_tree().create_timer(cleanup_time).timeout.connect(func() -> void:
-		if is_instance_valid(p):
-			p.queue_free()
+		var particle: CPUParticles2D = p_wr.get_ref() as CPUParticles2D
+		if is_instance_valid(particle):
+			particle.queue_free()
 	)
 
 
@@ -404,3 +543,22 @@ static func safe_remove(control: Control, _duration: float = 0.2) -> void:
 	if not is_instance_valid(control):
 		return
 	control.queue_free()
+
+
+## ==========================================
+## Toast 提示 — 转发到 GameManager.toast_requested 信号
+## ToastManager 单例监听后会从屏幕底部冒出消息条
+## type: "info" / "buff" / "damage" / "warn" / "error" / "success"
+## ==========================================
+static func show_toast(text: String, toast_type: String = "info") -> void:
+	if Engine.has_singleton("GameManager"):
+		Engine.get_singleton("GameManager").toast_requested.emit(text, toast_type)
+	else:
+		# Autoload 用 get_tree 拿
+		var tree := Engine.get_main_loop() as SceneTree
+		if tree and tree.root.has_node("GameManager"):
+			var gm := tree.root.get_node("GameManager")
+			if gm.has_signal("toast_requested"):
+				gm.toast_requested.emit(text, toast_type)
+				return
+		print("[Toast][%s] %s" % [toast_type, text])

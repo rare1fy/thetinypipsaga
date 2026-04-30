@@ -350,6 +350,7 @@ def build_enemy():
     write_header(ws, [
         ("id", "string", "敌人编号 E+4位。章节段号：1章0001-/2章0101-/3章0201-/4章0301-/5章0401-；精英E9001-；Boss E9101-"),
         ("legacy_key", "string", "代码旧 key（forest_ghoul 等）"),
+        ("art_id", "string", "美术资源 ID（res://assets/characters/mobs/{art_id}/sprite_frames.tres），空=占位方块"),
         ("name", "string", "中文名"),
         ("chapter", "int", "所属章节 1-5"),
         ("category", "string", "类型：NORMAL/ELITE/BOSS"),
@@ -361,25 +362,28 @@ def build_enemy():
         ("drop_reroll_reward", "int", "掉落重投奖励次数"),
         ("phase_group", "ref", "阶段组外键，指向 phases sheet 的 phase_group"),
         ("quote_group", "ref", "台词组外键，指向 quotes sheet 的 quote_group"),
-    ], widths=[8, 24, 16, 8, 10, 12, 10, 10, 10, 10, 14, 14, 14])
+    ], widths=[8, 24, 12, 16, 8, 10, 12, 10, 10, 10, 10, 14, 14, 14])
 
     for r, (legacy, name, chapter, hp, dmg, cat, ct, gold, drop_r, drop_rr, phases, quotes) in enumerate(ENEMIES, start=4):
         eid = ENEMY_ID_MAP[legacy]
         pg = "PG" + eid[1:]  # phase_group 用 PG + 敌人号段
         qg = "QG" + eid[1:]
+        # 测试阶段：第 1 章全部用 m10001，其他章节留空（后续补美术时逐个填）
+        art_id = "m10001" if chapter == 1 else ""
         ws.cell(row=r, column=1, value=eid)
         ws.cell(row=r, column=2, value=legacy)
-        ws.cell(row=r, column=3, value=name)
-        ws.cell(row=r, column=4, value=chapter)
-        ws.cell(row=r, column=5, value=cat)
-        ws.cell(row=r, column=6, value=ct)
-        ws.cell(row=r, column=7, value=hp)
-        ws.cell(row=r, column=8, value=dmg)
-        ws.cell(row=r, column=9, value=gold)
-        ws.cell(row=r, column=10, value=1 if drop_r else 0)
-        ws.cell(row=r, column=11, value=drop_rr)
-        ws.cell(row=r, column=12, value=pg)
-        ws.cell(row=r, column=13, value=qg)
+        ws.cell(row=r, column=3, value=art_id)
+        ws.cell(row=r, column=4, value=name)
+        ws.cell(row=r, column=5, value=chapter)
+        ws.cell(row=r, column=6, value=cat)
+        ws.cell(row=r, column=7, value=ct)
+        ws.cell(row=r, column=8, value=hp)
+        ws.cell(row=r, column=9, value=dmg)
+        ws.cell(row=r, column=10, value=gold)
+        ws.cell(row=r, column=11, value=1 if drop_r else 0)
+        ws.cell(row=r, column=12, value=drop_rr)
+        ws.cell(row=r, column=13, value=pg)
+        ws.cell(row=r, column=14, value=qg)
 
     # ===== Sheet 2: phases =====
     ws_ph = wb.create_sheet("phases")

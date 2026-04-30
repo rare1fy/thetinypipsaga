@@ -51,7 +51,7 @@ const NODE_WEIGHTS: Array[Dictionary] = [
 ## 生成一章地图
 static func generate_chapter(chapter: int = 1) -> Array[MapNode]:
 	var nodes: Array[MapNode] = []
-	var layers: Array = []  # 每层的节点数组
+	var layers: Array = []  # [RULES-B2-EXEMPT] 嵌套 Array[MapNode] 无法用 typed Array 表达
 	
 	for depth in range(15):
 		var config := FIXED_LAYERS.get(depth, {"type": null, "count": 3}) as Dictionary
@@ -81,8 +81,8 @@ static func generate_chapter(chapter: int = 1) -> Array[MapNode]:
 	
 	# 生成连接（每层连接到下一层）
 	for depth in range(layers.size() - 1):
-		var current_layer: Array = layers[depth]
-		var next_layer: Array = layers[depth + 1]
+		var current_layer: Array = layers[depth]  # [RULES-B2-EXEMPT] 从嵌套裸 Array 取出
+		var next_layer: Array = layers[depth + 1]  # [RULES-B2-EXEMPT] 同上
 		
 		for node in current_layer:
 			# 每个节点至少连接1个下一层节点

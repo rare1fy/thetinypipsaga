@@ -34,7 +34,8 @@ func _generate_treasure() -> void:
 	
 	# 50%概率额外遗物
 	if randf() < 0.5:
-		var all_relics: Array = GameData._relic_defs.values()
+		var all_relics: Array[RelicDef] = []
+		all_relics.assign(GameData._relic_defs.values())
 		all_relics.shuffle()
 		var def: RelicDef = all_relics[0]
 		var label := Label.new()

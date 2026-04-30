@@ -16,6 +16,12 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 	visible = new_phase == GameTypes.GamePhase.GAME_OVER
 	if visible:
 		_show_stats()
+		# 清除 run 存档，下次开始是新局
+		SaveManager.clear_run_save()
+		# 累加 meta 统计（总死亡次数）
+		var meta: Dictionary = SaveManager.load_meta()
+		meta["total_deaths"] = int(meta.get("total_deaths", 0)) + 1
+		SaveManager.save_meta(meta)
 		# 败北特效
 		VFX.fade_in(stats_label, 0.5)
 		VFX.fade_in(retry_btn, 0.3, 0.5)
