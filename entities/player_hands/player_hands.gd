@@ -48,6 +48,7 @@ func play_hurt() -> void:
 ## 攻击反馈：右手挥武器 + 左手扔骰子
 ## 对齐概念图：左手拿骰子 / 右手持剑
 func play_attack() -> void:
+	print_rich("[color=cyan][PlayerHands] play_attack: _is_dead=%s[/color]" % _is_dead)
 	if _is_dead:
 		attack_finished.emit()
 		return

@@ -76,18 +76,24 @@ func is_running() -> bool:
 ##   has_aoe: bool,              # 是否 AOE（Phase 4 震屏强度）
 ## }
 func play(data: Dictionary) -> void:
+	print_rich("[color=green][SettlementPlayer] play() 入口: ENABLED=%s _running=%s[/color]" % [ENABLED, _running])
 	if not ENABLED:
 		return
 	if _running:
+		push_warning("[SettlementPlayer] play() called while _running=true, skipping")
 		return
 	_running = true
 	
+	# [FIX] 确保 _running 最终一定被重置（GDScript 无 try-finally，用手动清理）
+	var _play_ok: bool = false
 	_dim.visible = true
 	_dim.modulate.a = 0.0
 	var fade_tw := create_tween()
 	fade_tw.tween_property(_dim, "modulate:a", 1.0, 0.1)
 	
+	print_rich("[color=green][SettlementPlayer] 阶段1: 手牌展示[/color]")
 	await _phase1_hand_display(data.get("hand_name", "普通攻击"))
+	print_rich("[color=green][SettlementPlayer] 阶段2: 骰子计分[/color]")
 	var raw_values: Variant = data.get("dice_values", [])
 	var dice_values: Array[int] = []
 	if raw_values is Array[int]:
@@ -96,19 +102,29 @@ func play(data: Dictionary) -> void:
 		for v: int in raw_values:
 			dice_values.append(v)
 	await _phase2_dice_scoring(dice_values)
+	print_rich("[color=green][SettlementPlayer] 阶段3: 效果加成[/color]")
 	await _phase3_effects(data.get("bonus_mult", 0.0), data.get("bonus_damage", 0))
+	print_rich("[color=green][SettlementPlayer] 阶段4: 最终伤害[/color]")
 	await _phase4_final_damage(data.get("total_damage", 0), data.get("has_aoe", false))
 	
 	# 收尾：全部淡出
+	print_rich("[color=green][SettlementPlayer] 收尾淡出[/color]")
 	var close_tw := create_tween()
 	close_tw.set_parallel(true)
 	for l: Control in [_hand_label, _sum_label, _bonus_label, _final_label, _dim]:
 		close_tw.tween_property(l, "modulate:a", 0.0, 0.18)
 	await _safe_await_tween(close_tw, 0.5)
 	
+	_play_ok = true
+	_cleanup_after_play()
+	print_rich("[color=green][SettlementPlayer] play() 完成, _running=false[/color]")
+
+
+func _cleanup_after_play() -> void:
 	_dim.visible = false
 	for l: Label in [_hand_label, _sum_label, _bonus_label, _final_label]:
 		l.visible = false
+		l.modulate.a = 1.0
 	_running = false
 
 

@@ -117,28 +117,36 @@ func _setup_auto_end_timer() -> void:
 
 func _check_auto_end_turn() -> void:
 	# 条件：玩家回合 + 有存活敌人 + playsLeft<=0 或 无未消耗骰子
+	print_rich("[color=yellow][BattleController] _check_auto_end_turn: _is_resolving=%s is_enemy_turn=%s plays_left=%d hand_dice=%d[/color]" % [_is_resolving, GameManager.is_enemy_turn, GameManager.plays_left, DiceBag.hand_dice.size()])
 	if _is_resolving or GameManager.is_enemy_turn:
+		print_rich("[color=yellow][BattleController] _check_auto_end_turn: 被拦截! resolving=%s enemy=%s[/color]" % [_is_resolving, GameManager.is_enemy_turn])
 		return
 	if EnemyMgr.get_living_enemies(enemy_views).is_empty():
+		print_rich("[color=yellow][BattleController] _check_auto_end_turn: 无存活敌人，跳过[/color]")
 		return
 	if PlayerState.hp <= 0:
 		return
 	# 骰子出牌即入弃骰库，不再有 spent 骰子；手牌为空即"无可用骰子"
 	if GameManager.plays_left <= 0 or DiceBag.hand_dice.is_empty():
 		if _auto_end_timer and _auto_end_timer.is_stopped():
+			print_rich("[color=yellow][BattleController] _check_auto_end_turn: 启动自动结束计时器(1.0s)[/color]")
 			_auto_end_timer.start()
+		else:
+			print_rich("[color=yellow][BattleController] _check_auto_end_turn: 计时器已在运行或不存在[/color]")
 	else:
 		if _auto_end_timer and not _auto_end_timer.is_stopped():
 			_auto_end_timer.stop()
 
 func _on_auto_end_timer_timeout() -> void:
 	# 再次确认状态未变
+	print_rich("[color=yellow][BattleController] _on_auto_end_timer_timeout: _is_resolving=%s is_enemy_turn=%s hp=%d[/color]" % [_is_resolving, GameManager.is_enemy_turn, PlayerState.hp])
 	if _is_resolving or GameManager.is_enemy_turn:
 		return
 	if PlayerState.hp <= 0:
 		return
 	if EnemyMgr.get_living_enemies(enemy_views).is_empty():
 		return
+	print_rich("[color=yellow][BattleController] _on_auto_end_timer_timeout: 执行 _process_turn_end_and_enemy_phase[/color]")
 	_process_turn_end_and_enemy_phase()
 
 ## 获取震屏目标节点（WorldLayer），UI 层不受震屏影响

@@ -133,19 +133,26 @@ func execute(controller: BattleController) -> void:
 		BattleLog.log_dice("出牌 → %d 伤害" % total_damage)
 
 	# 阶段 1：结算演出（await 等待四阶段播完 + 收尾淡出）
+	print_rich("[color=green][PlayHandlerBridge] 阶段1: 开始结算演出[/color]")
 	await _play_settlement(controller, hand_name, selected_dice, bonus_mult, bonus_damage, total_damage, hand_result)
+	print_rich("[color=green][PlayHandlerBridge] 阶段1: 结算演出完成[/color]")
 
 	# 阶段 2：玩家攻击动画（等待动画完成再触发受击，避免同时播放）
 	var battle_scene: BattleScene = controller.owner as BattleScene
+	print_rich("[color=green][PlayHandlerBridge] 阶段2: battle_scene=%s player_hands=%s[/color]" % [battle_scene != null, battle_scene != null and battle_scene.player_hands != null])
 	if battle_scene != null and battle_scene.player_hands != null:
 		battle_scene.player_hands.play_attack()
+		print_rich("[color=green][PlayHandlerBridge] 阶段2: 等待 attack_finished[/color]")
 		await battle_scene.player_hands.attack_finished
+		print_rich("[color=green][PlayHandlerBridge] 阶段2: attack_finished 收到[/color]")
 
 	# 阶段 3：伤害应用 + 敌人受击动画 + 飘字
+	print_rich("[color=green][PlayHandlerBridge] 阶段3: 开始伤害应用[/color]")
 	_apply_damage_and_after(
 		controller, total_damage, selected_dice, hand_result, dice_effect_result,
 		total_pierce, is_pure_normal
 	)
+	print_rich("[color=green][PlayHandlerBridge] 阶段3: 伤害应用完成[/color]")
 
 
 # ============================================================
@@ -214,10 +221,13 @@ func _apply_damage_and_after(
 		return
 
 	# 8. 标记已出骰子 + 消耗出牌次数
+	print_rich("[color=green][PlayHandlerBridge] 步骤8: mark_spent_and_after_play, plays_left=%d[/color]" % GameManager.plays_left)
 	BattlePlayHandler.mark_spent_and_after_play(controller.selected_dice_indices, dice_effect_result)
+	print_rich("[color=green][PlayHandlerBridge] 步骤8: after_play后 plays_left=%d, hand_dice.size=%d[/color]" % [GameManager.plays_left, DiceBag.hand_dice.size()])
 	controller.selected_dice_indices.clear()
 
 	# 9. 延迟刷新 UI
+	print_rich("[color=green][PlayHandlerBridge] 步骤9: _schedule_after_play_resolve[/color]")
 	_schedule_after_play_resolve(controller)
 
 
@@ -268,12 +278,15 @@ func _schedule_after_play_resolve(controller: BattleController) -> void:
 
 
 func _on_after_play_resolve(controller: BattleController) -> void:
+	print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: is_inside_tree=%s[/color]" % controller.is_inside_tree())
 	if not controller.is_inside_tree():
 		return
 	EnemyMgr.refresh_enemy_views(controller.enemy_views)
 	controller._refresh_status_bar()
 	controller._is_resolving = false
+	print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: _is_resolving=false, plays_left=%d, hand_dice.size=%d[/color]" % [GameManager.plays_left, DiceBag.hand_dice.size()])
 	if GameManager.plays_left <= 0 or DiceBag.hand_dice.is_empty():
+		print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: 触发 _check_auto_end_turn[/color]")
 		controller._check_auto_end_turn()
 	else:
 		controller._refresh_hand_display()
