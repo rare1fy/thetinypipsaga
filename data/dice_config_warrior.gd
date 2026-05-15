@@ -279,16 +279,16 @@ static func _life_furnace() -> Dictionary:
 		"class_type": "warrior",
 		"description": "未满血回复点数×2，满血获得护甲×3+20%增伤",
 		"effects": [
-			# 未满血时：回复
+			# 未满血时：回复（condition: "low_hp" 表示HP未满）
 			EffectTypes.create_effect(ET.HEAL,
-				{"value": 0, "source": "points", "ratio": 2.0},
+				{"value": 0, "source": "points", "ratio": 2.0, "condition": "not_full_hp"},
 				TT.ON_PLAY, ES.INSTANT, SR.INDEPENDENT, TS.SELF),
-			# 满血时：护甲+增伤（由 EffectEngine 根据 HP 状态分支处理）
+			# 满血时：护甲+增伤（condition: "full_hp"）
 			EffectTypes.create_effect(ET.ARMOR,
-				{"value": 0, "source": "points", "ratio": 3.0},
+				{"value": 0, "source": "points", "ratio": 3.0, "condition": "full_hp"},
 				TT.ON_PLAY, ES.PLAY, SR.INDEPENDENT, TS.SELF),
 			EffectTypes.create_effect(ET.BONUS_MULT,
-				{"value": 0.2},
+				{"value": 0.2, "condition": "full_hp"},
 				TT.ON_PLAY, ES.PLAY, SR.INDEPENDENT, TS.MAIN),
 		],
 	}

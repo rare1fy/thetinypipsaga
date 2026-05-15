@@ -264,11 +264,14 @@ static func _resolve_kept_dice(result: DrawPhaseResult) -> void:
 			continue
 
 		# 1. bonusOnKeep（水晶骰）：保留到下回合时点数+N
-		if def.bonus_on_keep > 0:
-			var old_val: int = d.get("value", 1)
-			var new_val: int = mini(6, old_val + def.bonus_on_keep)
-			d["value"] = new_val
-			result.floating_texts.append({"text": "%s+%d点" % [def.name, def.bonus_on_keep], "color": Color.CYAN, "target": "player"})
+		var bonus_keep_eff: Dictionary = _find_effect(def, EffectTypes.EffectType.BONUS_ON_KEEP)
+		if not bonus_keep_eff.is_empty() and bonus_keep_eff.get("trigger", -1) == EffectTypes.TriggerType.ON_KEEP:
+			var bonus_val: int = bonus_keep_eff.get("params", {}).get("value", 0)
+			if bonus_val > 0:
+				var old_val: int = d.get("value", 1)
+				var new_val: int = mini(6, old_val + bonus_val)
+				d["value"] = new_val
+				result.floating_texts.append({"text": "%s+%d点" % [def.name, bonus_val], "color": Color.CYAN, "target": "player"})
 
 		# 2. boostLowestOnKeep（时光沙）：保留时手牌中最低点骰子+N
 		# 2. MODIFY_POINTS 效果（保留时提升最低点数）

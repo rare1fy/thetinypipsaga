@@ -138,6 +138,87 @@ static func apply(
 			target_inst.armor = 0
 			effect_result.descriptions.append("摧毁护甲 → +%d 伤害" % effect_result.bonus_damage)
 
+	# 处决：目标HP低于阈值时直接击杀
+	if effect_result.execute_threshold > 0.0:
+		var target_inst2: EnemyInstance = _get_target_from_views(enemy_views)
+		if target_inst2:
+			var hp_ratio: float = float(target_inst2.hp) / float(target_inst2.max_hp)
+			if hp_ratio <= effect_result.execute_threshold:
+				target_inst2.hp = 0
+				effect_result.descriptions.append("处决成功！")
+
+	# 引爆：消耗目标状态层数造成伤害
+	if effect_result.detonate_status != "":
+		var target_inst3: EnemyInstance = _get_target_from_views(enemy_views)
+		if target_inst3:
+			var st_type: int = _status_name_to_type(effect_result.detonate_status)
+			if st_type >= 0:
+				var stacks: int = target_inst3.get_status_stacks(effect_result.detonate_status) if target_inst3.has_method("get_status_stacks") else 0
+				if stacks > 0:
+					var det_dmg: int = stacks * effect_result.detonate_damage_per_stack
+					target_inst3.hp -= det_dmg
+					effect_result.descriptions.append("引爆 %s %d层 → %d 伤害" % [effect_result.detonate_status, stacks, det_dmg])
+
+	# 伤害护盾：给玩家添加伤害护盾
+	if effect_result.damage_shield_value > 0:
+		if "damage_shield" in PlayerState:
+			PlayerState.damage_shield = effect_result.damage_shield_value
+			PlayerState.damage_shield_duration = effect_result.damage_shield_duration
+		effect_result.descriptions.append("获得 %d 伤害护盾（%d回合）" % [effect_result.damage_shield_value, effect_result.damage_shield_duration])
+
+	# 控制效果：通过 ControlSystem 应用
+	if not effect_result.controls.is_empty():
+		for ctrl: Dictionary in effect_result.controls:
+			var ctrl_type_str: String = ctrl.get("control", "")
+			var duration: int = ctrl.get("duration", 0)
+			var distance: int = ctrl.get("distance", 0)
+			var target_tag: String = ctrl.get("target", "main")
+			var ctrl_enum: int = _control_name_to_type(ctrl_type_str)
+			if ctrl_enum < 0:
+				continue
+			if target_tag == "main":
+				var target_inst4: EnemyInstance = _get_target_from_views(enemy_views)
+				if target_inst4:
+					ControlSystem.apply_control(target_inst4, ctrl_enum, maxi(duration, distance))
+			elif target_tag == "all":
+				for view: Node in enemy_views:
+					if not is_instance_valid(view):
+						continue
+					var inst: EnemyInstance = get_target_enemy_instance(view)
+					if inst and inst.hp > 0:
+						ControlSystem.apply_control(inst, ctrl_enum, maxi(duration, distance))
+
+	# 金币
+	if effect_result.gold_gain > 0:
+		if PlayerState.has_method("add_gold"):
+			PlayerState.add_gold(effect_result.gold_gain)
+		effect_result.descriptions.append("+%d 金币" % effect_result.gold_gain)
+
+	# 屏障
+	if effect_result.barrier > 0:
+		if PlayerState.has_method("gain_barrier"):
+			PlayerState.gain_barrier(effect_result.barrier)
+		else:
+			# 降级为护甲
+			PlayerState.gain_armor(effect_result.barrier)
+		effect_result.descriptions.append("获得 %d 屏障" % effect_result.barrier)
+
+	# 规则改变：抽牌数/手牌上限/全骰点数加成
+	if effect_result.draw_count_delta != 0:
+		PlayerState.temp_draw_count_bonus += effect_result.draw_count_delta
+	if effect_result.hand_limit_delta != 0:
+		if "hand_limit_bonus" in GameManager:
+			GameManager.hand_limit_bonus += effect_result.hand_limit_delta
+	if effect_result.all_dice_points_plus > 0:
+		if "all_dice_points_bonus" in GameManager:
+			GameManager.all_dice_points_bonus += effect_result.all_dice_points_plus
+
+	# 免死
+	if effect_result.death_immunity_cooldown > 0:
+		if "death_immunity" in PlayerState:
+			PlayerState.death_immunity = true
+			PlayerState.death_immunity_cooldown = effect_result.death_immunity_cooldown
+
 	# 刷新状态栏
 	if status_bar_refresh_cb.is_valid():
 		status_bar_refresh_cb.call()
@@ -203,6 +284,30 @@ static func _status_name_to_type(name: String) -> int:
 			return GameTypes.StatusType.SLOW
 		"strength":
 			return GameTypes.StatusType.STRENGTH if "STRENGTH" in GameTypes.StatusType else -1
+		"dodge":
+			return GameTypes.StatusType.DODGE if "DODGE" in GameTypes.StatusType else -1
+		"armor":
+			return GameTypes.StatusType.ARMOR if "ARMOR" in GameTypes.StatusType else -1
 		_:
 			push_warning("[DiceEffectApplier] 未知状态名: %s" % name)
+			return -1
+
+
+## 控制类型字符串 → ControlSystem.ControlType 映射
+static func _control_name_to_type(name: String) -> int:
+	match name:
+		"taunt":
+			return ControlSystem.ControlType.TAUNT
+		"stun":
+			return ControlSystem.ControlType.STUN
+		"knockback":
+			return ControlSystem.ControlType.KNOCKBACK
+		"polymorph":
+			return ControlSystem.ControlType.POLYMORPH
+		"blind":
+			return ControlSystem.ControlType.BLIND
+		"disarm":
+			return ControlSystem.ControlType.DISARM
+		_:
+			push_warning("[DiceEffectApplier] 未知控制类型: %s" % name)
 			return -1

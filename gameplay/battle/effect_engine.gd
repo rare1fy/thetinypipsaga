@@ -114,6 +114,20 @@ class ExecuteResult:
 	var charge_turns: int = 0
 	var ignore_taunt: bool = false
 
+	## 规则改变类（由 Applier 在战斗开始/回合开始时应用）
+	var draw_count_delta: int = 0
+	var hand_limit_delta: int = 0
+	var all_dice_points_plus: int = 0
+	var death_immunity_cooldown: int = 0  # >0 表示有免死效果
+
+	## 高级效果标记（由 Applier 根据目标状态执行）
+	var execute_threshold: float = 0.0  # >0 表示有处决效果
+	var execute_mult: float = 0.0
+	var detonate_status: String = ""  # 非空表示有引爆效果
+	var detonate_damage_per_stack: int = 0
+	var damage_shield_value: int = 0
+	var damage_shield_duration: int = 0
+
 	## 日志
 	var descriptions: Array[String] = []
 
@@ -170,6 +184,20 @@ class ExecuteResult:
 		if other.charge_turns > 0:
 			charge_turns = other.charge_turns
 		ignore_taunt = ignore_taunt or other.ignore_taunt
+		draw_count_delta += other.draw_count_delta
+		hand_limit_delta += other.hand_limit_delta
+		all_dice_points_plus += other.all_dice_points_plus
+		if other.death_immunity_cooldown > 0:
+			death_immunity_cooldown = other.death_immunity_cooldown
+		if other.execute_threshold > 0.0:
+			execute_threshold = other.execute_threshold
+			execute_mult = other.execute_mult
+		if other.detonate_status != "":
+			detonate_status = other.detonate_status
+			detonate_damage_per_stack = other.detonate_damage_per_stack
+		damage_shield_value += other.damage_shield_value
+		if other.damage_shield_duration > 0:
+			damage_shield_duration = other.damage_shield_duration
 		descriptions.append_array(other.descriptions)
 
 
@@ -186,14 +214,34 @@ static func execute(effects: Array, ctx: ExecuteContext) -> ExecuteResult:
 		if not EffectTypes.validate_params(effect):
 			continue
 
-		# 触发时机过滤（调用方应在调用前过滤，这里做兜底）
-		# 实际触发过滤由 EffectTriggerFilter 负责，此处不做
+		# 条件检查：params 中的 condition 字段
+		var params: Dictionary = effect.get("params", {})
+		var condition: String = params.get("condition", "")
+		if condition != "" and not _check_condition(condition, ctx):
+			continue
 
 		# 执行单个效果
 		var result := _execute_single(effect, ctx)
 		final_result.merge(result)
 
 	return final_result
+
+
+## 检查效果条件是否满足
+static func _check_condition(condition: String, ctx: ExecuteContext) -> bool:
+	match condition:
+		"full_hp":
+			return ctx.player_hp >= ctx.player_max_hp
+		"not_full_hp":
+			return ctx.player_hp < ctx.player_max_hp
+		"was_hit":
+			return ctx.was_hit_last_turn
+		"has_scar":
+			return ctx.player_scar_stacks > 0
+		"berserk":
+			return ctx.player_berserk_turns > 0
+		_:
+			return true
 
 
 ## 执行单个效果
@@ -241,8 +289,10 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.descriptions.append("真实伤害 %d" % params.get("value", 0))
 
 		EffectTypes.EffectType.EXECUTE:
-			# 处决逻辑由 Applier 根据目标HP判断，这里只传参数
-			result.descriptions.append("处决（阈值%.0f%%）" % (params.get("threshold", 0.0) * 100))
+			# 处决逻辑由 Applier 根据目标HP判断
+			result.execute_threshold = params.get("threshold", 0.0)
+			result.execute_mult = params.get("mult", 999.0)
+			result.descriptions.append("处决（阈值%.0f%%）" % (result.execute_threshold * 100))
 
 		EffectTypes.EffectType.ARMOR_BREAK:
 			result.is_armor_break = true
@@ -254,7 +304,9 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 
 		EffectTypes.EffectType.DETONATE:
 			# 引爆逻辑由 Applier 根据目标状态层数计算
-			result.descriptions.append("引爆 %s" % params.get("status", ""))
+			result.detonate_status = params.get("status", "")
+			result.detonate_damage_per_stack = params.get("damage_per_stack", 0)
+			result.descriptions.append("引爆 %s" % result.detonate_status)
 
 		# ---- 防御类 ----
 		EffectTypes.EffectType.HEAL:
@@ -493,16 +545,20 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.descriptions.append("交换未选骰")
 
 		EffectTypes.EffectType.DAMAGE_SHIELD:
-			result.descriptions.append("伤害护盾 %d" % params.get("value", 0))
+			result.damage_shield_value = params.get("value", 0)
+			result.damage_shield_duration = params.get("duration", 1)
+			result.descriptions.append("伤害护盾 %d（%d回合）" % [result.damage_shield_value, result.damage_shield_duration])
 
 		EffectTypes.EffectType.BONUS_MULT_ON_KEEP:
 			result.bonus_mult += params.get("value", 0.0) * ctx.kept_turns
 			result.descriptions.append("保留倍率 +%.1f" % (params.get("value", 0.0) * ctx.kept_turns))
 
-		# ---- 规则改变类（大部分由 Applier 在战斗开始时应用，这里只做标记） ----
+		# ---- 规则改变类（由 Applier 在战斗开始/回合开始时应用） ----
 		EffectTypes.EffectType.MODIFY_DRAW_COUNT:
+			result.draw_count_delta += params.get("delta", 0)
 			result.descriptions.append("抽牌数 %+d" % params.get("delta", 0))
 		EffectTypes.EffectType.MODIFY_HAND_LIMIT:
+			result.hand_limit_delta += params.get("delta", 0)
 			result.descriptions.append("手牌上限 %+d" % params.get("delta", 0))
 		EffectTypes.EffectType.MODIFY_PLAY_COUNT:
 			result.extra_plays += params.get("delta", 0)
@@ -511,9 +567,11 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.extra_rerolls += params.get("delta", 0)
 			result.descriptions.append("重投次数 %+d" % params.get("delta", 0))
 		EffectTypes.EffectType.ALL_DICE_POINTS_PLUS:
+			result.all_dice_points_plus += params.get("value", 0)
 			result.descriptions.append("全骰 +%d" % params.get("value", 0))
 		EffectTypes.EffectType.DEATH_IMMUNITY:
-			result.descriptions.append("免死（冷却%d回合）" % params.get("cooldown_turns", 0))
+			result.death_immunity_cooldown = params.get("cooldown_turns", 0)
+			result.descriptions.append("免死（冷却%d回合）" % result.death_immunity_cooldown)
 		EffectTypes.EffectType.DAMAGE_MULT_GLOBAL:
 			result.bonus_mult += params.get("value", 0.0)
 			result.descriptions.append("全局伤害 +%.0f%%" % (params.get("value", 0.0) * 100))

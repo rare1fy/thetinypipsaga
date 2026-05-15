@@ -133,9 +133,7 @@ static func _build_context(
 	ctx.dice_count = dice_def.faces.size()
 	ctx.hand_size = dice_in_hand.size()
 
-	# 从 PlayerState 获取额外信息（如果可用）
-	if Engine.has_singleton("PlayerState") or ClassDB.class_exists("PlayerState"):
-		pass  # PlayerState 是 Autoload，直接访问
+	# 从 PlayerState 获取额外信息
 	# 伤痕层数
 	if PlayerState and PlayerState.has_method("get_scar_stacks"):
 		ctx.player_scar_stacks = PlayerState.get_scar_stacks()

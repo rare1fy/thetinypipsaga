@@ -242,6 +242,9 @@ static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTy
 		"self_damage":
 			return EffectTypes.create_effect(EffectTypes.EffectType.SELF_DAMAGE,
 				{"value": int(value)}, trigger)
+		"self_damage_percent":
+			return EffectTypes.create_effect(EffectTypes.EffectType.SELF_DAMAGE,
+				{"percent": float(value)}, trigger)
 		"heal":
 			return EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
 				{"value": int(value)}, trigger)
@@ -266,6 +269,27 @@ static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTy
 		"gold_bonus":
 			return EffectTypes.create_effect(EffectTypes.EffectType.GAIN_GOLD,
 				{"value": int(value)}, trigger)
+		"execute_threshold":
+			return EffectTypes.create_effect(EffectTypes.EffectType.EXECUTE,
+				{"threshold": float(value), "mult": 999.0}, trigger)
+		"bonus_mult_on_keep":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT_ON_KEEP,
+				{"value": float(value)}, EffectTypes.TriggerType.ON_KEEP)
+		"bonus_on_keep":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_ON_KEEP,
+				{"value": int(value), "cap": 99}, EffectTypes.TriggerType.ON_KEEP)
+		"true_damage":
+			return EffectTypes.create_effect(EffectTypes.EffectType.TRUE_DAMAGE,
+				{"value": int(value)}, trigger)
+		"armor_break":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR_BREAK, {}, trigger)
+		"overkill_transfer":
+			return EffectTypes.create_effect(EffectTypes.EffectType.OVERKILL_TRANSFER,
+				{"ratio": float(value)}, trigger)
+		"splash":
+			return EffectTypes.create_effect(EffectTypes.EffectType.SPLASH,
+				{"ratio": float(value)}, trigger)
 		_:
 			push_warning("[ConfigLoader] 未映射的骰子参数: %s = %s" % [key, str(value)])
 	return {}
@@ -371,14 +395,27 @@ static func _param_to_effect(key: String, value: Variant, trigger_type: EffectTy
 				{"count": int(value)}, trigger_type)
 		"prevent_death":
 			if _as_bool(value):
+				# cooldown_turns 从配置读取，若无则默认一次性（99=实质无冷却）
 				return EffectTypes.create_effect(EffectTypes.EffectType.DEATH_IMMUNITY,
-					{"cooldown_turns": 99}, trigger_type)
+					{"cooldown_turns": int(value) if value is int or value is float else 99}, trigger_type)
 		"temp_draw_bonus":
 			return EffectTypes.create_effect(EffectTypes.EffectType.DRAW,
 				{"count": int(value)}, EffectTypes.TriggerType.ON_TURN_END)
 		"grant_extra_play":
 			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_PLAY,
 				{"count": int(value)}, EffectTypes.TriggerType.ON_TURN_END)
+		"bonus_mult_on_keep":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT_ON_KEEP,
+				{"value": float(value)}, EffectTypes.TriggerType.ON_KEEP)
+		"execute_threshold":
+			return EffectTypes.create_effect(EffectTypes.EffectType.EXECUTE,
+				{"threshold": float(value), "mult": 999.0}, trigger_type)
+		"true_damage":
+			return EffectTypes.create_effect(EffectTypes.EffectType.TRUE_DAMAGE,
+				{"value": int(value)}, trigger_type)
+		"armor_break":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR_BREAK, {}, trigger_type)
 		_:
 			push_warning("[ConfigLoader] 未映射的遗物参数: %s = %s" % [key, str(value)])
 	return {}

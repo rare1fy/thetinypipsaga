@@ -224,9 +224,13 @@ func _calc_preview_outcome_mult(best_hand: String) -> float:
 func _calc_preview_bonus_damage() -> int:
 	var bonus := GameManager.rage_fire_bonus + GameManager.fury_bonus_damage
 	for r: Dictionary in GameManager.relics:
-		var def: RelicDef = GameData.get_relic_def(r.id)
-		if def.trigger == GameTypes.RelicTrigger.ON_PLAY and def.damage > 0 and def.id != "life_furnace":
-			bonus += def.damage
+		var def: RelicDef = GameData.get_relic_def(r.get("id", ""))
+		if not def or def.trigger != GameTypes.RelicTrigger.ON_PLAY or def.id == "life_furnace":
+			continue
+		# 从 effects 数组提取 BONUS_DAMAGE 值
+		for eff: Dictionary in def.effects:
+			if eff.get("type", -1) == EffectTypes.EffectType.BONUS_DAMAGE:
+				bonus += eff.get("params", {}).get("value", 0)
 	return bonus
 
 

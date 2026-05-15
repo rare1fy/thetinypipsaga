@@ -81,14 +81,16 @@ static func _map_skill(e: EnemyInstance, value: int, desc: String) -> Array[Dict
 	# 控制类
 	var ctl_type: String = _detect_control(desc)
 	if ctl_type != "":
-		var ctl_params: Dictionary = {"control": ctl_type, "target": "enemy"}
 		if ctl_type == "knockback":
-			ctl_params["distance"] = 1
+			# 击退是位移控制，用 CONTROL 效果
+			effects.append(EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": ctl_type, "distance": 1, "target": "enemy"},
+				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT))
 		else:
-			ctl_params["duration"] = 2
-		effects.append(EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
-			{"status": ctl_type, "value": 1, "target": "enemy"},
-			EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT))
+			# 眩晕/冻结等持续控制，也用 CONTROL 效果
+			effects.append(EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": ctl_type, "duration": 2, "target": "enemy"},
+				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT))
 		return effects
 
 	# 护甲祝福类
