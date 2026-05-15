@@ -33,6 +33,14 @@ var guard_rage: int = 0         ## Guardian 防御怒气层数
 var blood_fury: int = 0         ## Warrior 血怒层数（受伤后累加，每层+25%攻击）
 var vengeance_stacks: int = 0   ## Berserker 复仇层数（队友死亡时+50%/层）
 
+## v0.5 控制状态
+var cc_taunt_turns: int = 0     ## 嘲讽剩余回合
+var cc_stun_turns: int = 0      ## 眩晕剩余回合
+var cc_polymorph_turns: int = 0 ## 变羊剩余回合
+var cc_blind_turns: int = 0     ## 致盲剩余回合
+var cc_disarm_turns: int = 0    ## 缴械剩余回合
+var cc_immunity: bool = false   ## 配置级免控标记
+
 
 ## 从配置创建敌人实例
 static func from_config(config: EnemyConfig, hp_scale: float = 1.0, dmg_scale: float = 1.0) -> EnemyInstance:

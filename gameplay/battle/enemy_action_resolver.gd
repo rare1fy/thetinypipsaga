@@ -35,6 +35,17 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 		return
 	# 用 WeakRef 包裹 controller，避免场景切换时引擎报 "Lambda capture was freed"
 	var wr: WeakRef = weakref(controller)
+	# v0.5 控制系统：眩晕/变羊跳过行动
+	if ControlSystem.should_skip_action(e):
+		BattleLog.log_status("💫 %s 被控制，跳过行动" % e.name)
+		EnemyMgr.refresh_enemy_views(controller.enemy_views)
+		controller.get_tree().create_timer(0.3).timeout.connect(
+			func() -> void:
+				var c: Node = wr.get_ref() as Node
+				if c != null and c.is_inside_tree():
+					run_turn(c, living, index + 1)
+		)
+		return
 	# 冻结跳过
 	if e.is_frozen():
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
@@ -160,6 +171,9 @@ static func _end_turn_cleanup(controller: Node) -> void:
 	ScarSystem.decay_per_enemy_turn()
 	BloodChainSystem.tick_turn()
 	SoloSealSystem.tick_turn()
+	# v0.5 控制系统：衰减所有敌人的控制状态
+	var all_enemies: Array[EnemyInstance] = GameManager.current_enemies
+	ControlSystem.tick_all(all_enemies)
 	controller._refresh_status_bar()
 	# 回合收尾 + 抽牌（Godot 设计规范 §4.4）：reset 6 字段 + executeDrawPhase
 	# 必须在 _begin_player_turn 之前完成
