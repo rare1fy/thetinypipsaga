@@ -50,10 +50,34 @@ static func apply_element_effects(enemy: EnemyInstance, selected_dice: Array[Dic
 
 
 ## 扫描死亡敌人发放奖励，返回被结算的 uid 列表（供 UI 清理）
-static func settle_enemy_deaths(enemies: Array[EnemyInstance]) -> Array[String]:
+## P2: 死亡前先检查复活/分裂，满足条件则不走死亡流程
+## new_enemies_out: 输出参数，分裂产生的新敌人实例（调用方负责生成视图）
+static func settle_enemy_deaths(enemies: Array[EnemyInstance], new_enemies_out: Array[EnemyInstance] = []) -> Array[String]:
 	var settled: Array[String] = []
 	for e: EnemyInstance in enemies:
 		if e.hp <= 0 and e.hp > -9999:
+			# P2: 复活/分裂检查
+			var revive_result: EnemySummonRevive.ReviveResult = EnemySummonRevive.try_revive(e)
+			if revive_result.revived_self != null:
+				# 直接复活：不走死亡流程
+				BattleLog.log_enemy(revive_result.log)
+				VFX.show_toast(revive_result.log, "warning")
+				SoundPlayer.play_sound("heal")
+				continue
+			if revive_result.splits.size() > 0:
+				# 分裂：本体死亡，产生新敌人
+				BattleLog.log_enemy(revive_result.log)
+				VFX.show_toast(revive_result.log, "warning")
+				SoundPlayer.play_sound("enemy_skill")
+				for split: EnemyInstance in revive_result.splits:
+					new_enemies_out.append(split)
+				# 本体仍然走死亡流程
+				GameManager.add_gold(e.drop_gold)
+				GameManager.stats.enemiesKilled += 1
+				e.hp = -9999
+				settled.append(e.uid)
+				continue
+			# 正常死亡
 			GameManager.add_gold(e.drop_gold)
 			GameManager.stats.enemiesKilled += 1
 			e.hp = -9999

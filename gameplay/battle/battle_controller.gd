@@ -581,7 +581,7 @@ func _process_turn_end_and_enemy_phase() -> void:
 
 	# 敌方 DoT 预结算
 	EnemyMgr.settle_enemy_dots(enemy_views)
-	if EnemyMgr.check_battle_over(enemy_views, _on_battle_ended.bind(true)):
+	if EnemyMgr.check_battle_over(enemy_views, _on_battle_ended.bind(true), self):
 		return
 
 	# 执行敌方攻击
@@ -596,6 +596,32 @@ func _process_enemy_attacks() -> void:
 	for e: EnemyInstance in instances:
 		e.battle_turn = GameManager.battle_turn
 	GameManager.current_enemies = instances  # Priest AI 查同伴用
+
+	# P2: 召唤检查（原版行为：在所有 DOT 结算前完成，让新召唤的小怪参与本回合 AI）
+	var wave_size: int = instances.filter(func(e: EnemyInstance) -> bool: return e.hp > 0).size()
+	var summoned_any: bool = false
+	for e: EnemyInstance in instances:
+		if e.hp <= 0:
+			continue
+		var summon_result: EnemySummonRevive.SummonResult = EnemySummonRevive.try_summon(e, GameManager.battle_turn, wave_size)
+		if summon_result.new_minions.size() > 0:
+			summoned_any = true
+			wave_size += summon_result.new_minions.size()
+			BattleLog.log_enemy(summon_result.log)
+			VFX.show_toast(summon_result.log, "warning")
+			SoundPlayer.play_sound("enemy_skill")
+			# 生成召唤物视图
+			for minion: EnemyInstance in summon_result.new_minions:
+				var view: EnemyView = EnemyFactory.create(minion.config_id)
+				enemy_container.add_child(view)
+				view.setup(minion)
+				enemy_views.append(view)
+	if summoned_any:
+		EnemyMgr.refresh_enemy_views(enemy_views)
+		# 重新收集 instances（含新召唤的）
+		instances = EnemyMgr.collect_enemy_instances(enemy_views)
+		GameManager.current_enemies = instances
+
 	var living: Array[EnemyInstance] = []
 	living.assign(instances.filter(
 		func(e: EnemyInstance) -> bool: return e.hp > 0
@@ -604,6 +630,22 @@ func _process_enemy_attacks() -> void:
 		_on_battle_ended(true)
 		return
 	EnemyActionResolver.run_turn(self, living)
+
+
+## P2: 生成敌人视图（供召唤/分裂使用）
+func _spawn_enemy_view(minion: EnemyInstance) -> void:
+	var view: EnemyView = EnemyFactory.create(minion.config_id)
+	enemy_container.add_child(view)
+	var slot_idx: int = enemy_views.size() % 9  # 9 站位循环
+	view.set_slot_index(slot_idx)
+	view.setup(minion)
+	var battle_scene := owner as BattleScene
+	if battle_scene != null:
+		var init_visuals: Dictionary = battle_scene.get_slot_visuals(slot_idx, minion.distance)
+		view.position = init_visuals.position
+	view.enemy_clicked.connect(_on_enemy_clicked)
+	enemy_views.append(view)
+
 
 # ── UI 更新
 

@@ -22,6 +22,15 @@ var distance: int = 2
 var attack_count: int = 0
 var battle_turn: int = 0  ## 用于 pattern 决策
 
+## P2 新增：召唤/复活/archetype
+var summon_count: int = 0       ## 已召唤次数
+var revived_once: bool = false  ## 是否已复活过（防止无限复活）
+var is_summoned: bool = false   ## 是否为召唤物（召唤物不能再召唤）
+var archetype: String = ""      ## 敌人子类型（pyromancer/toxicologist/healer/inquisitor 等）
+var dot_amplifier: int = 0      ## Caster DOT 放大层数
+var holy_wrath: int = 0         ## Priest 圣怒层数
+var guard_rage: int = 0         ## Guardian 防御怒气层数
+
 
 ## 从配置创建敌人实例
 static func from_config(config: EnemyConfig, hp_scale: float = 1.0, dmg_scale: float = 1.0) -> EnemyInstance:

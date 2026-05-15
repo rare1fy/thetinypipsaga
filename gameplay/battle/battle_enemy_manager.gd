@@ -91,12 +91,19 @@ static func settle_enemy_dots(enemy_views: Array[Node]) -> void:
 
 ## 检查战斗是否结束（死亡结算 + 全灭判定）
 ## 返回 true 表示战斗已结束（全灭）
-static func check_battle_over(enemy_views: Array[Node], on_victory: Callable) -> bool:
+## P2: 支持分裂产生新敌人（需要 controller 引用来生成视图）
+static func check_battle_over(enemy_views: Array[Node], on_victory: Callable, controller: Node = null) -> bool:
 	purge_invalid_views(enemy_views)
 	var instances: Array[EnemyInstance] = collect_enemy_instances(enemy_views)
-	var settled: Array[String] = BattleHelpers.settle_enemy_deaths(instances)
+	var new_enemies: Array[EnemyInstance] = []
+	var settled: Array[String] = BattleHelpers.settle_enemy_deaths(instances, new_enemies)
 	if not settled.is_empty():
 		refresh_enemy_views(enemy_views)
+	# P2: 分裂产生的新敌人需要生成视图
+	if new_enemies.size() > 0 and controller != null:
+		for minion: EnemyInstance in new_enemies:
+			if controller.has_method("_spawn_enemy_view"):
+				controller._spawn_enemy_view(minion)
 	var living: Array[Node] = get_living_enemies(enemy_views)
 	if living.is_empty():
 		on_victory.call()

@@ -228,7 +228,7 @@ func _apply_damage_and_after(
 			PlayerState.plays_per_enemy[target_inst2.uid] = prev + 1
 
 	# 7. 检查胜负
-	if EnemyMgr.check_battle_over(controller.enemy_views, controller._on_battle_ended.bind(true)):
+	if EnemyMgr.check_battle_over(controller.enemy_views, controller._on_battle_ended.bind(true), controller):
 		return
 
 	# 8. 标记已出骰子 + 消耗出牌次数

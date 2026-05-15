@@ -81,16 +81,11 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 
 
 ## 判断敌人本次行动是否为攻击（需要播放攻击动画 + 延迟结算）
-## Guardian 非上盾回合 = 攻击；Warrior/Ranger = 攻击；Priest/Caster/Guardian上盾 = 施法
+## Pattern-Driven：从 get_action() 获取行动类型判断
 static func _is_attack_action(e: EnemyInstance, battle_turn: int) -> bool:
-	match e.combat_type:
-		GameTypes.EnemyCombatType.WARRIOR, GameTypes.EnemyCombatType.RANGER:
-			return true
-		GameTypes.EnemyCombatType.GUARDIAN:
-			# 上盾回合是防御行为，其余是攻击
-			return battle_turn % GUARDIAN_DEFENSE_CYCLE != 0
-		_:
-			return false
+	var action: Dictionary = e.get_action()
+	var action_type: String = action.get("type", "攻击")
+	return action_type == "攻击"
 
 ## 播放敌人攻击动画（遍历 enemy_views 找到匹配 uid 的 EnemyView）
 static func _play_enemy_attack_anim(controller: Node, e: EnemyInstance) -> void:
@@ -168,7 +163,9 @@ static func _end_turn_cleanup(controller: Node) -> void:
 	controller._begin_player_turn()
 
 
-## 按敌人职业分流执行单次行动
+## 按敌人 Pattern 配置分流执行单次行动（对齐原版 Pattern-Driven 系统）
+## 优先使用 EnemyInstance.get_action() 的 phases.actions 轮播结果
+## 无配置时 fallback 到旧 combatType 分支
 ## on_shake: Callable(strength:float, duration:float) — 震屏回调
 ## on_hp_pulse: Callable() — HP 条脉冲回调
 static func resolve(
@@ -177,35 +174,134 @@ static func resolve(
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
-	match e.combat_type:
-		GameTypes.EnemyCombatType.GUARDIAN:
-			_resolve_guardian(e, battle_turn, on_shake, on_hp_pulse)
-		GameTypes.EnemyCombatType.PRIEST:
-			_resolve_priest(e)
-		GameTypes.EnemyCombatType.CASTER:
-			_resolve_caster(e)
+	# Pattern-Driven：从配置获取本回合行动
+	var action: Dictionary = e.get_action()
+	var action_type: String = action.get("type", "攻击")
+	var action_value: int = action.get("value", e.attack_dmg)
+	var action_desc: String = action.get("description", "")
+
+	# 分流：防御 / 技能 / 攻击
+	match action_type:
+		"防御":
+			_execute_defend(e, action_value, action_desc, on_shake)
+		"技能":
+			_execute_skill(e, action_value, action_desc)
 		_:
+			# 攻击（含 Ranger 追击）
 			_resolve_attacker(e, on_shake, on_hp_pulse)
 
 
-## Guardian：每 N 回合上盾 + 嘲讽（设置 taunt_enemy_uid），否则正常攻击
-static func _resolve_guardian(
-	e: EnemyInstance,
-	battle_turn: int,
-	on_shake: Callable,
-	on_hp_pulse: Callable
-) -> void:
-	if battle_turn % GUARDIAN_DEFENSE_CYCLE == 0:
-		var shield_val: int = int(e.attack_dmg * GUARDIAN_SHIELD_MULT)
-		e.armor += shield_val
-		# 嘲讽：强制锁定玩家攻击到这只敌人
+## 执行防御行动（Guardian 上盾 + 嘲讽，或通用防御）
+static func _execute_defend(e: EnemyInstance, value: int, desc: String, on_shake: Callable) -> void:
+	var shield_val: int = value if value > 0 else int(e.attack_dmg * GUARDIAN_SHIELD_MULT)
+	e.armor += shield_val
+	# Guardian 防御时设置嘲讽
+	if e.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
 		GameManager.taunt_enemy_uid = e.uid
 		GameManager.target_enemy_uid = e.uid
-		BattleLog.log_enemy("🛡 %s 举盾（+%d 护甲，嘲讽）" % [_get_name(e), shield_val])
-		if on_shake.is_valid():
-			on_shake.call(3.0, 0.15)
+	var desc_tag: String = "·%s" % desc if desc != "" else ""
+	BattleLog.log_enemy("🛡 %s 举盾防御%s（+%d 护甲）" % [_get_name(e), desc_tag, shield_val])
+	SoundPlayer.play_sound("enemy_skill")
+	if on_shake.is_valid():
+		on_shake.call(3.0, 0.15)
+
+
+## 执行技能行动（根据 description 派发具体效果）
+## 对齐原版 enemyActionDispatch.ts 的 description 字典查表
+static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
+	# Priest/Caster 无 description 时走旧 archetype 分支
+	if desc == "":
+		match e.combat_type:
+			GameTypes.EnemyCombatType.PRIEST:
+				_resolve_priest(e)
+			GameTypes.EnemyCombatType.CASTER:
+				_resolve_caster(e)
+			_:
+				# 武力系"技能"视为攻击+rider（简化版：直接当攻击处理）
+				SoundPlayer.play_sound("enemy")
+				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count, e.is_slowed())
+				PlayerState.take_damage(damage)
+				e.attack_count += 1
+				BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])
 		return
-	_resolve_attacker(e, on_shake, on_hp_pulse)
+
+	# 有 description 时按字典派发
+	var dot_type: String = _get_dot_from_desc(desc)
+	var ctl_type: String = _get_control_from_desc(desc)
+
+	if dot_type != "":
+		# DOT 技能：灼烧/中毒
+		SoundPlayer.play_sound("enemy_skill")
+		var dot_val: int = maxi(1, value)
+		if dot_type == "burn":
+			GameManager.add_status(GameTypes.StatusType.BURN, dot_val, 3)
+			BattleLog.log_status("🔥 %s 施放【%s】→ 灼烧 %d" % [_get_name(e), desc, dot_val])
+		else:
+			GameManager.add_status(GameTypes.StatusType.POISON, dot_val, 3)
+			BattleLog.log_status("☠ %s 施放【%s】→ 中毒 %d" % [_get_name(e), desc, dot_val])
+	elif ctl_type != "":
+		# 控制技能：虚弱/易伤/冻结
+		SoundPlayer.play_sound("enemy_skill")
+		match ctl_type:
+			"weak":
+				GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
+				BattleLog.log_status("✦ %s 施放【%s】→ 虚弱" % [_get_name(e), desc])
+			"vulnerable":
+				GameManager.add_status(GameTypes.StatusType.VULNERABLE, 1, 2)
+				BattleLog.log_status("✦ %s 施放【%s】→ 易伤" % [_get_name(e), desc])
+			"freeze":
+				GameManager.add_status(GameTypes.StatusType.FREEZE, 1, 1)
+				BattleLog.log_status("✦ %s 施放【%s】→ 冻结" % [_get_name(e), desc])
+	elif _is_armor_bless_desc(desc):
+		# 护甲祝福
+		SoundPlayer.play_sound("enemy_skill")
+		var all_living: Array[EnemyInstance] = _collect_all_living()
+		if all_living.size() > 0:
+			var target: EnemyInstance = all_living[randi() % all_living.size()]
+			var armor_val: int = maxi(1, value)
+			target.armor += armor_val
+			BattleLog.log_enemy("✦ %s 施放【%s】→ %s +%d 护甲" % [_get_name(e), desc, _get_name(target), armor_val])
+	else:
+		# 未识别的 description → fallback 到 archetype 行为
+		match e.combat_type:
+			GameTypes.EnemyCombatType.PRIEST:
+				_resolve_priest(e)
+			GameTypes.EnemyCombatType.CASTER:
+				_resolve_caster(e)
+			_:
+				SoundPlayer.play_sound("enemy")
+				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count, e.is_slowed())
+				PlayerState.take_damage(damage)
+				e.attack_count += 1
+				BattleLog.log_enemy("⚔ %s【%s】→ %d 伤害" % [_get_name(e), desc, damage])
+
+
+## 从 description 提取 DOT 类型（对齐原版 getDotFromDescription）
+static func _get_dot_from_desc(desc: String) -> String:
+	var lower: String = desc.to_lower()
+	if lower.contains("灼烧") or lower.contains("火") or lower.contains("burn") or lower.contains("fire"):
+		return "burn"
+	if lower.contains("中毒") or lower.contains("毒") or lower.contains("poison"):
+		return "poison"
+	return ""
+
+
+## 从 description 提取控制类型（对齐原版 getControlFromDescription）
+static func _get_control_from_desc(desc: String) -> String:
+	var lower: String = desc.to_lower()
+	if lower.contains("冻结") or lower.contains("freeze") or lower.contains("冰"):
+		return "freeze"
+	if lower.contains("虚弱") or lower.contains("weak"):
+		return "weak"
+	if lower.contains("易伤") or lower.contains("vulnerable") or lower.contains("脆弱"):
+		return "vulnerable"
+	return ""
+
+
+## 判断是否为护甲祝福类 description
+static func _is_armor_bless_desc(desc: String) -> bool:
+	var lower: String = desc.to_lower()
+	return lower.contains("护甲") or lower.contains("祝福") or lower.contains("shield") or lower.contains("armor")
 
 
 ## Priest：§9.2 完整优先级（对齐原版 enemySkills.ts executePriestSkill）
