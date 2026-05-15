@@ -478,7 +478,40 @@ static func load_enemy_configs() -> Dictionary:
 		q.attack = _typed_string_array(qdata.get("attack", []))
 		q.hurt = _typed_string_array(qdata.get("hurt", []))
 		q.low_hp = _typed_string_array(qdata.get("low_hp", []))
+		# [P0-MIGRATION] Boss 扩展台词
+		q.greet = _typed_string_array(qdata.get("greet", []))
+		q.dispatch = _typed_string_array(qdata.get("dispatch", []))
+		q.mid_boss_warning = _typed_string_array(qdata.get("mid_boss_warning", []))
+		q.phase2_taunt = _typed_string_array(qdata.get("phase2_taunt", []))
 		c.quotes = q
+
+		# [P0-MIGRATION] Boss 召唤机制
+		var summon_data: Dictionary = row.get("summons", {})
+		if summon_data.size() > 0:
+			var s := EnemyConfig.EnemySummon.new()
+			s.minion_id = summon_data.get("minion_id", "")
+			s.interval = int(summon_data.get("interval", 3))
+			s.count = int(summon_data.get("count", 1))
+			s.max_total = int(summon_data.get("max_total", 4))
+			s.wave_cap = int(summon_data.get("wave_cap", 4))
+			s.hp_threshold = float(summon_data.get("hp_threshold", 0.0))
+			c.summons = s
+
+		# [P0-MIGRATION] Boss 死亡分裂/复活机制
+		var revive_data: Dictionary = row.get("revive", {})
+		if revive_data.size() > 0:
+			var r := EnemyConfig.EnemyRevive.new()
+			r.revive_hp_ratio = float(revive_data.get("revive_hp_ratio", 0.5))
+			r.split_into = int(revive_data.get("split_into", 2))
+			r.split_minion_id = revive_data.get("split_minion_id", "")
+			c.revive = r
+
+		# [P0-MIGRATION] Boss rank
+		var rank_str: String = row.get("boss_rank", "NONE")
+		match rank_str:
+			"MID": c.boss_rank = EnemyConfig.BossRank.MID
+			"FINAL": c.boss_rank = EnemyConfig.BossRank.FINAL
+			_: c.boss_rank = EnemyConfig.BossRank.NONE
 
 		defs[c.id] = c
 	return defs
