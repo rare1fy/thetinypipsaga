@@ -66,6 +66,8 @@ enum EffectType {
 	CONTROL,                   ## 施加控制效果 {control: str, duration: int, target?: str}
 	                           ##   control: "taunt"/"stun"/"knockback"/"polymorph"/"blind"/"disarm"
 	                           ##   target: "main"/"all"/"random" (默认"main")
+	IGNORE_TAUNT,              ## 无视嘲讽（本次出牌/本回合可自由选择目标） {scope: str}
+	                           ##   scope: "play"/"turn"
 
 	# ---- 代价类 (Cost) ----
 	SELF_DAMAGE,               ## 自伤 {value?: int, percent?: float}
@@ -94,6 +96,13 @@ enum EffectType {
 	                           ##   target: "lowest"/"all", to: "shadow"/"curse"
 	PRESERVE_DIE,              ## 骰子保留到下回合 {condition?: str}
 	                           ##   condition: "combo"
+	INSERT_CURSE_DIE,          ## 塞废骰/诅咒骰到玩家骰子库 {die_id: str, count: int}
+	                           ##   die_id: "cursed"/"cracked"/"blank" 等
+	                           ##   仅敌人→玩家方向
+	REPLACE_PLAYER_DIE,        ## 替换玩家一颗骰子为指定骰子 {from?: str, to: str}
+	                           ##   from: "random"/"lowest"/"highest" (默认"random")
+	                           ##   to: 目标骰子 id
+	                           ##   仅敌人→玩家方向
 
 	# ---- 骰子数值操控类 (Dice Value) ----
 	MODIFY_POINTS,             ## 改变点数 {delta: int}
@@ -174,6 +183,8 @@ enum TriggerType {
 	ON_WAVE_CLEAR,     ## 波次清除时
 	ON_FLOOR_CLEAR,    ## 层清除时
 	ON_MOVE,           ## 地图移动时
+	ON_ALLY_DEATH,     ## 友方单位死亡时（敌人 berserker vengeance 触发）
+	ON_SELF_HURT,      ## 自身受伤时（敌人 warrior bloodFury 触发）
 	PASSIVE,           ## 常驻被动（无需触发，持续生效）
 }
 
@@ -214,10 +225,13 @@ enum TargetScope {
 	MAIN,          ## 主目标（当前选中的敌人）
 	ALL_ENEMIES,   ## 全体敌人
 	RANDOM_ENEMY,  ## 随机一个敌人
-	SELF,          ## 自身（玩家）
+	SELF,          ## 自身（施放者自己）
 	ADJACENT,      ## 相邻敌人
 	CHAIN_TARGET,  ## 血锁链绑定目标
 	SOLO_TARGET,   ## 单挑目标
+	ALLY,          ## 友方单位（敌人给队友加血/加甲；玩家无此目标）
+	ALLY_LOWEST_HP,## 血量最低的友方（Priest 治疗优先级）
+	PLAYER,        ## 玩家（敌人技能作用于玩家时使用）
 }
 
 
@@ -246,9 +260,12 @@ enum EffectSource {
 # ============================================================
 
 ## 创建一条效果数据（工厂方法，确保格式统一）
+## 【设计原则】效果本身不带任何默认数值，所有数值由配置方在 params 中完整提供。
+## EffectEngine 执行时若 params 缺少必填字段，直接 push_error 并跳过，不做兜底。
+## 这样配置表写漏字段在开发期就能立刻暴露。
 static func create_effect(
 	type: EffectType,
-	params: Dictionary = {},
+	params: Dictionary,
 	trigger: TriggerType = TriggerType.ON_PLAY,
 	scope: EffectScope = EffectScope.INSTANT,
 	stacking: StackingRule = StackingRule.INDEPENDENT,
@@ -262,6 +279,104 @@ static func create_effect(
 		"target": target,
 		"params": params,
 	}
+
+## 每种 EffectType 的必填 params 字段注册表（EffectEngine 校验用）
+## 配置方必须提供这些字段，缺一个就报错
+const REQUIRED_PARAMS: Dictionary = {
+	EffectType.BONUS_DAMAGE: ["value"],
+	EffectType.BONUS_DAMAGE_SCALED: ["source", "ratio"],
+	EffectType.BONUS_MULT: ["value"],
+	EffectType.AOE: [],  # 无value=标记AOE，有value=额外固定AOE，两种都合法
+	EffectType.SPLASH: ["ratio"],
+	EffectType.OVERKILL_TRANSFER: ["ratio"],
+	EffectType.PIERCE: ["value"],
+	EffectType.TRUE_DAMAGE: ["value"],
+	EffectType.EXECUTE: ["threshold", "mult"],
+	EffectType.ARMOR_BREAK: [],
+	EffectType.ESCALATE: ["per_trigger", "cap"],
+	EffectType.DETONATE: ["status", "damage_per_stack"],
+	EffectType.HEAL: ["value"],
+	EffectType.HEAL_ON_TRIGGER: ["trigger"],
+	EffectType.ARMOR: ["value"],
+	EffectType.BARRIER: ["value"],
+	EffectType.MAX_HP_CHANGE: ["delta"],
+	EffectType.APPLY_STATUS: ["status", "value"],
+	EffectType.PURIFY: ["scope"],
+	EffectType.CONTROL: ["control", "duration"],
+	EffectType.SELF_DAMAGE: [],  # value 或 percent 二选一，由 EffectEngine 校验
+	EffectType.BERSERK: ["turns", "damage_mult", "taken_mult", "gamble_cost"],
+	EffectType.BLOOD_CHAIN: ["target"],
+	EffectType.SOLO_SEAL: ["damage_mult"],
+	EffectType.BOUNCE: [],
+	EffectType.RECOVER: ["count"],
+	EffectType.GRANT_PLAY: ["count"],
+	EffectType.GRANT_REROLL: ["count"],
+	EffectType.DRAW: ["count"],
+	EffectType.LOCK_DIE: [],
+	EffectType.RETURN_TO_DECK: [],
+	EffectType.GRANT_TEMP_DIE: ["die_type", "count"],
+	EffectType.CONSUME_TEMP_DIE: ["die_type", "count"],
+	EffectType.TRANSFORM_DIE: ["target", "to"],
+	EffectType.PRESERVE_DIE: [],
+	EffectType.MODIFY_POINTS: ["delta"],
+	EffectType.COPY_VALUE: ["source"],
+	EffectType.REVERSE_VALUE: [],
+	EffectType.OVERRIDE_VALUE: ["value"],
+	EffectType.BONUS_ON_KEEP: ["value"],
+	EffectType.UNIFY_ELEMENT: [],
+	EffectType.LOCK_ELEMENT: ["duration"],
+	EffectType.GAIN_GOLD: ["value"],
+	EffectType.DAMAGE_TO_GOLD: ["ratio"],
+	EffectType.SHOP_DISCOUNT: ["percent"],
+	EffectType.MODIFY_DRAW_COUNT: ["delta"],
+	EffectType.MODIFY_HAND_LIMIT: ["delta"],
+	EffectType.MODIFY_PLAY_COUNT: ["delta"],
+	EffectType.MODIFY_REROLL_COUNT: ["delta"],
+	EffectType.ALL_DICE_POINTS_PLUS: ["value"],
+	EffectType.REROLL_NO_DOWNGRADE: [],
+	EffectType.AUTO_REROLL: [],
+	EffectType.FIXED_DICE_VALUE: [],
+	EffectType.HAND_TYPE_TOLERANCE: ["type", "tolerance"],
+	EffectType.STRAIGHT_FULL_AOE: [],
+	EffectType.FULLHOUSE_RETURN_PAIR: [],
+	EffectType.SINGLE_PLAY_ALL: [],
+	EffectType.ECHO_LAST_PLAY: ["cd"],
+	EffectType.DEATH_IMMUNITY: ["cd_nodes"],
+	EffectType.DAMAGE_MULT_GLOBAL: ["value"],
+	EffectType.DODGE_ATTACK: ["condition", "threshold"],
+	EffectType.ARMOR_PER_TURN: ["value"],
+	EffectType.SCAR_CONSUME: ["ratio", "bonus_per_stack"],
+	EffectType.SCAR_BONUS: ["per_stack"],
+	EffectType.CHARGE: ["turns"],
+	EffectType.CHAIN_BOLT: ["bounce"],
+	EffectType.BURN_ECHO: [],
+	EffectType.ELEMENT_TRIGGER: [],
+	EffectType.BARRIER_TO_DAMAGE: ["ratio"],
+	EffectType.POISON_FROM_VALUE: [],
+	EffectType.POISON_FROM_DICE_COUNT: ["per_dice"],
+	EffectType.AMPLIFY_SELF: ["mult"],
+	EffectType.STEAL_ARMOR: ["ratio"],
+	EffectType.DOUBLE_STATUS_ON_COMBO: ["status"],
+	EffectType.DEVOUR_DIE: [],
+	EffectType.SWAP_WITH_UNSELECTED: [],
+	EffectType.DAMAGE_SHIELD: ["value"],
+	EffectType.BONUS_MULT_ON_KEEP: ["value"],
+}
+
+## 校验效果数据的 params 是否包含所有必填字段
+## 返回 true = 合法，false = 缺字段（同时 push_error）
+static func validate_params(effect: Dictionary) -> bool:
+	var type: int = effect.get("type", -1)
+	if not REQUIRED_PARAMS.has(type):
+		push_error("[EffectTypes] 未知效果类型: %d" % type)
+		return false
+	var required: Array = REQUIRED_PARAMS[type]
+	var params: Dictionary = effect.get("params", {})
+	for field in required:
+		if not params.has(field):
+			push_error("[EffectTypes] 效果 %s 缺少必填参数: %s" % [get_effect_name(type), field])
+			return false
+	return true
 
 
 ## 获取效果类型的中文名（用于UI显示和日志）
@@ -291,6 +406,7 @@ static func get_effect_name(type: EffectType) -> String:
 		EffectType.PURIFY: return "净化"
 		# 控制类
 		EffectType.CONTROL: return "控制"
+		EffectType.IGNORE_TAUNT: return "无视嘲讽"
 		# 代价类
 		EffectType.SELF_DAMAGE: return "自伤"
 		# Buff类
@@ -309,6 +425,8 @@ static func get_effect_name(type: EffectType) -> String:
 		EffectType.CONSUME_TEMP_DIE: return "消耗临时骰"
 		EffectType.TRANSFORM_DIE: return "变形骰子"
 		EffectType.PRESERVE_DIE: return "保留骰子"
+		EffectType.INSERT_CURSE_DIE: return "塞废骰"
+		EffectType.REPLACE_PLAYER_DIE: return "替换骰子"
 		# 骰子数值操控类
 		EffectType.MODIFY_POINTS: return "改变点数"
 		EffectType.COPY_VALUE: return "复制点数"
@@ -381,6 +499,8 @@ static func get_trigger_name(trigger: TriggerType) -> String:
 		TriggerType.ON_WAVE_CLEAR: return "波次清除"
 		TriggerType.ON_FLOOR_CLEAR: return "层清除"
 		TriggerType.ON_MOVE: return "移动时"
+		TriggerType.ON_ALLY_DEATH: return "友方死亡时"
+		TriggerType.ON_SELF_HURT: return "自身受伤时"
 		TriggerType.PASSIVE: return "常驻"
 		_: return "未知时机"
 
