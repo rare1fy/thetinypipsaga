@@ -103,6 +103,10 @@ class ExecuteResult:
 	## 经济类
 	var gold_gain: int = 0
 
+	## 敌人专属（塞骰/替换骰）
+	var curse_dice: Array[Dictionary] = []  # [{die_id, count}]
+	var replace_dice: Array[Dictionary] = []  # [{from, to}]
+
 	## Buff类
 	var berserk: Dictionary = {}  # {turns, damage_mult, taken_mult, gamble_cost} 或空
 	var blood_chain_target: String = ""  # "main" / "all" / ""
@@ -198,6 +202,8 @@ class ExecuteResult:
 		damage_shield_value += other.damage_shield_value
 		if other.damage_shield_duration > 0:
 			damage_shield_duration = other.damage_shield_duration
+		curse_dice.append_array(other.curse_dice)
+		replace_dice.append_array(other.replace_dice)
 		descriptions.append_array(other.descriptions)
 
 
@@ -427,10 +433,16 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.descriptions.append("保留骰子")
 
 		EffectTypes.EffectType.INSERT_CURSE_DIE:
-			result.descriptions.append("塞入 %s ×%d" % [params.get("die_id", ""), params.get("count", 1)])
+			var die_id: String = params.get("die_id", "cursed")
+			var count: int = params.get("count", 1)
+			result.curse_dice.append({"die_id": die_id, "count": count})
+			result.descriptions.append("塞入 %s ×%d" % [die_id, count])
 
 		EffectTypes.EffectType.REPLACE_PLAYER_DIE:
-			result.descriptions.append("替换骰子: %s → %s" % [params.get("from", ""), params.get("to", "")])
+			var from_id: String = params.get("from", "")
+			var to_id: String = params.get("to", "")
+			result.replace_dice.append({"from": from_id, "to": to_id})
+			result.descriptions.append("替换骰子: %s → %s" % [from_id, to_id])
 
 		# ---- 骰子数值类 ----
 		EffectTypes.EffectType.MODIFY_POINTS:

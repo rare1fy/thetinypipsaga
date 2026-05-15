@@ -194,11 +194,17 @@ static func resolve(
 ) -> void:
 	# Pattern-Driven：从配置获取本回合行动
 	var action: Dictionary = e.get_action()
+
+	# ═══ 新格式优先：action 携带 effects 数组时走 EffectEngine ═══
+	if action.has("effects") and action["effects"] is Array and not action["effects"].is_empty():
+		_resolve_via_effect_engine(e, action, on_shake, on_hp_pulse)
+		return
+
+	# ═══ 旧格式兼容：按 type/description 分流 ═══
 	var action_type: String = action.get("type", "攻击")
 	var action_value: int = action.get("value", e.attack_dmg)
 	var action_desc: String = action.get("description", "")
 
-	# 分流：防御 / 技能 / 攻击
 	match action_type:
 		"防御":
 			_execute_defend(e, action_value, action_desc, on_shake)
@@ -207,6 +213,121 @@ static func resolve(
 		_:
 			# 攻击（含 Ranger 追击）
 			_resolve_attacker(e, on_shake, on_hp_pulse)
+
+
+## ═══ 新引擎路径：通过 EnemyEffectBridge + EffectEngine 执行 ═══
+static func _resolve_via_effect_engine(
+	e: EnemyInstance,
+	action: Dictionary,
+	on_shake: Callable,
+	on_hp_pulse: Callable
+) -> void:
+	var effects: Array[Dictionary] = EnemyEffectBridge.action_to_effects(action, e)
+	var ctx := EnemyEffectBridge.build_enemy_context(e)
+	var result := EffectEngine.execute(effects, ctx)
+
+	# 应用结果到游戏状态
+	# 伤害
+	if result.bonus_damage > 0:
+		var final_dmg: int = result.bonus_damage
+		# Trait 攻击力修正
+		var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
+		if trait_mul > 1.0:
+			final_dmg = int(float(final_dmg) * trait_mul)
+		PlayerState.take_damage(final_dmg)
+		e.attack_count += 1
+		BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), final_dmg])
+		SoundPlayer.play_sound("enemy")
+		if on_shake.is_valid():
+			on_shake.call(5.0, 0.2)
+		if on_hp_pulse.is_valid():
+			on_hp_pulse.call()
+
+	# 护甲（给自己或友军）
+	if result.armor > 0:
+		# 检查目标范围
+		var target_scope: int = action.get("target_scope", EffectTypes.TargetScope.SELF)
+		if target_scope == EffectTypes.TargetScope.RANDOM_ALLY:
+			var allies := _collect_all_living().filter(func(a: EnemyInstance) -> bool: return a.uid != e.uid)
+			if allies.size() > 0:
+				var target: EnemyInstance = allies[randi() % allies.size()]
+				target.armor += result.armor
+				BattleLog.log_enemy("✦ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), result.armor])
+			else:
+				e.armor += result.armor
+				BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), result.armor])
+		else:
+			e.armor += result.armor
+			BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), result.armor])
+		SoundPlayer.play_sound("enemy_skill")
+		if on_shake.is_valid():
+			on_shake.call(3.0, 0.15)
+
+	# 治疗（给自己或友军）
+	if result.heal > 0:
+		var heal_target: EnemyInstance = e
+		var target_scope2: int = action.get("target_scope", EffectTypes.TargetScope.SELF)
+		if target_scope2 == EffectTypes.TargetScope.RANDOM_ALLY:
+			var wounded := _find_wounded_allies(e)
+			if wounded.size() > 0:
+				heal_target = wounded[0]
+		heal_target.hp = mini(heal_target.max_hp, heal_target.hp + result.heal)
+		SoundPlayer.play_sound("heal")
+		BattleLog.log_enemy("✚ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(heal_target), result.heal])
+
+	# 状态效果（施加给玩家）
+	if not result.apply_statuses.is_empty():
+		for status: Dictionary in result.apply_statuses:
+			var st_name: String = status.get("status", "")
+			var st_value: int = status.get("value", 0)
+			var target_tag: String = status.get("target", "enemy")
+			if target_tag == "enemy":
+				# 敌人施加给玩家
+				var st_type: int = _status_name_to_game_type(st_name)
+				if st_type >= 0:
+					GameManager.add_status(st_type, st_value, 3)
+					BattleLog.log_status("✦ %s 施加 %s %d" % [_get_name(e), st_name, st_value])
+		SoundPlayer.play_sound("enemy_skill")
+
+	# 控制效果（嘲讽等）
+	if not result.controls.is_empty():
+		for ctl: Dictionary in result.controls:
+			var ctl_type: String = ctl.get("control", "")
+			if ctl_type == "taunt":
+				GameManager.taunt_enemy_uid = e.uid
+				GameManager.target_enemy_uid = e.uid
+				EnemyTraits.apply_guard_rage_on_defend(e)
+
+	# 塞诅咒骰
+	if not result.curse_dice.is_empty():
+		for curse: Dictionary in result.curse_dice:
+			var die_id: String = curse.get("die_id", "cursed")
+			var count: int = curse.get("count", 1)
+			for i: int in range(count):
+				DiceBag.owned_dice.append({"defId": die_id, "level": 1})
+				DiceBag.dice_bag.append(die_id)
+			VFX.show_toast("%s 诅咒: %s +%d" % [_get_name(e), die_id, count], "damage")
+			BattleLog.log_status("✦ %s 施加 %s x%d" % [_get_name(e), die_id, count])
+		SoundPlayer.play_sound("enemy_skill")
+
+
+## 状态名 → GameTypes.StatusType 映射（敌人行动用）
+static func _status_name_to_game_type(name: String) -> int:
+	match name:
+		"poison":
+			return GameTypes.StatusType.POISON
+		"burn":
+			return GameTypes.StatusType.BURN
+		"vulnerable":
+			return GameTypes.StatusType.VULNERABLE
+		"weak":
+			return GameTypes.StatusType.WEAK
+		"freeze":
+			return GameTypes.StatusType.FREEZE
+		"slow":
+			return GameTypes.StatusType.SLOW
+		_:
+			return -1
 
 
 ## 执行防御行动（Guardian 上盾 + 嘲讽，或通用防御）
