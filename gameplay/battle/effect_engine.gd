@@ -103,9 +103,11 @@ class ExecuteResult:
 	## 经济类
 	var gold_gain: int = 0
 
-	## 敌人专属（塞骰/替换骰）
+	## 敌人专属（塞骰/替换骰/偷取）
 	var curse_dice: Array[Dictionary] = []  # [{die_id, count}]
 	var replace_dice: Array[Dictionary] = []  # [{from, to}]
+	var steal_gold: int = 0  # 偷取金币数量
+	var steal_armor: int = 0  # 偷取护甲数量
 
 	## Buff类
 	var berserk: Dictionary = {}  # {turns, damage_mult, taken_mult, gamble_cost} 或空
@@ -204,6 +206,8 @@ class ExecuteResult:
 			damage_shield_duration = other.damage_shield_duration
 		curse_dice.append_array(other.curse_dice)
 		replace_dice.append_array(other.replace_dice)
+		steal_gold += other.steal_gold
+		steal_armor += other.steal_armor
 		descriptions.append_array(other.descriptions)
 
 
@@ -486,7 +490,8 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.descriptions.append("商店折扣 %.0f%%" % (params.get("percent", 0.0) * 100))
 
 		EffectTypes.EffectType.STEAL_GOLD:
-			result.descriptions.append("偷取金币")
+			result.steal_gold = params.get("value", 0)
+			result.descriptions.append("偷取 %d 金币" % result.steal_gold)
 
 		# ---- 职业机制类 ----
 		EffectTypes.EffectType.SCAR_CONSUME:
@@ -542,7 +547,15 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 			result.descriptions.append("放大 ×%.1f = +%d" % [mult, amplified])
 
 		EffectTypes.EffectType.STEAL_ARMOR:
-			result.descriptions.append("偷取护甲 %.0f%%" % (params.get("ratio", 0.0) * 100))
+			# ratio 表示偷取目标护甲的百分比，value 表示固定值
+			var steal_ratio: float = params.get("ratio", 0.0)
+			var steal_flat: int = params.get("value", 0)
+			if steal_ratio > 0.0:
+				# 百分比偷取：由 Applier/Resolver 根据目标护甲计算实际值
+				result.steal_armor = maxi(1, steal_flat)  # 暂存 ratio 信息到 descriptions
+			else:
+				result.steal_armor = steal_flat
+			result.descriptions.append("偷取护甲 %d" % result.steal_armor)
 
 		EffectTypes.EffectType.DOUBLE_STATUS_ON_COMBO:
 			result.descriptions.append("连击双倍 %s" % params.get("status", ""))

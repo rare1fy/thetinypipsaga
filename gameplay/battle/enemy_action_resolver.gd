@@ -243,22 +243,27 @@ static func _resolve_via_effect_engine(
 		if on_hp_pulse.is_valid():
 			on_hp_pulse.call()
 
-	# 护甲（给自己或友军）
+	# 护甲（给自己或友军）— 经过 Trait 修正
 	if result.armor > 0:
-		# 检查目标范围
-		var target_scope: int = action.get("target_scope", EffectTypes.TargetScope.SELF)
-		if target_scope == EffectTypes.TargetScope.RANDOM_ALLY:
+		var armor_val: int = int(float(result.armor) * EnemyTraits.archetype_armor_boost(e))
+		# 从 effects 中提取目标范围（取第一个 ARMOR 效果的 target）
+		var armor_target: int = EffectTypes.TargetScope.SELF
+		for eff: Dictionary in effects:
+			if eff.get("type", -1) == EffectTypes.EffectType.ARMOR:
+				armor_target = eff.get("target", EffectTypes.TargetScope.SELF)
+				break
+		if armor_target == EffectTypes.TargetScope.RANDOM_ALLY:
 			var allies := _collect_all_living().filter(func(a: EnemyInstance) -> bool: return a.uid != e.uid)
 			if allies.size() > 0:
 				var target: EnemyInstance = allies[randi() % allies.size()]
-				target.armor += result.armor
-				BattleLog.log_enemy("✦ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), result.armor])
+				target.armor += armor_val
+				BattleLog.log_enemy("✦ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), armor_val])
 			else:
-				e.armor += result.armor
-				BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), result.armor])
+				e.armor += armor_val
+				BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), armor_val])
 		else:
-			e.armor += result.armor
-			BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), result.armor])
+			e.armor += armor_val
+			BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), armor_val])
 		SoundPlayer.play_sound("enemy_skill")
 		if on_shake.is_valid():
 			on_shake.call(3.0, 0.15)
@@ -266,11 +271,21 @@ static func _resolve_via_effect_engine(
 	# 治疗（给自己或友军）
 	if result.heal > 0:
 		var heal_target: EnemyInstance = e
-		var target_scope2: int = action.get("target_scope", EffectTypes.TargetScope.SELF)
-		if target_scope2 == EffectTypes.TargetScope.RANDOM_ALLY:
+		# 从 effects 中提取目标范围
+		var heal_target_scope: int = EffectTypes.TargetScope.SELF
+		for eff: Dictionary in effects:
+			if eff.get("type", -1) == EffectTypes.EffectType.HEAL:
+				heal_target_scope = eff.get("target", EffectTypes.TargetScope.SELF)
+				break
+		if heal_target_scope == EffectTypes.TargetScope.RANDOM_ALLY:
 			var wounded := _find_wounded_allies(e)
 			if wounded.size() > 0:
-				heal_target = wounded[0]
+				heal_target = wounded[randi() % wounded.size()]
+		elif heal_target_scope == EffectTypes.TargetScope.ALLY:
+			# ALLY = 血量最低友军（对齐 Priest 治疗优先级）
+			var wounded := _find_wounded_allies(e)
+			if wounded.size() > 0:
+				heal_target = wounded[0]  # _find_wounded_allies 已按血量排序
 		heal_target.hp = mini(heal_target.max_hp, heal_target.hp + result.heal)
 		SoundPlayer.play_sound("heal")
 		BattleLog.log_enemy("✚ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(heal_target), result.heal])
@@ -309,6 +324,44 @@ static func _resolve_via_effect_engine(
 			VFX.show_toast("%s 诅咒: %s +%d" % [_get_name(e), die_id, count], "damage")
 			BattleLog.log_status("✦ %s 施加 %s x%d" % [_get_name(e), die_id, count])
 		SoundPlayer.play_sound("enemy_skill")
+
+	# 替换玩家骰子
+	if not result.replace_dice.is_empty():
+		for replacement: Dictionary in result.replace_dice:
+			var from_id: String = replacement.get("from", "random")
+			var to_id: String = replacement.get("to", "")
+			if to_id == "":
+				continue
+			var replaced: bool = false
+			for i: int in range(DiceBag.owned_dice.size()):
+				var die: Dictionary = DiceBag.owned_dice[i]
+				if from_id == "random" or die.get("defId", "") == from_id:
+					DiceBag.owned_dice[i]["defId"] = to_id
+					replaced = true
+					break
+			if replaced:
+				VFX.show_toast("%s 替换骰子 → %s" % [_get_name(e), to_id], "damage")
+				BattleLog.log_status("✦ %s 替换骰子 %s → %s" % [_get_name(e), from_id, to_id])
+		SoundPlayer.play_sound("enemy_skill")
+
+	# 偷取金币
+	if result.steal_gold > 0:
+		var actual_steal: int = mini(result.steal_gold, PlayerState.gold)
+		if actual_steal > 0:
+			PlayerState.gold -= actual_steal
+			VFX.show_toast("%s 偷取 %d 金币" % [_get_name(e), actual_steal], "damage")
+			BattleLog.log_status("✦ %s 偷取 %d 金币" % [_get_name(e), actual_steal])
+			SoundPlayer.play_sound("enemy_skill")
+
+	# 偷取护甲
+	if result.steal_armor > 0:
+		var actual_steal_armor: int = mini(result.steal_armor, PlayerState.armor)
+		if actual_steal_armor > 0:
+			PlayerState.armor -= actual_steal_armor
+			e.armor += actual_steal_armor
+			VFX.show_toast("%s 偷取 %d 护甲" % [_get_name(e), actual_steal_armor], "damage")
+			BattleLog.log_status("✦ %s 偷取 %d 护甲" % [_get_name(e), actual_steal_armor])
+			SoundPlayer.play_sound("enemy_skill")
 
 
 ## 状态名 → GameTypes.StatusType 映射（敌人行动用）
