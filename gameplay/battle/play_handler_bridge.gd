@@ -100,23 +100,28 @@ func execute(controller: BattleController) -> void:
 	# §6.6 第 8 / 9 级修正因子
 	var player_weak: bool = PlayerState.has_status(GameTypes.StatusType.WEAK)
 	var target_instance: EnemyInstance = DiceEffectApplier.get_target_enemy_instance(EnemyMgr.get_target_enemy(controller.enemy_views))
-	var enemy_vulnerable: bool = target_instance != null and target_instance.has_status(GameTypes.StatusType.VULNERABLE)
+	var vulnerable_layers: int = 0
+	if target_instance != null:
+		vulnerable_layers = StatusService.get_value(target_instance.statuses, GameTypes.StatusType.VULNERABLE)
 	var rogue_combo_bonus: bool = PlayerState.player_class == "rogue" and current_combo >= 1 and not is_pure_normal
 	var this_hand_type: String = hand_result.get("bestHand", "")
 	var precision_combo: bool = PlayerState.player_class == "rogue" and current_combo == 1 and last_hand != "" and last_hand == this_hand_type and not is_pure_normal
 
-	# 计算牌型和伤害
-	var bonus_mult: float = BattlePlayHandler.calc_play_bonus_mult(hand_result.bestHand) + dice_effect_result.bonus_mult
-	var bonus_damage: int = BattlePlayHandler.calc_play_bonus_damage() + dice_effect_result.bonus_damage
+	# v0.5 伤害公式：(Σ点数 + baseDamage) × handMultiplier × outcome.multiplier
+	var outcome_multiplier: float = BattlePlayHandler.calc_outcome_multiplier(hand_result.bestHand)
+	# 骰子特效的 bonus_mult 作为 outcome.multiplier 的因子连乘
+	if dice_effect_result.bonus_mult > 0.0:
+		outcome_multiplier *= (1.0 + dice_effect_result.bonus_mult)
+	var bonus_base_damage: int = BattlePlayHandler.calc_bonus_base_damage() + dice_effect_result.bonus_damage
 	var total_damage: int = HandEvaluator.calculate_damage(
-		selected_dice, hand_result, bonus_mult, bonus_damage,
+		selected_dice, hand_result, bonus_base_damage, outcome_multiplier,
 		PlayerState.hand_type_upgrades,
-		player_weak, enemy_vulnerable, rogue_combo_bonus, precision_combo
+		player_weak, vulnerable_layers, rogue_combo_bonus, precision_combo
 	)
-	BattleLog.log_dice("[DIAG] hand=%s bonus_mult=%.2f bonus_dmg=%d total=%d combo=%d fury=%d rage=%.2f weak=%s vuln=%s rogue_combo=%s skip_op=%s" % [
-		hand_result.bestHand, bonus_mult, bonus_damage, total_damage,
+	BattleLog.log_dice("[DIAG] hand=%s outcome_mult=%.2f base_dmg=%d total=%d combo=%d fury=%d rage=%.2f weak=%s vuln_layers=%d rogue_combo=%s skip_op=%s" % [
+		hand_result.bestHand, outcome_multiplier, bonus_base_damage, total_damage,
 		current_combo, PlayerState.blood_reroll_count, PlayerState.warrior_rage_mult,
-		player_weak, enemy_vulnerable, rogue_combo_bonus, skip_on_play
+		player_weak, vulnerable_layers, rogue_combo_bonus, skip_on_play
 	])
 
 	# 应用特效结果（护甲转伤害等 onPlay 效果，不含伤害应用）
@@ -134,7 +139,7 @@ func execute(controller: BattleController) -> void:
 
 	# 阶段 1：结算演出（await 等待四阶段播完 + 收尾淡出）
 	print_rich("[color=green][PlayHandlerBridge] 阶段1: 开始结算演出[/color]")
-	await _play_settlement(controller, hand_name, selected_dice, bonus_mult, bonus_damage, total_damage, hand_result)
+	await _play_settlement(controller, hand_name, selected_dice, outcome_multiplier, bonus_base_damage, total_damage, hand_result)
 	print_rich("[color=green][PlayHandlerBridge] 阶段1: 结算演出完成[/color]")
 
 	# 阶段 2：玩家攻击动画（等待动画完成再触发受击，避免同时播放）
@@ -245,8 +250,8 @@ func _play_settlement(
 	controller: BattleController,
 	hand_name: String,
 	selected_dice: Array[Dictionary],
-	bonus_mult: float,
-	bonus_damage: int,
+	outcome_mult: float,
+	bonus_base_damage: int,
 	total_damage: int,
 	hand_result: Dictionary
 ) -> void:
@@ -263,8 +268,8 @@ func _play_settlement(
 	await settlement.play({
 		"hand_name": hand_name,
 		"dice_values": dice_values,
-		"bonus_mult": bonus_mult,
-		"bonus_damage": bonus_damage,
+		"outcome_mult": outcome_mult,
+		"bonus_base_damage": bonus_base_damage,
 		"total_damage": total_damage,
 		"has_aoe": has_aoe,
 	})

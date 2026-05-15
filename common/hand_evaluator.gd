@@ -5,30 +5,32 @@ class_name HandEvaluator
 
 # 牌型优先级（从高到低）
 const HAND_PRIORITY: Array[String] = [
-	"皇家元素顺", "元素葫芦", "元素顺", "六条", "五条", "四条", "葫芦",
+	"皇家元素顺", "元素葫芦", "元素顺", "六条", "五条", "大葫芦", "四条", "葫芦",
 	"同元素", "6顺", "5顺", "4顺", "顺子", "三条", "三连对", "连对",
 	"对子", "普通攻击"
 ]
 
-# 牌型倍率表 {base, mult}
+# v0.5 牌型倍率表（纯倍率，废除旧 base 加法项）
+# 多牌型同时生效时：handMultiplier = 1 + Σ(mult - 1)，相加不连乘
 const HAND_MULT: Dictionary = {
-	"普通攻击": {"base": 0, "mult": 1.0},
-	"对子": {"base": 5, "mult": 1.0},
-	"连对": {"base": 10, "mult": 1.2},
-	"三连对": {"base": 20, "mult": 1.5},
-	"三条": {"base": 10, "mult": 1.5},
-	"顺子": {"base": 15, "mult": 1.3},
-	"4顺": {"base": 25, "mult": 1.5},
-	"5顺": {"base": 40, "mult": 1.8},
-	"6顺": {"base": 60, "mult": 2.0},
-	"同元素": {"base": 30, "mult": 1.8},
-	"葫芦": {"base": 35, "mult": 1.8},
-	"四条": {"base": 50, "mult": 2.0},
-	"五条": {"base": 80, "mult": 2.5},
-	"六条": {"base": 120, "mult": 3.0},
-	"元素顺": {"base": 60, "mult": 2.2},
-	"元素葫芦": {"base": 80, "mult": 2.5},
-	"皇家元素顺": {"base": 150, "mult": 3.5},
+	"普通攻击": {"mult": 1.0},
+	"对子": {"mult": 1.8},
+	"连对": {"mult": 2.4},
+	"三连对": {"mult": 3.4},
+	"三条": {"mult": 2.8},
+	"顺子": {"mult": 1.5},
+	"4顺": {"mult": 2.0},
+	"5顺": {"mult": 2.6},
+	"6顺": {"mult": 3.5},
+	"同元素": {"mult": 1.8},  # 需 ≥4 颗同非 normal 元素
+	"葫芦": {"mult": 3.8},
+	"大葫芦": {"mult": 5.8},  # v0.5 新增：3+3 或 4+2（6颗）
+	"四条": {"mult": 4.5},
+	"五条": {"mult": 6.5},
+	"六条": {"mult": 10.0},
+	"元素顺": {"mult": 2.2},
+	"元素葫芦": {"mult": 2.5},
+	"皇家元素顺": {"mult": 3.5},
 }
 
 
@@ -115,12 +117,13 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	if max_count == 3 and valid_dice_count == 3: hands["三条"] = true
 	if max_count == 2 and valid_dice_count == 2: hands["对子"] = true
 	
-	# 葫芦 (3+2): 多种模式
+	# 葫芦 (3+2) / 大葫芦 (4+2 或 3+3，6颗)
+	# v0.5 规则：4+2 优先识别为大葫芦（×5.8），不走四条（×4.5）
 	if is_full_house and valid_dice_count == 5: hands["葫芦"] = true
-	# 4+2 模式的葫芦
-	if max_count >= 4 and sorted_counts.size() >= 2 and sorted_counts[1] >= 2 and valid_dice_count == 6: hands["葫芦"] = true
-	# 3+3 模式的葫芦
-	if max_count >= 3 and sorted_counts.size() >= 2 and sorted_counts[1] >= 3 and valid_dice_count == 6: hands["葫芦"] = true
+	# 大葫芦：4+2 模式（6颗）
+	if max_count >= 4 and sorted_counts.size() >= 2 and sorted_counts[1] >= 2 and valid_dice_count == 6: hands["大葫芦"] = true
+	# 大葫芦：3+3 模式（6颗）
+	if max_count >= 3 and sorted_counts.size() >= 2 and sorted_counts[1] >= 3 and valid_dice_count == 6: hands["大葫芦"] = true
 	
 	# 连对 / 三连对
 	if is_two_pair and valid_dice_count == 4: hands["连对"] = true
@@ -158,9 +161,12 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	var active_hands: Array[String] = []
 	var has_base_hand: bool = false
 	
-	# === N条 / 葫芦 / 连对 / 对子 互斥，取最高 ===
+	# === N条 / 大葫芦 / 葫芦 / 连对 / 对子 互斥，取最高 ===
+	# v0.5 规则：大葫芦（×5.8）> 五条（×6.5）> 四条（×4.5）> 葫芦（×3.8）
+	# 但六条（×10.0）> 大葫芦
 	if hands.has("六条"): active_hands.append("六条"); has_base_hand = true
 	elif hands.has("五条"): active_hands.append("五条"); has_base_hand = true
+	elif hands.has("大葫芦"): active_hands.append("大葫芦"); has_base_hand = true
 	elif hands.has("四条"): active_hands.append("四条"); has_base_hand = true
 	elif hands.has("葫芦"): active_hands.append("葫芦"); has_base_hand = true
 	elif hands.has("三条"): active_hands.append("三条"); has_base_hand = true
@@ -194,95 +200,116 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	return {"bestHand": best_hand, "allHands": all_hands, "activeHands": active_hands}
 
 
-## 获取牌型基础伤害倍率（可选参数 upgrades 叠加升级加成）
-## upgrades 格式：{牌型名: 升级层数}，每级 +15 基础 / +0.1 倍率
+## 获取牌型倍率（可选参数 upgrades 叠加升级加成）
+## upgrades 格式：{牌型名: 升级层数}，每级 +0.3 倍率（v0.5 规范 §1.4.3）
 static func get_hand_mult(hand_name: String, upgrades: Dictionary = {}) -> Dictionary:
-	var base_mult: Dictionary = HAND_MULT.get(hand_name, {"base": 0, "mult": 1.0})
+	var base_mult: Dictionary = HAND_MULT.get(hand_name, {"mult": 1.0})
 	var upgrade_level: int = int(upgrades.get(hand_name, 0))
 	if upgrade_level <= 0:
 		return base_mult
 	return {
-		"base": int(base_mult.base) + 15 * upgrade_level,
-		"mult": float(base_mult.mult) + 0.1 * upgrade_level,
+		"mult": float(base_mult.mult) + 0.3 * upgrade_level,
 	}
 
 
-## 计算 §6.6 第 1 级的 baseDamage：floor((X + handBase) × handMult)
-## 不含任何 bonus/修正，仅包含点数和 + 牌型基础 + 牌型倍率（含升级）
-## 用途：§6.6 第 2 级同元素系护甲转化、Debug 输出
+## 计算 baseDamage（v0.5 公式第 1-2 步）
+## step1: rawBase = Σ 骰子点数（amplify 骰子按 selfMultBeforeSum 放大后计入）+ onPlay.baseDamage
+## step2: afterHand = ceil(rawBase × handMultiplier)
+## 多牌型同时生效时：handMultiplier = 1 + Σ(mult - 1)，相加不连乘
 static func calculate_base_damage(
 	dice: Array[Dictionary],
 	hand_result: Dictionary,
 	upgrades: Dictionary = {}
 ) -> int:
-	var total_points: int = 0
-	for d in dice:
-		total_points += d.value
+	var total_points: int = _sum_dice_points(dice)
 	var active_hands: Array[String] = []
 	active_hands.assign(hand_result.get("activeHands", []))
-	var best_base: int = 0
-	var best_mult: float = 1.0
-	for h in active_hands:
-		var hm := get_hand_mult(h, upgrades)
-		if hm.base > best_base:
-			best_base = hm.base
-		if hm.mult > best_mult:
-			best_mult = hm.mult
-	return int(float(total_points + best_base) * best_mult)
+	var hand_multiplier: float = _calc_hand_multiplier(active_hands, upgrades)
+	return ceili(float(total_points) * hand_multiplier)
 
 
-## 计算总伤害
-## §6.6 第 8 级 / 第 9 级修正因子（CH6）：
-##   player_weak=true  → ×0.75（玩家被虚弱）
-##   enemy_vulnerable=true → ×1.5（目标敌人易伤）
-##   rogue_combo_bonus=true → ×1.2（盗贼 comboCount≥1 且非普攻，规范 §6.6 第 9 级）
-##   precision_combo=true → ×1.25（盗贼同牌型精准连击，原版 calcComboFinisherBonus）
-## 注：战士血怒 / 狂暴 / 法师过充 已在 bonus_mult 里合流，此处不再重复。
+## 计算总伤害（v0.5 公式）
+## 公式：(Σ点数 + baseDamage) × handMultiplier × outcome.multiplier
+## outcome.multiplier = 遗物/骰子 bonusMult × 易伤系数 × 盗贼连击 等全部连乘
+##
+## 参数说明：
+##   dice: 参与出牌的骰子数组
+##   hand_result: check_hands 返回的牌型结果
+##   bonus_base_damage: 骰子 onPlay.baseDamage 等额外基础伤害（进乘区）
+##   outcome_multiplier: 增幅倍率（遗物/骰子 bonusMult 连乘后的总值，默认 1.0）
+##   upgrades: 牌型升级等级
+##   player_weak: 玩家被虚弱 → ×0.75
+##   vulnerable_layers: 目标敌人易伤层数（0-5）
+##   rogue_combo_bonus: 盗贼连击 ×1.2
+##   precision_combo: 盗贼同牌型精准连击 ×1.25
 static func calculate_damage(
 	dice: Array[Dictionary],
 	hand_result: Dictionary,
-	bonus_mult: float = 0.0,
-	bonus_damage: int = 0,
+	bonus_base_damage: int = 0,
+	outcome_multiplier: float = 1.0,
 	upgrades: Dictionary = {},
 	player_weak: bool = false,
-	enemy_vulnerable: bool = false,
+	vulnerable_layers: int = 0,
 	rogue_combo_bonus: bool = false,
 	precision_combo: bool = false
 ) -> int:
-	var total_points: int = 0
-	for d in dice:
-		total_points += d.value
+	# step1: rawBase = Σ 骰子点数（含 amplify 放大）+ baseDamage
+	var total_points: int = _sum_dice_points(dice) + bonus_base_damage
 
+	# step2: afterHand = rawBase × handMultiplier
 	var active_hands: Array[String] = []
 	active_hands.assign(hand_result.get("activeHands", []))
-	var best_base: int = 0
-	var best_mult: float = 1.0
+	var hand_multiplier: float = _calc_hand_multiplier(active_hands, upgrades)
+	var after_hand: float = float(total_points) * hand_multiplier
 
-	for h in active_hands:
-		var hm := get_hand_mult(h, upgrades)
-		if hm.base > best_base:
-			best_base = hm.base
-		if hm.mult > best_mult:
-			best_mult = hm.mult
+	# step3: totalDamage = afterHand × outcome.multiplier
+	var damage: float = after_hand * outcome_multiplier
 
-	# 基础伤害 = (点数之和 + 牌型基础) × 牌型倍率 × (1 + 额外倍率) + 额外伤害
-	var damage: float = float((total_points + best_base)) * best_mult * (1.0 + bonus_mult) + float(bonus_damage)
+	# step4: 易伤系数（作为 outcome.multiplier 的一个因子）
+	if vulnerable_layers > 0:
+		damage *= GameBalance.get_vulnerable_mult(vulnerable_layers)
 
-	# §6.6 第 8 级：玩家虚弱 / 敌人易伤
+	# step5: 玩家虚弱
 	if player_weak:
 		damage *= GameBalance.STATUS_EFFECT_MULT.weak
-	if enemy_vulnerable:
-		damage *= GameBalance.STATUS_EFFECT_MULT.vulnerable
 
-	# §6.6 第 9 级：盗贼连击（非普攻） ×1.2
+	# step6: 盗贼连击 ×1.2
 	if rogue_combo_bonus:
 		damage *= 1.2
 
-	# §6.6 第 9 级：盗贼同牌型精准连击 ×1.25（原版 calcComboFinisherBonus 独立乘算）
+	# step7: 盗贼同牌型精准连击 ×1.25
 	if precision_combo:
 		damage *= 1.25
 
-	return maxi(1, int(damage))
+	return maxi(1, ceili(damage))
+
+
+# ============================================================
+# 内部辅助函数
+# ============================================================
+
+## 计算骰子点数总和（含 amplify selfMultBeforeSum 放大）
+static func _sum_dice_points(dice: Array[Dictionary]) -> int:
+	var total: int = 0
+	for d: Dictionary in dice:
+		var value: int = int(d.get("value", 0))
+		var def_id: String = d.get("defId", "")
+		# amplify 机制：仅放大自身点数 ×1.2 向上取整
+		if def_id == "amplify":
+			value = ceili(float(value) * GameBalance.AMPLIFY_SELF_MULT)
+		total += value
+	return total
+
+
+## 计算 handMultiplier：多牌型同时生效时 = 1 + Σ(mult - 1)
+static func _calc_hand_multiplier(active_hands: Array[String], upgrades: Dictionary = {}) -> float:
+	if active_hands.is_empty():
+		return 1.0
+	var total_bonus: float = 0.0
+	for h: String in active_hands:
+		var hm: Dictionary = get_hand_mult(h, upgrades)
+		total_bonus += float(hm.mult) - 1.0
+	return 1.0 + total_bonus
 
 
 static func _has_ignore_for_hand_type(d: Dictionary) -> bool:

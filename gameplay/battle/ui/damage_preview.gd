@@ -12,17 +12,18 @@ var _armor_label: Label = null          # 护甲（仅有时显示）
 var _status_label: Label = null         # 状态效果提示
 var _aoe_label: Label = null            # AOE 提示（仅雷元素 / 特定牌型）
 
-# 牌型附带护甲/状态表（对齐 handTypes.ts）
+# 牌型附带护甲/状态表（v0.5 对齐）
 const HAND_EFFECT_TABLE: Dictionary = {
 	"对子": {"armor": 0, "status": ""},
 	"连对": {"armor": 5, "status": ""},
 	"三连对": {"armor": 8, "status": ""},
-	"三条": {"armor": 0, "status": "易伤x1（2回合）"},
-	"4顺": {"armor": 0, "status": "虚弱x1（2回合）"},
-	"葫芦": {"armor": 15, "status": ""},
-	"5顺": {"armor": 0, "status": "虚弱x2（2回合）"},
-	"四条": {"armor": 0, "status": "易伤x2（2回合）"},
-	"6顺": {"armor": 10, "status": "虚弱x3（2回合）"},
+	"三条": {"armor": 0, "status": "易伤x1"},
+	"4顺": {"armor": 0, "status": "虚弱x1（1回合）"},
+	"葫芦": {"armor": 0, "status": "真实伤害（无视护甲+减伤）"},
+	"大葫芦": {"armor": 0, "status": "真实伤害（无视护甲+减伤）"},
+	"5顺": {"armor": 0, "status": "虚弱x2（1回合）"},
+	"四条": {"armor": 0, "status": "易伤x2"},
+	"6顺": {"armor": 10, "status": "虚弱x3（1回合）"},
 }
 
 
@@ -99,17 +100,18 @@ func refresh(selected_dice: Array[Dictionary]) -> void:
 	
 	var hand_result := HandEvaluator.check_hands(selected_dice)
 	
-	# 预览基础：遗物倍率 + 怒火 / 过充 / 遗物固定 bonus
-	var base_mult := _calc_preview_mult(hand_result.bestHand)
-	var base_bonus := _calc_preview_bonus_damage()
+	# v0.5 预览：outcome_multiplier 连乘 + bonus_base_damage 进乘区
+	var outcome_mult: float = _calc_preview_outcome_mult(hand_result.bestHand)
+	var base_bonus: int = _calc_preview_bonus_damage()
 	
 	# 骰子 onPlay 特效预演（纯函数调用，不改游戏状态）
 	var effect_preview := _preview_dice_effects(selected_dice)
 	var total_bonus_damage: int = base_bonus + effect_preview.bonus_damage
-	var total_bonus_mult: float = base_mult + effect_preview.bonus_mult
+	if effect_preview.bonus_mult > 0.0:
+		outcome_mult *= (1.0 + effect_preview.bonus_mult)
 	
 	var total_damage := HandEvaluator.calculate_damage(
-		selected_dice, hand_result, total_bonus_mult, total_bonus_damage, PlayerState.hand_type_upgrades
+		selected_dice, hand_result, total_bonus_damage, outcome_mult, PlayerState.hand_type_upgrades
 	)
 	
 	# 牌型
@@ -194,15 +196,29 @@ func _preview_dice_effects(selected_dice: Array[Dictionary]) -> DiceEffectResolv
 
 ## ====== 纯计算辅助（不改任何状态）======
 
-## 只计算"玩家看得见"的倍率：遗物倍率 + 狂暴 + 过充
-## 不重复计算 RelicEngine.get_bonus_damage（它会修改 life_furnace counter）
-func _calc_preview_mult(best_hand: String) -> float:
-	var relic_mult := 0.0
+## v0.5 预览增幅倍率（连乘）
+func _calc_preview_outcome_mult(best_hand: String) -> float:
+	var mult: float = 1.0
+	# 遗物倍率
 	for r: Dictionary in GameManager.relics:
 		var def: RelicDef = GameData.get_relic_def(r.id)
 		if def.multiplier > 0 and def.id == "prism_focus" and "同元素" in best_hand:
-			relic_mult += def.multiplier
-	return relic_mult + GameManager.mage_overcharge_mult + GameManager.warrior_rage_mult
+			mult *= (1.0 + def.multiplier)
+	# 过充
+	var overcharge: float = GameBalance.get_overcharge_mult(
+		DiceBag.hand_dice.size(), GameBalance.PLAYER_INITIAL.drawCount
+	)
+	if overcharge > 0.0:
+		mult *= (1.0 + overcharge)
+	# 血怒
+	var fury_stacks: int = mini(GameManager.blood_reroll_count, GameBalance.FURY_CONFIG.maxStack)
+	var fury_mult: float = fury_stacks * GameBalance.FURY_CONFIG.damagePerStack
+	if fury_mult > 0.0:
+		mult *= (1.0 + fury_mult)
+	# 战士狂暴
+	if GameManager.warrior_rage_mult > 0.0:
+		mult *= (1.0 + GameManager.warrior_rage_mult)
+	return mult
 
 
 ## 额外伤害：怒火燎原累积 + 其他 bonus（不包含会变更 counter 的遗物）

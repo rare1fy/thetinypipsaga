@@ -129,7 +129,7 @@ static func dominant_element(selected_dice: Array[Dictionary]) -> String:
 	return best
 
 
-## 敌方 DoT 预结算（灼烧/中毒扣血 + 过期清理），供 controller 和 enemy_ai 共用
+## 敌方 DoT 预结算（灼烧/中毒扣血 + 过期清理 + v0.5 易伤层数衰减），供 controller 和 enemy_ai 共用
 static func settle_enemy_dot_damage(enemies: Array[EnemyInstance]) -> void:
 	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
@@ -141,4 +141,11 @@ static func settle_enemy_dot_damage(enemies: Array[EnemyInstance]) -> void:
 			elif s.type == GameTypes.StatusType.POISON and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.duration -= 1
-		e.statuses = e.statuses.filter(func(s: StatusEffect) -> bool: return s.duration > 0)
+		# v0.5 易伤层数衰减：每敌方回合结束 -1 层
+		StatusService.tick_vulnerable(e.statuses)
+		# 清理到期状态（不含易伤，易伤走 tick_vulnerable）
+		e.statuses = e.statuses.filter(func(s: StatusEffect) -> bool:
+			if s.type == GameTypes.StatusType.VULNERABLE:
+				return s.value > 0
+			return s.duration > 0
+		)

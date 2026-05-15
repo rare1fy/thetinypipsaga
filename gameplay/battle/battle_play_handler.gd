@@ -10,28 +10,36 @@ extends RefCounted
 # 出牌加成计算
 # ============================================================
 
-## 计算牌型倍率加成（遗物 + 职业）
-## 参数 best_hand: 本次出牌的牌型名
-static func calc_play_bonus_mult(best_hand: String) -> float:
-	var mult: float = 0.0
+## 计算增幅倍率 outcome.multiplier（v0.5：全部连乘）
+## 来源：遗物 bonusMult × 过充 × 血怒 × 其他
+## 返回值 ≥ 1.0（无加成时为 1.0）
+static func calc_outcome_multiplier(best_hand: String) -> float:
+	var mult: float = 1.0
 	# 遗物倍率
 	for r: Dictionary in GameManager.relics:
 		var def: RelicDef = GameData.get_relic_def(r.id)
 		if def and def.multiplier > 0 and def.id == "prism_focus" and "同元素" in best_hand:
-			mult += def.multiplier
-	# 职业倍率：法师过充 + 战士血怒（封顶 FURY_CONFIG）
-	mult += GameManager.mage_overcharge_mult
-	# 血怒封顶：每层 +15%，最多 5 层 = +75%
+			mult *= (1.0 + def.multiplier)
+	# 过充系统（v0.5）
+	var overcharge: float = GameBalance.get_overcharge_mult(
+		DiceBag.hand_dice.size(), GameBalance.PLAYER_INITIAL.drawCount
+	)
+	if overcharge > 0.0:
+		mult *= (1.0 + overcharge)
+	# 血怒：每层 +15%，最多 5 层
 	var fury_stacks: int = mini(GameManager.blood_reroll_count, GameBalance.FURY_CONFIG.maxStack)
 	var fury_mult: float = fury_stacks * GameBalance.FURY_CONFIG.damagePerStack
-	mult += fury_mult + GameManager.warrior_rage_mult
-	# 盗贼同牌型精准连击 ×1.25 已移至 HandEvaluator.calculate_damage 独立乘算
-	# （原版 playHandStats.ts calcComboFinisherBonus 是独立 ×1.25，不应混入 bonus_mult）
+	if fury_mult > 0.0:
+		mult *= (1.0 + fury_mult)
+	# 战士狂暴
+	if GameManager.warrior_rage_mult > 0.0:
+		mult *= (1.0 + GameManager.warrior_rage_mult)
 	return mult
 
 
-## 计算额外伤害加成（遗物 + 职业）
-static func calc_play_bonus_damage() -> int:
+## 计算额外基础伤害 baseDamage（v0.5：进乘区，不再是末尾加法项）
+## 来源：遗物 onPlay.damage + 怒火燎原 + fury_bonus
+static func calc_bonus_base_damage() -> int:
 	var bonus: int = GameManager.rage_fire_bonus + GameManager.fury_bonus_damage
 	for r: Dictionary in GameManager.relics:
 		var def: RelicDef = GameData.get_relic_def(r.id)

@@ -135,9 +135,9 @@ func play(data: Dictionary) -> void:
 	var dice_values: Array[int] = _coerce_int_array(data.get("dice_values", []))
 	await _phase2_dice_scoring(dice_values)
 	# Phase 2.5 倍率
-	await _phase25_multiplier(data.get("bonus_mult", 0.0))
+	await _phase25_multiplier(data.get("outcome_mult", 1.0))
 	# Phase 3 遗物加成
-	await _phase3_effects(data.get("bonus_damage", 0))
+	await _phase3_effects(data.get("bonus_base_damage", 0))
 	# Phase 4 最终伤害
 	await _phase4_final_damage(data.get("total_damage", 0), data.get("has_aoe", false))
 
@@ -276,10 +276,11 @@ func _make_die_box(value: int) -> PanelContainer:
 
 
 # ========== Phase 2.5: 倍率弹出 ==========
-func _phase25_multiplier(bonus_mult: float) -> void:
-	if bonus_mult <= 0.001:
+func _phase25_multiplier(outcome_mult: float) -> void:
+	# v0.5: outcome_mult 基准为 1.0，无额外加成时跳过
+	if outcome_mult <= 1.001:
 		return
-	_mult_label.text = "×%.2f" % (1.0 + bonus_mult)
+	_mult_label.text = "×%.2f" % outcome_mult
 	_mult_label.visible = true
 	_mult_label.modulate.a = 0.0
 	_mult_label.pivot_offset = _mult_label.size * 0.5
@@ -301,11 +302,11 @@ func _phase25_multiplier(bonus_mult: float) -> void:
 	await get_tree().create_timer(phase25_mult_ms / 1000.0).timeout
 
 
-# ========== Phase 3: 遗物额外加成（bonus_damage） ==========
-func _phase3_effects(bonus_damage: int) -> void:
-	if bonus_damage <= 0:
+# ========== Phase 3: 额外基础伤害（进乘区） ==========
+func _phase3_effects(bonus_base_damage: int) -> void:
+	if bonus_base_damage <= 0:
 		return
-	_bonus_label.text = "遗物 +%d" % bonus_damage
+	_bonus_label.text = "基础伤害 +%d" % bonus_base_damage
 	_bonus_label.visible = true
 	_bonus_label.modulate.a = 0.0
 	_bonus_label.pivot_offset = _bonus_label.size * 0.5
