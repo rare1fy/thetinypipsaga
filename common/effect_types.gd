@@ -36,6 +36,7 @@ enum EffectType {
 	                           ##   condition: "hit"/"combo"/"third_play"/"solo"/"low_hp"/"keep"
 	AOE,                       ## 标记/造成全体伤害 {value?: int} 无value=标记本次AOE，有value=额外固定AOE
 	SPLASH,                    ## 溅射到其他目标 {ratio: float, target?: str}
+	                           ##   target: "others"/"adjacent"（可选，不填=溅射除主目标外全体）
 	OVERKILL_TRANSFER,         ## 击杀溢出转移 {ratio: float}
 	PIERCE,                    ## 穿透护甲 {value: int}
 	TRUE_DAMAGE,               ## 真实伤害（无视护甲+无视减伤） {value: int}
@@ -46,28 +47,31 @@ enum EffectType {
 	                           ##   status: "poison"/"all"
 
 	# ---- 防御类 (Defense) ----
-	HEAL,                      ## 回复HP {value?: int, source?: str, ratio?: float}
-	                           ##   source: "points"/"fixed"
+	HEAL,                      ## 回复HP {value: int, source?: str, ratio?: float}
+	                           ##   source: "points"/"fixed"（可选，不填=直接用value）
 	HEAL_ON_TRIGGER,           ## 特定条件回血 {trigger: str, value?: int, percent?: float, cap?: int}
 	                           ##   trigger: "kill"/"combo"/"cleanse"
-	ARMOR,                     ## 获得护甲 {value?: int, source?: str, ratio?: float, scar_bonus?: dict}
-	                           ##   source: "points"/"hand_size"/"fixed"
+	ARMOR,                     ## 获得护甲 {value: int, source?: str, ratio?: float, scar_bonus?: dict}
+	                           ##   source: "points"/"hand_size"/"fixed"（可选，不填=直接用value）
 	BARRIER,                   ## 获得屏障 {value: int}
 	MAX_HP_CHANGE,             ## 改变最大HP {delta: int} 正=增加，负=减少
 
 	# ---- 状态类 (Status) ----
-	APPLY_STATUS,              ## 施加状态 {status: str, value: int, target?: str, bonus_if_existing?: int}
+	APPLY_STATUS,              ## 施加状态 {status: str, value: int, target: str, bonus_if_existing?: int}
 	                           ##   status: "poison"/"burn"/"vulnerable"/"weak"/"freeze"/"slow"/"strength"
-	                           ##   target: "enemy"/"self" (默认"enemy")
+	                           ##   target: "enemy"/"self"（必填）
+	                           ##   bonus_if_existing: 目标已有该状态时额外叠加层数（可选，不填=不额外叠加）
 	PURIFY,                    ## 清除负面状态 {scope: str, bonus_per_cleanse?: int}
 	                           ##   scope: "all"/"one"
 
 	# ---- 控制类 (Control) ----
-	CONTROL,                   ## 施加控制效果 {control: str, duration: int, target?: str}
+	CONTROL,                   ## 施加控制效果 {control: str, duration: int, target: str}
 	                           ##   control: "taunt"/"stun"/"knockback"/"polymorph"/"blind"/"disarm"
-	                           ##   target: "main"/"all"/"random" (默认"main")
-	IGNORE_TAUNT,              ## 无视嘲讽（本次出牌/本回合可自由选择目标） {scope: str}
-	                           ##   scope: "play"/"turn"
+	                           ##   duration: 持续回合数（knockback 时此字段改为 distance: int 表示击退格数）
+	                           ##   target: "main"/"all"/"random"（必填，不做默认假设）
+	IGNORE_TAUNT,              ## 无视嘲讽（本次出牌/本回合可自由选择目标） {}
+	                           ##   持续范围由外层 EffectScope 决定（PLAY=本次出牌, TURN=本回合）
+	                           ##   葫芦/大葫芦牌型: scope=PLAY; 影刃风暴: scope=TURN
 
 	# ---- 代价类 (Cost) ----
 	SELF_DAMAGE,               ## 自伤 {value?: int, percent?: float}
@@ -99,10 +103,10 @@ enum EffectType {
 	INSERT_CURSE_DIE,          ## 塞废骰/诅咒骰到玩家骰子库 {die_id: str, count: int}
 	                           ##   die_id: "cursed"/"cracked"/"blank" 等
 	                           ##   仅敌人→玩家方向
-	REPLACE_PLAYER_DIE,        ## 替换玩家一颗骰子为指定骰子 {from?: str, to: str}
-	                           ##   from: "random"/"lowest"/"highest" (默认"random")
+	REPLACE_PLAYER_DIE,        ## [扩展] 替换玩家一颗骰子为指定骰子 {from: str, to: str}
+	                           ##   from: "random"/"lowest"/"highest"（默认"random"）
 	                           ##   to: 目标骰子 id
-	                           ##   仅敌人→玩家方向
+	                           ##   仅敌人→玩家方向（原版无此机制，为 Godot 版扩展设计）
 
 	# ---- 骰子数值操控类 (Dice Value) ----
 	MODIFY_POINTS,             ## 改变点数 {delta: int}
@@ -118,6 +122,9 @@ enum EffectType {
 	GAIN_GOLD,                 ## 获得金币 {value: int}
 	DAMAGE_TO_GOLD,            ## 伤害转金币 {ratio: float}
 	SHOP_DISCOUNT,             ## 商店折扣 {percent: float}
+	STEAL_GOLD,                ## 偷取金币 {ratio?: float, flat?: int}
+	                           ##   ratio: 按攻击力比例偷取; flat: 固定值偷取（二选一）
+	                           ##   仅敌人→玩家方向（Thief 类敌人技能）
 
 	# ---- 规则改变类 (Rule Modifier) ----
 	MODIFY_DRAW_COUNT,         ## 改变抽牌数 {delta: int}
@@ -229,8 +236,9 @@ enum TargetScope {
 	ADJACENT,      ## 相邻敌人
 	CHAIN_TARGET,  ## 血锁链绑定目标
 	SOLO_TARGET,   ## 单挑目标
-	ALLY,          ## 友方单位（敌人给队友加血/加甲；玩家无此目标）
+	RANDOM_ALLY,   ## 随机一个友方单位（敌人给随机队友加甲）
 	ALLY_LOWEST_HP,## 血量最低的友方（Priest 治疗优先级）
+	ALL_ALLIES,    ## 全体友方（敌人群体增益）
 	PLAYER,        ## 玩家（敌人技能作用于玩家时使用）
 }
 
@@ -300,9 +308,10 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.ARMOR: ["value"],
 	EffectType.BARRIER: ["value"],
 	EffectType.MAX_HP_CHANGE: ["delta"],
-	EffectType.APPLY_STATUS: ["status", "value"],
+	EffectType.APPLY_STATUS: ["status", "value", "target"],
 	EffectType.PURIFY: ["scope"],
-	EffectType.CONTROL: ["control", "duration"],
+	EffectType.CONTROL: ["control", "target"],  # duration/distance 由 EffectEngine 按 control 类型二次校验
+	EffectType.IGNORE_TAUNT: [],  # scope 由外层 EffectScope 决定（PLAY/TURN），params 无必填
 	EffectType.SELF_DAMAGE: [],  # value 或 percent 二选一，由 EffectEngine 校验
 	EffectType.BERSERK: ["turns", "damage_mult", "taken_mult", "gamble_cost"],
 	EffectType.BLOOD_CHAIN: ["target"],
@@ -318,6 +327,8 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.CONSUME_TEMP_DIE: ["die_type", "count"],
 	EffectType.TRANSFORM_DIE: ["target", "to"],
 	EffectType.PRESERVE_DIE: [],
+	EffectType.INSERT_CURSE_DIE: ["die_id", "count"],  # level 默认1，由 EffectEngine 从 DiceConfig 查表
+	EffectType.REPLACE_PLAYER_DIE: ["to"],  # from 默认"random"，to=目标骰子id
 	EffectType.MODIFY_POINTS: ["delta"],
 	EffectType.COPY_VALUE: ["source"],
 	EffectType.REVERSE_VALUE: [],
@@ -328,6 +339,7 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.GAIN_GOLD: ["value"],
 	EffectType.DAMAGE_TO_GOLD: ["ratio"],
 	EffectType.SHOP_DISCOUNT: ["percent"],
+	EffectType.STEAL_GOLD: [],  # ratio 或 flat 二选一，由 EffectEngine 校验
 	EffectType.MODIFY_DRAW_COUNT: ["delta"],
 	EffectType.MODIFY_HAND_LIMIT: ["delta"],
 	EffectType.MODIFY_PLAY_COUNT: ["delta"],
@@ -439,6 +451,7 @@ static func get_effect_name(type: EffectType) -> String:
 		EffectType.GAIN_GOLD: return "获得金币"
 		EffectType.DAMAGE_TO_GOLD: return "伤害转金币"
 		EffectType.SHOP_DISCOUNT: return "商店折扣"
+		EffectType.STEAL_GOLD: return "偷取金币"
 		# 规则改变类
 		EffectType.MODIFY_DRAW_COUNT: return "改变抽牌数"
 		EffectType.MODIFY_HAND_LIMIT: return "改变手牌上限"
