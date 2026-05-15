@@ -1,214 +1,162 @@
-## RelicPanel — 战斗中的遗物状态栏
+## RelicBar — 战斗内底部遗物折叠条
 ##
-## 以小图标横向列表展示玩家当前持有的所有遗物
-## 鼠标悬停任一图标 → 调用 Tooltip.show_text() 展示详情
-## EventBus.relic_gained / relic_lost 触发自动刷新
+## 交互规则（对齐原版 RelicPanelView.tsx）：
+##   - 默认折叠：显示一条 "▲ 遗物库 - N件 -" 按钮（贴在 HandPanel 顶部）
+##   - 点击按钮 → 发信号 expand_requested，由 BattleScene 负责实例化 RelicOverlay 展开
+##   - 伤害结算时：外部可调 request_expand() 强制展开（用于"结算时自动弹遗物栏"）
+##   - 遗物触发闪光：外部可调 flash_relic(relic_id) 让对应格子闪烁
+##     （闪光效果由 Overlay 读 _flashing_relic_ids 实现）
 ##
-## 挂载方式：battle_scene 的 _spawn_relic_panel() 动态创建
-## 定位：左上角，position(8, 48)
+## 挂载方式：作为 HandPanel/HandVBox 顶部的第一个子节点挂入
+##
+## EventBus.relic_gained / relic_lost 触发自动刷新计数
 
-extends PanelContainer
+class_name RelicBar
+extends VBoxContainer
 
-const ModalHubRef := preload("res://common/ui/modal_hub.gd")
+signal expand_requested
+signal collapse_requested
 
-# 稀有度 → 颜色（与 relic_guide 对齐）
-const RARITY_COLOR: Dictionary = {
-	GameTypes.RelicRarity.COMMON: Color("#38c060"),
-	GameTypes.RelicRarity.UNCOMMON: Color("#3c6cc8"),
-	GameTypes.RelicRarity.RARE: Color("#a855f7"),
-	GameTypes.RelicRarity.LEGENDARY: Color("#f97316"),
-}
+const COLOR_GOLD: Color = Color("#d4a030")
+const COLOR_GOLD_LIGHT: Color = Color("#f0c850")
+const COLOR_TEXT_DIM: Color = Color(0.5019608, 0.5647059, 0.627451, 1)
 
-# 稀有度 → emoji
-const RARITY_EMOJI: Dictionary = {
-	GameTypes.RelicRarity.COMMON: "⚪",
-	GameTypes.RelicRarity.UNCOMMON: "🔵",
-	GameTypes.RelicRarity.RARE: "🟣",
-	GameTypes.RelicRarity.LEGENDARY: "🟠",
-}
-
-# 触发时机 → 中文
-const TRIGGER_LABEL: Dictionary = {
-	GameTypes.RelicTrigger.ON_PLAY: "出牌时",
-	GameTypes.RelicTrigger.ON_KILL: "击杀时",
-	GameTypes.RelicTrigger.ON_REROLL: "重投时",
-	GameTypes.RelicTrigger.ON_TURN_START: "回合开始",
-	GameTypes.RelicTrigger.ON_TURN_END: "回合结束",
-	GameTypes.RelicTrigger.ON_BATTLE_START: "战斗开始",
-	GameTypes.RelicTrigger.ON_BATTLE_END: "战斗结束",
-	GameTypes.RelicTrigger.ON_DAMAGE_TAKEN: "受击时",
-	GameTypes.RelicTrigger.ON_FATAL: "致命时",
-	GameTypes.RelicTrigger.ON_FLOOR_CLEAR: "清场时",
-	GameTypes.RelicTrigger.ON_MOVE: "移动时",
-	GameTypes.RelicTrigger.PASSIVE: "被动",
-}
-
-const ICON_SIZE: int = 32
-const MAX_PER_ROW: int = 8
-
-var _grid: GridContainer
-var _title_label: Label
+var _toggle_btn: Button
+var _count_label: Label
+var _is_expanded: bool = false
 
 
 # ── 生命周期 ─────────────────────────────────────
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(0, 0)
-	_apply_style()
+	add_theme_constant_override("separation", 0)
 	_build_layout()
-	_refresh()
+	_refresh_count()
+	_connect_event_bus()
 
 
-# ── 公开刷新入口（外部遗物触发后可调用） ──
+func _exit_tree() -> void:
+	_disconnect_event_bus()
 
+
+func _connect_event_bus() -> void:
+	# EventBus 里如果有 relic_gained/relic_lost 信号就连上；没有就跳过
+	if EventBus.has_signal("relic_gained"):
+		EventBus.connect("relic_gained", _on_relic_changed)
+	if EventBus.has_signal("relic_lost"):
+		EventBus.connect("relic_lost", _on_relic_changed)
+
+
+func _disconnect_event_bus() -> void:
+	if EventBus.has_signal("relic_gained") and EventBus.is_connected("relic_gained", _on_relic_changed):
+		EventBus.disconnect("relic_gained", _on_relic_changed)
+	if EventBus.has_signal("relic_lost") and EventBus.is_connected("relic_lost", _on_relic_changed):
+		EventBus.disconnect("relic_lost", _on_relic_changed)
+
+
+func _on_relic_changed(_v: Variant = null) -> void:
+	_refresh_count()
+
+
+# ── 公开 API ─────────────────────────────────────
+
+## 外部刷新计数入口
 func refresh() -> void:
-	_refresh()
+	_refresh_count()
 
 
-func _apply_style() -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.09, 0.13, 0.88)
-	style.border_color = Color("#3a4050")
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.content_margin_left = 8
-	style.content_margin_right = 8
-	style.content_margin_top = 6
-	style.content_margin_bottom = 6
-	add_theme_stylebox_override("panel", style)
+## 强制展开（用于战斗结算时自动弹出）
+func request_expand() -> void:
+	if not _is_expanded:
+		_is_expanded = true
+		_update_toggle_arrow()
+		expand_requested.emit()
 
+
+## 强制折叠（Overlay 关闭时反向通知）
+func notify_collapsed() -> void:
+	_is_expanded = false
+	_update_toggle_arrow()
+
+
+# ── UI 构建 ──────────────────────────────────────
 
 func _build_layout() -> void:
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 4)
-	add_child(vbox)
-	
-	_title_label = Label.new()
-	_title_label.text = "遗物"
-	_title_label.add_theme_font_size_override("font_size", 11)
-	_title_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	vbox.add_child(_title_label)
-	
-	_grid = GridContainer.new()
-	_grid.columns = MAX_PER_ROW
-	_grid.add_theme_constant_override("h_separation", 4)
-	_grid.add_theme_constant_override("v_separation", 4)
-	vbox.add_child(_grid)
+	# 顶部分隔线（替代原版 border-top）
+	var sep := HSeparator.new()
+	sep.custom_minimum_size = Vector2(0, 2)
+	sep.add_theme_color_override("separator", Color(0.31, 0.27, 0.21, 0.6))
+	add_child(sep)
+
+	# 点击按钮（整条）
+	_toggle_btn = Button.new()
+	_toggle_btn.flat = true
+	_toggle_btn.custom_minimum_size = Vector2(0, 30)
+	_toggle_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_toggle_btn.focus_mode = Control.FOCUS_NONE
+	_toggle_btn.pressed.connect(_on_toggle_pressed)
+	add_child(_toggle_btn)
+
+	# 按钮内容：垂直堆叠"▲ / 遗物库 / - N 件 -"
+	var inner := VBoxContainer.new()
+	inner.add_theme_constant_override("separation", 0)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.set_anchors_preset(Control.PRESET_FULL_RECT)
+	inner.alignment = BoxContainer.ALIGNMENT_CENTER
+	_toggle_btn.add_child(inner)
+
+	var arrow := Label.new()
+	arrow.text = "▲"
+	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	arrow.add_theme_color_override("font_color", COLOR_GOLD)
+	arrow.add_theme_font_size_override("font_size", 10)
+	arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	arrow.name = "Arrow"
+	inner.add_child(arrow)
+
+	var title := Label.new()
+	title.text = "遗物库"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", COLOR_GOLD_LIGHT)
+	title.add_theme_font_size_override("font_size", 12)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(title)
+
+	_count_label = Label.new()
+	_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_count_label.add_theme_color_override("font_color", COLOR_TEXT_DIM)
+	_count_label.add_theme_font_size_override("font_size", 9)
+	_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(_count_label)
 
 
-# ── 刷新 ─────────────────────────────────────────
-
-func _refresh() -> void:
-	if _grid == null:
+func _refresh_count() -> void:
+	if _count_label == null:
 		return
-	for child: Node in _grid.get_children():
-		child.queue_free()
-	
-	var relics: Array[Dictionary] = PlayerState.relics
-	if relics.is_empty():
-		_title_label.text = "遗物（暂无）"
+	var n: int = PlayerState.relics.size()
+	_count_label.text = "- %d 件 -" % n
+
+
+func _update_toggle_arrow() -> void:
+	if _toggle_btn == null:
 		return
-	_title_label.text = "遗物 x%d" % relics.size()
-	
-	for r: Dictionary in relics:
-		var def: RelicDef = GameData.get_relic_def(r.get("id", ""))
-		if def == null:
-			continue
-		_grid.add_child(_build_icon(def, r))
+	var arrow: Label = _toggle_btn.get_node_or_null("Arrow") as Label
+	if arrow == null:
+		# 容错：兼容内部布局被替换的情况
+		var inner: Node = _toggle_btn.get_child(0)
+		if inner and inner.get_child_count() > 0:
+			arrow = inner.get_child(0) as Label
+	if arrow:
+		arrow.text = "▼" if _is_expanded else "▲"
 
 
-# ── 图标构建 ─────────────────────────────────────
+# ── 交互 ─────────────────────────────────────────
 
-func _build_icon(def: RelicDef, instance: Dictionary) -> Control:
-	var color: Color = RARITY_COLOR.get(def.rarity, Color.WHITE)
-	var emoji: String = RARITY_EMOJI.get(def.rarity, "⚪")
-	
-	var box := PanelContainer.new()
-	box.custom_minimum_size = Vector2(ICON_SIZE, ICON_SIZE)
-	box.mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#1a1e2a")
-	style.border_color = color
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(3)
-	box.add_theme_stylebox_override("panel", style)
-	
-	var label := Label.new()
-	label.text = emoji
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 16)
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(label)
-	
-	# 右上角计数角标（如有）
-	var counter: int = int(instance.get("counter", 0))
-	if counter > 0:
-		var badge := Label.new()
-		badge.text = "%d" % counter
-		badge.add_theme_font_size_override("font_size", 9)
-		badge.add_theme_color_override("font_color", Color("#ffe066"))
-		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		badge.offset_left = -12
-		badge.offset_top = -12
-		badge.offset_right = -2
-		badge.offset_bottom = -2
-		box.add_child(badge)
-	
-	# Tooltip 挂载（闭包捕获 def + instance）
-	box.mouse_entered.connect(_on_icon_hover.bind(def, instance, box))
-	box.mouse_exited.connect(_on_icon_exit)
-	box.gui_input.connect(_on_icon_input)
-	return box
-
-
-func _on_icon_hover(def: RelicDef, instance: Dictionary, node: Control) -> void:
-	var text: String = _build_tooltip_text(def, instance)
-	# 锚定到图标右下角，避免遮挡自身
-	var pos: Vector2 = node.global_position + Vector2(node.size.x + 8, 0)
-	Tooltip.show_text(text, pos)
-
-
-func _on_icon_exit() -> void:
-	Tooltip.hide_tip()
-
-
-func _on_icon_input(event: InputEvent) -> void:
-	# 点击打开完整遗物图鉴
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_open_full_guide()
-
-
-func _open_full_guide() -> void:
-	const RelicGuideRef := preload("res://common/ui/relic_guide.gd")
-	ModalHubRef.open(RelicGuideRef.new(), "遗物图鉴", {"size": Vector2(560, 780)})
-
-
-# ── Tooltip 文本构建 ─────────────────────────────
-
-static func _build_tooltip_text(def: RelicDef, instance: Dictionary) -> String:
-	var rarity_label: String = ["普通", "精良", "稀有", "传说"][def.rarity] if def.rarity < 4 else "?"
-	var trigger_label: String = TRIGGER_LABEL.get(def.trigger, "")
-	var lines: Array[String] = []
-	lines.append("【%s】· %s" % [def.name, rarity_label])
-	if trigger_label != "":
-		lines.append("触发：%s" % trigger_label)
-	# 计数/层数
-	var level: int = int(instance.get("level", 1))
-	var counter: int = int(instance.get("counter", 0))
-	if level > 1:
-		lines.append("层数：%d" % level)
-	if counter > 0:
-		var lbl: String = def.counter_label if def.counter_label != "" else "计数"
-		if def.max_counter > 0:
-			lines.append("%s：%d / %d" % [lbl, counter, def.max_counter])
-		else:
-			lines.append("%s：%d" % [lbl, counter])
-	if def.description != "":
-		lines.append("")
-		lines.append(def.description)
-	lines.append("")
-	lines.append("〔左键 · 打开完整图鉴〕")
-	return "\n".join(lines)
+func _on_toggle_pressed() -> void:
+	SoundPlayer.play_sound("click")
+	_is_expanded = not _is_expanded
+	_update_toggle_arrow()
+	if _is_expanded:
+		expand_requested.emit()
+	else:
+		collapse_requested.emit()

@@ -6,9 +6,11 @@ extends Node2D
 const ModalHubRef := preload("res://common/ui/modal_hub.gd")
 const HandGuideRef := preload("res://common/ui/hand_guide.gd")
 const RelicGuideRef := preload("res://common/ui/relic_guide.gd")
+const SettingsPanelRef := preload("res://common/ui/settings_panel.gd")
 const BattleLogRef := preload("res://gameplay/battle/ui/battle_log.gd")
 const TooltipRef := preload("res://common/ui/tooltip.gd")
-const RelicPanelRef := preload("res://gameplay/battle/ui/relic_panel.gd")
+const RelicBarRef := preload("res://gameplay/battle/ui/relic_panel.gd")
+const RelicOverlayRef := preload("res://gameplay/battle/ui/relic_overlay.gd")
 const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 ## ========================================================
@@ -176,6 +178,10 @@ func _on_player_hp_changed(new_hp: int, _max_hp: int) -> void:
 	var damage_taken: int = _last_player_hp - new_hp
 	if damage_taken > 0 and new_hp > 0:
 		player_hands.play_hurt()
+		# 刘叔需求 1：玩家受击时背景反弹（摄像机被打退）
+		var bg: BgParallax = get_node_or_null("%SceneBG") as BgParallax
+		if bg != null:
+			bg.play_hurt_kick()
 		# 玩家掉血飘字（从 hp_bar 位置飘出）
 		if controller != null and controller._float_layer != null and controller.hp_bar != null:
 			var hp_pos: Vector2 = controller.hp_bar.global_position + controller.hp_bar.size * 0.5
@@ -199,23 +205,55 @@ func _exit_tree() -> void:
 
 
 func _spawn_relic_panel() -> void:
+	# 挂载到 HandPanel 顶部的 %RelicBar 容器（tscn 中已预留锚点）
+	var bar_anchor: Node = get_node_or_null("%RelicBar")
+	if bar_anchor == null:
+		push_warning("[BattleScene] 未找到 %RelicBar 锚点，遗物栏未挂载")
+		return
+	var bar: VBoxContainer = RelicBarRef.new()
+	bar.name = "RelicBar"
+	bar_anchor.add_child(bar)
+	# 订阅折叠/展开信号
+	bar.expand_requested.connect(_on_relic_bar_expand.bind(bar))
+	bar.collapse_requested.connect(_on_relic_bar_collapse)
+
+
+## 当前展开的 Overlay 实例（同时只允许一个）
+var _active_relic_overlay: Control = null
+
+
+func _on_relic_bar_expand(bar: VBoxContainer) -> void:
+	if _active_relic_overlay != null and is_instance_valid(_active_relic_overlay):
+		return  # 已经展开
 	var root: Control = get_node_or_null("%Root")
 	if root == null:
 		return
-	var panel := RelicPanelRef.new()
-	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = Vector2(8, 48)  # 左上角 2 个图鉴按钮下方
-	root.add_child(panel)
+	var overlay: Control = RelicOverlayRef.new()
+	overlay.name = "RelicOverlay"
+	root.add_child(overlay)
+	_active_relic_overlay = overlay
+	overlay.connect("closed", func() -> void:
+		_active_relic_overlay = null
+		if is_instance_valid(bar) and bar.has_method("notify_collapsed"):
+			bar.call("notify_collapsed")
+	)
+
+
+func _on_relic_bar_collapse() -> void:
+	if _active_relic_overlay != null and is_instance_valid(_active_relic_overlay):
+		if _active_relic_overlay.has_method("close_with_anim"):
+			_active_relic_overlay.call("close_with_anim")
 
 
 func _spawn_battle_log() -> void:
+	# 战斗内不显示日志 UI（已下沉到 SettingsPanel），但仍需实例化以承担数据收集
+	# BattleLog 静态 API 依赖 _instance，不挂节点则 log_write 全部静默丢弃
 	var root: Control = get_node_or_null("%Root")
 	if root == null:
 		return
 	var log_panel := BattleLogRef.new()
-	log_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	log_panel.position = Vector2(-260, 48)  # 距右边 260（刚好面板宽），顶部留给左上角按钮
-	log_panel.custom_minimum_size = Vector2(240, 0)
+	log_panel.name = "BattleLog"
+	log_panel.visible = false  # 数据收集器，UI 隐藏；通过 Settings 查看
 	root.add_child(log_panel)
 
 
@@ -245,6 +283,7 @@ func _spawn_topleft_buttons() -> void:
 		return
 	_spawn_guide_button(root, "📖", "牌型图鉴", Vector2(8, 8), _on_hand_guide_pressed)
 	_spawn_guide_button(root, "🏺", "遗物图鉴", Vector2(48, 8), _on_relic_guide_pressed)
+	_spawn_guide_button(root, "⚙", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
 
 
 func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
@@ -276,6 +315,15 @@ func _on_relic_guide_pressed() -> void:
 		RelicGuideRef.new(),
 		"遗物图鉴",
 		{"size": Vector2(560, 780), "close_on_backdrop": true}
+	)
+
+
+func _on_settings_pressed() -> void:
+	SoundPlayer.play_sound("click")
+	ModalHubRef.open(
+		SettingsPanelRef.new(),
+		"设置",
+		{"size": Vector2(480, 680), "close_on_backdrop": true}
 	)
 
 func _on_battle_started(encounter: Dictionary) -> void:

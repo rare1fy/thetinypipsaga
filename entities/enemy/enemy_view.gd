@@ -38,7 +38,7 @@ var _enemy: EnemyInstance = null
 @onready var _avatar_shape: ColorRect = %AvatarShape
 @onready var _avatar_style: Panel = %AvatarStyle
 @onready var _avatar_eyes: Label = %AvatarEyes
-@onready var _target_indicator: ColorRect = %TargetIndicator
+@onready var _target_indicator: Label = %TargetIndicator
 @onready var _click_area: Area2D = %ClickArea
 @onready var _name_label: Label = %NameLabel
 @onready var _combat_type_label: Label = %CombatTypeLabel
@@ -58,6 +58,10 @@ var _distance_dots: Array[ColorRect] = []
 
 # 站位索引（0=中=Slot0 1=左=Slot1 2=右=Slot2），由 BattleController 设置，用于透视位置计算
 var _slot_index: int = -1
+
+# 选中态动画 Tween 引用（头顶倒三角浮动 + 本体呼吸高亮）
+var _target_tween: Tween = null
+var _body_tween: Tween = null
 
 ## 公开接口：设置站位索引（call down 原则）
 func set_slot_index(index: int) -> void:
@@ -283,6 +287,9 @@ func _refresh_visual() -> void:
 	if _enemy == null or _name_label == null:
 		return
 
+	# 选中指示器：每次 refresh 都更新（不进 W1 缓存，因为 target_enemy_uid 会在 distance/hp 不变时切换）
+	_update_target_indicator()
+
 	# W1 优化：数据未变时跳过重算
 	var cur_dist := maxi(0, _enemy.distance)
 	var cur_hp := _enemy.hp
@@ -298,8 +305,52 @@ func _refresh_visual() -> void:
 	_update_distance_display()
 	_update_hp_display()
 	_update_status_icons()
-	_target_indicator.visible = (_enemy.uid == GameManager.target_enemy_uid)
 	_update_depth_visuals()
+
+
+## 选中指示器 —— 头顶倒三角 + 敌人本体循环呼吸高亮
+## 选中时：▼ 出现并上下浮动，VisualRoot 的 modulate 在 1.0 ↔ 1.35 亮度之间循环呼吸
+## 未选中时：▼ 隐藏，modulate 还原为 Color.WHITE
+func _update_target_indicator() -> void:
+	if _enemy == null or _target_indicator == null or _visual_root == null:
+		return
+	var is_target: bool = (_enemy.uid == GameManager.target_enemy_uid)
+	# 状态未变：直接跳过（Tween 保持运行，避免重启动画）
+	if is_target == _target_indicator.visible:
+		return
+	_target_indicator.visible = is_target
+	_stop_target_tween()
+	if is_target:
+		_play_target_tween()
+	else:
+		_visual_root.modulate = Color.WHITE
+
+
+func _play_target_tween() -> void:
+	if _target_indicator == null or _visual_root == null:
+		return
+	# 倒三角上下浮动
+	_target_tween = create_tween()
+	_target_tween.set_loops()
+	_target_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var base_y: float = _target_indicator.position.y
+	_target_tween.tween_property(_target_indicator, "position:y", base_y - 6.0, 0.45)
+	_target_tween.tween_property(_target_indicator, "position:y", base_y, 0.45)
+	# 敌人本体呼吸高亮（独立 Tween，parallel 跑）
+	_body_tween = create_tween()
+	_body_tween.set_loops()
+	_body_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_body_tween.tween_property(_visual_root, "modulate", Color(1.35, 1.25, 0.9), 0.6)
+	_body_tween.tween_property(_visual_root, "modulate", Color.WHITE, 0.6)
+
+
+func _stop_target_tween() -> void:
+	if _target_tween != null and _target_tween.is_valid():
+		_target_tween.kill()
+	_target_tween = null
+	if _body_tween != null and _body_tween.is_valid():
+		_body_tween.kill()
+	_body_tween = null
 
 
 ## 战斗类型标签 + 立绘色（仅占位模式）

@@ -217,7 +217,7 @@ var current_node: int:
 	get: return PlayerState.current_node
 	set(v): PlayerState.current_node = v
 
-var map_nodes: Array:  # [RULES-B2-EXEMPT] MapGenerator 无 class_name，autoload 无法引用内部类
+var map_nodes: Array[MapGenerator.MapNode]:
 	get: return PlayerState.map_nodes
 	set(v): PlayerState.map_nodes = v
 

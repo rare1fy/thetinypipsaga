@@ -1,104 +1,84 @@
-## 地图界面 — 显示地图节点和导航
-
+## 地图界面 v2 — 复刻原版 Slay-the-Spire 式节点图
+##
+## 变化：
+##   - 使用 MapGraphView 替换旧 VBox 直堆
+##   - 节点按 x 坐标布局，路径画贝塞尔连线
+##   - 顶部条显示金币 / 章节名 / HP
 extends Node2D
-@onready var map_container: VBoxContainer = %MapContainer
-@onready var chapter_label: Label = %ChapterLabel
+
+@onready var _graph: MapGraphView = %MapGraphView
+@onready var _chapter_label: Label = %ChapterLabel
+@onready var _gold_label: Label = %GoldLabel
+@onready var _hp_label: Label = %HpLabel
 
 var _map_nodes: Array[MapGenerator.MapNode] = []
 
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
+	GameManager.gold_changed.connect(_on_gold_changed)
+	GameManager.hp_changed.connect(_on_hp_changed)
 	SoundPlayer.play_music("explore")
-	# Godot 版 main.gd 采用"每次切场景 free + instantiate"模式，
-	# 进入时当前 phase 就已经是 MAP，phase_changed 不会再触发 → 必须手动兜底生成。
+
+	_graph.node_clicked.connect(_on_node_clicked)
+
+	# 兜底：Godot 版 main.gd 采用"切场景 free+instantiate"模式
 	if GameManager.phase == GameTypes.GamePhase.MAP:
-		# 优先使用已有地图数据（存档恢复 / 进入过一次）；空则生成
 		if GameManager.map_nodes.is_empty():
 			_generate_map()
 		else:
 			_map_nodes = GameManager.map_nodes
-			chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[GameManager.chapter - 1]
-			_refresh_map_ui()
-		# 进入地图等于一次"稳定状态检查点"，自动存档
+			_refresh_header()
+			_graph.set_map_nodes(_map_nodes)
 		SaveManager.save_run()
+
+	_refresh_header()
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
-	# 保留此信号回调以兼容"未来不走 free/instantiate"的切换方式；
-	# 当前 main.gd 走销毁重建，此处实际不会触发。
 	if new_phase == GameTypes.GamePhase.MAP and _map_nodes.is_empty():
 		_generate_map()
+
+
+func _on_gold_changed(_amount: int) -> void:
+	_refresh_header()
+
+
+func _on_hp_changed(_hp: int, _max: int) -> void:
+	_refresh_header()
 
 
 func _generate_map() -> void:
 	_map_nodes = MapGenerator.generate_chapter(GameManager.chapter)
 	GameManager.map_nodes = _map_nodes
-	chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[GameManager.chapter - 1]
-	_refresh_map_ui()
+	_refresh_header()
+	_graph.set_map_nodes(_map_nodes)
 
 
-func _refresh_map_ui() -> void:
-	for child in map_container.get_children():
-		child.queue_free()
-	
-	# 按层显示（自下而上：depth 最大的在最上方，玩家从屏幕底部向上推进）
-	var layers: Dictionary = {}
-	for node in _map_nodes:
-		if not layers.has(node.depth):
-			layers[node.depth] = []
-		layers[node.depth].append(node)
-	
-	for depth in range(14, -1, -1):
-		if not layers.has(depth):
-			continue
-		var hbox := HBoxContainer.new()
-		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		
-		for node in layers[depth]:
-			var btn := Button.new()
-			btn.custom_minimum_size = Vector2(50, 30)
-			btn.text = _node_type_short(node.type)
-			btn.tooltip_text = "%s (深度%d)" % [GameTypes.NodeType.keys()[node.type], node.depth]
-			
-			# 着色
-			match node.type:
-				GameTypes.NodeType.ENEMY: btn.modulate = Color(1.0, 0.6, 0.6)
-				GameTypes.NodeType.ELITE: btn.modulate = Color(1.0, 0.3, 0.3)
-				GameTypes.NodeType.BOSS: btn.modulate = Color(1.0, 0.2, 0.2)
-				GameTypes.NodeType.CAMPFIRE: btn.modulate = Color(1.0, 0.8, 0.3)
-				GameTypes.NodeType.MERCHANT: btn.modulate = Color(0.3, 0.8, 1.0)
-				GameTypes.NodeType.EVENT: btn.modulate = Color(0.6, 1.0, 0.6)
-				GameTypes.NodeType.TREASURE: btn.modulate = Color(1.0, 1.0, 0.3)
-			
-			if node.visited:
-				btn.disabled = true
-				btn.modulate = Color(0.3, 0.3, 0.3)
-			elif not node.available:
-				btn.disabled = true
-			
-			btn.pressed.connect(_on_node_clicked.bind(node))
-			hbox.add_child(btn)
-		
-		map_container.add_child(hbox)
+func _refresh_header() -> void:
+	var chapter_idx: int = clampi(GameManager.chapter - 1, 0, GameBalance.CHAPTER_CONFIG.chapterNames.size() - 1)
+	_chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[chapter_idx]
+	_gold_label.text = "金币: %d" % GameManager.gold
+	_hp_label.text = "HP %d/%d" % [GameManager.hp, GameManager.max_hp]
 
 
-func _on_node_clicked(node) -> void:
-	if not node.available:
+func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
+	if not map_node.available:
 		return
-	
+
 	SoundPlayer.play_sound("click")
-	MapGenerator.visit_node(_map_nodes, node.id)
-	GameManager.current_node = node.depth
-	
+	MapGenerator.visit_node(_map_nodes, map_node.id)
+	GameManager.current_node = map_node.depth
+
 	# 解锁下一层
-	MapGenerator.get_next_available(_map_nodes, node.id)
-	
-	# 进入对应场景
-	match node.type:
+	MapGenerator.get_next_available(_map_nodes, map_node.id)
+
+	_graph.refresh_states()
+
+	# 路由到对应场景
+	match map_node.type:
 		GameTypes.NodeType.ENEMY, GameTypes.NodeType.ELITE, GameTypes.NodeType.BOSS:
-			# 先生成波次数据写入 GameManager.pending_wave，内部再切 BATTLE phase
-			_spawn_battle(node.type)
+			_spawn_battle(map_node.type)
 		GameTypes.NodeType.CAMPFIRE:
 			GameManager.set_phase(GameTypes.GamePhase.CAMPFIRE)
 		GameTypes.NodeType.MERCHANT:
@@ -107,43 +87,77 @@ func _on_node_clicked(node) -> void:
 			GameManager.set_phase(GameTypes.GamePhase.EVENT)
 		GameTypes.NodeType.TREASURE:
 			GameManager.set_phase(GameTypes.GamePhase.TREASURE)
-	
-	_refresh_map_ui()
+		_:
+			push_warning("[MAP] 未识别的 NodeType=%s，fallback 到 EVENT" % str(map_node.type))
+			GameManager.set_phase(GameTypes.GamePhase.EVENT)
 
 
 func _spawn_battle(node_type: GameTypes.NodeType) -> void:
-	var battle_type := MapGenerator.get_battle_type(node_type)
+	var battle_type: String = MapGenerator.get_battle_type(node_type)
+	var depth: int = GameManager.current_node
+	var chapter: int = GameManager.chapter
 	var wave_ids: Array[String] = []
-	
+
 	match battle_type:
 		"enemy":
-			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
-			if normals.size() > 0:
-				var picked := normals[randi() % normals.size()]
-				wave_ids.append(picked.id)
+			wave_ids = _roll_normal_wave(chapter, depth)
 		"elite":
-			var elites := EnemyConfig.get_elites_for_chapter(GameManager.chapter)
-			if elites.size() > 0:
-				wave_ids.append(elites[randi() % elites.size()].id)
+			wave_ids = _roll_elite_wave(chapter, depth)
 		"boss":
-			var bosses := EnemyConfig.get_bosses_for_chapter(GameManager.chapter)
-			if bosses.size() > 0:
-				wave_ids.append(bosses[randi() % bosses.size()].id)
-	
-	# 先写入 GameManager 再切 phase，保证 BattleScene 实例化时能读到波次
+			wave_ids = _roll_boss_wave(chapter)
+
 	GameManager.pending_wave = wave_ids
 	if wave_ids.is_empty():
-		push_warning("[MAP] wave_ids 为空，EnemyConfig 可能没返回数据，章节 %d 类型 %s" % [GameManager.chapter, battle_type])
+		push_warning(
+			"[MAP] wave_ids 为空，EnemyConfig 未返回数据，章节 %d 类型 %s"
+			% [chapter, battle_type]
+		)
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
 
 
-static func _node_type_short(type: GameTypes.NodeType) -> String:
-	match type:
-		GameTypes.NodeType.ENEMY: return "战"
-		GameTypes.NodeType.ELITE: return "精"
-		GameTypes.NodeType.BOSS: return "王"
-		GameTypes.NodeType.CAMPFIRE: return "火"
-		GameTypes.NodeType.MERCHANT: return "商"
-		GameTypes.NodeType.EVENT: return "事"
-		GameTypes.NodeType.TREASURE: return "宝"
-		_: return "?"
+## 普通战：按深度随机 1~3 个敌人（对齐原版 enemies.ts 概率曲线，但上限卡 3，
+## 因为当前 BattleScene 的透视槽位只有 中/左/右 3 个，超过会重叠堆到"右"）
+##   depth 0 → 固定 1 个
+##   depth 1 → 40% 1 个 / 60% 2 个
+##   depth 2-4 → 50% 2 / 50% 3
+##   depth 5-9 → 70% 3 / 30% 2
+##   depth ≥10 → 固定 3（原版是 3~4，等透视系统扩 4 槽位后恢复）
+static func _roll_normal_wave(chapter: int, depth: int) -> Array[String]:
+	var pool: Array[EnemyConfig] = EnemyConfig.get_normals_for_chapter(chapter)
+	if pool.is_empty():
+		return []
+	var count: int = _roll_normal_count(depth)
+	var result: Array[String] = []
+	for i: int in count:
+		result.append(pool[randi() % pool.size()].id)
+	return result
+
+
+static func _roll_normal_count(depth: int) -> int:
+	if depth <= 0:
+		return 1
+	if depth == 1:
+		return 1 if randf() < 0.4 else 2
+	if depth <= 4:
+		return 2 if randf() < 0.5 else 3
+	return 2 if randf() < 0.3 else 3
+
+
+## 精英战：1 个精英 + 1 个陪跑小兵（对齐原版 line 144）
+static func _roll_elite_wave(chapter: int, _depth: int) -> Array[String]:
+	var elites: Array[EnemyConfig] = EnemyConfig.get_elites_for_chapter(chapter)
+	if elites.is_empty():
+		return []
+	var result: Array[String] = [elites[randi() % elites.size()].id]
+	var normals: Array[EnemyConfig] = EnemyConfig.get_normals_for_chapter(chapter)
+	if not normals.is_empty():
+		result.append(normals[randi() % normals.size()].id)
+	return result
+
+
+## Boss 战：单体
+static func _roll_boss_wave(chapter: int) -> Array[String]:
+	var bosses: Array[EnemyConfig] = EnemyConfig.get_bosses_for_chapter(chapter)
+	if bosses.is_empty():
+		return []
+	return [bosses[randi() % bosses.size()].id]

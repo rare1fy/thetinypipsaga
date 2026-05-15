@@ -63,7 +63,14 @@ func _build_controls() -> void:
 	
 	# 分隔
 	add_child(HSeparator.new())
-	
+
+	# 战斗日志查看入口（战斗场景中才显示）
+	if BattleLog.has_instance():
+		var log_btn := Button.new()
+		log_btn.text = "📜 查看战斗日志"
+		log_btn.pressed.connect(_on_view_battle_log_pressed)
+		add_child(log_btn)
+
 	# 危险区：放弃当前冒险
 	if SaveManager.has_run_save():
 		var abandon_btn := Button.new()
@@ -71,6 +78,7 @@ func _build_controls() -> void:
 		abandon_btn.add_theme_color_override("font_color", Color("#ff8080"))
 		abandon_btn.pressed.connect(_on_abandon_pressed)
 		add_child(abandon_btn)
+
 	
 	# 统计摘要
 	var meta := SaveManager.load_meta()
@@ -171,3 +179,37 @@ func _on_abandon_pressed() -> void:
 	VFX.show_toast("已放弃当前冒险", "warn")
 	ModalHubRef.close_all()
 	GameManager.set_phase(GameTypes.GamePhase.START)
+
+
+# ============================================================
+# 战斗日志查看
+# ============================================================
+
+func _on_view_battle_log_pressed() -> void:
+	# 构造一个滚动日志面板作为 modal 内容
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 2)
+
+	var snapshot: Array[Dictionary] = BattleLog.get_snapshot()
+	if snapshot.is_empty():
+		var hint := Label.new()
+		hint.text = "本场战斗暂无日志"
+		hint.add_theme_color_override("font_color", Color("#9aa0ac"))
+		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(hint)
+	else:
+		for entry: Dictionary in snapshot:
+			var line := Label.new()
+			line.text = String(entry.get("text", ""))
+			line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			line.add_theme_font_size_override("font_size", 12)
+			line.add_theme_color_override("font_color", entry.get("color", Color("#b0b8c8")))
+			vbox.add_child(line)
+
+	# 包一层 ScrollContainer
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.custom_minimum_size = Vector2(440, 520)
+	scroll.add_child(vbox)
+
+	ModalHubRef.open(scroll, "战斗日志", {"size": Vector2(480, 600), "close_on_backdrop": true})

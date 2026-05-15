@@ -45,7 +45,7 @@ func execute(controller: BattleController) -> void:
 	var skip_on_play: bool = can_multi_normal and is_pure_normal and selected_dice.size() > 1
 
 	controller._is_resolving = true
-	controller.play_btn.disabled = true
+	controller.action_btn.disabled = true
 	SoundPlayer.play_sound("player_attack")
 
 	# ── §6.4 盗贼连击钩子 ──
@@ -142,13 +142,19 @@ func execute(controller: BattleController) -> void:
 	print_rich("[color=green][PlayHandlerBridge] 阶段2: battle_scene=%s player_hands=%s[/color]" % [battle_scene != null, battle_scene != null and battle_scene.player_hands != null])
 	if battle_scene != null and battle_scene.player_hands != null:
 		battle_scene.player_hands.play_attack()
+		# 刘叔需求 1：玩家出手时背景下压推拉（摄像机跟手）
+		var bg: BgParallax = battle_scene.get_node_or_null("%SceneBG") as BgParallax
+		if bg != null:
+			bg.play_attack_push()
 		print_rich("[color=green][PlayHandlerBridge] 阶段2: 等待 attack_finished[/color]")
 		await battle_scene.player_hands.attack_finished
 		print_rich("[color=green][PlayHandlerBridge] 阶段2: attack_finished 收到[/color]")
 
 	# 阶段 3：伤害应用 + 敌人受击动画 + 飘字
+	# 必须 await 到 _on_after_play_resolve 完成，否则 BattleController 会在
+	# 0.5s timer 触发前 queue_free 本 bridge，导致 _is_resolving 永远卡 true。
 	print_rich("[color=green][PlayHandlerBridge] 阶段3: 开始伤害应用[/color]")
-	_apply_damage_and_after(
+	await _apply_damage_and_after(
 		controller, total_damage, selected_dice, hand_result, dice_effect_result,
 		total_pierce, is_pure_normal
 	)
@@ -226,9 +232,9 @@ func _apply_damage_and_after(
 	print_rich("[color=green][PlayHandlerBridge] 步骤8: after_play后 plays_left=%d, hand_dice.size=%d[/color]" % [GameManager.plays_left, DiceBag.hand_dice.size()])
 	controller.selected_dice_indices.clear()
 
-	# 9. 延迟刷新 UI
+	# 9. 延迟刷新 UI（await 等计时器触发 + _on_after_play_resolve 完成）
 	print_rich("[color=green][PlayHandlerBridge] 步骤9: _schedule_after_play_resolve[/color]")
-	_schedule_after_play_resolve(controller)
+	await _schedule_after_play_resolve(controller)
 
 
 # ============================================================
@@ -269,12 +275,17 @@ func _play_settlement(
 # ============================================================
 
 func _schedule_after_play_resolve(controller: BattleController) -> void:
-	var wr: WeakRef = weakref(controller)
-	get_tree().create_timer(0.5).timeout.connect(func() -> void:
-		var c: BattleController = wr.get_ref() as BattleController
-		if c != null and c.is_inside_tree():
-			_on_after_play_resolve(c)
-	)
+	# [BUGFIX-TURN-STUCK] 改为 await 风格：
+	# 旧实现把 lambda 挂在 SceneTreeTimer 上，timer 持有 self(bridge)；
+	# 但 BattleController 会在 execute 返回后立即 queue_free 本 bridge，
+	# 导致 0.5s 后 lambda 触发时 self 已失效，_on_after_play_resolve 根本不执行，
+	# _is_resolving 一直为 true，所有按钮卡死、自动结束回合也不触发。
+	# 改为 await 后，execute 的 await 链会一直延伸到此处完成才返回，
+	# bridge 才会被释放，彻底消除 race。
+	await get_tree().create_timer(0.5).timeout
+	if not is_instance_valid(controller) or not controller.is_inside_tree():
+		return
+	_on_after_play_resolve(controller)
 
 
 func _on_after_play_resolve(controller: BattleController) -> void:
@@ -290,7 +301,8 @@ func _on_after_play_resolve(controller: BattleController) -> void:
 		controller._check_auto_end_turn()
 	else:
 		controller._refresh_hand_display()
-		controller._update_play_button_state()
 		var dp: DamagePreview = controller._get_damage_preview()
 		if dp:
 			dp.refresh([])
+	# 统一刷新三个按钮（play/reroll/end_turn），修复出牌后按钮禁用态残留
+	controller._update_button_states()

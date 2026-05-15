@@ -3,9 +3,10 @@
 class_name BattleController
 extends Node2D
 
-const PlayHandlerBridge = preload("res://gameplay/battle/play_handler_bridge.gd")
-const RerollHandler = preload("res://gameplay/battle/reroll_handler.gd")
-const TurnEndProcessor = preload("res://gameplay/battle/turn_end_processor.gd")
+# 以下 3 个类已通过全局 class_name 导出，不再 preload 避免 SHADOWED_GLOBAL_IDENTIFIER：
+#   - PlayHandlerBridge (play_handler_bridge.gd)
+#   - RerollHandler (reroll_handler.gd)
+#   - TurnEndProcessor (turn_end_processor.gd)
 const ClassDefData = preload("res://data/class_def.gd")
 const EnemyMgr = preload("res://gameplay/battle/battle_enemy_manager.gd")
 
@@ -23,18 +24,17 @@ signal battle_lost
 var world_layer: Node = null
 var enemy_container: Node2D = null
 
-@onready var player_status_bar: PanelContainer = %PlayerStatusBar
+@onready var player_status_bar: HBoxContainer = %PlayerStatusBar
 @onready var hp_label: Label = %HpLabel
 @onready var hp_bar: ProgressBar = %HpBar
 @onready var armor_label: Label = %ArmorLabel
+@onready var class_icon: Label = %ClassIcon
 @onready var gold_label: Label = %GoldLabel
 @onready var turn_label: Label = %TurnLabel
 @onready var stage_label: Label = %StageLabel
 @onready var dice_container: HBoxContainer = %DiceContainer
-@onready var play_btn: Button = %PlayBtn
+@onready var action_btn: Button = %ActionBtn
 @onready var reroll_btn: Button = %RerollBtn
-@onready var end_turn_btn: Button = %EndTurnBtn
-@onready var hand_label: Label = %HandLabel
 
 # 飘字覆盖层（UILayer/Root 下，不受震屏影响）
 var _float_layer: Control = null
@@ -65,17 +65,15 @@ func _ready() -> void:
 	_connect_button_signals()
 	_connect_autoload_signals()
 	# 内联 UI 初始化（原 _init_ui）
-	play_btn.disabled = true
+	action_btn.disabled = true
 	reroll_btn.disabled = true
-	end_turn_btn.disabled = true
-	hand_label.text = "等待战斗开始..."
+	action_btn.text = "等待战斗开始..."
 	_setup_float_layer()
 	_setup_auto_end_timer()
 
 func _connect_button_signals() -> void:
-	play_btn.pressed.connect(_on_play_pressed)
+	action_btn.pressed.connect(_on_action_pressed)
 	reroll_btn.pressed.connect(_on_reroll_pressed)
-	end_turn_btn.pressed.connect(_on_end_turn_pressed)
 
 func _connect_autoload_signals() -> void:
 	GameManager.hp_changed.connect(_on_hp_changed)
@@ -226,8 +224,8 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		view.enemy_clicked.connect(_on_enemy_clicked)
 		enemy_views.append(view)
 
-	# 更新关卡标签
-	stage_label.text = "第 %d 章 · 第 %d 波" % [GameManager.chapter, GameManager.current_node + 1]
+	# 更新关卡标签（顶部显示当前楼层深度）
+	stage_label.text = "第 %d 层" % (GameManager.current_node + 1)
 
 	# 战斗日志：开局
 	BattleLog.clear()
@@ -284,7 +282,6 @@ func _on_turn_started() -> void:
 	_refresh_hand_display()
 	_update_button_states()
 	turn_label.text = "回合 %d" % GameManager.battle_turn
-	hand_label.text = "手牌 · 剩余 %d 出牌" % GameManager.plays_left
 	_refresh_status_bar()
 	# 同步 battle_turn 到敌人实例（意图显示用）
 	for e: EnemyInstance in EnemyMgr.collect_enemy_instances(enemy_views):
@@ -399,32 +396,93 @@ func _collect_selected_dice() -> Array[Dictionary]:
 			result.append(DiceBag.hand_dice[idx])
 	return result
 
-func _update_play_button_state() -> void:
-	if selected_dice_indices.is_empty() or _is_resolving:
-		play_btn.disabled = true
+## 动作按钮状态机 —— 对应原版 PlayerHudView 双按钮规则
+## 三态：
+##   a) 敌人回合 / 结算中 → "敌人行动中..."（Danger，disabled）
+##   b) 有选中骰 → "出牌: {牌型}"（Primary绿，按牌型合法性 disable）
+##   c) 无选中骰 → "结束回合"（按职业染色：mage紫/rogue青/其他金）
+func _update_action_button() -> void:
+	# 战斗结束直接返回，保持 _on_battle_ended 设置的文字/禁用态
+	if GameManager.phase == GameTypes.GamePhase.GAME_OVER:
 		return
-	# 出牌校验：选中的骰子必须能组成有效牌型
-	var selected_dice: Array[Dictionary] = _collect_selected_dice()
-	var hand_result: Dictionary = HandEvaluator.check_hands(selected_dice)
-	var active_hands: Array[String] = []
-	active_hands.assign(hand_result.get("activeHands", []))
-	# 普通攻击只允许单颗骰子出；多颗骰子必须成牌型（activeHands中有非普通攻击的牌型）
-	var has_real_hand: bool = active_hands.any(func(h: String) -> bool: return h != "普通攻击")
-	var is_single_normal: bool = selected_dice.size() == 1 and active_hands.size() == 1 and active_hands[0] == "普通攻击"
-	# §6.1 战士多选普攻：`normal_attack_multi_select` 允许的职业可以多选普攻
-	var is_pure_normal_multi: bool = (not has_real_hand) and selected_dice.size() > 1
-	var class_def: ClassDef = ClassDefData.get_all().get(PlayerState.player_class) as ClassDef
-	var can_multi_normal: bool = class_def != null and class_def.normal_attack_multi_select
-	var is_warrior_multi_normal: bool = is_pure_normal_multi and can_multi_normal
-	play_btn.disabled = not (has_real_hand or is_single_normal or is_warrior_multi_normal)
-
-# ── 出牌
-
-func _on_play_pressed() -> void:
+	# === 态 a：敌人回合 / 结算中 ===
+	if GameManager.is_enemy_turn:
+		_set_action_btn("敌人行动中...", &"DangerButton", true)
+		return
 	if _is_resolving:
+		_set_action_btn("结算中...", &"DangerButton", true)
 		return
-	play_btn.disabled = true  # 防连点
-	var was_resolving: bool = _is_resolving
+	# === 态 b：有选中骰 → 出牌 ===
+	if not selected_dice_indices.is_empty():
+		var selected_dice: Array[Dictionary] = _collect_selected_dice()
+		var hand_result: Dictionary = HandEvaluator.check_hands(selected_dice)
+		var active_hands: Array[String] = []
+		active_hands.assign(hand_result.get("activeHands", []))
+		var real_hands: Array[String] = active_hands.filter(
+			func(h: String) -> bool: return h != "普通攻击"
+		)
+		var has_real_hand: bool = not real_hands.is_empty()
+		var is_single_normal: bool = (
+			selected_dice.size() == 1
+			and active_hands.size() == 1
+			and active_hands[0] == "普通攻击"
+		)
+		# §6.1 战士多选普攻
+		var is_pure_normal_multi: bool = (not has_real_hand) and selected_dice.size() > 1
+		var class_def: ClassDef = ClassDefData.get_all().get(PlayerState.player_class) as ClassDef
+		var can_multi_normal: bool = class_def != null and class_def.normal_attack_multi_select
+		var is_warrior_multi_normal: bool = is_pure_normal_multi and can_multi_normal
+		var can_play: bool = has_real_hand or is_single_normal or is_warrior_multi_normal
+		# 牌型文字：优先显示真实牌型名，否则 "普通攻击"
+		var hand_name: String = real_hands[0] if has_real_hand else "普通攻击"
+		if can_play:
+			_set_action_btn("出牌: %s" % hand_name, &"PrimaryButton", false)
+		else:
+			_set_action_btn("无法出牌", &"DangerButton", true)
+		return
+	# === 态 c：无选中骰 → 结束回合，按职业染色 ===
+	var class_variant: StringName = _get_class_button_variant()
+	_set_action_btn("结束回合", class_variant, false)
+
+
+## 设置按钮文字 + theme variation + 禁用态（统一入口，避免重复赋值）
+func _set_action_btn(text: String, variation: StringName, disabled: bool) -> void:
+	action_btn.text = text
+	if action_btn.theme_type_variation != variation:
+		action_btn.theme_type_variation = variation
+	action_btn.disabled = disabled
+
+
+## 根据职业选择"结束回合"按钮的变体
+## mage=Purple / rogue=Ghost(青灰，待补 TealButton 变体) / 其他=Gold
+func _get_class_button_variant() -> StringName:
+	match PlayerState.player_class:
+		"mage":
+			return &"PurpleButton"
+		"rogue":
+			# TODO: Theme 里补一个 TealButton 变体后替换
+			return &"GhostButton"
+		_:
+			return &"GoldButton"
+
+# ── 出牌 / 结束回合（合并入口）
+
+## 动作按钮统一入口 —— 根据当前态分发到出牌 / 结束回合
+func _on_action_pressed() -> void:
+	if _is_resolving or GameManager.is_enemy_turn:
+		return
+	if GameManager.phase == GameTypes.GamePhase.GAME_OVER:
+		return
+	# 有选中骰 → 出牌；否则 → 结束回合
+	if selected_dice_indices.is_empty():
+		_on_end_turn_pressed()
+	else:
+		await _trigger_play()
+
+
+## 实际出牌流程（原 _on_play_pressed）
+func _trigger_play() -> void:
+	action_btn.disabled = true  # 防连点
 	# 实例化桥接器（支持 await 时序编排）
 	var bridge: PlayHandlerBridge = PlayHandlerBridge.new()
 	bridge.name = "PlayHandlerBridge"
@@ -435,7 +493,7 @@ func _on_play_pressed() -> void:
 	# execute 正常完成后 _is_resolving 由 _on_after_play_resolve 重置；
 	# 若提前 return（如牌型校验失败）_is_resolving 仍为 false，直接恢复按钮
 	if is_inside_tree() and not _is_resolving:
-		play_btn.disabled = false
+		_update_action_button()
 
 # ── 重投
 
@@ -464,6 +522,14 @@ func _on_reroll_pressed() -> void:
 	)
 	if not ok:
 		return
+	# 刘叔需求 3：重投成功后触发双手摇骰子动画 + 背景受击反弹（施法反冲）
+	var battle_scene: BattleScene = owner as BattleScene
+	if battle_scene != null:
+		if battle_scene.player_hands != null:
+			battle_scene.player_hands.play_roll_dice()
+		var bg: BgParallax = battle_scene.get_node_or_null("%SceneBG") as BgParallax
+		if bg != null:
+			bg.play_hurt_kick()
 
 # ── 结束回合
 
@@ -491,9 +557,8 @@ func _process_turn_end_and_enemy_phase() -> void:
 		return
 
 	_is_resolving = true
-	play_btn.disabled = true
 	reroll_btn.disabled = true
-	end_turn_btn.disabled = true
+	_update_action_button()  # 刷出"结算中..." + 禁用
 	selected_dice_indices.clear()
 	if _dice_tooltip:
 		_dice_tooltip.hide_tip()
@@ -549,6 +614,7 @@ func _on_hp_changed(hp: int, max_hp: int) -> void:
 func _on_enemy_turn_started() -> void:
 	_is_resolving = true
 	_refresh_status_bar()
+	_update_action_button()
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 	match new_phase:
@@ -556,11 +622,22 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 			_is_resolving = false
 		GameTypes.GamePhase.ENEMY_TURN:
 			_is_resolving = true
+	_update_action_button()
 
 func _refresh_status_bar() -> void:
 	_on_hp_changed(PlayerState.hp, PlayerState.max_hp)
 	armor_label.text = "护甲: %d" % PlayerState.armor
 	gold_label.text = "金币: %d" % PlayerState.gold
+	turn_label.text = "回合 %d" % GameManager.battle_turn
+	class_icon.text = _get_class_icon_text(PlayerState.player_class)
+
+## 职业像素字符图标（美术资源到位前的临时占位，对齐 RULES Q1=B）
+func _get_class_icon_text(class_id: String) -> String:
+	match class_id:
+		"warrior": return "[战]"
+		"mage": return "[法]"
+		"rogue": return "[盗]"
+		_: return "[?]"
 
 func _refresh_hand_display() -> void:
 	for child: Node in dice_container.get_children():
@@ -572,34 +649,32 @@ func _refresh_hand_display() -> void:
 		btn.init(hand[i], i)           # 再绑定数据
 		btn.dice_index_clicked.connect(_on_dice_clicked)
 		btn.die_tap_requested.connect(_on_die_tap_requested)
-	hand_label.text = "手牌 · 剩余 %d 出牌" % GameManager.plays_left
+	# 手牌数量变化必然影响"结束回合"按钮（无选中时态c），刷一次
+	_update_action_button()
 
 func _update_button_states() -> void:
 	var is_player_turn: bool = not GameManager.is_enemy_turn and not _is_resolving
-	# play_btn：走牌型校验逻辑（_update_play_button_state 已实现）
-	_update_play_button_state()
-	if not is_player_turn:
-		play_btn.disabled = true
+	# 动作按钮统一走状态机
+	_update_action_button()
 	# reroll_btn：选中非空 + HP 能付得起 + 玩家回合
 	var reroll_cost: int = _get_reroll_hp_cost()
 	var can_reroll: bool = reroll_cost != -1 and (reroll_cost <= 0 or PlayerState.hp >= reroll_cost)
 	reroll_btn.disabled = not is_player_turn or not can_reroll or selected_dice_indices.is_empty()
-	# end_turn_btn：仅玩家回合可点
-	end_turn_btn.disabled = not is_player_turn
 
 
 func _on_battle_ended(victory: bool) -> void:
 	_is_resolving = true
-	play_btn.disabled = true
 	reroll_btn.disabled = true
-	end_turn_btn.disabled = true
+	action_btn.disabled = true
 	if victory:
-		hand_label.text = "战斗胜利!"
+		action_btn.text = "战斗胜利!"
+		action_btn.theme_type_variation = &"PrimaryButton"
 		BattleLog.log_write("战斗胜利", BattleLog.COLOR_PLAYER)
 		SoundPlayer.play_sound("victory")
 		battle_won.emit()
 	else:
-		hand_label.text = "战斗失败..."
+		action_btn.text = "战斗失败..."
+		action_btn.theme_type_variation = &"DangerButton"
 		BattleLog.log_write("战斗失败", BattleLog.COLOR_ENEMY)
 		SoundPlayer.play_sound("defeat")
 		# [E1-FIX] 等待双手死亡动画播完（PlayerHands.play_death = 1.2s）
