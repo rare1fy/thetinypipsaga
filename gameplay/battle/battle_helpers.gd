@@ -138,6 +138,7 @@ static func settle_enemy_dot_damage(enemies: Array[EnemyInstance]) -> void:
 			if s.type == GameTypes.StatusType.BURN and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.value = 0
+				s.duration = 0  # 同步清零，避免僵尸状态残留
 			elif s.type == GameTypes.StatusType.POISON and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.duration -= 1

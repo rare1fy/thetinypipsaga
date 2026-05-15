@@ -159,6 +159,8 @@ static func _end_turn_cleanup(controller: Node) -> void:
 			controller._on_battle_ended(false)
 			return
 	GameManager.tick_statuses()
+	# v0.5 玩家易伤层数衰减：每敌方回合结束 -1 层
+	StatusService.tick_vulnerable(PlayerState.statuses)
 	controller._refresh_status_bar()
 	# 回合收尾 + 抽牌（Godot 设计规范 §4.4）：reset 6 字段 + executeDrawPhase
 	# 必须在 _begin_player_turn 之前完成

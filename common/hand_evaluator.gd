@@ -110,12 +110,12 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	var hands: Dictionary = {}  # 用 Dictionary 模拟 Set
 	
 	# === 基础牌型 ===
-	# N条
-	if max_count == 6 and valid_dice_count == 6: hands["六条"] = true
-	if max_count == 5 and valid_dice_count == 5: hands["五条"] = true
-	if max_count == 4 and valid_dice_count == 4: hands["四条"] = true
-	if max_count == 3 and valid_dice_count == 3: hands["三条"] = true
-	if max_count == 2 and valid_dice_count == 2: hands["对子"] = true
+	# N条：支持 N 颗精确匹配 + 超出颗数的 N+X 模式（如 6颗中 5+1 仍为五条）
+	if max_count == 6: hands["六条"] = true
+	if max_count == 5 and valid_dice_count >= 5: hands["五条"] = true
+	if max_count == 4 and valid_dice_count >= 4: hands["四条"] = true
+	if max_count == 3 and valid_dice_count >= 3: hands["三条"] = true
+	if max_count == 2 and valid_dice_count >= 2: hands["对子"] = true
 	
 	# 葫芦 (3+2) / 大葫芦 (4+2 或 3+3，6颗)
 	# v0.5 规则：4+2 优先识别为大葫芦（×5.8），不走四条（×4.5）

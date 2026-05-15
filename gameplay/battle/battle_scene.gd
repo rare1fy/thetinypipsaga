@@ -202,6 +202,8 @@ func _exit_tree() -> void:
 		PlayerState.hp_changed.disconnect(_on_player_hp_changed)
 	if PlayerState.game_over_requested.is_connected(_on_player_game_over):
 		PlayerState.game_over_requested.disconnect(_on_player_game_over)
+	# controller 信号由 controller 自身生命周期管理，无需手动断开
+	# （controller 是 BattleScene 子节点，父死子死）
 
 
 func _spawn_relic_panel() -> void:
