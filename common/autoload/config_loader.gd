@@ -265,32 +265,108 @@ static func load_relic_defs() -> Dictionary:
 		r.rarity = rarity_from_code(row.get("rarity", "RA1"), true)
 		r.trigger = trigger_from_code(row.get("trigger", "TR99"))
 
+		# 计数/冷却字段
+		r.counter = int(row.get("counter", 0))
+		r.max_counter = int(row.get("max_counter", 0))
+		r.counter_label = row.get("counter_label", "")
+		r.cooldown = int(row.get("cooldown", 0))
+		r.consumable = _as_bool(row.get("consumable", false))
+
+		# 构建 effects 数组（从 effect_group 映射）
 		var eg: String = row.get("effect_group", "")
 		if eg != "" and eg_map.has(eg):
-			_apply_relic_effects(r, eg_map[eg])
+			r.effects = _build_relic_effects(eg_map[eg], r.trigger)
 
 		defs[r.id] = r
 	return defs
 
-static func _apply_relic_effects(r: RelicDef, effects: Array) -> void:
-	# effects 故意用裸 Array：来源是 Dictionary[eg_map[eg]] 的 value，
-	# Godot 4.5 下 Dictionary 取值返回裸 Array，无法满足 Array[Dictionary] 的 runtime check。
-	# 内部只做 eff.get(...) 鸭子式访问，元素类型无需约束。
-	for eff in effects:
+
+## 将旧格式的 param_key/param_value 转换为新的 effects 数组
+static func _build_relic_effects(raw_effects: Array, relic_trigger: GameTypes.RelicTrigger) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var trigger_type: EffectTypes.TriggerType = _relic_trigger_to_effect_trigger(relic_trigger)
+
+	for eff in raw_effects:
 		var key: String = eff.get("param_key", "")
 		var value: Variant = eff.get("param_value", null)
 		if key == "" or value == null:
 			continue
-		if key in r:
-			var existing: Variant = r.get(key)
-			if existing is bool:
-				r.set(key, _as_bool(value))
-			elif existing is int:
-				r.set(key, int(value))
-			elif existing is float:
-				r.set(key, float(value))
-			else:
-				r.set(key, value)
+		var effect: Dictionary = _param_to_effect(key, value, trigger_type)
+		if not effect.is_empty():
+			result.append(effect)
+	return result
+
+
+## 将 param_key + param_value 映射为 EffectTypes 格式的效果字典
+static func _param_to_effect(key: String, value: Variant, trigger_type: EffectTypes.TriggerType) -> Dictionary:
+	match key:
+		"damage":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE,
+				{"value": int(value)}, trigger_type)
+		"armor":
+			return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+				{"value": int(value)}, trigger_type)
+		"heal":
+			return EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
+				{"value": int(value)}, trigger_type)
+		"multiplier":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT,
+				{"value": float(value)}, trigger_type)
+		"pierce":
+			return EffectTypes.create_effect(EffectTypes.EffectType.PIERCE,
+				{"value": int(value)}, trigger_type)
+		"gold_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GAIN_GOLD,
+				{"value": int(value)}, trigger_type)
+		"draw_count_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.DRAW,
+				{"count": int(value)}, trigger_type)
+		"shop_discount":
+			return EffectTypes.create_effect(EffectTypes.EffectType.SHOP_DISCOUNT,
+				{"percent": float(value) / 100.0}, trigger_type)
+		"free_rerolls", "extra_reroll":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_REROLL,
+				{"count": int(value)}, trigger_type)
+		"extra_play":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_PLAY,
+				{"count": int(value)}, trigger_type)
+		"extra_draw":
+			return EffectTypes.create_effect(EffectTypes.EffectType.DRAW,
+				{"count": int(value)}, trigger_type)
+		"prevent_death":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.DEATH_IMMUNITY,
+					{"cooldown_turns": 99}, trigger_type)
+		"temp_draw_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.DRAW,
+				{"count": int(value)}, EffectTypes.TriggerType.ON_TURN_END)
+		"grant_extra_play":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_PLAY,
+				{"count": int(value)}, EffectTypes.TriggerType.ON_TURN_END)
+		_:
+			push_warning("[ConfigLoader] 未映射的遗物参数: %s = %s" % [key, str(value)])
+	return {}
+
+
+## RelicTrigger → EffectTypes.TriggerType 映射
+static func _relic_trigger_to_effect_trigger(rt: GameTypes.RelicTrigger) -> EffectTypes.TriggerType:
+	match rt:
+		GameTypes.RelicTrigger.ON_BATTLE_START:
+			return EffectTypes.TriggerType.ON_BATTLE_START
+		GameTypes.RelicTrigger.ON_PLAY:
+			return EffectTypes.TriggerType.ON_PLAY
+		GameTypes.RelicTrigger.ON_KILL:
+			return EffectTypes.TriggerType.ON_KILL
+		GameTypes.RelicTrigger.ON_DAMAGE_TAKEN:
+			return EffectTypes.TriggerType.ON_DAMAGE_TAKEN
+		GameTypes.RelicTrigger.ON_TURN_END:
+			return EffectTypes.TriggerType.ON_TURN_END
+		GameTypes.RelicTrigger.ON_FLOOR_CLEAR:
+			return EffectTypes.TriggerType.ON_FLOOR_CLEAR
+		GameTypes.RelicTrigger.PASSIVE:
+			return EffectTypes.TriggerType.ON_BATTLE_START
+		_:
+			return EffectTypes.TriggerType.ON_PLAY
 
 # ============================================================
 # Class（职业）
