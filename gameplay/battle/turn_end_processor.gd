@@ -84,9 +84,15 @@ static func _resolve_meditation_skip(played_this_turn: bool, _controller: Battle
 		var def: DiceDef = GameData.get_dice_def(d.get("defId", ""))
 		if def == null:
 			continue
-		if def.heal_on_skip > 0:
-			PlayerState.heal(def.heal_on_skip)
-		if def.purify_one_on_skip:
+		# 从 effects 数组查找 ON_SKIP 触发的效果
+		for eff: Dictionary in def.effects:
+			if eff.get("trigger", -1) != EffectTypes.TriggerType.ON_SKIP:
+				continue
+			var eff_type: int = eff.get("type", -1)
+			var params: Dictionary = eff.get("params", {})
+			if eff_type == EffectTypes.EffectType.HEAL:
+				PlayerState.heal(params.get("value", 0))
+			elif eff_type == EffectTypes.EffectType.PURIFY:
 			var debuff_types: Array[int] = [
 				GameTypes.StatusType.POISON, GameTypes.StatusType.BURN,
 				GameTypes.StatusType.VULNERABLE, GameTypes.StatusType.WEAK,

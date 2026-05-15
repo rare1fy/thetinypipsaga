@@ -80,23 +80,31 @@ static func execute(
 	var on_reroll_armor: int = 0
 	for r: Dictionary in PlayerState.relics:
 		var r_def: RelicDef = GameData.get_relic_def(r.get("id", ""))
-		if r_def and r_def.trigger == GameTypes.RelicTrigger.ON_REROLL:
-			# 黑市契约仅在卖血且本回合未触发时生效
-			if r_def.id == "black_market_contract":
-				if is_blood_reroll and not PlayerState.black_market_used_this_turn:
-					on_reroll_gold += r_def.gold_bonus
-					PlayerState.black_market_used_this_turn = true
-				continue
-			# 血铸铠甲仅在卖血时触发
-			if r_def.id == "blood_forged_armor":
-				if is_blood_reroll:
-					on_reroll_armor += r_def.armor
-				continue
-			# 通用 on_reroll 遗物（免费 / 卖血都触发）
-			if r_def.gold_bonus > 0:
-				on_reroll_gold += r_def.gold_bonus
-			if r_def.armor > 0:
-				on_reroll_armor += r_def.armor
+		if not r_def or r_def.trigger != GameTypes.RelicTrigger.ON_REROLL:
+			continue
+		# 从 effects 数组提取金币和护甲值
+		var relic_gold: int = 0
+		var relic_armor: int = 0
+		for eff: Dictionary in r_def.effects:
+			var eff_type: int = eff.get("type", -1)
+			if eff_type == EffectTypes.EffectType.GAIN_GOLD:
+				relic_gold += eff.get("params", {}).get("value", 0)
+			elif eff_type == EffectTypes.EffectType.ARMOR:
+				relic_armor += eff.get("params", {}).get("value", 0)
+		# 黑市契约仅在卖血且本回合未触发时生效
+		if r_def.id == "black_market_contract":
+			if is_blood_reroll and not PlayerState.black_market_used_this_turn:
+				on_reroll_gold += relic_gold
+				PlayerState.black_market_used_this_turn = true
+			continue
+		# 血铸铠甲仅在卖血时触发
+		if r_def.id == "blood_forged_armor":
+			if is_blood_reroll:
+				on_reroll_armor += relic_armor
+			continue
+		# 通用 on_reroll 遗物（免费 / 卖血都触发）
+		on_reroll_gold += relic_gold
+		on_reroll_armor += relic_armor
 
 	# === 血怒叠加 ===
 	if is_blood_reroll:

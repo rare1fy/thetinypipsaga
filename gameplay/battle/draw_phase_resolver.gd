@@ -271,34 +271,43 @@ static func _resolve_kept_dice(result: DrawPhaseResult) -> void:
 			result.floating_texts.append({"text": "%s+%d点" % [def.name, def.bonus_on_keep], "color": Color.CYAN, "target": "player"})
 
 		# 2. boostLowestOnKeep（时光沙）：保留时手牌中最低点骰子+N
-		if def.boost_lowest_on_keep > 0:
-			var min_val: int = 99
-			for kd: Dictionary in result.kept_dice:
-				if kd.get("value", 1) < min_val:
-					min_val = kd.get("value", 1)
-			for kd: Dictionary in result.kept_dice:
-				if kd.get("value", 1) == min_val:
-					kd["value"] = mini(6, kd.get("value", 1) + def.boost_lowest_on_keep)
-			result.floating_texts.append({"text": "%s: 最低点+%d" % [def.name, def.boost_lowest_on_keep], "color": Color.CYAN, "target": "player"})
+		# 2. MODIFY_POINTS 效果（保留时提升最低点数）
+		var boost_eff: Dictionary = _find_effect(def, EffectTypes.EffectType.MODIFY_POINTS)
+		if not boost_eff.is_empty() and boost_eff.get("trigger", -1) == EffectTypes.TriggerType.ON_KEEP:
+			var boost_val: int = boost_eff.get("params", {}).get("delta", 0)
+			if boost_val > 0:
+				var min_val: int = 99
+				for kd: Dictionary in result.kept_dice:
+					if kd.get("value", 1) < min_val:
+						min_val = kd.get("value", 1)
+				for kd: Dictionary in result.kept_dice:
+					if kd.get("value", 1) == min_val:
+						kd["value"] = mini(6, kd.get("value", 1) + boost_val)
+				result.floating_texts.append({"text": "%s: 最低点+%d" % [def.name, boost_val], "color": Color.CYAN, "target": "player"})
 
-		# 3. bonusPerTurnKept（星辰骰）：每保留1回合+N，累积有上限
-		if def.bonus_per_turn_kept > 0:
-			var cap: int = def.keep_bonus_cap
+		# 3. BONUS_ON_KEEP 效果（星辰骰）：每保留1回合+N，累积有上限
+		var keep_bonus_eff: Dictionary = _find_effect(def, EffectTypes.EffectType.BONUS_ON_KEEP)
+		if not keep_bonus_eff.is_empty():
+			var params: Dictionary = keep_bonus_eff.get("params", {})
+			var per_turn: int = params.get("value", 0)
+			var cap: int = params.get("cap", 99)
 			var accumulated: int = d.get("keptBonusAccum", 0)
-			if accumulated < cap:
-				var bonus: int = mini(def.bonus_per_turn_kept, cap - accumulated)
+			if per_turn > 0 and accumulated < cap:
+				var bonus: int = mini(per_turn, cap - accumulated)
 				d["value"] = mini(6, d.get("value", 1) + bonus)
 				d["keptBonusAccum"] = accumulated + bonus
 				result.floating_texts.append({"text": "%s+%d点(%d/%d)" % [def.name, bonus, accumulated + bonus, cap], "color": Color.MEDIUM_PURPLE, "target": "player"})
 
-		# 4. rerollOnKeep（时光骰）：保留到下回合时自动重投
-		if def.reroll_on_keep:
+		# 4. REVERSE_VALUE 效果（时光骰）：保留到下回合时自动重投
+		var reroll_keep_eff: Dictionary = _find_effect(def, EffectTypes.EffectType.REVERSE_VALUE)
+		if not reroll_keep_eff.is_empty():
 			d["value"] = DiceBagService.roll_dice_def(def)
 			result.floating_texts.append({"text": "%s自动重投" % def.name, "color": Color.DODGER_BLUE, "target": "player"})
 
-		# 5. bonusMultOnKeep（法力涌动）：保留时给下次出牌额外倍率
-		if def.bonus_mult_on_keep > 0.0:
-			mult_bonus_total += def.bonus_mult_on_keep
+		# 5. BONUS_MULT_ON_KEEP 效果（法力涌动）：保留时给下次出牌额外倍率
+		var mult_keep_eff: Dictionary = _find_effect(def, EffectTypes.EffectType.BONUS_MULT_ON_KEEP)
+		if not mult_keep_eff.is_empty():
+			mult_bonus_total += mult_keep_eff.get("params", {}).get("value", 0.0)
 
 		# 清理：确保保留骰子 selected=false, kept=true
 		d["selected"] = false
@@ -364,3 +373,17 @@ static func _resolve_draw_count(
 
 	# needDraw = max(0, targetHandSize + 3个临时加成 - 保留数)
 	result.need_draw = maxi(0, target_hand_size + temp_draw_count_bonus + rogue_combo_draw_bonus + relic_temp_draw_bonus - kept_count)
+
+
+# ============================================================
+# 辅助方法
+# ============================================================
+
+## 从 DiceDef.effects 中查找指定类型的第一个效果
+static func _find_effect(def: DiceDef, effect_type: int) -> Dictionary:
+	if not def:
+		return {}
+	for eff: Dictionary in def.effects:
+		if eff.get("type", -1) == effect_type:
+			return eff
+	return {}

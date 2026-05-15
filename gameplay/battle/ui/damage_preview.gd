@@ -199,11 +199,10 @@ func _preview_dice_effects(selected_dice: Array[Dictionary]) -> DiceEffectResolv
 ## v0.5 预览增幅倍率（连乘）
 func _calc_preview_outcome_mult(best_hand: String) -> float:
 	var mult: float = 1.0
-	# 遗物倍率
-	for r: Dictionary in GameManager.relics:
-		var def: RelicDef = GameData.get_relic_def(r.id)
-		if def.multiplier > 0 and def.id == "prism_focus" and "同元素" in best_hand:
-			mult *= (1.0 + def.multiplier)
+	# 遗物倍率（通过 RelicEngine 统一处理）
+	var relic_result := RelicEngine.on_play(GameManager.relics, null, [], best_hand)
+	if relic_result.bonus_mult > 0.0:
+		mult *= (1.0 + relic_result.bonus_mult)
 	# 过充
 	var overcharge: float = GameBalance.get_overcharge_mult(
 		DiceBag.hand_dice.size(), GameBalance.PLAYER_INITIAL.drawCount

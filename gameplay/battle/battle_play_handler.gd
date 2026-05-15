@@ -15,11 +15,10 @@ extends RefCounted
 ## 返回值 ≥ 1.0（无加成时为 1.0）
 static func calc_outcome_multiplier(best_hand: String) -> float:
 	var mult: float = 1.0
-	# 遗物倍率
-	for r: Dictionary in GameManager.relics:
-		var def: RelicDef = GameData.get_relic_def(r.id)
-		if def and def.multiplier > 0 and def.id == "prism_focus" and "同元素" in best_hand:
-			mult *= (1.0 + def.multiplier)
+	# 遗物倍率（通过 RelicEngine 统一处理）
+	var relic_result := RelicEngine.on_play(GameManager.relics, null, [], best_hand)
+	if relic_result.bonus_mult > 0.0:
+		mult *= (1.0 + relic_result.bonus_mult)
 	# 过充系统（v0.5）
 	var overcharge: float = GameBalance.get_overcharge_mult(
 		DiceBag.hand_dice.size(), GameBalance.PLAYER_INITIAL.drawCount
@@ -41,10 +40,7 @@ static func calc_outcome_multiplier(best_hand: String) -> float:
 ## 来源：遗物 onPlay.damage + 怒火燎原 + fury_bonus
 static func calc_bonus_base_damage() -> int:
 	var bonus: int = GameManager.rage_fire_bonus + GameManager.fury_bonus_damage
-	for r: Dictionary in GameManager.relics:
-		var def: RelicDef = GameData.get_relic_def(r.id)
-		if def and def.trigger == GameTypes.RelicTrigger.ON_PLAY and def.damage > 0 and def.id != "life_furnace":
-			bonus += def.damage
+	# 遗物 ON_PLAY 伤害由 RelicEngine 统一处理（在 play_handler_bridge 中合并）
 	return bonus
 
 
@@ -213,7 +209,14 @@ static func mark_spent_and_after_play(indices: Array[int], _effect_result: DiceE
 		if dice_id != "":
 			DiceBag.dice_played_this_turn.append(dice_id)
 		var d_def: DiceDef = GameData.get_dice_def(dice_id) if dice_id else null
-		if d_def and (d_def.always_bounce or d_def.stay_in_hand):
+		var should_stay: bool = false
+		if d_def:
+			for eff: Dictionary in d_def.effects:
+				var eff_type: int = eff.get("type", -1)
+				if eff_type == EffectTypes.EffectType.BOUNCE or eff_type == EffectTypes.EffectType.PRESERVE_DIE:
+					should_stay = true
+					break
+		if should_stay:
 			# 弹回/保留的骰子留在手牌，仅重置选中状态
 			die_dict["selected"] = false
 		else:
