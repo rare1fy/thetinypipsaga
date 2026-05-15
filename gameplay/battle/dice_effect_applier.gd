@@ -26,7 +26,7 @@ static func apply(
 		if effect_result.self_damage_percent > 0.0:
 			self_dmg += int(float(PlayerState.max_hp) * effect_result.self_damage_percent)
 		if self_dmg > 0:
-			PlayerState.take_damage(self_dmg)
+			PlayerState.take_damage(self_dmg, "self")
 			if hp_bar != null:
 				VFX.hp_pulse(hp_bar, true)
 			effect_result.descriptions.insert(0, "自伤 %d HP" % self_dmg)

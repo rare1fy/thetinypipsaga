@@ -132,7 +132,7 @@ static func _end_turn_cleanup(controller: Node) -> void:
 	# [FIX-P4] 玩家中毒结算（旧版 enemy_ai.gd 中有，新版遗漏）
 	var poison: int = GameManager.get_status_value(GameTypes.StatusType.POISON)
 	if poison > 0:
-		PlayerState.take_damage(poison)
+		PlayerState.take_damage(poison, "dot")
 		# 中毒递减：value-1，如果 value<=0 则 tick_statuses 会清理
 		for s: StatusEffect in PlayerState.statuses:
 			if s.type == GameTypes.StatusType.POISON:
@@ -145,7 +145,7 @@ static func _end_turn_cleanup(controller: Node) -> void:
 
 	var burn: int = GameManager.get_status_value(GameTypes.StatusType.BURN)
 	if burn > 0:
-		PlayerState.take_damage(burn)
+		PlayerState.take_damage(burn, "dot")
 		PlayerState.statuses = PlayerState.statuses.filter(
 			func(s: StatusEffect) -> bool: return s.type != GameTypes.StatusType.BURN
 		)
@@ -156,6 +156,10 @@ static func _end_turn_cleanup(controller: Node) -> void:
 	GameManager.tick_statuses()
 	# v0.5 玩家易伤层数衰减：每敌方回合结束 -1 层
 	StatusService.tick_vulnerable(PlayerState.statuses)
+	# v0.5 战士系统：伤痕衰减 + 血锁/单挑回合衰减
+	ScarSystem.decay_per_enemy_turn()
+	BloodChainSystem.tick_turn()
+	SoloSealSystem.tick_turn()
 	controller._refresh_status_bar()
 	# 回合收尾 + 抽牌（Godot 设计规范 §4.4）：reset 6 字段 + executeDrawPhase
 	# 必须在 _begin_player_turn 之前完成

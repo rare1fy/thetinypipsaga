@@ -100,7 +100,7 @@ static func execute(
 		var at_cap: bool = current_fury >= GameBalance.FURY_CONFIG.maxStack
 		var cap_armor: int = GameBalance.FURY_CONFIG.armorAtCap if at_cap else 0
 
-		PlayerState.take_damage(hp_cost)
+		PlayerState.take_damage(hp_cost, "self")
 		PlayerState.blood_reroll_count = mini(current_fury + 1, GameBalance.FURY_CONFIG.maxStack)
 		if on_reroll_armor + cap_armor > 0:
 			PlayerState.gain_armor(on_reroll_armor + cap_armor)

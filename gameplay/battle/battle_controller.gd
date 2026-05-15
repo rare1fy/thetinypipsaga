@@ -592,6 +592,9 @@ func _process_turn_end_and_enemy_phase() -> void:
 func _process_enemy_attacks() -> void:
 	# 嘲讽清理：敌人回合开始先清旧嘲讽（若 Guardian 在本回合再次 resolve 会重新设置）
 	GameManager.taunt_enemy_uid = ""
+	# v0.5: 重置被攻击计数（怒火/战吼用）
+	PlayerState.hit_count_last_enemy_turn = 0
+	PlayerState.was_hit_last_enemy_turn = false
 	var instances: Array[EnemyInstance] = EnemyMgr.collect_enemy_instances(enemy_views)
 	for e: EnemyInstance in instances:
 		e.battle_turn = GameManager.battle_turn
@@ -717,6 +720,8 @@ func _on_battle_ended(victory: bool) -> void:
 	_is_resolving = true
 	reroll_btn.disabled = true
 	action_btn.disabled = true
+	# v0.5: 战斗结束清零战士系统
+	ScarSystem.reset_battle()
 	if victory:
 		action_btn.text = "战斗胜利!"
 		action_btn.theme_type_variation = &"PrimaryButton"

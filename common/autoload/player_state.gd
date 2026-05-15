@@ -8,6 +8,7 @@ signal armor_changed(new_armor: int)
 signal gold_changed(new_gold: int)
 signal floating_text_requested(text: String, color: Color, target: String)
 signal game_over_requested
+signal blood_chain_damage_requested(damage: int)  ## v0.5 血锁链传递伤害
 
 # ============================================================
 # 玩家核心属性
@@ -29,6 +30,18 @@ var combo_count: int = 0              ## 盗贼连击数
 var locked_element: String = ""       ## 棱镜锁定元素
 var last_play_hand_type: String = ""   ## 盗贼上次出牌牌型
 var warrior_rage_mult: float = 0.0    ## 战士狂暴倍率
+
+# v0.5 战士三大被动
+var scar_stacks: int = 0              ## 伤痕层数（无上限，每敌方回合-2，战斗结束清零）
+var blood_chain_targets: Array[String] = []  ## 血锁链绑定的敌人 uid 列表
+var blood_chain_turns: int = 0        ## 血锁链剩余回合数
+var solo_seal_target: String = ""     ## 单挑目标 enemy uid（空=无单挑）
+var solo_seal_turns: int = 0          ## 单挑剩余回合数
+var berserk_turns: int = 0            ## 狂暴剩余玩家回合数
+var next_play_bonus_mult: float = 0.0 ## 生命熔炉满血时的下次+20%
+var hit_count_last_enemy_turn: int = 0 ## 最近一次敌方回合中被敌人攻击实际扣血的次数
+var was_hit_last_enemy_turn: bool = false ## 最近一次敌方回合中是否被敌人攻击扣过血
+var titanfist_uses: int = 0           ## 泰坦之拳本场使用次数
 
 # 状态效果
 var statuses: Array[StatusEffect] = []
@@ -87,7 +100,8 @@ var hand_type_upgrades: Dictionary = {}
 # HP / 护甲 / 金币 / 灵魂
 # ============================================================
 
-func take_damage(dmg: int) -> void:
+## source: "enemy" = 敌人攻击, "self" = 主动自伤, "dot" = DOT
+func take_damage(dmg: int, source: String = "enemy") -> void:
 	var absorbed := mini(armor, dmg)
 	armor -= absorbed
 	var hp_dmg := dmg - absorbed
@@ -103,9 +117,26 @@ func take_damage(dmg: int) -> void:
 	hp_changed.emit(hp, max_hp)
 	armor_changed.emit(armor)
 	
+	# v0.5 伤痕叠层：仅主动自伤来源
+	if source == "self" and hp_dmg > 0:
+		ScarSystem.add_from_self_damage(hp_dmg)
+	
+	# v0.5 血锁链传递：敌人攻击和主动自伤都触发，DOT 不触发
+	if hp_dmg > 0:
+		var chain_dmg: int = BloodChainSystem.get_chain_damage(hp_dmg, source)
+		if chain_dmg > 0:
+			# 传递伤害给被锁敌人（在 battle_controller 中实际执行）
+			blood_chain_damage_requested.emit(chain_dmg)
+	
+	# v0.5 被敌人攻击计数（怒火/战吼用）
+	if source == "enemy" and hp_dmg > 0:
+		hit_count_last_enemy_turn += 1
+		was_hit_last_enemy_turn = true
+	
 	# §9.1 / §9.4 怒火骰：每次受攻击（不论是否真实掉血）按 w_fury 持有数累加 fury_bonus_damage，上限 +10
 	# 对齐 React 原版 enemyAI.ts L355：furyBonusDamage += furyLevel
-	_accumulate_fury_on_hit()
+	if source == "enemy":
+		_accumulate_fury_on_hit()
 	
 	if hp <= 0:
 		game_over_requested.emit()
