@@ -186,53 +186,89 @@ static func load_dice_defs() -> Dictionary:
 		d.is_cursed = _as_bool(row.get("flag_cursed", false))
 		d.is_cracked = _as_bool(row.get("flag_cracked", false))
 
-		# 应用效果组
+		# 构建 effects 数组（从 effect_group 映射）
 		var eg: String = row.get("effect_group", "")
 		if eg != "" and eg_map.has(eg):
-			_apply_effects(d, eg_map[eg])
+			d.effects = _build_dice_effects(eg_map[eg])
 
 		defs[d.id] = d
 	return defs
 
-## 把 effects 数组应用到 DiceDef 对象上
-# effects 故意用裸 Array：来源是 Dictionary[eg_map[eg]] 的 value，
-# Godot 4.5 下 Dictionary 取值返回裸 Array，无法满足 Array[Dictionary] 的 runtime check。
-# 内部只做 eff.get(...) 鸭子式访问，元素类型无需约束。
-static func _apply_effects(d: DiceDef, effects: Array) -> void:
-	for eff in effects:
+
+## 将旧格式的 param_key/param_value/effect_type 转换为新的 effects 数组
+static func _build_dice_effects(raw_effects: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var trigger := EffectTypes.TriggerType.ON_PLAY
+
+	for eff in raw_effects:
 		var key: String = eff.get("param_key", "")
 		var value: Variant = eff.get("param_value", null)
 		var ref: String = eff.get("param_ref", "")
 		var et: String = eff.get("effect_type", "")
 
-		# 处理状态引用（ST02x2x3 形式）
+		# 状态效果（ET07=对敌施加, ET08=对己施加）
 		if et == "ET07":
 			var parsed := parse_status_ref(ref)
-			d.status_to_enemy_type = parsed[0]
-			d.status_to_enemy_value = parsed[1]
-			d.status_to_enemy_duration = parsed[2]
+			if parsed[0] != "":
+				result.append(EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
+					{"status": parsed[0], "value": parsed[1], "target": "enemy"}, trigger))
 			continue
 		if et == "ET08":
 			var parsed2 := parse_status_ref(ref)
-			d.status_to_self_type = parsed2[0]
-			d.status_to_self_value = parsed2[1]
-			d.status_to_self_duration = parsed2[2]
+			if parsed2[0] != "":
+				result.append(EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
+					{"status": parsed2[0], "value": parsed2[1], "target": "self"}, trigger))
 			continue
 
-		# 普通字段：按 param_key 设置
 		if key == "" or value == null:
 			continue
-		if key in d:
-			# 自动类型转换：bool 字段存成 0/1 的情况
-			var existing: Variant = d.get(key)
-			if existing is bool:
-				d.set(key, _as_bool(value))
-			elif existing is int:
-				d.set(key, int(value))
-			elif existing is float:
-				d.set(key, float(value))
-			else:
-				d.set(key, value)
+
+		# 按 param_key 映射到 EffectType
+		var effect: Dictionary = _dice_param_to_effect(key, value, trigger)
+		if not effect.is_empty():
+			result.append(effect)
+	return result
+
+
+## 骰子 param_key → EffectType 映射
+static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTypes.TriggerType) -> Dictionary:
+	match key:
+		"bonus_damage":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE,
+				{"value": int(value)}, trigger)
+		"bonus_mult":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT,
+				{"value": float(value)}, trigger)
+		"self_damage":
+			return EffectTypes.create_effect(EffectTypes.EffectType.SELF_DAMAGE,
+				{"value": int(value)}, trigger)
+		"heal":
+			return EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
+				{"value": int(value)}, trigger)
+		"armor":
+			return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+				{"value": int(value)}, trigger)
+		"pierce":
+			return EffectTypes.create_effect(EffectTypes.EffectType.PIERCE,
+				{"value": int(value)}, trigger)
+		"aoe":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.AOE, {}, trigger)
+		"bounce":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.BOUNCE, {}, trigger)
+		"extra_play":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_PLAY,
+				{"count": int(value)}, trigger)
+		"extra_reroll":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_REROLL,
+				{"count": int(value)}, trigger)
+		"gold_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GAIN_GOLD,
+				{"value": int(value)}, trigger)
+		_:
+			push_warning("[ConfigLoader] 未映射的骰子参数: %s = %s" % [key, str(value)])
+	return {}
 
 # ============================================================
 # Relic（遗物）
