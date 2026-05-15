@@ -102,9 +102,13 @@ var hand_type_upgrades: Dictionary = {}
 
 ## source: "enemy" = 敌人攻击, "self" = 主动自伤, "dot" = DOT
 func take_damage(dmg: int, source: String = "enemy") -> void:
-	var absorbed := mini(armor, dmg)
+	# v0.5 狂暴：受到敌人攻击伤害+20%
+	var actual_dmg: int = dmg
+	if source == "enemy" and berserk_turns > 0:
+		actual_dmg = int(float(dmg) * 1.2)
+	var absorbed := mini(armor, actual_dmg)
 	armor -= absorbed
-	var hp_dmg := dmg - absorbed
+	var hp_dmg := actual_dmg - absorbed
 	hp = maxi(0, hp - hp_dmg)
 	hp_lost_this_turn += hp_dmg
 	hp_lost_this_battle += hp_dmg

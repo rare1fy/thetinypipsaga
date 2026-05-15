@@ -176,6 +176,133 @@ static func resolve(
 		result.heal += dice_def.heal_per_cleanse
 		result.descriptions.append("净化回复 %d HP" % dice_def.heal_per_cleanse)
 
+	# v0.5 战神之锤：≥三条牌型时追加基础伤害=点数总和×50% + 眩晕主目标
+	if dice_def.warhammer:
+		# 需要外部传入当前牌型信息，这里通过 result 的 hand_type 字段判断
+		# 暂时通过 requires_triple 字段标记（三条及以上才触发）
+		var total_pts: int = DiceEffectResolver._total_faces(dice_def)
+		var wh_bonus: int = int(float(total_pts) * 0.5)
+		if wh_bonus > 0:
+			result.bonus_damage += wh_bonus
+			result.descriptions.append("战神之锤：+%d 基础伤害" % wh_bonus)
+		# 眩晕主目标
+		if target_enemy and target_enemy.hp > 0:
+			ControlSystem.apply_control(target_enemy, ControlSystem.ControlType.STUN, 1)
+			result.descriptions.append("战神之锤：眩晕目标")
+
+	# v0.5 巨人壁垒：护甲=点数总和×2.5(伤痕≥3时×3.5) + 嘲讽全体
+	if dice_def.giant_shield:
+		var total_pts: int = DiceEffectResolver._total_faces(dice_def)
+		var armor_mult: float = 3.5 if PlayerState.scar_stacks >= 3 else 2.5
+		var shield_armor: int = int(float(total_pts) * armor_mult)
+		result.armor += shield_armor
+		result.descriptions.append("巨人壁垒：+%d 护甲（×%.1f）" % [shield_armor, armor_mult])
+		# 嘲讽全体
+		for e: EnemyInstance in enemies:
+			if e.hp > 0:
+				ControlSystem.apply_control(e, ControlSystem.ControlType.TAUNT, 1)
+		result.descriptions.append("巨人壁垒：嘲讽全体 1 回合")
+
+	# v0.5 旋风斩：骰子自带AOE + 每目标+6(受伤后+12) + 眩晕全体
+	if dice_def.whirlwind:
+		var base_aoe_dmg: int = 6
+		if PlayerState.was_hit_last_enemy_turn:
+			base_aoe_dmg = 12
+		# 对全体敌人造成伤害（通过 aoe 字段 + bonus_damage）
+		var dice_value: int = DiceEffectResolver._avg_faces(dice_def)
+		result.aoe += dice_value + base_aoe_dmg
+		result.descriptions.append("旋风斩：AOE %d+%d 伤害" % [dice_value, base_aoe_dmg])
+		# 眩晕全体
+		for e: EnemyInstance in enemies:
+			if e.hp > 0:
+				ControlSystem.apply_control(e, ControlSystem.ControlType.STUN, 1)
+		result.descriptions.append("旋风斩：眩晕全体")
+
+	# v0.5 震地：点数+3 + 随机敌人+3层易伤
+	if dice_def.quake:
+		result.bonus_damage += 3
+		result.descriptions.append("震地：点数 +3")
+		# 对随机存活敌人施加3层易伤
+		var living: Array[EnemyInstance] = []
+		for e: EnemyInstance in enemies:
+			if e.hp > 0:
+				living.append(e)
+		if not living.is_empty():
+			var rand_target: EnemyInstance = living[randi() % living.size()]
+			result.apply_statuses.append({
+				"type": GameTypes.StatusType.VULNERABLE,
+				"value": 3,
+				"duration": 99,
+				"target": "enemy",
+				"target_uid": rand_target.uid
+			})
+			result.descriptions.append("震地：%s +3层易伤" % rand_target.name)
+
+	# v0.5 狂暴之心：进入狂暴2个玩家回合（+30%伤害，+20%受伤，搏命代价-50%）
+	if dice_def.berserk_state:
+		PlayerState.berserk_turns = 2
+		result.descriptions.append("狂暴之心：进入狂暴 2 回合（+30%%伤害/+20%%受伤/搏命-50%%）")
+
+	# v0.5 血神之眼：损失HP%×15%(封顶120%) + 伤痕消耗30%×5%/层 + 状态+20% (总封顶200%)
+	if dice_def.blood_god:
+		var total_mult_bonus: float = 0.0
+		# 段1：本回合损失HP%×15%（封顶120%）
+		var lost_hp_pct: float = float(PlayerState.hp_lost_this_turn) / float(PlayerState.max_hp) if PlayerState.max_hp > 0 else 0.0
+		var hp_bonus: float = minf(1.2, lost_hp_pct * 0.15 * 100.0)  # 每1%损失+15%
+		# 修正：每损失最大HP的1%，+15%
+		var pct_lost: int = int(float(PlayerState.hp_lost_this_turn) / float(PlayerState.max_hp) * 100.0)
+		hp_bonus = minf(1.2, float(pct_lost) * 0.15)
+		total_mult_bonus += hp_bonus
+		# 段2：消耗伤痕30%，每层+5%
+		var consumed: int = ScarSystem.consume(0.3)
+		var scar_bonus_pct: float = float(consumed) * 0.05
+		total_mult_bonus += scar_bonus_pct
+		# 段3：有伤痕或处于单挑时+20%
+		if PlayerState.scar_stacks >= 1 or SoloSealSystem.is_active():
+			total_mult_bonus += 0.2
+		# 总封顶200%
+		total_mult_bonus = minf(2.0, total_mult_bonus)
+		if total_mult_bonus > 0.0:
+			result.bonus_mult *= (1.0 + total_mult_bonus)
+			result.descriptions.append("血神之眼：+%d%% 最终伤害" % int(total_mult_bonus * 100))
+
+	# v0.5 泰坦之拳：自伤10%maxHP + 摧毁护甲 + 30真实伤害 + 兜底60%HP（第2次起衰减）
+	if dice_def.titan_fist:
+		var is_first: bool = PlayerState.titanfist_uses == 0
+		PlayerState.titanfist_uses += 1
+		# 自伤
+		var self_dmg_pct: float = 0.10 if is_first else 0.15
+		var self_dmg: int = maxi(1, int(float(PlayerState.max_hp) * self_dmg_pct))
+		result.self_damage += self_dmg
+		# 摧毁目标护甲
+		if target_enemy and target_enemy.armor > 0:
+			result.pierce += target_enemy.armor
+			result.descriptions.append("泰坦之拳：摧毁 %d 护甲" % target_enemy.armor)
+		# 追加真实伤害
+		var true_dmg: int = 30 if is_first else 15
+		result.bonus_damage += true_dmg
+		# 兜底真实伤害（按敌人类型封顶）
+		if target_enemy and target_enemy.hp > 0:
+			var floor_pct: float = 0.6 if is_first else 0.3
+			var floor_dmg: int = int(float(target_enemy.hp) * floor_pct)
+			# 按敌人类型封顶
+			if EliteEnhancer.is_boss(target_enemy):
+				var cap: int = 100 if is_first else 50
+				floor_dmg = mini(floor_dmg, cap)
+			elif EliteEnhancer.is_elite(target_enemy):
+				var cap: int = 120 if is_first else 60
+				floor_dmg = mini(floor_dmg, cap)
+			result.bonus_damage += floor_dmg
+			result.descriptions.append("泰坦之拳：兜底 %d 真实伤害" % floor_dmg)
+		result.descriptions.append("泰坦之拳：自伤 %d（第%d次）" % [self_dmg, PlayerState.titanfist_uses])
+
+	# v0.5 孤注之刃：仅普通攻击时×3.0 + 点数总和追加基础伤害
+	if dice_def.solo_blade:
+		var total_pts: int = DiceEffectResolver._total_faces(dice_def)
+		result.bonus_mult *= 3.0
+		result.bonus_damage += total_pts
+		result.descriptions.append("孤注之刃：×3.0 + %d 追加伤害" % total_pts)
+
 	# v0.5 战吼：上回合被打过时 +bonus_mult_if_hit 增幅
 	if dice_def.bonus_mult_if_hit > 0.0 and PlayerState.was_hit_last_enemy_turn:
 		result.bonus_mult *= (1.0 + dice_def.bonus_mult_if_hit)

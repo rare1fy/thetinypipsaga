@@ -64,6 +64,15 @@ extends Resource
 @export var solo_seal: bool = false               ## v0.5 单挑：出牌时建立单挑
 @export var consume_scar_ratio: float = 0.0       ## v0.5 消耗伤痕比例（浴血/血神）
 @export var scar_bonus_per_stack: float = 0.0     ## v0.5 伤痕加成（每层追加基础伤害）
+@export var warhammer: bool = false               ## v0.5 战神之锤：≥三条时+50%点数总和基础伤害+眩晕
+@export var giant_shield: bool = false            ## v0.5 巨人壁垒：护甲=点数总和×2.5+嘲讽全体
+@export var whirlwind: bool = false               ## v0.5 旋风斩：骰子自带AOE+眩晕全体
+@export var quake: bool = false                   ## v0.5 震地：点数+3+3层易伤+散打×1.3
+@export var berserk_state: bool = false           ## v0.5 狂暴之心：进入狂暴2回合
+@export var blood_god: bool = false               ## v0.5 血神之眼：损失HP%×15%+伤痕消耗+状态加成
+@export var titan_fist: bool = false              ## v0.5 泰坦之拳：自伤+摧毁护甲+真实伤害+兜底%HP
+@export var solo_blade: bool = false              ## v0.5 孤注之刃：仅普攻时×3.0+点数总和追加
+@export var overkill_transfer: bool = false       ## v0.5 顺劈斩：击杀溢出100%转移
 
 # --- 法师特殊 ---
 @export var reverse_value: bool = false
@@ -192,4 +201,10 @@ func has_on_play() -> bool:
 		or grant_play_on_third or purify_one_on_skip \
 		or ignore_for_hand_type or execute_heal > 0 \
 		or devour_die or random_target or first_play_only \
-		or requires_triple or override_value > 0
+		or requires_triple or override_value > 0 \
+		or warhammer or giant_shield or whirlwind or quake \
+		or berserk_state or blood_god or titan_fist \
+		or solo_blade or overkill_transfer \
+		or blood_chain_bind or solo_seal \
+		or consume_scar_ratio > 0.0 or scar_bonus_per_stack > 0.0 \
+		or bonus_mult_if_hit > 0.0

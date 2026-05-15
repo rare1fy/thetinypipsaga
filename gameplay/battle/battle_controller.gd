@@ -595,6 +595,9 @@ func _process_enemy_attacks() -> void:
 	# v0.5: 重置被攻击计数（怒火/战吼用）
 	PlayerState.hit_count_last_enemy_turn = 0
 	PlayerState.was_hit_last_enemy_turn = false
+	# v0.5 狂暴衰减（每玩家回合结束-1，即进入敌方回合时-1）
+	if PlayerState.berserk_turns > 0:
+		PlayerState.berserk_turns -= 1
 	var instances: Array[EnemyInstance] = EnemyMgr.collect_enemy_instances(enemy_views)
 	for e: EnemyInstance in instances:
 		e.battle_turn = GameManager.battle_turn

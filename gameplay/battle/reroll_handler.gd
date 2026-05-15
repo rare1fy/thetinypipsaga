@@ -23,7 +23,11 @@ static func get_reroll_hp_cost(reroll_count: int) -> int:
 	var free_count: int = GameManager.free_rerolls_per_turn + RelicEngine.get_extra_free_rerolls(PlayerState.relics)
 	var paid_index: int = maxi(0, reroll_count - free_count)
 	var base_cost: int = ceili(PlayerState.max_hp * pow(2.0, paid_index + 1) / 100.0)
-	return base_cost * 2 if PlayerState.player_class != "warrior" else base_cost
+	var final_cost: int = base_cost * 2 if PlayerState.player_class != "warrior" else base_cost
+	# v0.5 狂暴：搏命代价-50%
+	if PlayerState.berserk_turns > 0:
+		final_cost = maxi(1, final_cost / 2)
+	return final_cost
 
 
 # ============================================================

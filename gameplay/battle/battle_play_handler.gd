@@ -31,9 +31,9 @@ static func calc_outcome_multiplier(best_hand: String) -> float:
 	var fury_mult: float = fury_stacks * GameBalance.FURY_CONFIG.damagePerStack
 	if fury_mult > 0.0:
 		mult *= (1.0 + fury_mult)
-	# 战士狂暴
-	if GameManager.warrior_rage_mult > 0.0:
-		mult *= (1.0 + GameManager.warrior_rage_mult)
+	# 战士狂暴（v0.5：berserk_turns > 0 时 +30%）
+	if PlayerState.berserk_turns > 0:
+		mult *= 1.3
 	return mult
 
 
