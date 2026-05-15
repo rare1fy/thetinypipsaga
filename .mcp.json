@@ -3,7 +3,7 @@
     "godot-mcp-pro": {
       "command": "node",
       "args": [
-        "C:/Users/slimboiliu/Desktop/godot-mcp-pro-v1.12.0/server/build/index.js"
+"C:/Users/slimboiliu/Desktop/godot-mcp-pro-v1.13.0/server/build/index.js"
       ]
     }
   }
