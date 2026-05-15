@@ -6,7 +6,7 @@ class_name GameTypes
 # 骰子元素与稀有度
 # ============================================================
 
-enum DiceElement { NORMAL, FIRE, ICE, THUNDER, POISON, HOLY, SHADOW }
+enum DiceElement { NORMAL, FIRE, ICE, THUNDER, POISON, HOLY, SHADOW, WIND }
 enum DiceRarity { COMMON, UNCOMMON, RARE, LEGENDARY, CURSE }
 
 # ============================================================
