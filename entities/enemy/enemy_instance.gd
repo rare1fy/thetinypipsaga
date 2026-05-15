@@ -30,6 +30,8 @@ var archetype: String = ""      ## 敌人子类型（pyromancer/toxicologist/hea
 var dot_amplifier: int = 0      ## Caster DOT 放大层数
 var holy_wrath: int = 0         ## Priest 圣怒层数
 var guard_rage: int = 0         ## Guardian 防御怒气层数
+var blood_fury: int = 0         ## Warrior 血怒层数（受伤后累加，每层+25%攻击）
+var vengeance_stacks: int = 0   ## Berserker 复仇层数（队友死亡时+50%/层）
 
 
 ## 从配置创建敌人实例

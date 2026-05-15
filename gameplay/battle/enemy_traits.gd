@@ -33,7 +33,7 @@ static func should_apply_trait(e: EnemyInstance) -> bool:
 ## Trait 累加
 ## ============================================================
 
-## Warrior 受伤后累计 bloodFury（berserker 加倍）
+## Warrior 受伤后累计 bloodFury（berserker +40%/层，paladin 不叠）
 static func apply_blood_fury_on_hurt(e: EnemyInstance) -> void:
 	if not should_apply_trait(e):
 		return
@@ -41,11 +41,20 @@ static func apply_blood_fury_on_hurt(e: EnemyInstance) -> void:
 		return
 	if e.archetype == "paladin":
 		return
-	# bloodFury 存在 EnemyInstance 的通用字段里（暂用 dot_amplifier 同级字段）
-	# 实际上 bloodFury 需要独立字段，这里用 attack_count 的高位模拟
-	# 更好的方案：直接在 EnemyInstance 加 blood_fury 字段
-	# 暂时通过 attack_dmg 直接修改来模拟效果
-	pass  # TODO: 需要在 EnemyInstance 添加 blood_fury 字段后实现
+	if e.blood_fury >= BLOOD_FURY_CAP:
+		return
+	e.blood_fury += 1
+
+
+## Berserker 复仇：队友死亡时 +1 层（每层 +50% 攻击）
+static func apply_vengeance_on_ally_death(e: EnemyInstance) -> void:
+	if not should_apply_trait(e):
+		return
+	if e.combat_type != GameTypes.EnemyCombatType.WARRIOR:
+		return
+	if e.archetype != "berserker":
+		return
+	e.vengeance_stacks += 1
 
 
 ## Guardian 防御后累计 guardRage（bulwark 不爆发）
@@ -103,6 +112,15 @@ static func attack_trait_multiplier(e: EnemyInstance) -> float:
 	# guardRage：每层 +60%
 	if e.combat_type == GameTypes.EnemyCombatType.GUARDIAN and e.guard_rage > 0:
 		mul *= 1.0 + GUARD_RAGE_PER_STACK * float(e.guard_rage)
+
+	# bloodFury：每层 +25%（berserker +40%/层）
+	if e.combat_type == GameTypes.EnemyCombatType.WARRIOR and e.blood_fury > 0:
+		var per_stack: float = 0.40 if e.archetype == "berserker" else BLOOD_FURY_PER_STACK
+		mul *= 1.0 + per_stack * float(e.blood_fury)
+
+	# berserker vengeance：每层 +50%
+	if e.combat_type == GameTypes.EnemyCombatType.WARRIOR and e.vengeance_stacks > 0:
+		mul *= 1.0 + VENGEANCE_PER_STACK * float(e.vengeance_stacks)
 
 	# archetype 静态修正
 	if e.combat_type == GameTypes.EnemyCombatType.WARRIOR:

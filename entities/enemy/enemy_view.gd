@@ -262,8 +262,12 @@ func take_damage(amount: int, pierce: int = 0) -> void:
 		var absorbed := mini(_enemy.armor, remaining)
 		_enemy.armor -= absorbed
 		remaining -= absorbed
+	var prev_hp: int = _enemy.hp
 	_enemy.hp = maxi(0, _enemy.hp - remaining)
 	_refresh_visual()
+	# P2 Trait: Warrior 受伤后累加 bloodFury（实际扣了血才触发）
+	if remaining > 0 and _enemy.hp < prev_hp and _enemy.hp > 0:
+		EnemyTraits.apply_blood_fury_on_hurt(_enemy)
 
 
 func is_alive() -> bool:

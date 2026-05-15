@@ -599,6 +599,13 @@ func _process_enemy_attacks() -> void:
 		EnemyTraits.bump_holy_wrath_per_turn(e, GameManager.battle_turn)
 	GameManager.current_enemies = instances  # Priest AI 查同伴用
 
+	# P2: 精英/Boss 增强（塞废骰子 + 叠护甲，对齐原版 elites.ts）
+	for e: EnemyInstance in instances:
+		if e.hp <= 0:
+			continue
+		EliteEnhancer.process_elite_dice(e, GameManager.battle_turn)
+		EliteEnhancer.process_elite_armor(e, GameManager.battle_turn)
+
 	# P2: 召唤检查（原版行为：在所有 DOT 结算前完成，让新召唤的小怪参与本回合 AI）
 	var wave_size: int = instances.filter(func(e: EnemyInstance) -> bool: return e.hp > 0).size()
 	var summoned_any: bool = false

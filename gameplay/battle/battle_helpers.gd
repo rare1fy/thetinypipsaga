@@ -82,6 +82,11 @@ static func settle_enemy_deaths(enemies: Array[EnemyInstance], new_enemies_out: 
 			GameManager.stats.enemiesKilled += 1
 			e.hp = -9999
 			settled.append(e.uid)
+	# P2 Trait: Berserker vengeance — 队友死亡时存活的 berserker +1 层
+	if not settled.is_empty():
+		for e: EnemyInstance in enemies:
+			if e.hp > 0 and not e.uid in settled:
+				EnemyTraits.apply_vengeance_on_ally_death(e)
 	return settled
 
 
