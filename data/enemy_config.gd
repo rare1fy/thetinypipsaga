@@ -108,9 +108,9 @@ class EnemyRevive:
 ## ============================================================
 
 # 开关：true=从 Excel → JSON 加载，false=走硬编码构建
-# [P0-MIGRATION] 暂时关闭 JSON 加载：enemy.json 仅 41 只旧敌人，缺少 44 只新敌人 + summons/revive/boss_rank/扩展台词
-# TODO: 等 excel_to_json.py 适配新字段后，重新打表并切回 true
-const USE_JSON_CONFIG: bool = false
+# 数据源：config/json/enemy.json（由 config/tools/export_enemy_json.gd 生成）
+# 硬编码仅作为 fallback 兜底
+const USE_JSON_CONFIG: bool = true
 
 static var _all_configs: Dictionary = {}
 
