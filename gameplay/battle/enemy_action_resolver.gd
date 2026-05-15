@@ -208,23 +208,15 @@ static func _resolve_guardian(
 	_resolve_attacker(e, on_shake, on_hp_pulse)
 
 
-## Priest：§9.2 完整优先级
-##   P1. 自疗 — 本尊 HP < 50%，高概率自救（65%）
-##   P2. 疗盟 — 存在受伤盟友，血量最低者优先（55%）
-##   P3. 增益 — 塞诅咒骰（无受伤目标时小概率 25% 触发，对应原版 castCurse）
-##   P4. 减益 — weak / vulnerable 兜底（50/50）
+## Priest：§9.2 完整优先级（对齐原版 enemySkills.ts executePriestSkill）
+##   P1. 疗盟 — 存在受伤盟友，血量最低者优先
+##   P2. 自疗 — 本尊 HP < maxHp
+##   P3. 护甲祝福 — 给随机友军加护甲（无受伤目标时）
+##   P4. 减益兜底 — weak / vulnerable / 塞诅咒骰
 static func _resolve_priest(e: EnemyInstance) -> void:
-	# P1: 自疗
-	if e.max_hp > 0 and e.hp * 2 < e.max_hp and randf() < 0.65:
-		var self_heal: int = int(e.attack_dmg * 3.0)
-		e.hp = mini(e.max_hp, e.hp + self_heal)
-		SoundPlayer.play_sound("heal")
-		BattleLog.log_enemy("✚ %s 自疗（+%d HP）" % [_get_name(e), self_heal])
-		return
-
-	# P2: 疗盟
+	# P1: 疗盟（优先级最高，对齐原版）
 	var wounded: Array[EnemyInstance] = _find_wounded_allies(e)
-	if wounded.size() > 0 and randf() < 0.55:
+	if wounded.size() > 0:
 		var target: EnemyInstance = wounded[0]
 		var heal_amount: int = int(e.attack_dmg * 4.0)
 		target.hp = mini(target.max_hp, target.hp + heal_amount)
@@ -232,43 +224,67 @@ static func _resolve_priest(e: EnemyInstance) -> void:
 		BattleLog.log_enemy("✚ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(target), heal_amount])
 		return
 
-	# P3: 塞诅咒骰（无受伤目标时小概率触发，对应原版 castCurse）
-	if wounded.size() == 0 and randf() < 0.25:
+	# P2: 自疗（自己受伤时）
+	if e.max_hp > 0 and e.hp < e.max_hp:
+		var self_heal: int = int(e.attack_dmg * 3.0)
+		e.hp = mini(e.max_hp, e.hp + self_heal)
+		SoundPlayer.play_sound("heal")
+		BattleLog.log_enemy("✚ %s 自疗（+%d HP）" % [_get_name(e), self_heal])
+		return
+
+	# P3: 护甲祝福（给随机友军加护甲，无受伤目标时）
+	var all_living: Array[EnemyInstance] = _collect_all_living()
+	var allies: Array[EnemyInstance] = []
+	for a: EnemyInstance in all_living:
+		if a.uid != e.uid:
+			allies.append(a)
+	if allies.size() > 0:
+		var target: EnemyInstance = allies[randi() % allies.size()]
+		var armor_val: int = int(e.attack_dmg * 1.5)
+		target.armor += armor_val
+		SoundPlayer.play_sound("enemy_skill")
+		BattleLog.log_enemy("✦ %s 为 %s 施加护甲祝福（+%d 护甲）" % [_get_name(e), _get_name(target), armor_val])
+		return
+
+	# P4: 减益兜底（对齐原版：50% weak / 30% vulnerable / 20% 塞诅咒骰）
+	var debuff_roll: float = randf()
+	if debuff_roll < 0.5:
+		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
+		BattleLog.log_status("✦ %s 施加虚弱" % _get_name(e))
+	elif debuff_roll < 0.8:
+		GameManager.add_status(GameTypes.StatusType.VULNERABLE, 1, 2)
+		BattleLog.log_status("✦ %s 施加易伤" % _get_name(e))
+	else:
+		# 塞诅咒骰（原版 Priest debuff 兜底分支）
 		DiceBag.owned_dice.append({"defId": "cursed", "level": 1})
 		DiceBag.dice_bag.append("cursed")
 		VFX.show_toast("%s 诅咒: 诅咒骰 +1" % _get_name(e), "damage")
-		BattleLog.log_status("✦ %s 施加诅咒" % _get_name(e))
+		BattleLog.log_status("✦ %s 施加诅咒骰" % _get_name(e))
 		SoundPlayer.play_sound("enemy_skill")
-		return
-
-	# P4: 减益兜底
-	if randf() < 0.5:
-		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 3)
-		BattleLog.log_status("✦ %s 施加虚弱" % _get_name(e))
-	else:
-		GameManager.add_status(GameTypes.StatusType.VULNERABLE, 1, 3)
-		BattleLog.log_status("✦ %s 施加易伤" % _get_name(e))
 
 
-## Caster：§9.2 三分支 — 40% 中毒 / 30% 灼烧 / 30% 诅咒骰
+## Caster：§9.2 三分支（对齐原版 enemySkills.ts executeCasterSkill）
+## default archetype: poisonChance(40%) 中毒 / fireballThreshold(30%) 灼烧 / 余下(30%) 诅咒（毒素+虚弱双debuff）
+## 注：诅咒分支是施加"毒素+虚弱"双debuff，不是塞诅咒骰子（塞骰子是 Priest 的行为）
 static func _resolve_caster(e: EnemyInstance) -> void:
 	SoundPlayer.play_sound("enemy")
 	var roll: float = randf()
 	if roll < 0.4:
+		# 毒雾：施加中毒
 		var poison_val: int = maxi(2, int(e.attack_dmg * 0.4))
 		GameManager.add_status(GameTypes.StatusType.POISON, poison_val, 3)
 		BattleLog.log_status("☠ %s 施加中毒 %d" % [_get_name(e), poison_val])
 	elif roll < 0.7:
+		# 火球：施加灼烧
 		var burn_val: int = maxi(1, int(e.attack_dmg * 0.3))
 		GameManager.add_status(GameTypes.StatusType.BURN, burn_val, 3)
 		BattleLog.log_status("🔥 %s 施加灼烧 %d" % [_get_name(e), burn_val])
 	else:
-		# 诅咒骰分支：塞 cursed 骰到玩家骰池（对应原版 castCurse）
-		DiceBag.owned_dice.append({"defId": "cursed", "level": 1})
-		DiceBag.dice_bag.append("cursed")
-		VFX.show_toast("%s 诅咒: 诅咒骰 +1" % _get_name(e), "damage")
-		BattleLog.log_status("✦ %s 施加诅咒" % _get_name(e))
-		SoundPlayer.play_sound("enemy_skill")
+		# 诅咒：毒素 + 虚弱双 debuff（对齐原版 cursemaster 分支）
+		var curse_poison: int = maxi(1, int(e.attack_dmg * 0.25))
+		GameManager.add_status(GameTypes.StatusType.POISON, curse_poison, 3)
+		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
+		BattleLog.log_status("✦ %s 施放诅咒（毒素 %d + 虚弱）" % [_get_name(e), curse_poison])
 
 
 ## Warrior/Ranger/默认：走 AttackCalc 计算伤害，Ranger 额外追击

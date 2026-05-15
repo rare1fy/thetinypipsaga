@@ -363,19 +363,16 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 	if not is_inside_tree():
 		return
 
-	# === 状态转换（关键：原版 Bug-21 对齐） ===
-	# 垮波次≠回合结束，保留以下状态：
-	# - playsLeft: max(prev, 1) — 保留剩余出牌次数，至少1
-	# - freeRerollsLeft: max(prev, 1) — 保留免费重投，至少1
-	# - comboCount: 保留连击
-	# - lastPlayHandType: 保留
+	# === 状态转换（对齐原版 useBattleLifecycle gmPendingNextWave） ===
+	# 跨波次重置（原版行为）：
+	# - playsLeft: 重置为 maxPlays
+	# - freeRerollsLeft: 重置为 freeRerollsPerTurn
+	# - comboCount: 重置为 0
+	# - lastPlayHandType: 重置为空
 	# - armor: 清零
-	# - bloodRerollCount: 清零（出牌后也重置）
+	# - bloodRerollCount: 清零
 	# - 法师吟唱判定：playsLeft >= maxPlays 时保留吟唱状态
 	var prev_plays_left: int = GameManager.plays_left
-	var prev_free_rerolls: int = GameManager.free_rerolls_left
-	var prev_combo: int = PlayerState.combo_count
-	var prev_last_hand: String = PlayerState.last_play_hand_type
 
 	# 法师吟唱判定：没出过牌（playsLeft >= maxPlays）= 吟唱中
 	var is_mage_chanting: bool = (
@@ -385,13 +382,13 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 	# 更新波次索引
 	GameManager.current_wave_index = next_wave_idx
 
-	# 保留出牌次数和免费重投（至少1）
-	TurnManager.plays_left = maxi(prev_plays_left, 1)
-	TurnManager.free_rerolls_left = maxi(prev_free_rerolls, 1)
+	# 重置出牌次数和免费重投（原版行为：回到满值）
+	TurnManager.plays_left = GameManager.max_plays
+	TurnManager.free_rerolls_left = GameManager.free_rerolls_per_turn
 
-	# 保留连击和上次牌型
-	PlayerState.combo_count = prev_combo
-	PlayerState.last_play_hand_type = prev_last_hand
+	# 重置连击和上次牌型（原版行为：跨波不保留连击）
+	PlayerState.combo_count = 0
+	PlayerState.last_play_hand_type = ""
 
 	# 护甲清零
 	PlayerState.armor = 0
