@@ -108,7 +108,9 @@ class EnemyRevive:
 ## ============================================================
 
 # 开关：true=从 Excel → JSON 加载，false=走硬编码构建
-const USE_JSON_CONFIG: bool = true
+# [P0-MIGRATION] 暂时关闭 JSON 加载：enemy.json 仅 41 只旧敌人，缺少 44 只新敌人 + summons/revive/boss_rank/扩展台词
+# TODO: 等 excel_to_json.py 适配新字段后，重新打表并切回 true
+const USE_JSON_CONFIG: bool = false
 
 static var _all_configs: Dictionary = {}
 
@@ -737,7 +739,12 @@ static func _quotes(enter: Array[String], death: Array[String], attack: Array[St
 static func _boss_quotes(greet: Array[String], dispatch: Array[String], death: Array[String], attack: Array[String], hurt: Array[String], low_hp: Array[String]) -> EnemyQuotes:
 	var q := EnemyQuotes.new()
 	q.greet = greet; q.dispatch = dispatch
-	q.enter = [greet[0], dispatch[0]] if greet.size() > 0 and dispatch.size() > 0 else greet
+	var enter_arr: Array[String] = []
+	if greet.size() > 0 and dispatch.size() > 0:
+		enter_arr.append(greet[0]); enter_arr.append(dispatch[0])
+	else:
+		enter_arr = greet
+	q.enter = enter_arr
 	q.death = death; q.attack = attack; q.hurt = hurt; q.low_hp = low_hp
 	return q
 
@@ -745,7 +752,12 @@ static func _boss_quotes(greet: Array[String], dispatch: Array[String], death: A
 static func _boss_quotes_full(greet: Array[String], mid_boss_warning: Array[String], dispatch: Array[String], death: Array[String], attack: Array[String], hurt: Array[String], phase2_taunt: Array[String], low_hp: Array[String]) -> EnemyQuotes:
 	var q := EnemyQuotes.new()
 	q.greet = greet; q.mid_boss_warning = mid_boss_warning; q.dispatch = dispatch
-	q.enter = [greet[0], dispatch[0]] if greet.size() > 0 and dispatch.size() > 0 else greet
+	var enter_arr: Array[String] = []
+	if greet.size() > 0 and dispatch.size() > 0:
+		enter_arr.append(greet[0]); enter_arr.append(dispatch[0])
+	else:
+		enter_arr = greet
+	q.enter = enter_arr
 	q.death = death; q.attack = attack; q.hurt = hurt
 	q.phase2_taunt = phase2_taunt; q.low_hp = low_hp
 	return q
