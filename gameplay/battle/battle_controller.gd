@@ -595,6 +595,8 @@ func _process_enemy_attacks() -> void:
 	var instances: Array[EnemyInstance] = EnemyMgr.collect_enemy_instances(enemy_views)
 	for e: EnemyInstance in instances:
 		e.battle_turn = GameManager.battle_turn
+		# P2 Trait: Priest 圣怒每 2 回合 +1
+		EnemyTraits.bump_holy_wrath_per_turn(e, GameManager.battle_turn)
 	GameManager.current_enemies = instances  # Priest AI 查同伴用
 
 	# P2: 召唤检查（原版行为：在所有 DOT 结算前完成，让新召唤的小怪参与本回合 AI）

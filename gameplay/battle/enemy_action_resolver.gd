@@ -193,12 +193,16 @@ static func resolve(
 
 ## 执行防御行动（Guardian 上盾 + 嘲讽，或通用防御）
 static func _execute_defend(e: EnemyInstance, value: int, desc: String, on_shake: Callable) -> void:
-	var shield_val: int = value if value > 0 else int(e.attack_dmg * GUARDIAN_SHIELD_MULT)
+	var base_shield: int = value if value > 0 else int(e.attack_dmg * GUARDIAN_SHIELD_MULT)
+	# P2 Trait: bulwark 防御获双倍护甲
+	var shield_val: int = int(float(base_shield) * EnemyTraits.archetype_armor_boost(e))
 	e.armor += shield_val
 	# Guardian 防御时设置嘲讽
 	if e.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
 		GameManager.taunt_enemy_uid = e.uid
 		GameManager.target_enemy_uid = e.uid
+		# P2 Trait: Guardian 防御后累计 guardRage
+		EnemyTraits.apply_guard_rage_on_defend(e)
 	var desc_tag: String = "·%s" % desc if desc != "" else ""
 	BattleLog.log_enemy("🛡 %s 举盾防御%s（+%d 护甲）" % [_get_name(e), desc_tag, shield_val])
 	SoundPlayer.play_sound("enemy_skill")
@@ -233,12 +237,18 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 		# DOT 技能：灼烧/中毒
 		SoundPlayer.play_sound("enemy_skill")
 		var dot_val: int = maxi(1, value)
+		# P2 Trait: Caster dotAmplifier 倍率加成
+		var dot_mul: float = EnemyTraits.get_dot_multiplier(e)
+		if dot_mul > 1.0:
+			dot_val = maxi(1, int(float(dot_val) * dot_mul))
 		if dot_type == "burn":
 			GameManager.add_status(GameTypes.StatusType.BURN, dot_val, 3)
 			BattleLog.log_status("🔥 %s 施放【%s】→ 灼烧 %d" % [_get_name(e), desc, dot_val])
 		else:
 			GameManager.add_status(GameTypes.StatusType.POISON, dot_val, 3)
 			BattleLog.log_status("☠ %s 施放【%s】→ 中毒 %d" % [_get_name(e), desc, dot_val])
+		# P2 Trait: Caster 施放 DOT 后累加 dotAmplifier
+		EnemyTraits.bump_dot_amplifier(e)
 	elif ctl_type != "":
 		# 控制技能：虚弱/易伤/冻结
 		SoundPlayer.play_sound("enemy_skill")
@@ -364,23 +374,27 @@ static func _resolve_priest(e: EnemyInstance) -> void:
 ## 注：诅咒分支是施加"毒素+虚弱"双debuff，不是塞诅咒骰子（塞骰子是 Priest 的行为）
 static func _resolve_caster(e: EnemyInstance) -> void:
 	SoundPlayer.play_sound("enemy")
+	# P2 Trait: Caster dotAmplifier 倍率
+	var dot_mul: float = EnemyTraits.get_dot_multiplier(e)
 	var roll: float = randf()
 	if roll < 0.4:
 		# 毒雾：施加中毒
-		var poison_val: int = maxi(2, int(e.attack_dmg * 0.4))
+		var poison_val: int = maxi(2, int(float(e.attack_dmg) * 0.4 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.POISON, poison_val, 3)
 		BattleLog.log_status("☠ %s 施加中毒 %d" % [_get_name(e), poison_val])
 	elif roll < 0.7:
 		# 火球：施加灼烧
-		var burn_val: int = maxi(1, int(e.attack_dmg * 0.3))
+		var burn_val: int = maxi(1, int(float(e.attack_dmg) * 0.3 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.BURN, burn_val, 3)
 		BattleLog.log_status("🔥 %s 施加灼烧 %d" % [_get_name(e), burn_val])
 	else:
 		# 诅咒：毒素 + 虚弱双 debuff（对齐原版 cursemaster 分支）
-		var curse_poison: int = maxi(1, int(e.attack_dmg * 0.25))
+		var curse_poison: int = maxi(1, int(float(e.attack_dmg) * 0.25 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.POISON, curse_poison, 3)
 		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
 		BattleLog.log_status("✦ %s 施放诅咒（毒素 %d + 虚弱）" % [_get_name(e), curse_poison])
+	# P2 Trait: 施放 DOT 后累加 dotAmplifier
+	EnemyTraits.bump_dot_amplifier(e)
 
 
 ## Warrior/Ranger/默认：走 AttackCalc 计算伤害，Ranger 额外追击
@@ -393,6 +407,10 @@ static func _resolve_attacker(
 	var damage: int = AttackCalc.get_effective_attack_dmg(
 		e, PlayerState.statuses, e.attack_count, e.is_slowed()
 	)
+	# P2 Trait: trait 攻击力修正（guardRage/archetype）
+	var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
+	if trait_mul > 1.0:
+		damage = int(float(damage) * trait_mul)
 	PlayerState.take_damage(damage)
 	e.attack_count += 1
 	BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])
@@ -407,6 +425,9 @@ static func _resolve_attacker(
 		BattleLog.log_enemy("⚔ %s 追击 → %d 伤害" % [_get_name(e), follow_up])
 		if on_shake.is_valid():
 			on_shake.call(3.0, 0.15)
+	# P2 Trait: Guardian 攻击后清空 guardRage
+	if e.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
+		EnemyTraits.consume_guard_rage_on_attack(e)
 
 
 ## 从 EnemyInstance 拿显示名（EnemyConfig 查表，失败用 config_id 兜底）
