@@ -309,11 +309,18 @@ static func _resolve_common(
 	if dice_def.wildcard:
 		result.descriptions.append("万能牌")
 
-	# 回血或增上限（补充版，含参数）
+	# v0.5 生命熔炉：未满血回复点数×2，满血获得护甲=点数×3 + 本回合下次+20%
 	if dice_def.heal_or_max_hp and dice_def.heal_per_cleanse <= 0:
-		var heal_val: int = _calc_heal_or_max_hp(dice_def, 0, 0)
-		result.heal += heal_val
-		result.descriptions.append("回复 %d HP（满血则增加上限）" % heal_val)
+		var avg_val: int = _avg_faces(dice_def)
+		if PlayerState.hp < PlayerState.max_hp:
+			var heal_val: int = avg_val * 2
+			result.heal += heal_val
+			result.descriptions.append("生命熔炉：回复 %d HP" % heal_val)
+		else:
+			var armor_val: int = avg_val * 3
+			result.armor += armor_val
+			result.bonus_mult *= 1.2
+			result.descriptions.append("生命熔炉：+%d 护甲，下次+20%%" % armor_val)
 
 	# 净化回复
 	if dice_def.heal_per_cleanse > 0:

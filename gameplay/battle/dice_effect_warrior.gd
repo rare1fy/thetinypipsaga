@@ -77,9 +77,8 @@ static func resolve(
 	if dice_def.scale_with_lost_hp > 0.0:
 		var scale_result := _apply_scale_with_lost_hp(dice_def, player_hp, player_max_hp)
 		result.bonus_damage += scale_result.bonus_damage
-		result.bonus_mult *= scale_result.bonus_mult
-		if scale_result.bonus_damage > 0 or scale_result.bonus_mult > 1.0:
-			result.descriptions.append("血战：HP 越低伤害越高")
+		if scale_result.bonus_damage > 0:
+			result.descriptions.append("复仇之刃：+%d 基础伤害" % scale_result.bonus_damage)
 
 	if dice_def.self_berserk:
 		var berserk_result := _apply_berserk(dice_def, player_hp, player_max_hp)
@@ -114,18 +113,27 @@ static func resolve(
 		result.bonus_damage += player_rerolls * 2
 		result.descriptions.append("血重投 +%d 伤害" % (player_rerolls * 2))
 
-	if dice_def.taunt_all:
-		if enemies.size() > 1:
-			for e in enemies:
-				if e != target_enemy and e.hp > 0:
-					result.apply_statuses.append({
-						"type": GameTypes.StatusType.VULNERABLE,
-						"value": 50,
-						"duration": 1,
-						"target": "enemy",
-						"target_uid": e.uid
-					})
-			result.descriptions.append("嘲讽全体")
+	if dice_def.purify_all:
+		# v0.5 怒吼净化：清除全部负面 + 嘲讽全体1回合 + 每清1层对随机敌人造成1点基础伤害
+		var cleansed_count: int = 0
+		for st in [GameTypes.StatusType.POISON, GameTypes.StatusType.BURN, GameTypes.StatusType.VULNERABLE, GameTypes.StatusType.WEAK, GameTypes.StatusType.FREEZE]:
+			result.apply_statuses.append({"type": st, "value": -99, "duration": 0, "target": "self"})
+			# 统计清除层数（实际层数在 applier 中结算，这里预估）
+			cleansed_count += 1
+		# 嘲讽全体敌人 1 回合（v0.5_01 §1.8：覆写意图为普攻，伤害×0.7）
+		for e: EnemyInstance in enemies:
+			if e.hp > 0:
+				result.apply_statuses.append({
+					"type": GameTypes.StatusType.VULNERABLE,
+					"value": 1,
+					"duration": 1,
+					"target": "enemy",
+					"target_uid": e.uid,
+					"is_taunt": true
+				})
+		# 每清1层对随机敌人造成1点基础伤害（简化：直接加 bonus_damage）
+		result.bonus_damage += cleansed_count
+		result.descriptions.append("怒吼净化：清除负面 + 嘲讽全体 + %d 伤害" % cleansed_count)
 
 	if dice_def.splinter_damage > 0.0:
 		var splinter_dmg := int(float(player_max_hp) * dice_def.splinter_damage)
@@ -200,13 +208,14 @@ static func _is_enemy_below_threshold(enemy: EnemyInstance, threshold_pct: float
 	return current_pct <= threshold_pct
 
 
+## v0.5 复仇之刃：追加基础伤害 = 当前已损失HP × 25%（向上取整，封顶 80 点）
 static func _apply_scale_with_lost_hp(dice_def: DiceDef, player_hp: int, player_max_hp: int) -> DiceEffectResolver.ResolveResult:
 	var result := DiceEffectResolver.ResolveResult.new()
 	if player_max_hp <= 0:
 		return result
-	var lost_ratio := 1.0 - (float(player_hp) / float(player_max_hp))
-	result.bonus_damage = int(lost_ratio * dice_def.scale_with_lost_hp * 10)
-	result.bonus_mult = 1.0 + (lost_ratio * dice_def.scale_with_lost_hp)
+	var lost_hp: int = player_max_hp - player_hp
+	var bonus: int = mini(80, int(ceil(float(lost_hp) * dice_def.scale_with_lost_hp)))
+	result.bonus_damage = bonus
 	return result
 
 
