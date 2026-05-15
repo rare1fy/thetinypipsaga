@@ -141,7 +141,8 @@ enum EffectType {
 	FULLHOUSE_RETURN_PAIR,     ## 葫芦对子弹回 {}
 	SINGLE_PLAY_ALL,           ## 单次出全部手牌 {}
 	ECHO_LAST_PLAY,            ## 重复上次出牌 {cd: int}
-	DEATH_IMMUNITY,            ## 免死 {cd_nodes: int}
+	DEATH_IMMUNITY,            ## 免死（触发后进入冷却） {cooldown_turns: int}
+	                           ##   cooldown_turns: 免死触发后冷却回合数（冷却期间不可再次触发）
 	DAMAGE_MULT_GLOBAL,        ## 全局伤害倍率 {value: float}
 	DODGE_ATTACK,              ## 闪避攻击 {condition: str, threshold: int}
 	ARMOR_PER_TURN,            ## 每回合获得护甲 {value: int, self_damage_percent?: float}
@@ -290,6 +291,8 @@ static func create_effect(
 
 ## 每种 EffectType 的必填 params 字段注册表（EffectEngine 校验用）
 ## 配置方必须提供这些字段，缺一个就报错
+## ⚠️ 维护提醒：新增/修改效果类型时，必须同步更新此表和枚举旁注释，保持一致
+## 注释中标 ? 的参数 = 可选扩展（不填=该子功能不启用），不在此表中
 const REQUIRED_PARAMS: Dictionary = {
 	EffectType.BONUS_DAMAGE: ["value"],
 	EffectType.BONUS_DAMAGE_SCALED: ["source", "ratio"],
@@ -311,7 +314,7 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.APPLY_STATUS: ["status", "value", "target"],
 	EffectType.PURIFY: ["scope"],
 	EffectType.CONTROL: ["control", "target"],  # duration/distance 由 EffectEngine 按 control 类型二次校验
-	EffectType.IGNORE_TAUNT: [],  # scope 由外层 EffectScope 决定（PLAY/TURN），params 无必填
+	EffectType.IGNORE_TAUNT: [],  # 持续范围由外层 EffectScope 决定，params 无必填
 	EffectType.SELF_DAMAGE: [],  # value 或 percent 二选一，由 EffectEngine 校验
 	EffectType.BERSERK: ["turns", "damage_mult", "taken_mult", "gamble_cost"],
 	EffectType.BLOOD_CHAIN: ["target"],
@@ -328,7 +331,7 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.TRANSFORM_DIE: ["target", "to"],
 	EffectType.PRESERVE_DIE: [],
 	EffectType.INSERT_CURSE_DIE: ["die_id", "count"],  # level 默认1，由 EffectEngine 从 DiceConfig 查表
-	EffectType.REPLACE_PLAYER_DIE: ["to"],  # from 默认"random"，to=目标骰子id
+	EffectType.REPLACE_PLAYER_DIE: ["from", "to"],
 	EffectType.MODIFY_POINTS: ["delta"],
 	EffectType.COPY_VALUE: ["source"],
 	EffectType.REVERSE_VALUE: [],
@@ -353,7 +356,7 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.FULLHOUSE_RETURN_PAIR: [],
 	EffectType.SINGLE_PLAY_ALL: [],
 	EffectType.ECHO_LAST_PLAY: ["cd"],
-	EffectType.DEATH_IMMUNITY: ["cd_nodes"],
+	EffectType.DEATH_IMMUNITY: ["cooldown_turns"],
 	EffectType.DAMAGE_MULT_GLOBAL: ["value"],
 	EffectType.DODGE_ATTACK: ["condition", "threshold"],
 	EffectType.ARMOR_PER_TURN: ["value"],
@@ -385,8 +388,18 @@ static func validate_params(effect: Dictionary) -> bool:
 	var required: Array = REQUIRED_PARAMS[type]
 	var params: Dictionary = effect.get("params", {})
 	for field in required:
-		if not params.has(field):
+		if not params.has(field) or params[field] == null:
 			push_error("[EffectTypes] 效果 %s 缺少必填参数: %s" % [get_effect_name(type), field])
+			return false
+	# CONTROL 特殊校验：必须包含 duration 或 distance 之一
+	if type == EffectType.CONTROL:
+		if not params.has("duration") and not params.has("distance"):
+			push_error("[EffectTypes] CONTROL 效果必须包含 duration（持续回合）或 distance（击退格数）")
+			return false
+	# SELF_DAMAGE 特殊校验：必须包含 value 或 percent 之一
+	if type == EffectType.SELF_DAMAGE:
+		if not params.has("value") and not params.has("percent"):
+			push_error("[EffectTypes] SELF_DAMAGE 效果必须包含 value（固定值）或 percent（%maxHP）")
 			return false
 	return true
 
