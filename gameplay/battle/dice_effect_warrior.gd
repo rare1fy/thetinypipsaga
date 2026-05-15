@@ -141,12 +141,20 @@ static func resolve(
 		result.descriptions.append("分裂 %.0f%% 最大HP AOE" % (dice_def.splinter_damage * 100))
 
 	if dice_def.scale_with_hits:
-		# 原版 warriorCalc.ts L42: out.extraDamage += furyBonusDamage
-		# furyBonusDamage 是怒火骰子(w_fury)累计叠加的伤害（被敌人攻击时+N）
-		var fury_val: int = GameManager.fury_bonus_damage
-		if fury_val > 0:
-			result.bonus_damage += fury_val
-			result.descriptions.append("怒火累计 +%d 伤害" % fury_val)
+		# v0.5 怒火：最近一次敌方回合中被打次数×25%增幅倍率 + ≥3次额外施加1层易伤
+		var hit_count: int = PlayerState.hit_count_last_enemy_turn
+		if hit_count > 0:
+			var fury_mult: float = float(hit_count) * 0.25
+			result.bonus_mult *= (1.0 + fury_mult)
+			result.descriptions.append("怒火：被打%d次 → +%d%% 增幅" % [hit_count, int(fury_mult * 100)])
+		if hit_count >= 3:
+			result.apply_statuses.append({
+				"type": GameTypes.StatusType.VULNERABLE,
+				"value": 1,
+				"duration": 99,
+				"target": "enemy"
+			})
+			result.descriptions.append("怒火：≥3次 → 目标+1层易伤")
 
 	if dice_def.purify_one:
 		result.apply_statuses.append({"type": GameTypes.StatusType.POISON, "value": -1, "duration": 0, "target": "self"})
@@ -167,6 +175,51 @@ static func resolve(
 	if dice_def.heal_per_cleanse > 0:
 		result.heal += dice_def.heal_per_cleanse
 		result.descriptions.append("净化回复 %d HP" % dice_def.heal_per_cleanse)
+
+	# v0.5 战吼：上回合被打过时 +bonus_mult_if_hit 增幅
+	if dice_def.bonus_mult_if_hit > 0.0 and PlayerState.was_hit_last_enemy_turn:
+		result.bonus_mult *= (1.0 + dice_def.bonus_mult_if_hit)
+		result.descriptions.append("战吼：受伤后 +%d%% 增幅" % int(dice_def.bonus_mult_if_hit * 100))
+
+	# v0.5 血锁链绑定
+	if dice_def.blood_chain_bind:
+		if target_enemy and target_enemy.hp > 0:
+			BloodChainSystem.bind(target_enemy.uid)
+			result.descriptions.append("血锁链：绑定目标")
+
+	# v0.5 单挑
+	if dice_def.solo_seal:
+		if target_enemy and target_enemy.hp > 0:
+			SoloSealSystem.activate(target_enemy.uid)
+			result.descriptions.append("单挑！双方伤害 ×%.1f" % SoloSealSystem.SOLO_DAMAGE_MULT)
+
+	# v0.5 消耗伤痕（浴血之刃/血神之眼）
+	if dice_def.consume_scar_ratio > 0.0:
+		var consumed: int = ScarSystem.consume(dice_def.consume_scar_ratio)
+		if consumed > 0:
+			result.bonus_damage += consumed * 2  # 每层消耗 → +2 基础伤害
+			result.descriptions.append("消耗 %d 层伤痕 → +%d 伤害" % [consumed, consumed * 2])
+
+	# v0.5 伤痕加成（每层追加基础伤害）
+	if dice_def.scar_bonus_per_stack > 0.0 and PlayerState.scar_stacks > 0:
+		var scar_bonus: int = int(float(PlayerState.scar_stacks) * dice_def.scar_bonus_per_stack)
+		if scar_bonus > 0:
+			result.bonus_damage += scar_bonus
+			result.descriptions.append("伤痕加成：%d层 × %.1f = +%d" % [PlayerState.scar_stacks, dice_def.scar_bonus_per_stack, scar_bonus])
+
+	# v0.5 生命熔炉满血增幅（上次出牌触发的 +20% 在这里消费）
+	if PlayerState.next_play_bonus_mult > 0.0:
+		result.bonus_mult *= (1.0 + PlayerState.next_play_bonus_mult)
+		result.descriptions.append("生命熔炉余韵：+%d%%" % int(PlayerState.next_play_bonus_mult * 100))
+		PlayerState.next_play_bonus_mult = 0.0
+
+	# v0.5 伤痕被动：普通攻击追加基础伤害（不消耗）
+	# 这里只在没有其他特殊效果时触发（纯普通骰子）
+	if not dice_def.has_on_play() and PlayerState.player_class == "warrior":
+		var scar_atk_bonus: int = ScarSystem.get_normal_attack_bonus()
+		if scar_atk_bonus > 0:
+			result.bonus_damage += scar_atk_bonus
+			result.descriptions.append("伤痕被动：+%d 基础伤害" % scar_atk_bonus)
 
 
 # ============================================================

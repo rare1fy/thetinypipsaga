@@ -59,6 +59,11 @@ extends Resource
 @export var aoe_damage_percent: float = 0.0
 @export var combo_splash_damage: bool = false
 @export var trigger_all_elements: bool = false
+@export var bonus_mult_if_hit: float = 0.0       ## v0.5 战吼：上回合被打过时的增幅倍率
+@export var blood_chain_bind: bool = false        ## v0.5 血锁链：出牌时绑定目标
+@export var solo_seal: bool = false               ## v0.5 单挑：出牌时建立单挑
+@export var consume_scar_ratio: float = 0.0       ## v0.5 消耗伤痕比例（浴血/血神）
+@export var scar_bonus_per_stack: float = 0.0     ## v0.5 伤痕加成（每层追加基础伤害）
 
 # --- 法师特殊 ---
 @export var reverse_value: bool = false
