@@ -155,10 +155,10 @@ func refresh(selected_dice: Array[Dictionary]) -> void:
 		_status_label.visible = true
 	
 	# AOE 标识（考虑骰子特效带来的 aoe）
-	var has_aoe: bool = BattleHelpers.detect_aoe(selected_dice, hand_result) or effect_preview.aoe > 0
+	var has_aoe: bool = BattleHelpers.detect_aoe(selected_dice, hand_result) or effect_preview.aoe_damage > 0
 	if has_aoe:
-		if effect_preview.aoe > 0:
-			_aoe_label.text = "⚡ 群伤 +%d" % effect_preview.aoe
+		if effect_preview.aoe_damage > 0:
+			_aoe_label.text = "⚡ 群伤 +%d" % effect_preview.aoe_damage
 		else:
 			_aoe_label.text = "⚡ 群伤"
 	_aoe_label.visible = has_aoe
