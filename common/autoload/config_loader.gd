@@ -209,13 +209,13 @@ static func _build_dice_effects(raw_effects: Array) -> Array[Dictionary]:
 		# 状态效果（ET07=对敌施加, ET08=对己施加）
 		if et == "ET07":
 			var parsed := parse_status_ref(ref)
-			if parsed[0] != "":
+			if parsed[0] != -1:
 				result.append(EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
 					{"status": parsed[0], "value": parsed[1], "target": "enemy"}, trigger))
 			continue
 		if et == "ET08":
 			var parsed2 := parse_status_ref(ref)
-			if parsed2[0] != "":
+			if parsed2[0] != -1:
 				result.append(EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
 					{"status": parsed2[0], "value": parsed2[1], "target": "self"}, trigger))
 			continue

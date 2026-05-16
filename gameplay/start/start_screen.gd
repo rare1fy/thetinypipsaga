@@ -8,7 +8,7 @@ const HandGuideRef := preload("res://common/ui/hand_guide.gd")
 const RelicGuideRef := preload("res://common/ui/relic_guide.gd")
 
 @onready var ui_root: Control = %Root
-@onready var title_label: Label = %TitleLabel
+@onready var title_label: RichTextLabel = %TitleLabel
 @onready var start_btn: Button = %StartBtn
 @onready var new_run_btn: Button = %NewRunBtn
 @onready var version_label: Label = %VersionLabel

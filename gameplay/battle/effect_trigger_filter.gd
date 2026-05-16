@@ -54,8 +54,12 @@ static func check_condition(effect: Dictionary, ctx: EffectEngine.ExecuteContext
 		"hit":
 			return ctx.was_hit_last_turn
 		"solo":
-			# 单挑状态检查（由外部系统提供）
-			return true  # TODO: 接入单挑系统
+			# 单挑：场上存活敌人仅剩 1 个
+			var alive_count: int = 0
+			for e: EnemyInstance in ctx.enemies:
+				if is_instance_valid(e) and e.hp > 0:
+					alive_count += 1
+			return alive_count <= 1
 		"low_hp":
 			return ctx.player_hp <= int(ctx.player_max_hp * 0.3)
 		"keep":
