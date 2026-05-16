@@ -246,7 +246,6 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		BattleLog.log_enemy("敌人登场：%s" % ", ".join(enemy_names))
 
 	# Boss 入场演出 + 敌人入场台词
-	var has_boss: bool = false
 	for view: EnemyView in enemy_views:
 		var inst: EnemyInstance = view.get_enemy_instance()
 		if inst == null:
@@ -255,7 +254,6 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		if cfg == null:
 			continue
 		if cfg.category == EnemyConfig.EnemyCategory.BOSS:
-			has_boss = true
 			var is_final: bool = cfg.boss_rank == EnemyConfig.BossRank.FINAL
 			var entrance: BossEntrance = BossEntrance.play(self, cfg.name, GameManager.chapter, is_final)
 			await entrance.entrance_finished
