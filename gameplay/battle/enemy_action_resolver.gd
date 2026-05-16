@@ -31,9 +31,9 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 		return
 	# 用 WeakRef 包裹 controller，避免场景切换时引擎报 "Lambda capture was freed"
 	var wr: WeakRef = weakref(controller)
-	# v0.5 控制系统：眩晕/变羊跳过行动
+	# v0.5 §1.8.2 眩晕：完全跳过行动
 	if ControlSystem.should_skip_action(e):
-		BattleLog.log_status("💫 %s 被控制，跳过行动" % e.name)
+		BattleLog.log_status("💫 %s 被眩晕，跳过行动" % e.name)
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
 		controller.get_tree().create_timer(0.3).timeout.connect(
 			func() -> void:
@@ -42,20 +42,36 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 					run_turn(c, living, index + 1)
 		)
 		return
-	# v0.5 缴械：无法使用攻击类行动，跳过（但防御/施法不受影响）
-	if ControlSystem.is_disarmed(e):
-		var action_check: Dictionary = e.get_action()
-		if action_check.get("type", "攻击") == "攻击":
-			BattleLog.log_status("🔒 %s 被缴械，无法攻击" % e.name)
-			VFX.show_toast("%s 缴械!" % e.name, "debuff")
-			EnemyMgr.refresh_enemy_views(controller.enemy_views)
-			controller.get_tree().create_timer(0.3).timeout.connect(
-				func() -> void:
-					var c: Node = wr.get_ref() as Node
-					if c != null and c.is_inside_tree():
-						run_turn(c, living, index + 1)
-			)
-			return
+	# v0.5 §1.8.2 变羊：意图强制为普攻（用羊的数据），不跳过行动
+	if ControlSystem.is_polymorphed(e):
+		_play_enemy_attack_anim(controller, e)
+		var wr_poly: WeakRef = weakref(controller)
+		controller.get_tree().create_timer(0.3).timeout.connect(
+			func() -> void:
+				var c: Node = wr_poly.get_ref() as Node
+				if c == null or not c.is_inside_tree():
+					return
+				# 变羊期间用当前 attack_dmg（普通羊=1, 羊王=20）
+				var sheep_dmg: int = e.attack_dmg
+				PlayerState.take_damage(sheep_dmg)
+				e.attack_count += 1
+				var sheep_type: String = "羊王" if sheep_dmg >= 20 else "🐑"
+				BattleLog.log_enemy("⚔ %s（%s）攻击 → %d 伤害" % [_get_name(e), sheep_type, sheep_dmg])
+				SoundPlayer.play_sound("enemy")
+				var on_shake_p: Callable = func(strength: float, duration: float) -> void:
+					var cc: Node = wr_poly.get_ref() as Node
+					if cc != null and cc.is_inside_tree():
+						VFX.shake(cc.get_shake_target(), strength, duration)
+				if sheep_dmg > 1 and on_shake_p.is_valid():
+					on_shake_p.call(5.0, 0.2)
+				c._refresh_status_bar()
+				EnemyMgr.refresh_enemy_views(c.enemy_views)
+				if PlayerState.hp <= 0:
+					c._on_battle_ended(false)
+					return
+				run_turn(c, living, index + 1)
+		)
+		return
 	# 冻结跳过
 	if e.is_frozen():
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
@@ -183,6 +199,8 @@ static func _end_turn_cleanup(controller: Node) -> void:
 	SoloSealSystem.tick_turn()
 	# v0.5 控制系统：衰减所有敌人的控制状态
 	var all_enemies: Array[EnemyInstance] = GameManager.current_enemies
+	# §1.9.3 ccImmunity 衰减（每敌方回合开始 -1，此处在回合末统一处理）
+	ControlSystem.tick_cc_immunity(all_enemies)
 	ControlSystem.tick_all(all_enemies)
 	controller._refresh_status_bar()
 	# 回合收尾 + 抽牌（Godot 设计规范 §4.4）：reset 6 字段 + executeDrawPhase
@@ -232,11 +250,22 @@ static func _resolve_via_effect_engine(
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
-	# v0.5 致盲：攻击类行动有50%概率miss
+	# v0.5 致盲：攻击类行动转向友军/自伤
 	var action_type: String = action.get("type", "攻击")
-	if action_type == "攻击" and ControlSystem.is_blinded(e) and randf() < 0.5:
-		BattleLog.log_status("👁 %s 致盲 → MISS!" % _get_name(e))
-		VFX.show_toast("MISS!", "debuff")
+	if action_type == "攻击" and ControlSystem.is_blinded(e):
+		var blind_target: EnemyInstance = ControlSystem.get_blind_target(e)
+		var blind_dmg: int = e.attack_dmg
+		# Trait 修正
+		var blind_trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
+		if blind_trait_mul > 1.0:
+			blind_dmg = int(float(blind_dmg) * blind_trait_mul)
+		if blind_target.uid == e.uid:
+			blind_target.hp = maxi(0, blind_target.hp - blind_dmg)
+			BattleLog.log_status("👁 %s 致盲 → 自伤 %d！" % [_get_name(e), blind_dmg])
+		else:
+			blind_target.hp = maxi(0, blind_target.hp - blind_dmg)
+			BattleLog.log_status("👁 %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), blind_dmg])
+		VFX.show_toast("致盲!", "debuff")
 		e.attack_count += 1
 		return
 	var effects: Array[Dictionary] = EnemyEffectBridge.action_to_effects(action, e)
@@ -255,6 +284,12 @@ static func _resolve_via_effect_engine(
 		var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
 		if trait_mul > 1.0:
 			final_dmg = int(float(final_dmg) * trait_mul)
+		# v0.5 §1.8.2 嘲讽：伤害 ×0.7
+		if ControlSystem.is_taunted(e):
+			final_dmg = ControlSystem.get_taunt_damage(final_dmg)
+		# v0.5 §1.8.2 缴械：普攻伤害强制为 1
+		if action_type == "攻击" and ControlSystem.is_disarmed(e):
+			final_dmg = 1
 		PlayerState.take_damage(final_dmg)
 		e.attack_count += 1
 		BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), final_dmg])
@@ -627,12 +662,6 @@ static func _resolve_attacker(
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
-	# v0.5 致盲：攻击有50%概率miss
-	if ControlSystem.is_blinded(e) and randf() < 0.5:
-		BattleLog.log_status("👁 %s 致盲 → MISS!" % _get_name(e))
-		VFX.show_toast("MISS!", "debuff")
-		e.attack_count += 1
-		return
 	SoundPlayer.play_sound("enemy")
 	var damage: int = AttackCalc.get_effective_attack_dmg(
 		e, PlayerState.statuses, e.attack_count, e.is_slowed()
@@ -641,6 +670,41 @@ static func _resolve_attacker(
 	var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
 	if trait_mul > 1.0:
 		damage = int(float(damage) * trait_mul)
+
+	# v0.5 §1.8.2 嘲讽：覆写为普攻 ×0.7
+	if ControlSystem.is_taunted(e):
+		damage = ControlSystem.get_taunt_damage(damage)
+		BattleLog.log_status("🛡 %s 被嘲讽，伤害降低为 %d" % [_get_name(e), damage])
+
+	# v0.5 §1.8.2 缴械：普攻伤害强制为 1
+	if ControlSystem.is_disarmed(e):
+		damage = 1
+		BattleLog.log_status("🔒 %s 被缴械，伤害降为 1" % _get_name(e))
+		VFX.show_toast("%s 缴械!" % _get_name(e), "debuff")
+
+	# v0.5 §1.8.2 致盲：攻击转向友军/自伤
+	if ControlSystem.is_blinded(e):
+		var blind_target: EnemyInstance = ControlSystem.get_blind_target(e)
+		if blind_target.uid == e.uid:
+			# 单敌人：自伤
+			blind_target.hp = maxi(0, blind_target.hp - damage)
+			BattleLog.log_status("👁 %s 致盲 → 自伤 %d！" % [_get_name(e), damage])
+			VFX.show_toast("致盲自伤!", "debuff")
+		else:
+			# 多敌人：攻击友军
+			blind_target.hp = maxi(0, blind_target.hp - damage)
+			BattleLog.log_status("👁 %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), damage])
+			VFX.show_toast("致盲误伤!", "debuff")
+		e.attack_count += 1
+		if on_shake.is_valid():
+			on_shake.call(3.0, 0.15)
+		# 致盲后不走正常伤害路径
+		# P2 Trait: Guardian 攻击后清空 guardRage
+		if e.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
+			EnemyTraits.consume_guard_rage_on_attack(e)
+		return
+
+	# 正常攻击玩家
 	PlayerState.take_damage(damage)
 	e.attack_count += 1
 	BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])

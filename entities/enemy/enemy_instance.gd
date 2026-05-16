@@ -37,7 +37,14 @@ var vengeance_stacks: int = 0   ## Berserker 复仇层数（队友死亡时+50%/
 ## 注意：ControlSystem 直接操作 cc_turns 字典（唯一写入入口）
 ## 下方属性访问器仅供外部模块只读查询使用
 var cc_turns: Dictionary = {}  ## {"taunt": 2, "stun": 1, ...}
-var cc_immunity: bool = false   ## 配置级免控标记
+var cc_immunity: int = 0       ## v0.5 §1.9 免控层数（0=100%生效, 1=50%, ≥2=0%）
+
+## 变羊 snapshot — 变羊期间保存原始数据，期满恢复
+var pre_polymorph_snapshot: Dictionary = {}  ## {attack_dmg, hp, max_hp, combat_type}
+
+## 变羊状态查询
+var is_polymorphed: bool:
+	get: return cc_turns.get("polymorph", 0) > 0
 
 ## 控制状态只读便捷访问器（写入请通过 ControlSystem.apply_control）
 var cc_taunt_turns: int:
