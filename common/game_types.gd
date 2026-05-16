@@ -6,7 +6,7 @@ class_name GameTypes
 # 骰子元素与稀有度
 # ============================================================
 
-enum DiceElement { NORMAL, FIRE, ICE, THUNDER, POISON, HOLY, SHADOW, WIND }
+enum DiceElement { NORMAL, FIRE, THUNDER, POISON, HOLY, SHADOW, WIND }
 enum DiceRarity { COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, CURSE }
 
 # ============================================================
@@ -38,7 +38,7 @@ enum HandType {
 # 状态效果
 # ============================================================
 
-enum StatusType { POISON, BURN, DODGE, VULNERABLE, STRENGTH, WEAK, ARMOR, SLOW, FREEZE }
+enum StatusType { POISON, BURN, DODGE, VULNERABLE, STRENGTH, WEAK, ARMOR, SLOW, FREEZE, ARCANE_DISRUPTION }
 
 # ============================================================
 # 遗物触发时机与稀有度

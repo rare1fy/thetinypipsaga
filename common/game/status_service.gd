@@ -7,8 +7,9 @@ extends RefCounted
 
 
 ## 新增或叠加一个状态
-## v0.5 规则：
-##   - VULNERABLE（易伤）：层数累加，封顶 5 层，无 duration（value 即层数）
+## 规则：
+##   - VULNERABLE（易伤）：层数累加，无上限，不走 duration 衰减
+##   - ARCANE_DISRUPTION（法脉紊乱）：层数累加，无上限，不走 duration 衰减，不可净化
 ##   - 其他状态：同类取更高 value/duration（覆盖式）
 ## 直接修改入参 statuses，调用方无需写回
 static func add(
@@ -17,16 +18,16 @@ static func add(
 	value: int,
 	duration: int
 ) -> void:
-	# v0.5 易伤层数化：累加而非覆盖
-	if type == GameTypes.StatusType.VULNERABLE:
+	# 层数累加型状态：易伤 / 法脉紊乱
+	if type == GameTypes.StatusType.VULNERABLE or type == GameTypes.StatusType.ARCANE_DISRUPTION:
 		for s in statuses:
 			if s.type == type:
-				s.value = mini(s.value + value, GameBalance.VULNERABLE_CONFIG.max_layers)
-				s.duration = 999  # 易伤不走 duration 衰减，走层数衰减
+				s.value += value
+				s.duration = 999  # 不走 duration 衰减，走层数衰减
 				return
 		var new_status := StatusEffect.new()
 		new_status.type = type
-		new_status.value = mini(value, GameBalance.VULNERABLE_CONFIG.max_layers)
+		new_status.value = value
 		new_status.duration = 999
 		statuses.append(new_status)
 		return
@@ -56,13 +57,14 @@ static func get_value(statuses: Array[StatusEffect], type: GameTypes.StatusType)
 	return 0
 
 
-## 所有状态 duration -1，清理到期项（不含易伤，易伤走 tick_vulnerable）
+## 所有状态 duration -1，清理到期项（不含易伤/法脉紊乱，走层数衰减）
 ## 直接修改入参 statuses
 static func tick(statuses: Array[StatusEffect]) -> void:
 	var to_remove: Array[int] = []
 	for i in statuses.size():
-		# 易伤不走 duration 衰减
-		if statuses[i].type == GameTypes.StatusType.VULNERABLE:
+		# 易伤 / 法脉紊乱不走 duration 衰减
+		if statuses[i].type == GameTypes.StatusType.VULNERABLE \
+			or statuses[i].type == GameTypes.StatusType.ARCANE_DISRUPTION:
 			continue
 		statuses[i].duration -= 1
 		if statuses[i].duration <= 0:
@@ -71,7 +73,7 @@ static func tick(statuses: Array[StatusEffect]) -> void:
 		statuses.remove_at(to_remove[i])
 
 
-## v0.5 易伤层数衰减：每敌方回合结束 -1 层，归 0 时移除
+## 易伤层数衰减：每敌方回合结束 -1 层，归 0 时移除
 ## 直接修改入参 statuses
 static func tick_vulnerable(statuses: Array[StatusEffect]) -> void:
 	var to_remove: Array[int] = []
@@ -82,3 +84,11 @@ static func tick_vulnerable(statuses: Array[StatusEffect]) -> void:
 				to_remove.append(i)
 	for i in range(to_remove.size() - 1, -1, -1):
 		statuses.remove_at(to_remove[i])
+
+
+## 法脉紊乱：出牌时完全重置（归零移除）
+## 直接修改入参 statuses
+static func clear_arcane_disruption(statuses: Array[StatusEffect]) -> void:
+	for i in range(statuses.size() - 1, -1, -1):
+		if statuses[i].type == GameTypes.StatusType.ARCANE_DISRUPTION:
+			statuses.remove_at(i)

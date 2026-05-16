@@ -31,12 +31,11 @@ static func apply_element_effects(enemy: EnemyInstance, selected_dice: Array[Dic
 				s.value = burn_val
 				s.duration = 3
 				enemy.statuses.append(s)
-			"ice":
-				var s := StatusEffect.new()
-				s.type = GameTypes.StatusType.FREEZE
-				s.value = 1
-				s.duration = 1
-				enemy.statuses.append(s)
+		"wind":
+				# v0.5 风元素：击退 + 2点基础伤害
+				if enemy.distance < 3:
+					enemy.distance = mini(3, enemy.distance + 1)
+				enemy.hp = maxi(0, enemy.hp - 2)
 			"thunder":
 				for other: EnemyInstance in enemies:
 					if other.uid != enemy.uid and other.hp > 0:
@@ -151,7 +150,7 @@ static func dominant_element(selected_dice: Array[Dictionary]) -> String:
 	if counts.is_empty():
 		return "physical"
 	# 平局打破：火>雷>冰>毒>圣
-	var priority := ["fire", "thunder", "ice", "poison", "holy"]
+var priority := ["fire", "thunder", "wind", "poison", "holy"]
 	var best := ""
 	var best_count := 0
 	var best_rank := 999
@@ -177,11 +176,12 @@ static func settle_enemy_dot_damage(enemies: Array[EnemyInstance]) -> void:
 			elif s.type == GameTypes.StatusType.POISON and s.value > 0:
 				e.hp = maxi(0, e.hp - s.value)
 				s.duration -= 1
-		# v0.5 易伤层数衰减：每敌方回合结束 -1 层
+		# 易伤层数衰减：每敌方回合结束 -1 层
 		StatusService.tick_vulnerable(e.statuses)
-		# 清理到期状态（不含易伤，易伤走 tick_vulnerable）
+		# 清理到期状态（不含易伤/法脉紊乱，走层数衰减）
 		e.statuses = e.statuses.filter(func(s: StatusEffect) -> bool:
-			if s.type == GameTypes.StatusType.VULNERABLE:
+			if s.type == GameTypes.StatusType.VULNERABLE \
+				or s.type == GameTypes.StatusType.ARCANE_DISRUPTION:
 				return s.value > 0
 			return s.duration > 0
 		)

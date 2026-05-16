@@ -38,11 +38,18 @@ static func get_effective_attack_dmg(enemy: EnemyInstance, player_statuses: Arra
 	if enemy.has_status(GameTypes.StatusType.WEAK):
 		val = maxi(1, int(val * STATUS_EFFECT_MULT.weak))
 	
-	# 4. 玩家易伤修正
+	# 4. 玩家易伤修正（层数化，无上限）
+	var vuln_layers: int = 0
+	var disruption_layers: int = 0
 	for s in player_statuses:
-		if s.type == GameTypes.StatusType.VULNERABLE and s.duration > 0:
-			val = int(val * STATUS_EFFECT_MULT.vulnerable)
-			break
+		if s.type == GameTypes.StatusType.VULNERABLE and s.value > 0:
+			vuln_layers = s.value
+		elif s.type == GameTypes.StatusType.ARCANE_DISRUPTION and s.value > 0:
+			disruption_layers = s.value
+	if vuln_layers > 0:
+		val = int(val * GameBalance.get_vulnerable_mult(vuln_layers))
+	if disruption_layers > 0:
+		val = int(val * GameBalance.get_arcane_disruption_mult(disruption_layers))
 	
 	return val
 

@@ -576,6 +576,8 @@ static func status_name_to_type(name: String) -> int:
 			return GameTypes.StatusType.STRENGTH if "STRENGTH" in GameTypes.StatusType else -1
 		"armor":
 			return GameTypes.StatusType.ARMOR if "ARMOR" in GameTypes.StatusType else -1
+		"arcane_disruption":
+			return GameTypes.StatusType.ARCANE_DISRUPTION
 		_:
 			push_warning("[EffectTypes] 未知状态名: %s" % name)
 			return -1
@@ -590,6 +592,7 @@ const STATUS_CN: Dictionary = {
 	"poison": "中毒", "burn": "灼烧", "vulnerable": "易伤",
 	"weak": "虚弱", "freeze": "冻结", "slow": "减速",
 	"dodge": "闪避", "strength": "力量", "armor": "护甲",
+	"arcane_disruption": "法脉紊乱",
 }
 
 ## 控制类型中文映射

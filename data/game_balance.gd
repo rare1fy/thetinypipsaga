@@ -54,16 +54,27 @@ const STATUS_EFFECT_MULT := {"weak": 0.75, "vulnerable": 1.5}
 
 const VULNERABLE_CONFIG := {
 	"damage_per_layer": 0.5,   # 每层 +50% 受伤
-	"max_layers": 5,           # 封顶 5 层 = ×3.5
 	"decay_per_enemy_turn": 1, # 每敌方回合结束 -1 层
 }
 
-## 计算易伤系数：1 + 0.5 × min(layers, 5)
+## 法脉紊乱配置（法师专属，不可净化，独立于易伤）
+const ARCANE_DISRUPTION_CONFIG := {
+	"damage_per_layer": 0.5,       # 每层 +50% 受伤（与易伤相同公式）
+	"overflow_threshold": 6,       # 满 6 层后触发溢出惩罚
+	"overflow_bonus_per_turn": 0.1, # 溢出后每吟唱回合额外 +10% 受伤
+}
+
+## 计算易伤系数：1 + 0.5 × layers（无上限）
 static func get_vulnerable_mult(layers: int) -> float:
 	if layers <= 0:
 		return 1.0
-	var clamped: int = mini(layers, VULNERABLE_CONFIG.max_layers)
-	return 1.0 + VULNERABLE_CONFIG.damage_per_layer * clamped
+	return 1.0 + VULNERABLE_CONFIG.damage_per_layer * layers
+
+## 计算法脉紊乱系数：1 + 0.5 × layers（无上限，与易伤独立计算后相乘）
+static func get_arcane_disruption_mult(layers: int) -> float:
+	if layers <= 0:
+		return 1.0
+	return 1.0 + ARCANE_DISRUPTION_CONFIG.damage_per_layer * layers
 
 # ============================================================
 # v0.5 过充系统（超基线手牌 → 增幅倍率）
