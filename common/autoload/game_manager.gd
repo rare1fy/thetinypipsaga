@@ -64,10 +64,15 @@ func start_run(class_id: String) -> void:
 	# 魂晶商店常驻遗物：从 meta 存档加载已解锁的遗物
 	var meta: Dictionary = SaveManager.load_meta()
 	var unlocked_relics: Array = meta.get("unlocked_start_relics", [])
+	var added_ids: Dictionary = {}  # 防御性去重
 	for relic_id: Variant in unlocked_relics:
-		var relic_def: RelicDef = GameData.get_relic_def(str(relic_id))
+		var rid: String = str(relic_id)
+		if rid in added_ids:
+			continue
+		var relic_def: RelicDef = GameData.get_relic_def(rid)
 		if relic_def:
-			PlayerState.relics.append({"id": str(relic_id), "source": "soul_shop"})
+			PlayerState.relics.append({"id": rid, "source": "soul_shop"})
+			added_ids[rid] = true
 	
 	# 职业专属属性
 	PlayerState.blood_reroll_count = 0

@@ -25,12 +25,15 @@ func _ready() -> void:
 			_register_rogue_dice()
 		if _relic_defs.is_empty():
 			_register_relics()
+		# 魂晶商店遗物始终注册（补充到 JSON 加载结果中）
+		_register_soul_shop_relics()
 	else:
 		_register_base_dice()
 		_register_warrior_dice()
 		_register_mage_dice()
 		_register_rogue_dice()
 		_register_relics()
+		_register_soul_shop_relics()
 	print("[GameData] dice=%d relics=%d (json=%s)" % [_dice_defs.size(), _relic_defs.size(), str(USE_JSON_CONFIG)])
 
 
@@ -337,27 +340,68 @@ func _register_relics() -> void:
 	_reg_relic(_mk_relic("life_furnace", "生命熔炉", "每出牌5次恢复15HP", GameTypes.RelicRarity.LEGENDARY,
 		GameTypes.RelicTrigger.ON_PLAY, {"heal": 15, "counter": 0, "max_counter": 5}))
 
-	# --- 魂晶商店常驻遗物（跨局持久，购买后每次开局自动携带） ---
-	_reg_relic(_mk_relic("grindstone", "磨刀石", "每次出牌+2伤害", GameTypes.RelicRarity.UNCOMMON,
-		GameTypes.RelicTrigger.ON_PLAY, {"damage": 2}))
-	_reg_relic(_mk_relic("iron_skin_relic", "铁皮护符", "战斗开始时获得8护甲", GameTypes.RelicRarity.UNCOMMON,
-		GameTypes.RelicTrigger.ON_BATTLE_START, {"armor": 8}))
-	_reg_relic(_mk_relic("fate_coin", "命运硬币", "每回合首次重投免费", GameTypes.RelicRarity.RARE,
-		GameTypes.RelicTrigger.PASSIVE, {"free_rerolls": 1}))
-	_reg_relic(_mk_relic("greedy_hand", "贪婪之手", "金币获取+30%", GameTypes.RelicRarity.RARE,
-		GameTypes.RelicTrigger.PASSIVE, {"gold_bonus": 30}))
-	_reg_relic(_mk_relic("crimson_grail", "绯红圣杯", "击杀敌人恢复8HP", GameTypes.RelicRarity.RARE,
-		GameTypes.RelicTrigger.ON_KILL, {"heal": 8}))
-	_reg_relic(_mk_relic("schrodinger_bag", "薛定谔之袋", "每回合额外抽1颗骰子", GameTypes.RelicRarity.RARE,
-		GameTypes.RelicTrigger.PASSIVE, {"draw_count_bonus": 1}))
-	_reg_relic(_mk_relic("treasure_sense_relic", "寻宝直觉", "商店折扣15%", GameTypes.RelicRarity.UNCOMMON,
-		GameTypes.RelicTrigger.PASSIVE, {"shop_discount": 15}))
-	_reg_relic(_mk_relic("warm_ember_relic", "温暖余烬", "营火恢复量+50%", GameTypes.RelicRarity.UNCOMMON,
-		GameTypes.RelicTrigger.PASSIVE, {}))
-	_reg_relic(_mk_relic("symmetry_seeker", "对称追寻者", "对子伤害+20%", GameTypes.RelicRarity.RARE,
-		GameTypes.RelicTrigger.ON_PLAY, {"multiplier": 0.2}))
-	_reg_relic(_mk_relic("iron_banner", "铁旗", "每回合开始获得3护甲", GameTypes.RelicRarity.UNCOMMON,
-		GameTypes.RelicTrigger.ON_TURN_START, {"armor": 3}))
+
+## 魂晶商店常驻遗物（独立注册，确保 effects 数组正确生成）
+func _register_soul_shop_relics() -> void:
+	_reg_relic(_mk_relic_fx("grindstone", "磨刀石", "每次出牌+2伤害", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_PLAY, [
+			EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE,
+				{"value": 2}, EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT),
+		]))
+	_reg_relic(_mk_relic_fx("iron_skin_relic", "铁皮护符", "战斗开始时获得8护甲", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_BATTLE_START, [
+			EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+				{"value": 8}, EffectTypes.TriggerType.ON_BATTLE_START, EffectTypes.EffectScope.INSTANT),
+		]))
+	_reg_relic(_mk_relic_fx("fate_coin", "命运硬币", "每回合首次重投免费", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, [
+			EffectTypes.create_effect(EffectTypes.EffectType.GRANT_REROLL,
+				{"count": 1}, EffectTypes.TriggerType.ON_TURN_START, EffectTypes.EffectScope.TURN),
+		]))
+	_reg_relic(_mk_relic_fx("greedy_hand", "贪婪之手", "金币获取+30%", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, [
+			EffectTypes.create_effect(EffectTypes.EffectType.GOLD_GAIN,
+				{"value": 30, "mode": "percent"}, EffectTypes.TriggerType.PASSIVE, EffectTypes.EffectScope.RUN),
+		]))
+	_reg_relic(_mk_relic_fx("crimson_grail", "绯红圣杯", "击杀敌人恢复8HP", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.ON_KILL, [
+			EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
+				{"value": 8}, EffectTypes.TriggerType.ON_KILL, EffectTypes.EffectScope.INSTANT),
+		]))
+	_reg_relic(_mk_relic_fx("schrodinger_bag", "薛定谔之袋", "每回合额外抽1颗骰子", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, [
+			EffectTypes.create_effect(EffectTypes.EffectType.MODIFY_DRAW_COUNT,
+				{"delta": 1}, EffectTypes.TriggerType.PASSIVE, EffectTypes.EffectScope.RUN),
+		]))
+	_reg_relic(_mk_relic_fx("treasure_sense_relic", "寻宝直觉", "商店折扣15%", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.PASSIVE, [
+			EffectTypes.create_effect(EffectTypes.EffectType.SHOP_DISCOUNT,
+				{"value": 15}, EffectTypes.TriggerType.PASSIVE, EffectTypes.EffectScope.RUN),
+		]))
+	_reg_relic(_mk_relic_fx("warm_ember_relic", "温暖余烬", "营火恢复量+50%", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.PASSIVE, [
+			EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
+				{"value": 50, "mode": "percent"}, EffectTypes.TriggerType.PASSIVE, EffectTypes.EffectScope.RUN),
+		]))
+	_reg_relic(_mk_relic_fx("symmetry_seeker", "对称追寻者", "对子伤害+20%", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.ON_PLAY, [
+			EffectTypes.create_effect(EffectTypes.EffectType.DAMAGE_MULT,
+				{"value": 0.2, "condition": "hand_type_pair"}, EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT),
+		]))
+	_reg_relic(_mk_relic_fx("iron_banner", "铁旗", "每回合开始获得3护甲", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_TURN_START, [
+			EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+				{"value": 3}, EffectTypes.TriggerType.ON_TURN_START, EffectTypes.EffectScope.INSTANT),
+		]))
+
+
+## 带 effects 数组的遗物构造（v2 正确方式）
+func _mk_relic_fx(id: String, rname: String, desc: String, rarity: GameTypes.RelicRarity,
+	trigger: GameTypes.RelicTrigger, effects: Array[Dictionary]) -> RelicDef:
+	var r := RelicDef.new()
+	r.id = id; r.name = rname; r.description = desc; r.rarity = rarity; r.trigger = trigger
+	r.effects = effects
+	return r
 
 
 func _mk_relic(id: String, name: String, desc: String, rarity: GameTypes.RelicRarity,
