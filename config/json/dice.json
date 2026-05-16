@@ -529,18 +529,11 @@
       "id": "D0201",
       "legacy_key": "mage_elemental",
       "class": "C02",
-      "name": "元素骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "name": "元素之力",
+      "faces": [1,2,3,4,5,6],
       "rarity": "RA2",
       "element": "EL0",
-      "description": "每回合随机变为火/冰/雷/毒/圣元素",
+      "description": "每回合随机变为火、风、雷、毒、圣元素之一，触发对应元素效果。",
       "effect_group": "EG0201",
       "flag_cursed": false,
       "flag_cracked": false
@@ -549,61 +542,276 @@
       "id": "D0202",
       "legacy_key": "mage_reverse",
       "class": "C02",
-      "name": "逆转骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "name": "逆流",
+      "faces": [1,2,3,4,5,6],
       "rarity": "RA2",
       "element": "EL0",
-      "description": "出牌时点数翻转(7-点数)",
+      "description": "摧毁目标全部护甲，并将护甲数值转化为对目标的伤害。",
       "effect_group": "EG0202",
       "flag_cursed": false,
       "flag_cracked": false
     },
     {
       "id": "D0203",
-      "legacy_key": "mage_crystal",
+      "legacy_key": "mage_missile",
       "class": "C02",
-      "name": "水晶骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "rarity": "RA3",
+      "name": "奥术飞弹",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
       "element": "EL0",
-      "description": "保留到下回合时点数+1",
+      "description": "出牌结算后，对每个存活敌人各造成等于本骰子点数的独立伤害。",
       "effect_group": "EG0203",
       "flag_cursed": false,
       "flag_cracked": false
     },
     {
       "id": "D0204",
-      "legacy_key": "mage_stardust",
+      "legacy_key": "mage_barrier",
       "class": "C02",
-      "name": "星尘骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "rarity": "RA3",
+      "name": "魔力壁障",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
       "element": "EL0",
-      "description": "每保留1回合+1点(上限5)",
+      "description": "出牌时获得免伤护盾，数值为本骰子点数的2倍，本回合内抵消等量伤害。",
       "effect_group": "EG0204",
       "flag_cursed": false,
       "flag_cracked": false
+    },
+    {
+      "id": "D0206",
+      "legacy_key": "mage_meditate",
+      "class": "C02",
+      "name": "冥想",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "吟唱（不出牌）回合自动回复4HP，并清除1层负面状态。",
+      "effect_group": "EG0206",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0207",
+      "legacy_key": "mage_amplify",
+      "class": "C02",
+      "name": "奥术增幅",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
+      "element": "EL0",
+      "description": "出牌时手牌中每有1颗元素骰子，最终伤害提升15%。",
+      "effect_group": "EG0207",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0208",
+      "legacy_key": "mage_mirror",
+      "class": "C02",
+      "name": "命运骰",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌后不进弃骰库，留在手牌中。1~3点：回复等于点数的HP；4~6点：造成点数×3伤害。",
+      "effect_group": "EG0208",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0209",
+      "legacy_key": "mage_crystal",
+      "class": "C02",
+      "name": "蓄能水晶",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "吟唱回合结束时，回复3HP并获得3点额外屏障。",
+      "effect_group": "EG0209",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0210",
+      "legacy_key": "mage_temporal",
+      "class": "C02",
+      "name": "时光之沙",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "保留到下回合时，本骰子点数+2。当点数超过6时，出牌结算前分裂为两颗骰子（6+溢出值）。",
+      "effect_group": "EG0210",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0211",
+      "legacy_key": "mage_prism",
+      "class": "C02",
+      "name": "棱镜聚焦",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌后锁定当前元素类型，下回合所有元素骰子沿用该类型。",
+      "effect_group": "EG0211",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0212",
+      "legacy_key": "mage_resonance",
+      "class": "C02",
+      "name": "共鸣",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "自动跟随本回合的元素坍缩结果，额外触发一次该元素效果。",
+      "effect_group": "EG0212",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0213",
+      "legacy_key": "mage_polymorph",
+      "class": "C02",
+      "name": "变羊术",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "将目标变为小动物2回合。50%概率变为普通羊（攻击力1），50%概率变为羊王（攻击力20/HP6）。Boss和精英豁免。",
+      "effect_group": "EG0213",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0214",
+      "legacy_key": "mage_purify",
+      "class": "C02",
+      "name": "净化之光",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "清除自身全部负面状态，每清除1层回复5HP。",
+      "effect_group": "EG0214",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0215",
+      "legacy_key": "mage_counter",
+      "class": "C02",
+      "name": "法力反制",
+      "faces": [2,3,3,4,4,5],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "出牌时，若主目标下回合意图为施法，则该敌人本次施法伤害反弹50%给自己。",
+      "effect_group": "EG0215",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0216",
+      "legacy_key": "mage_star",
+      "class": "C02",
+      "name": "星辰",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "每吟唱1回合，本骰子点数增加1，最多+3。",
+      "effect_group": "EG0216",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0217",
+      "legacy_key": "mage_elemstorm",
+      "class": "C02",
+      "name": "元素风暴",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "出牌时每颗选中的骰子各触发1种随机元素效果（火/风/雷/毒/圣）。",
+      "effect_group": "EG0217",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0218",
+      "legacy_key": "mage_burnecho",
+      "class": "C02",
+      "name": "自燃共鸣",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL1",
+      "description": "出牌时伤害=本骰点数+（目标身上灼烧总层数×2）。出牌后清空目标身上所有灼烧层。",
+      "effect_group": "EG0218",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0219",
+      "legacy_key": "mage_gale",
+      "class": "C02",
+      "name": "风压冲击",
+      "faces": [2,3,3,4,4,5],
+      "rarity": "RA4",
+      "element": "EL4",
+      "description": "出牌时对全体敌人施加击退（distance+2），并造成4点基础伤害。若目标上回合曾被击退，本次伤害额外+50%。",
+      "effect_group": "EG0219",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0220",
+      "legacy_key": "mage_meteor",
+      "class": "C02",
+      "name": "禁咒·陨星",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "需吟唱至少2回合才能释放；伤害提升50%，之后每多吟唱1回合再提升20%。",
+      "effect_group": "EG0220",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0221",
+      "legacy_key": "mage_elemheart",
+      "class": "C02",
+      "name": "元素之心",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "出牌时同时触发火、风、雷、毒、圣全部5种元素效果。",
+      "effect_group": "EG0221",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0222",
+      "legacy_key": "rune_elem_prism",
+      "class": "C02",
+      "name": "元素棱镜",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时元素坍缩加成从×1.5提升至×2.0；打出时本回合所有元素骰子各额外触发1次自身元素效果。",
+      "effect_group": "EG0222",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
+    },
+    {
+      "id": "D0223",
+      "legacy_key": "rune_seal",
+      "class": "C02",
+      "name": "封印符文",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时每次成功施加控制后回复4HP；打出时对目标施加定身1回合+虚弱1回合。",
+      "effect_group": "EG0223",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
     },
     {
       "id": "D0301",
@@ -843,39 +1051,31 @@
       "param_key": "is_elemental",
       "param_value": "1",
       "param_ref": "",
-      "note": "每回合随机元素"
+      "note": "元素之力 每回合随机元素(fire/wind/thunder/poison/holy)"
     },
     {
       "effect_group": "EG0202",
       "effect_type": "ET11",
-      "param_key": "reverse_value",
+      "param_key": "armor_break",
       "param_value": "1",
       "param_ref": "",
-      "note": "点数 = 7 - 原点数"
+      "note": "逆流 摧毁目标护甲并转化为伤害"
     },
     {
       "effect_group": "EG0203",
-      "effect_type": "ET10",
-      "param_key": "bonus_on_keep",
-      "param_value": "1",
+      "effect_type": "ET11",
+      "param_key": "splash",
+      "param_value": "1.0",
       "param_ref": "",
-      "note": "保留 +1 点"
+      "note": "奥术飞弹 对每个存活敌人造成等于点数的独立伤害"
     },
     {
       "effect_group": "EG0204",
-      "effect_type": "ET10",
-      "param_key": "bonus_per_turn_kept",
-      "param_value": "1",
+      "effect_type": "ET11",
+      "param_key": "armor",
+      "param_value": "0",
       "param_ref": "",
-      "note": "每保留1回合 +1"
-    },
-    {
-      "effect_group": "EG0204",
-      "effect_type": "ET10",
-      "param_key": "keep_bonus_cap",
-      "param_value": "5",
-      "param_ref": "",
-      "note": "保留加成上限 5"
+      "note": "魔力壁障 护盾=点数×2（特殊逻辑由代码判定）"
     },
     {
       "effect_group": "EG0301",
@@ -1236,6 +1436,198 @@
       "param_value": "1",
       "param_ref": "",
       "note": "铁壁符文 打出时消耗全部护甲AOE+嘲讽"
+    },
+    {
+      "effect_group": "EG0206",
+      "effect_type": "ET11",
+      "param_key": "heal",
+      "param_value": "4",
+      "param_ref": "",
+      "note": "冥想 吟唱回合自动回复4HP（ON_SKIP触发）"
+    },
+    {
+      "effect_group": "EG0207",
+      "effect_type": "ET02",
+      "param_key": "bonus_mult",
+      "param_value": "0.15",
+      "param_ref": "",
+      "note": "奥术增幅 每颗元素骰+15%伤害（代码按手牌元素骰数量乘算）"
+    },
+    {
+      "effect_group": "EG0208",
+      "effect_type": "ET11",
+      "param_key": "bounce",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "命运骰 出牌后不进弃骰库（特殊逻辑由代码判定1-3回复/4-6伤害×3）"
+    },
+    {
+      "effect_group": "EG0209",
+      "effect_type": "ET11",
+      "param_key": "heal",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "蓄能水晶 吟唱回合回复3HP+3屏障（ON_SKIP触发）"
+    },
+    {
+      "effect_group": "EG0210",
+      "effect_type": "ET10",
+      "param_key": "bonus_on_keep",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "时光之沙 保留时+2点数（分裂逻辑由代码判定）"
+    },
+    {
+      "effect_group": "EG0211",
+      "effect_type": "ET11",
+      "param_key": "is_elemental",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "棱镜聚焦 元素骰+锁定元素（特殊逻辑由代码判定）"
+    },
+    {
+      "effect_group": "EG0212",
+      "effect_type": "ET11",
+      "param_key": "is_elemental",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "共鸣 元素骰+额外触发1次坍缩元素效果"
+    },
+    {
+      "effect_group": "EG0213",
+      "effect_type": "ET11",
+      "param_key": "control_stun",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "变羊术 变羊2回合（走polymorph控制，Boss/精英豁免）"
+    },
+    {
+      "effect_group": "EG0214",
+      "effect_type": "ET11",
+      "param_key": "purify_all",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "净化之光 清除全部负面状态 每层回复5HP"
+    },
+    {
+      "effect_group": "EG0215",
+      "effect_type": "ET11",
+      "param_key": "bonus_mult",
+      "param_value": "0.5",
+      "param_ref": "",
+      "note": "法力反制 目标施法时反弹50%（条件由代码判定）"
+    },
+    {
+      "effect_group": "EG0216",
+      "effect_type": "ET10",
+      "param_key": "bonus_per_turn_kept",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "星辰 每吟唱1回合+1点数（上限+3）"
+    },
+    {
+      "effect_group": "EG0216",
+      "effect_type": "ET10",
+      "param_key": "keep_bonus_cap",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "星辰 保留加成上限3"
+    },
+    {
+      "effect_group": "EG0217",
+      "effect_type": "ET11",
+      "param_key": "is_elemental",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "元素风暴 每颗骰子各触发1种随机元素效果"
+    },
+    {
+      "effect_group": "EG0218",
+      "effect_type": "ET11",
+      "param_key": "bonus_damage_scaled",
+      "param_value": "burn_stacks",
+      "param_ref": "",
+      "note": "自燃共鸣 灼烧层数×2追加伤害+清空灼烧"
+    },
+    {
+      "effect_group": "EG0219",
+      "effect_type": "ET11",
+      "param_key": "aoe",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "风压冲击 AOE"
+    },
+    {
+      "effect_group": "EG0219",
+      "effect_type": "ET01",
+      "param_key": "bonus_damage",
+      "param_value": "4",
+      "param_ref": "",
+      "note": "风压冲击 +4基础伤害"
+    },
+    {
+      "effect_group": "EG0219",
+      "effect_type": "ET11",
+      "param_key": "control_stun_aoe",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "风压冲击 AOE击退（走knockback控制）"
+    },
+    {
+      "effect_group": "EG0220",
+      "effect_type": "ET02",
+      "param_key": "bonus_mult",
+      "param_value": "1.5",
+      "param_ref": "",
+      "note": "禁咒陨星 吟唱2回合后伤害×1.5（每多1回合+0.2由代码判定）"
+    },
+    {
+      "effect_group": "EG0221",
+      "effect_type": "ET11",
+      "param_key": "is_elemental",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "元素之心 同时触发5种元素效果"
+    },
+    {
+      "effect_group": "EG0222",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "元素棱镜 符文骰标记"
+    },
+    {
+      "effect_group": "EG0222",
+      "effect_type": "ET13",
+      "param_key": "bonus_mult",
+      "param_value": "2.0",
+      "param_ref": "",
+      "note": "元素棱镜 持有时坍缩加成提升至×2.0"
+    },
+    {
+      "effect_group": "EG0223",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "封印符文 符文骰标记"
+    },
+    {
+      "effect_group": "EG0223",
+      "effect_type": "ET13",
+      "param_key": "heal",
+      "param_value": "4",
+      "param_ref": "",
+      "note": "封印符文 持有时控制成功后回复4HP"
+    },
+    {
+      "effect_group": "EG0223",
+      "effect_type": "ET14",
+      "param_key": "control_stun",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "封印符文 打出时定身+虚弱（特殊逻辑由代码判定）"
     }
   ],
   "status": []
