@@ -294,16 +294,27 @@ static func _resolve_via_effect_engine(
 
 	# 状态效果（施加给玩家）
 	if not result.apply_statuses.is_empty():
+		var has_dot := false
 		for status: Dictionary in result.apply_statuses:
 			var st_name: String = status.get("status", "")
 			var st_value: int = status.get("value", 0)
+			var st_duration: int = status.get("duration", 3)
 			var target_tag: String = status.get("target", "enemy")
 			if target_tag == "enemy":
+				# Caster DOT 放大 trait（burn/poison）
+				if st_name == "burn" or st_name == "poison":
+					var dot_mul: float = EnemyTraits.get_dot_multiplier(e)
+					if dot_mul > 1.0:
+						st_value = maxi(1, int(float(st_value) * dot_mul))
+					has_dot = true
 				# 敌人施加给玩家
 				var st_type: int = _status_name_to_game_type(st_name)
 				if st_type >= 0:
-					GameManager.add_status(st_type, st_value, 3)
+					GameManager.add_status(st_type, st_value, st_duration)
 					BattleLog.log_status("✦ %s 施加 %s %d" % [_get_name(e), st_name, st_value])
+		# Caster DOT 施放后累加 dotAmplifier
+		if has_dot:
+			EnemyTraits.bump_dot_amplifier(e)
 		SoundPlayer.play_sound("enemy_skill")
 
 	# 控制效果（嘲讽等）

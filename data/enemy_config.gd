@@ -177,7 +177,7 @@ static func _build_all_configs() -> void:
 
 static func _build_ch1_normals() -> void:
 	_register("forest_ghoul", "食尸鬼", 1, 28, 10, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.WARRIOR, 20,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 12, "撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 12, "撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["嘎嘎……新鲜的肉……", "从坟墓里爬出来了……"], ["骨头……散了……", "回到……土里……"], ["撕！", "咬碎你！", "嘎嘎嘎！"], ["嘎！", "腐肉……掉了……"], ["不……还没吃饱……"]))
 	_register("forest_spider", "剧毒蛛母", 1, 18, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 20,
 		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.ATTACK, 6)])],
@@ -186,10 +186,10 @@ static func _build_ch1_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 8), _action(EnemyAction.ActionType.ATTACK, 7), _action(EnemyAction.ActionType.DEFEND, 6), _action(EnemyAction.ActionType.ATTACK, 10, "根须缠绕")])],
 		_quotes(["这片……森林……不欢迎你……", "（树根从地面涌出）"], ["森林……会记住……", "倒下了……但种子……已经播下……"], ["根须！", "大地之力！"], ["树皮……裂了……", "不过是……划痕……"], ["我的根……断了……但森林……永存……"]))
 	_register("forest_banshee", "哀嚎女妖", 1, 16, 8, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["啊啊啊——！", "听到了吗……死亡的歌声……"], ["终于……安息了……", "（哀鸣渐弱）"], ["尖叫！", "死亡之歌！", "颤抖吧！"], ["（刺耳尖啸）", "痛苦……是我的养分……"], ["最后……一曲……送你上路！"]))
 	_register("forest_wolf_priest", "月光狼灵", 1, 20, 7, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 7)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 7)])],
 		_quotes(["呜——月光指引着我……", "嗅到了……猎物的气息……"], ["月光……暗了……", "呜……（倒下）"], ["狼牙！", "月光之噬！"], ["嗷！", "这……不可能……"], ["月光……给我力量……"]))
 	# [CH1-EXPANSION] 下面 5 只为章1扩充
 	_register("forest_bone_reaver", "骸骨狂战", 1, 32, 11, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.WARRIOR, 22,
@@ -202,10 +202,10 @@ static func _build_ch1_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.DEFEND, 8), _action(EnemyAction.ActionType.ATTACK, 9, "石拳")])],
 		_quotes(["……（沉重的脚步）", "土……吞噬入侵者。"], ["碎……", "归于土……"], ["砸！", "碾！"], ["……（岩石裂缝）", "一点小伤。"], ["最后的岩石……也要还击！"]))
 	_register("forest_wraith_cultist", "幽冥诅祝", 1, 18, 7, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 22,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 7), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 7), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["诅咒……降临！", "（低声吟诵）"], ["咒文……断了……", "回归虚无……"], ["诅咒！", "幽冥之击！", "灵魂剥离！"], ["啊！", "仪式……被打断……"], ["黑暗……收我为仆吧——！"]))
 	_register("forest_old_willow", "老槐祭司", 1, 22, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 22,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 6), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 6), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
 		_quotes(["孩儿们，饮下我的树液……", "古老的森林，借我一分力量。"], ["枝叶……枯萎……", "根须……缩回……"], ["树液灌注！", "藤鞭！"], ["树皮……脱落……", "一点小伤不要紧。"], ["最后一片叶子——化作诅咒！"]))
 
 
@@ -218,7 +218,7 @@ static func _build_ch2_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action(EnemyAction.ActionType.ATTACK, 11, "冰拳")])],
 		_quotes(["吼————！", "（地面在颤抖）"], ["吼……（倒地，掀起雪浪）", "冰……碎了……"], ["砸！", "冰拳！", "吼！"], ["吼！疼！", "（愤怒咆哮）"], ["吼……不会……倒下……"]))
 	_register("ice_mage", "霜寒女巫", 2, 18, 4, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1)]), _action(EnemyAction.ActionType.ATTACK, 6), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1, 1)]), _action(EnemyAction.ActionType.ATTACK, 6), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)])])],
 		_quotes(["冰霜……会冻结一切……", "寒冬……已经来临……"], ["冰……碎了……但寒意……永存……", "（冰晶四散）"], ["冰锥！", "寒冰箭！", "冻住！"], ["冰盾……裂了……", "不……可能……"], ["暴风雪……最后的咏唱……"]))
 	_register("ice_wolf", "霜鬃狼", 2, 22, 5, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 20,
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 5), _action(EnemyAction.ActionType.ATTACK, 7, "冰霜撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("burn", 1)])])],
@@ -231,19 +231,19 @@ static func _build_ch2_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 13, "暴风突袭")])],
 		_quotes(["嗷——风雪为我引路！", "（狂吠声回荡）"], ["风停了……", "回归风雪……"], ["撕咬！", "突袭！", "嗷呜！"], ["嗷！", "一点皮毛伤。"], ["最后一阵风雪——卷起全部力量！"]))
 	_register("ice_crystal_archer", "冰晶射手", 2, 20, 7, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 22,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 7), _action(EnemyAction.ActionType.ATTACK, 9, "冰棱射击"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 7), _action(EnemyAction.ActionType.ATTACK, 9, "冰棱射击"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["箭已上弦——", "（冰棱折射出寒光）"], ["箭袋空了……", "冰棱融化……"], ["冰棱！", "穿透！", "咻——"], ["擦伤。", "距离估算出错了？"], ["最后一箭——必须结霜。"]))
 	_register("ice_avalanche_watch", "雪峦守望", 2, 54, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.GUARDIAN, 22,
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 12), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.DEFEND, 10), _action(EnemyAction.ActionType.ATTACK, 8, "雪崩重击")])],
 		_quotes(["……山的一部分，动了。", "（冰壳碎裂声）"], ["崩……", "归于雪中……"], ["雪崩！", "重击！"], ["（冰壳裂缝）", "一点小伤。"], ["最后的冰壳——也要砸碎他！"]))
 	_register("ice_coffin_wraith", "冰棺咒灵", 2, 20, 8, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 22,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["寒气——侵骨。", "（冰棺中传出低语）"], ["咒灵散了……", "回归冰棺……"], ["冻咒！", "霜刃！", "灵魂剥离！"], ["啊——！", "寒意被扰了？"], ["全部寒意——凝成最后一击！"]))
 	_register("ice_frost_elder", "霜祭冰尊", 2, 26, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 22,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
 		_quotes(["霜之神啊——请饮下鲜血。", "（低声吟唱）"], ["祭坛……冷了……", "神……回避了我……"], ["霜之律令！", "冻骨之触！"], ["啊！", "仪式——被打断了？"], ["献祭吧——用我自己的寒骨！"]))
 	_register("ice_holy_bishop", "圣冰牧首", 2, 30, 5, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 22,
-		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
+		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
 		_quotes(["圣冰之名——净化你。", "（颂圣诗）"], ["诗篇……断章……", "圣冰……融化……"], ["圣冰审判！", "圣咏！"], ["啊！", "圣服被污了。"], ["全部圣咏——凝成审判！"]))
 
 ## ============================================================
@@ -255,7 +255,7 @@ static func _build_ch3_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.ATTACK, 10, "烈焰撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)])])],
 		_quotes(["（烈焰从口中喷出）", "吼！猎物！"], ["（化为灰烬）", "火……灭了……"], ["烈焰！", "烧！", "吞噬！"], ["（痛苦嚎叫）", "嗷！"], ["最后……一口火焰……"]))
 	_register("lava_imp", "小恶魔", 3, 16, 4, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.ATTACK, 5), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 6, "火球")])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.ATTACK, 5), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6, "火球")])],
 		_quotes(["嘻嘻嘻！又来送死的！", "火焰……是最好的玩具！"], ["嘻……不好玩了……", "（砰——消散）"], ["接火球！", "嘻嘻！烫吧！", "燃烧吧！"], ["哎呀！", "嘻……你打得到我？"], ["不行了……要逃了……才怪！吃火球！"]))
 	_register("lava_guardian", "黑铁卫士", 3, 48, 5, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.GUARDIAN, 20,
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 12), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.DEFEND, 8), _action(EnemyAction.ActionType.ATTACK, 8, "锻造重击")])],
@@ -274,13 +274,13 @@ static func _build_ch3_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 12), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.DEFEND, 10), _action(EnemyAction.ActionType.ATTACK, 9, "铁盾撞击")])],
 		_quotes(["……（盾牌撞地）", "一步不让。"], ["盾……裂了……", "归于铁砧……"], ["盾撞！", "砸！"], ["铁皮厚着。", "一层装甲，十层脾气。"], ["最后一盾——碎也要砸他！"]))
 	_register("lava_fire_mage", "焚心法师", 3, 22, 9, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 24,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)])])],
 		_quotes(["焚——心！", "（焰语低吟）"], ["法术……回火……", "心头火——熄了……"], ["焚心！", "炎狱！", "焰尖刺！"], ["啊！", "咒文——被烫断？"], ["最后一缕——焚尽你！"]))
 	_register("lava_ember_priest", "熔心祭司", 3, 28, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 24,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
 		_quotes(["火神——受我奉献。", "（炭盆燃起）"], ["火神……转身了……", "炭盆……冷了……"], ["熔心之礼！", "炎骨刃！"], ["啊——！", "仪式——被扰？"], ["以我热血——唤火神降临！"]))
 	_register("lava_cinder_oracle", "余烬圣司", 3, 32, 5, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 24,
-		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
+		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
 		_quotes(["余烬——开口了。", "（经文在火中显形）"], ["经文……化灰……", "火神……不应……"], ["余烬审判！", "炭骨刃！"], ["啊！", "圣书烫着手，但不曾合上。"], ["最后一页经文——全部焚化为刃！"]))
 
 ## ============================================================
@@ -298,26 +298,26 @@ static func _build_ch4_normals() -> void:
 		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.ATTACK, 6), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.ATTACK, 7, "暗影箭")])],
 		_quotes(["邪能……是最强大的力量！", "痛苦……才刚刚开始……"], ["不……我的灵魂……", "邪能……反噬了……"], ["暗影箭！", "燃烧吧！", "腐蚀！"], ["灵魂石……碎了……", "不可能……我的结界……"], ["生命分流！用你的生命……延续我的！"]))
 	_register("shadow_knight", "堕落死亡骑士", 4, 34, 10, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.WARRIOR, 20,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 12, "凋零打击")])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 12, "凋零打击")])],
 		_quotes(["曾经……我也是光明的骑士……", "背叛了光……便无路可退……"], ["光……我又看到了……光……", "（黑色铠甲碎裂）"], ["凋零！", "黑暗之力！", "受死吧！"], ["这具身体……已经不怕痛了……", "无用的抵抗……"], ["即便倒下……黑暗……也不会消失……"]))
 	# [CH4-EXPANSION] 章4 扩充 6 只
 	_register("shadow_reaver", "虚空狂徒", 4, 40, 11, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.WARRIOR, 26,
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 14, "虚空撕扯")])],
 		_quotes(["虚空——在我身后蠕动。", "（扭曲的笑声）"], ["虚空……吞回了我……", "原来……我只是它的一爪……"], ["虚空斩！", "撕！", "噬！"], ["肉身？我早就没这玩意。", "痛感……提醒我还活着。"], ["用虚空的最后一爪——报复你！"]))
 	_register("shadow_crossbow", "邪能弩手", 4, 26, 10, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 26,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 12, "邪能穿透")])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 12, "邪能穿透")])],
 		_quotes(["准星——对准了。", "（邪能在弩箭上流动）"], ["弩弦断了……", "没瞄准核心……可惜……"], ["穿！", "破甲！", "咻——"], ["擦伤而已。", "距离我算错了一步。"], ["最后一箭——浸满邪能！"]))
 	_register("shadow_gatekeeper", "深渊守门", 4, 58, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.GUARDIAN, 26,
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 6), _action(EnemyAction.ActionType.DEFEND, 12), _action(EnemyAction.ActionType.ATTACK, 10, "深渊撞击")])],
 		_quotes(["门后——是你进不去的世界。", "（巨大的叩门声）"], ["门……关上了……", "无法守护了……"], ["门锤！", "撞！"], ["护甲松了两片。", "门还在。"], ["最后一击——把门带着他一起砸塌！"]))
 	_register("shadow_oracle", "虚空卜者", 4, 22, 8, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 26,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["卜辞已出——你的结局，是'死'。", "（虚空之眼睁开）"], ["卜辞……错了？……", "虚空……也会欺骗我……"], ["卜辞！", "虚空之眼！", "注视——"], ["卜辞……被扰？", "数据——重新校准。"], ["最后的卜辞——全赌你死！"]))
 	_register("shadow_sin_priest", "堕落司祭", 4, 28, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 26,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
 		_quotes(["罪——是信仰的另一张脸。", "（黑色圣水泼洒）"], ["告解……被撤回了……", "罪——无人接续……"], ["罪刃！", "堕落之咒！"], ["啊——！", "祭袍破了一角——不影响。"], ["以我罪身——完成最后的献祭！"]))
 	_register("shadow_void_prophet", "渊影预言者", 4, 32, 5, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 26,
-		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
+		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 5)])],
 		_quotes(["预言——已写在你的影子里。", "（虚空经文滴水）"], ["预言……错了……", "虚空……也会说谎？……"], ["预言之刃！", "影咏！"], ["啊！", "经书尚未合上。"], ["最后一段预言——必然应验！"]))
 
 ## ============================================================
@@ -329,13 +329,13 @@ static func _build_ch5_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.DEFEND, 10), _action(EnemyAction.ActionType.ATTACK, 10, "圣光裁决")])],
 		_quotes(["此地……不可侵犯。", "以泰坦之名——退下！"], ["任务……失败……", "光……指引我……回家……"], ["裁决！", "净化！", "圣光之锤！"], ["圣光护盾……动摇了……", "不过是……考验……"], ["即使倒下……光明……永不熄灭……"]))
 	_register("eternal_chrono", "时光龙人", 5, 26, 7, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 8, "时光冲击"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 8, "时光冲击"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1, 1)])])],
 		_quotes(["你的时间线……出了偏差……", "过去、现在、未来……我都能看见……"], ["时间线……修复了……", "这个结果……也在预料之中……"], ["时光逆转！", "沙漏之力！", "时间停止！"], ["时间流……紊乱了……", "这不在……预言中……"], ["最后的沙粒……也快流尽了……"]))
 	_register("eternal_archer", "星界游侠", 5, 22, 10, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 20,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 12, "星辰之箭"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 12, "星辰之箭"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)])])],
 		_quotes(["星光……指引我的箭矢……", "（弓弦轻响）"], ["星辰……暗了……", "（化为星尘）"], ["星箭！", "穿透！", "星光之雨！"], ["嘶……", "星光……偏移了……"], ["最后一箭……献给星辰……"]))
 	_register("eternal_priest", "泰坦祭司", 5, 24, 3, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 20,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_defend_ally(2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 6, "圣光惩击")])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_defend_ally(2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6, "圣光惩击")])],
 		_quotes(["泰坦的意志……不容亵渎。", "圣光……会审判一切。"], ["泰坦……我……回来了……", "（光芒消散）"], ["惩击！", "圣光！", "泰坦之怒！"], ["信仰……不会动摇……", "只是……皮肉之伤……"], ["圣光……赐予我……最后的力量……"]))
 	# [CH5-EXPANSION] 章5 扩充 7 只
 	_register("eternal_champion", "永恒斗士", 5, 42, 12, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.WARRIOR, 28,
@@ -345,16 +345,16 @@ static func _build_ch5_normals() -> void:
 		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.DEFEND, 10), _action(EnemyAction.ActionType.ATTACK, 13, "圣光重击")])],
 		_quotes(["圣光——与我同行。", "（甲胄铿锵）"], ["圣光……稍稍收回了……", "铠甲……还在……灵魂已退……"], ["圣光！", "重击！", "审判！"], ["小刀痕——祷告已愈。", "圣光仍伴我。"], ["以我骑士誓约——最后一刀！"]))
 	_register("eternal_skyknight", "穹苍骑兵", 5, 26, 9, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.RANGER, 28,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action(EnemyAction.ActionType.ATTACK, 12, "俯冲射"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action(EnemyAction.ActionType.ATTACK, 12, "俯冲射"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["（风从头顶掠过）", "上空——是我的领地。"], ["羽翼……折了……", "风……不再载我……"], ["俯冲射！", "穿羽！", "咻——"], ["气流吹偏了。", "擦伤。"], ["最后一支箭——带着风意而至！"]))
 	_register("eternal_bulwark", "永光壁垒", 5, 56, 7, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.GUARDIAN, 28,
 		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 7), _action(EnemyAction.ActionType.DEFEND, 12), _action(EnemyAction.ActionType.ATTACK, 10, "永光撞击")])],
 		_quotes(["光壁——合上。", "（塔盾落地声）"], ["壁……崩了……", "圣光遮不住一切……"], ["壁撞！", "圣光冲！"], ["盾面裂痕，可修。", "圣光尚在。"], ["最后一面壁——砸碎他与我！"]))
 	_register("eternal_chronomancer", "时砂法师", 5, 24, 9, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.CASTER, 28,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_quotes(["时砂——倒流片刻。", "（沙漏悬空）"], ["时砂……走空了……", "回到过去……也没用了……"], ["时砂刺！", "时之裂！", "砂流！"], ["啊！", "沙漏晃了一下。"], ["把所有剩余时砂——全倒给你！"]))
 	_register("eternal_lightcantor", "永光吟唱者", 5, 30, 6, EnemyCategory.NORMAL, GameTypes.EnemyCombatType.PRIEST, 28,
-		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
+		[_phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 8), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 6)])],
 		_quotes(["以永光之名——我为你唱挽歌。", "（唱经班低吟）"], ["挽歌……断句了……", "永光…微弱……"], ["圣咏！", "永光之音！"], ["啊！", "经书烫手——但合上很难。"], ["以我嗓音——为你奏响最终章！"]))
 
 ## ============================================================
@@ -365,33 +365,33 @@ static func _build_elites() -> void:
 	# ===== 章1 精英 =====
 	_register("elite_necromancer", "亡灵巫师", 1, 85, 8, EnemyCategory.ELITE, GameTypes.EnemyCombatType.CASTER, 50,
 		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 14, "亡灵大军"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
 		_quotes(["死者……听从我的召唤！"], ["我的……亡灵们……"], ["亡灵术！", "腐蚀！", "黑暗吞噬！"], ["骨盾……碎了？"], ["用我的骸骨……召唤最后的亡灵！"]),
 		true, 2)
 	_register("elite_alpha_wolf", "狼人首领", 1, 100, 11, EnemyCategory.ELITE, GameTypes.EnemyCombatType.WARRIOR, 50,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 14, "狂暴撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("strength", 2)]), _action(EnemyAction.ActionType.ATTACK, 9)])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 14, "狂暴撕咬"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("strength", 2, 99)]), _action(EnemyAction.ActionType.ATTACK, 9)])],
 		_quotes(["月光之下……狼群为王！"], ["狼王……倒下了……"], ["撕碎！", "狂暴！", "嗷——！"], ["疼痛……让我更愤怒！"], ["月光……赐予我……"]),
 		true, 2)
 	# [NEW] 章1 新增精英
 	_register("elite_phantom_hunter", "魅影猎手", 1, 90, 10, EnemyCategory.ELITE, GameTypes.EnemyCombatType.RANGER, 50,
 		[_phase(0.35, [_action(EnemyAction.ActionType.ATTACK, 16, "幽影穿心"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 8)])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 8)])],
 		_quotes(["（无声出现）你……已经在我的射程内了。"], ["影子……消散了……猎物……逃了……"], ["幽影穿心！", "暗箭！", "无声之矢！"], ["嘶……被发现了？"], ["最后一箭——从影子里射出！"]),
 		true, 2)
 	# ===== 章2 精英 =====
 	_register("elite_frost_wyrm", "霜龙幼崽", 2, 95, 10, EnemyCategory.ELITE, GameTypes.EnemyCombatType.CASTER, 50,
-		[_phase(0.3, [_action(EnemyAction.ActionType.ATTACK, 18, "寒冰吐息"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 8)])],
+		[_phase(0.3, [_action(EnemyAction.ActionType.ATTACK, 18, "寒冰吐息"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2, 1)])]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 8)])],
 		_quotes(["（冰冷的咆哮响彻山谷）"], ["（碎裂成无数冰晶）"], ["冰息！", "冻住吧！"], ["龙鳞……裂了？"], ["最后的……寒冰吐息……"]),
 		true, 2)
 	_register("elite_ice_lord", "冰霜巨人王", 2, 120, 7, EnemyCategory.ELITE, GameTypes.EnemyCombatType.GUARDIAN, 50,
-		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 20), _action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.ATTACK, 14, "冰锤粉碎"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 20), _action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.ATTACK, 14, "冰锤粉碎"), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1, 1)])])],
 		_quotes(["渺小的生物……敢闯冰封王座？"], ["冰……不灭……"], ["碾碎！", "冰锤！"], ["蚊虫叮咬……"], ["冰封王座……不会倒塌！"]),
 		true, 2)
 	# [NEW] 章2 新增精英
 	_register("elite_frost_archon", "霜誓执政", 2, 105, 9, EnemyCategory.ELITE, GameTypes.EnemyCombatType.PRIEST, 50,
-		[_phase(0.35, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.DEFEND, 16)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
+		[_phase(0.35, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 16)]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
 		_quotes(["霜之律法——不容违抗。"], ["律法……被推翻了……"], ["霜之律令！", "冰封审判！"], ["律法不会因一击而动摇。"], ["以霜之名——宣判最终裁决！"]),
 		true, 2)
 	# ===== 章3 精英 =====
@@ -406,39 +406,39 @@ static func _build_elites() -> void:
 		true, 2)
 	# [NEW] 章3 新增精英
 	_register("elite_flame_oracle", "烈焰谕者", 3, 95, 10, EnemyCategory.ELITE, GameTypes.EnemyCombatType.PRIEST, 50,
-		[_phase(0.35, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 14)]),
+		[_phase(0.35, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 14)]),
 		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.DEFEND, 10)])],
 		_quotes(["火焰的谕示——你将化为灰烬。"], ["谕示……错了……"], ["烈焰谕令！", "焚烧审判！"], ["火焰不会因一击而熄灭。"], ["以烈焰之名——宣判最终焚烧！"]),
 		true, 2)
 	# ===== 章4 精英 =====
 	_register("elite_doomguard", "末日守卫", 4, 110, 11, EnemyCategory.ELITE, GameTypes.EnemyCombatType.WARRIOR, 50,
-		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 16, "末日审判"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 14), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()])])],
+		[_phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 16, "末日审判"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 14), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()])])],
 		_quotes(["末日……已经降临。"], ["军团……不灭……"], ["末日审判！", "灵魂撕裂！"], ["邪能护甲……动摇了？"], ["用我的生命……召唤更强大的恶魔！"]),
 		true, 2)
 	_register("elite_shadow_priest", "暗影大主教", 4, 80, 8, EnemyCategory.ELITE, GameTypes.EnemyCombatType.PRIEST, 50,
 		[_phase(0.3, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 10, "精神鞭笞"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 10, "精神鞭笞"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
 		_quotes(["暗影的低语……你听到了吗？"], ["暗影……弥散了……"], ["精神鞭笞！", "暗影之触！"], ["心灵屏障……裂了……"], ["暗影……形态——最终手段！"]),
 		true, 2)
 	# [NEW] 章4 新增精英
 	_register("elite_nightfang_stalker", "夜牙潜影", 4, 95, 12, EnemyCategory.ELITE, GameTypes.EnemyCombatType.RANGER, 50,
 		[_phase(0.35, [_action(EnemyAction.ActionType.ATTACK, 18, "夜牙穿刺"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 12), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.ATTACK, 10)])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 12), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 10)])],
 		_quotes(["（从暗影中无声浮现）"], ["影子……回归了黑暗……"], ["夜牙穿刺！", "暗影突袭！"], ["嘶……不过是擦伤。"], ["最后一击——从你的影子里刺出！"]),
 		true, 2)
 	# ===== 章5 精英 =====
 	_register("elite_titan_construct", "泰坦守护者", 5, 130, 10, EnemyCategory.ELITE, GameTypes.EnemyCombatType.GUARDIAN, 50,
-		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 22), _action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 18, "泰坦之锤"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)])])],
+		[_phase(0, [_action(EnemyAction.ActionType.DEFEND, 22), _action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.ATTACK, 18, "泰坦之锤"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)])])],
 		_quotes(["入侵者检测完毕。启动消灭程序。"], ["系统……崩溃……"], ["泰坦之锤！", "消灭目标！"], ["护盾……承受冲击……"], ["核心过载……启动自毁倒计时……"]),
 		true, 2)
 	_register("elite_void_walker", "虚空行者", 5, 90, 13, EnemyCategory.ELITE, GameTypes.EnemyCombatType.CASTER, 50,
 		[_phase(0.35, [_action(EnemyAction.ActionType.ATTACK, 20, "虚空爆裂"), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()])]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 13), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 13), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)])])],
 		_quotes(["虚空……无处不在……"], ["虚空……会记住你……"], ["虚空爆裂！", "维度撕裂！"], ["虚空……波动了……"], ["虚空的全部力量……释放！"]),
 		true, 2)
 	# [NEW] 章5 新增精英
 	_register("elite_celestial_champion", "天裁斗神", 5, 115, 11, EnemyCategory.ELITE, GameTypes.EnemyCombatType.WARRIOR, 50,
-		[_phase(0.35, [_action(EnemyAction.ActionType.ATTACK, 18, "天裁圣击"), _action(EnemyAction.ActionType.DEFEND, 16), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)])]),
+		[_phase(0.35, [_action(EnemyAction.ActionType.ATTACK, 18, "天裁圣击"), _action(EnemyAction.ActionType.DEFEND, 16), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)])]),
 		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 11), _action(EnemyAction.ActionType.ATTACK, 14, "圣光劈斩"), _action(EnemyAction.ActionType.DEFEND, 12)])],
 		_quotes(["天裁之剑——只为审判而铸。"], ["审判……结束了……"], ["天裁圣击！", "圣光劈斩！"], ["圣甲……不过是划痕。"], ["以天裁之名——最后一剑！"]),
 		true, 2)
@@ -451,7 +451,7 @@ static func _build_bosses() -> void:
 	# ===== 章1 中Boss =====
 	_register_boss("boss_lich_forest", "枯骨巫妖", 1, 120, 10, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 60,
 		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 16, "亡灵风暴"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.ATTACK, 14, "骸骨之矛"), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()]), _action(EnemyAction.ActionType.DEFEND, 15)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1)]), _action(EnemyAction.ActionType.DEFEND, 15)])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 8), _action(EnemyAction.ActionType.ATTACK, 8), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("vulnerable", 1, 2)]), _action(EnemyAction.ActionType.DEFEND, 15)])],
 		_boss_quotes(
 			["千年的死寂，被你这小小的活人惊扰了……不可饶恕。", "又一个不知死活的来客？我的墓园从不嫌客人多。"],
 			["亡魂们，听令——把他的骨头加入我的军团。", "骷髅卫，起立。让他先和你们的旧战友打个招呼。"],
@@ -463,7 +463,7 @@ static func _build_bosses() -> void:
 	# [NEW] 章1 中Boss: 根须巨像
 	_register_boss("boss_root_colossus", "根须巨像", 1, 135, 11, BossRank.MID, GameTypes.EnemyCombatType.GUARDIAN, 55,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 14, "根须重拳"), _action(EnemyAction.ActionType.DEFEND, 24), _action(EnemyAction.ActionType.ATTACK, 12), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_boss_quotes(
 			["森林把你交给了我——这片土地上，每一块石头都记得我的名字。"],
 			["泥像们，起。把他缠住——我走一步，泥土就长一尺。"],
@@ -474,8 +474,8 @@ static func _build_bosses() -> void:
 		true, 3, null, _revive(0.5, 2, "forest_treant"))
 	# [NEW] 章1 中Boss: 魅森巫母
 	_register_boss("boss_coven_matriarch", "魇森巫母", 1, 115, 9, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 55,
-		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 12, "诅咒爆发"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 12)]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
+		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 12, "诅咒爆发"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 12)]),
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
 		_boss_quotes(
 			["我养育了这片森林里所有的毒草，也养育了每一个诅咒。"],
 			["女儿们——起舞。让他看看诅咒真正的模样。"],
@@ -487,7 +487,7 @@ static func _build_bosses() -> void:
 	# 章1 终Boss
 	_register_boss("boss_ancient_treant", "远古树王", 1, 240, 15, BossRank.FINAL, GameTypes.EnemyCombatType.GUARDIAN, 0,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 22, "大地之怒"), _action(EnemyAction.ActionType.DEFEND, 30), _action(EnemyAction.ActionType.ATTACK, 18), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 20), _action(EnemyAction.ActionType.ATTACK, 12), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 15)])],
+		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 20), _action(EnemyAction.ActionType.ATTACK, 12), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 15)])],
 		_boss_quotes_full(
 			["这片森林从我萌芽的那一刻起，就吞噬了无数像你这样的来客。", "我用千年生根，你却想用几个回合砍倒我？可笑。"],
 			["根须巨像也倒了？真有趣……他可是我亲手种下的卫兵。", "我感受到森林的颤抖——原来是你。"],
@@ -500,8 +500,8 @@ static func _build_bosses() -> void:
 		false, 0, _summon("forest_wraith_cultist", 4, 1, 3, 4, 0.5))
 	# ===== 章2 中Boss =====
 	_register_boss("boss_frost_queen", "霜寒女王", 2, 130, 10, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 60,
-		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 18, "暴风雪"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_status("vulnerable", 2), _fx_curse_die()]), _action(EnemyAction.ActionType.DEFEND, 16)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.DEFEND, 14)])],
+		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 18, "暴风雪"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2, 1)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_status("vulnerable", 2, 2), _fx_curse_die()]), _action(EnemyAction.ActionType.DEFEND, 16)]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("freeze", 1, 1)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 14)])],
 		_boss_quotes(
 			["这片冰原的每一寸都见证过我的加冕。你来此，无非送一具新的冰雕。"],
 			["冰晶卫队——上前。让他在见到我之前，就已经被冻僵了灵魂。"],
@@ -512,8 +512,8 @@ static func _build_bosses() -> void:
 		true)
 	# [NEW] 章2 中Boss: 冰锤领主
 	_register_boss("boss_frost_hammer", "冰锤领主", 2, 140, 12, BossRank.MID, GameTypes.EnemyCombatType.WARRIOR, 55,
-		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 16, "冰锤粉碎"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2)]), _action(EnemyAction.ActionType.ATTACK, 13), _action(EnemyAction.ActionType.DEFEND, 18)]),
-		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)])])],
+		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 16, "冰锤粉碎"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2, 1)]), _action(EnemyAction.ActionType.ATTACK, 13), _action(EnemyAction.ActionType.DEFEND, 18)]),
+		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 14), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)])])],
 		_boss_quotes(
 			["冰锤锻造于千年冰河——它只认一件事：敲平一切拒绝臣服之物。"],
 			["冰锤士——去。我不喜欢为一个蝼蚁弯腰。"],
@@ -524,8 +524,8 @@ static func _build_bosses() -> void:
 		true, 3, _summon("ice_avalanche_watch", 3, 1, 3, 4))
 	# [NEW] 章2 中Boss: 寒霜女猎
 	_register_boss("boss_winter_huntress", "寒霜女猎", 2, 120, 10, BossRank.MID, GameTypes.EnemyCombatType.RANGER, 55,
-		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 11, "冰棱连发"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "致命一箭"), _action(EnemyAction.ActionType.DEFEND, 10)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 10)])],
+		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 11, "冰棱连发"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "致命一箭"), _action(EnemyAction.ActionType.DEFEND, 10)]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 10)])],
 		_boss_quotes(
 			["风雪里的脚印——是我给你的最后警告。"],
 			["雪狼群——上。我要先看清你的步法。"],
@@ -537,7 +537,7 @@ static func _build_bosses() -> void:
 	# 章2 终Boss
 	_register_boss("boss_frost_lich", "霜之巫妖王", 2, 255, 15, BossRank.FINAL, GameTypes.EnemyCombatType.WARRIOR, 0,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 28, "霜之哀伤"), _action(EnemyAction.ActionType.ATTACK, 20), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 28)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2)]), _action(EnemyAction.ActionType.ATTACK, 18), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("freeze", 2, 1)]), _action(EnemyAction.ActionType.ATTACK, 18), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)])])],
 		_boss_quotes_full(
 			["永恒寒冬以我之名加冕——而你，配不上让本王亲自挥剑。"],
 			["霜寒女王败了……不过她从来都只是冰原上的一颗棋子。", "能融化她的寒霜……你的体温确实比我想的要高。"],
@@ -563,7 +563,7 @@ static func _build_bosses() -> void:
 	# [NEW] 章3 中Boss: 岩浆暴君
 	_register_boss("boss_magma_tyrant", "岩浆暴君", 3, 145, 13, BossRank.MID, GameTypes.EnemyCombatType.GUARDIAN, 55,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 16, "熔岩巨锤"), _action(EnemyAction.ActionType.DEFEND, 26), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.ATTACK, 12)]),
-		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)])])],
 		_boss_quotes(
 			["熔岩从我足下流出——我走一步，大地就要塌一层。"],
 			["熔岩犬，去。我要看看你能撑到第几口火焰。"],
@@ -575,7 +575,7 @@ static func _build_bosses() -> void:
 	# [NEW] 章3 中Boss: 魂炉术士
 	_register_boss("boss_soulforge_warlock", "魂炉术士", 3, 120, 10, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 55,
 		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()]), _action(EnemyAction.ActionType.ATTACK, 12, "魂炉熔诅"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.DEFEND, 12)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)])])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)])])],
 		_boss_quotes(
 			["我把灵魂丢进熔炉——看它融成什么，就成什么。"],
 			["锻灵们，起。先把他的意志敲软。"],
@@ -587,7 +587,7 @@ static func _build_bosses() -> void:
 	# 章3 终Boss
 	_register_boss("boss_deathwing", "熔火死翼", 3, 305, 16, BossRank.FINAL, GameTypes.EnemyCombatType.CASTER, 0,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 30, "大灾变"), _action(EnemyAction.ActionType.ATTACK, 22), _action_fx(EnemyAction.ActionType.SKILL, 4, [_fx_status("burn", 4)]), _action(EnemyAction.ActionType.DEFEND, 30)]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 20, "熔岩吐息")])],
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("burn", 3)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 20, "熔岩吐息")])],
 		_boss_quotes_full(
 			["大地在我翼下战栗，王城在我焰下成灰。区区凡夫，妄图与我对视？"],
 			["熔岩巨魔的咆哮……竟然停了。看来你确实让深渊有点意外。", "你居然能在岩浆里活着走过来？……有点意思。"],
@@ -601,7 +601,7 @@ static func _build_bosses() -> void:
 	# ===== 章4 中Boss =====
 	_register_boss("boss_archimonde", "深渊领主", 4, 160, 11, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 60,
 		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 18, "暗影之手"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("burn", 2)]), _action(EnemyAction.ActionType.ATTACK, 14, "邪能风暴"), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()]), _action(EnemyAction.ActionType.DEFEND, 16)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 14)])],
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)]), _action(EnemyAction.ActionType.DEFEND, 14)])],
 		_boss_quotes(
 			["燃烧军团跨越万千星海——而你的命，连一星烬火都不值。"],
 			["邪能爪牙，去吞噬他。让他在死前明白：抵抗，本就是亵渎。"],
@@ -612,8 +612,8 @@ static func _build_bosses() -> void:
 		true)
 	# [NEW] 章4 中Boss: 虚空审判官
 	_register_boss("boss_void_inquisitor", "虚空审判官", 4, 135, 11, BossRank.MID, GameTypes.EnemyCombatType.PRIEST, 55,
-		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "虚空审决"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 18)]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
+		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "虚空审决"), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 18)]),
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("poison", 2)])])],
 		_boss_quotes(
 			["虚空议会——已对你作出终审判决。"],
 			["执法侍者，出列。让他先感受'审判'这个词的重量。"],
@@ -624,8 +624,8 @@ static func _build_bosses() -> void:
 		true, 3, _summon("shadow_assassin", 3, 1, 3, 4))
 	# [NEW] 章4 中Boss: 混沌谋略家
 	_register_boss("boss_chaos_tactician", "混沌谋略家", 4, 125, 10, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 55,
-		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 12, "混乱之触"), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 10)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
+		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 12, "混乱之触"), _action_fx(EnemyAction.ActionType.SKILL, 0, [_fx_curse_die()]), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 10)]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 9), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 12)])],
 		_boss_quotes(
 			["我不需要你理解我的棋局——你的任务是成为一枚被牺牲的子。"],
 			["小卒们——布阵。我的价值不在于挥剑，在于预言谁该倒下。"],
@@ -637,7 +637,7 @@ static func _build_bosses() -> void:
 	# 章4 终Boss
 	_register_boss("boss_kiljaeden", "暗影之王", 4, 305, 16, BossRank.FINAL, GameTypes.EnemyCombatType.CASTER, 0,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 28, "黑暗终焉"), _action(EnemyAction.ActionType.ATTACK, 22), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 30)]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 4, [_fx_status("burn", 4)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 20, "邪能陨石")])],
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 4, [_fx_status("burn", 4)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 20, "邪能陨石")])],
 		_boss_quotes_full(
 			["你以为是你选择了走到这里？……不。这是我编织的剧本，第七幕，独你一人。"],
 			["剧本走到一半就杀掉伪装者……你确实比剧本设计的更聪明。", "让我看看——你以为这就是真相？真正的剧本第七幕才刚开。"],
@@ -650,8 +650,8 @@ static func _build_bosses() -> void:
 		false, 0, null, _revive(0.5, 2, "shadow_assassin"))
 	# ===== 章5 中Boss =====
 	_register_boss("boss_titan_watcher", "泰坦看守者", 5, 160, 12, BossRank.MID, GameTypes.EnemyCombatType.GUARDIAN, 60,
-		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 18, "泰坦审判"), _action(EnemyAction.ActionType.DEFEND, 22), _action(EnemyAction.ActionType.ATTACK, 16, "秩序之光"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)])]),
-		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 12)])],
+		[_phase(0.4, [_action(EnemyAction.ActionType.ATTACK, 18, "泰坦审判"), _action(EnemyAction.ActionType.DEFEND, 22), _action(EnemyAction.ActionType.ATTACK, 16, "秩序之光"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)])]),
+		 _phase(0, [_action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 12)])],
 		_boss_quotes(
 			["泰坦的秩序写在我的核心。你的存在——是宇宙级的拼写错误。"],
 			["执行肃清协议。子程序——出动。在他抵达本体之前，将其格式化。"],
@@ -662,8 +662,8 @@ static func _build_bosses() -> void:
 		true)
 	# [NEW] 章5 中Boss: 时流执政
 	_register_boss("boss_chrono_archon", "时流执政", 5, 145, 12, BossRank.MID, GameTypes.EnemyCombatType.CASTER, 55,
-		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 14, "时流撕裂"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 11)]),
-		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 12)])],
+		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 14, "时流撕裂"), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.DEFEND, 18), _action(EnemyAction.ActionType.ATTACK, 11)]),
+		 _phase(0, [_action(EnemyAction.ActionType.ATTACK, 10), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 12)])],
 		_boss_quotes(
 			["时流在我手里是一卷可以翻阅的书——你的结局，我已经读到最后一页。"],
 			["时流侍从——从过去与未来同时召唤出来。"],
@@ -674,8 +674,8 @@ static func _build_bosses() -> void:
 		true, 3, _summon("eternal_chronomancer", 3, 1, 3, 4))
 	# [NEW] 章5 中Boss: 圣辉执政
 	_register_boss("boss_celestial_archon", "圣辉执政", 5, 135, 11, BossRank.MID, GameTypes.EnemyCombatType.PRIEST, 55,
-		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "圣辉审判"), _action(EnemyAction.ActionType.DEFEND, 20), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)])]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1)]), _action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.DEFEND, 14)])],
+		[_phase(0.5, [_action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("vulnerable", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 13, "圣辉审判"), _action(EnemyAction.ActionType.DEFEND, 20), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)])]),
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 1, [_fx_status("weak", 1, 2)]), _action(EnemyAction.ActionType.ATTACK, 10), _action(EnemyAction.ActionType.DEFEND, 14)])],
 		_boss_quotes(
 			["圣辉议会——已将你列于'可以审判之物'的末位。"],
 			["圣辉护卫——执行初审。我只处理不可饶恕的罪人。"],
@@ -687,7 +687,7 @@ static func _build_bosses() -> void:
 	# 章5 终Boss
 	_register_boss("boss_eternal_lord", "永恒主宰", 5, 385, 18, BossRank.FINAL, GameTypes.EnemyCombatType.CASTER, 0,
 		[_phase(0.5, [_action(EnemyAction.ActionType.ATTACK, 28, "终极之光"), _action(EnemyAction.ActionType.ATTACK, 22), _action_fx(EnemyAction.ActionType.SKILL, 3, [_fx_status("poison", 3)]), _action(EnemyAction.ActionType.DEFEND, 30)]),
-		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 4, [_fx_status("burn", 4)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2)]), _action(EnemyAction.ActionType.ATTACK, 20)])],
+		 _phase(0, [_action_fx(EnemyAction.ActionType.SKILL, 4, [_fx_status("burn", 4)]), _action(EnemyAction.ActionType.ATTACK, 14), _action_fx(EnemyAction.ActionType.SKILL, 2, [_fx_status("weak", 2, 2)]), _action(EnemyAction.ActionType.ATTACK, 20)])],
 		_boss_quotes_full(
 			["每个时代都有人走到这里。每个走到这里的人，最后都成了我王座上的灰。"],
 			["果然如时间所示——你走到了这里。但你不会走过下一步。", "骰子的轨迹我看了亿万遍。这一掷，仍然是同样的结局。"],
@@ -759,9 +759,9 @@ static func _fx_defend_ally(value: int) -> Dictionary:
 		EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.RANDOM_ALLY)
 
 ## 施加状态效果（给玩家）
-static func _fx_status(status: String, value: int) -> Dictionary:
+static func _fx_status(status: String, value: int, duration: int = 3) -> Dictionary:
 	return EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
-		{"status": status, "value": value, "target": "enemy"},
+		{"status": status, "value": value, "target": "enemy", "duration": duration},
 		EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT)
 
 ## 嘲讽效果

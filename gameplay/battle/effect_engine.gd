@@ -75,7 +75,7 @@ class ExecuteResult:
 	var self_damage_percent: float = 0.0
 
 	## 状态类
-	var apply_statuses: Array[Dictionary] = []  # [{status, value, target}]
+	var apply_statuses: Array[Dictionary] = []  # [{status, value, target, duration}]
 	var purify_scope: String = ""  # "all" / "one" / ""
 
 	## 控制类
@@ -346,6 +346,7 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 				"status": params.get("status", ""),
 				"value": params.get("value", 0),
 				"target": params.get("target", "enemy"),
+				"duration": params.get("duration", 3),
 			})
 			result.descriptions.append("施加 %s %d层" % [params.get("status", ""), params.get("value", 0)])
 
