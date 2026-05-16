@@ -52,7 +52,7 @@ static func on_play(relics: Array[Dictionary], game: Node, dice: Array[Dictionar
 
 
 ## 击杀时触发
-static func on_kill(relics: Array[Dictionary], game: Node, overkill: int) -> void:
+static func on_kill(relics: Array[Dictionary], game: Node, _overkill: int) -> void:
 	var ctx := _build_context(game)
 	ctx.kills_this_play = 1
 	ctx.source = EffectTypes.EffectSource.RELIC
@@ -60,7 +60,7 @@ static func on_kill(relics: Array[Dictionary], game: Node, overkill: int) -> voi
 
 
 ## 受伤时触发
-static func on_damage_taken(relics: Array[Dictionary], game: Node, damage: int) -> void:
+static func on_damage_taken(relics: Array[Dictionary], game: Node, _damage: int) -> void:
 	var ctx := _build_context(game)
 	ctx.was_hit_last_turn = true
 	ctx.source = EffectTypes.EffectSource.RELIC
@@ -190,7 +190,7 @@ static func _trigger_relics_with_ctx(relics: Array[Dictionary], trigger_type: Ef
 
 
 ## 将 ExecuteResult 应用到游戏状态
-static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_id: String) -> void:
+static func _apply_result(result: EffectEngine.ExecuteResult, _game: Node, _relic_id: String) -> void:
 	if result.armor > 0:
 		PlayerState.armor += result.armor
 		EventBus.floating_text.emit("+%d护甲" % result.armor, Color.CYAN, "player", "")
@@ -205,7 +205,7 @@ static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_
 	if result.extra_plays > 0:
 		TurnManager.plays_left += result.extra_plays
 	if result.extra_rerolls > 0:
-		TurnManager.rerolls_left += result.extra_rerolls
+		TurnManager.free_rerolls_left += result.extra_rerolls
 	if result.extra_draws > 0:
 		PlayerState.relic_temp_draw_bonus += result.extra_draws
 	if result.gold_gain > 0:
@@ -225,13 +225,13 @@ static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_
 
 
 ## 构建执行上下文
-static func _build_context(game: Node) -> EffectEngine.ExecuteContext:
+static func _build_context(_game: Node) -> EffectEngine.ExecuteContext:
 	var ctx := EffectEngine.ExecuteContext.new()
 	ctx.player_hp = PlayerState.hp
 	ctx.player_max_hp = PlayerState.max_hp
 	ctx.player_armor = PlayerState.armor
 	ctx.player_combo = PlayerState.combo_count
-	ctx.player_rerolls = TurnManager.rerolls_left
+	ctx.player_rerolls = TurnManager.free_rerolls_left
 	ctx.hand_size = DiceBag.hand_dice.size()
 	if PlayerState.has_method("get_scar_stacks"):
 		ctx.player_scar_stacks = PlayerState.get_scar_stacks()

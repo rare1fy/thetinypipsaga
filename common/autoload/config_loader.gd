@@ -578,6 +578,25 @@ static func _param_to_effect(key: String, value: Variant, trigger_type: EffectTy
 		"max_counter":
 			# 计数器上限：由遗物运行时逻辑管理，不转为 effect
 			return {}
+		# ---- 以下为运行时逻辑标记型参数，由 RelicEngine 运行时检查 ----
+		"draw_bonus", "draw_penalty", "return_to_top", "free_reroll", \
+		"mirror_draw", "shotgun_aoe", "all_in_play", "echo_play", \
+		"straight_tolerance", "pair_tolerance", "straight_full_aoe", \
+		"fullhouse_return", "sync_bonus", "lucky_reroll", "stable_reroll", \
+		"auto_reroll", "fixed_points", "straight_to_gold", "chest_bonus", \
+		"shop_extra_dice", "heal_on_kill", "low_hp_extra_play", \
+		"rhythm_reroll", "lean_draw", "forge_destroy", "duplicate_die", \
+		"discard_to_bottom", "chance_draw", "time_rewind", "peek_top", \
+		"bounty_reward", "mirror_enemy", "blood_reroll_discount", \
+		"scar_decay_slow", "chain_duration", "undying_reroll", \
+		"scatter_crit", "kill_draw", "berserk_extra_play", "armor_snowball", \
+		"chant_cap_bonus", "chant_cap_speed", "element_balance", \
+		"disruption_cap", "chant_return", "barrier_to_damage", \
+		"meteor_discount", "element_lock_extend", "element_double", \
+		"first_round_play", "detonate_bonus", "shadow_carry", \
+		"shadow_preserve", "venom_spread", "dodge_first", "poison_base":
+			# 这些参数由 RelicEngine 运行时逻辑直接读取 relic_data，不转为 effect
+			return {}
 		_:
 			push_warning("[ConfigLoader] 未映射的遗物参数: %s = %s" % [key, str(value)])
 	return {}
