@@ -62,7 +62,7 @@ static func draw_from_bag(
 		drawn.append({
 			"id": randi(), "defId": def_id, "value": value,
 			"element": GameTypes.DiceElement.keys()[def.element].to_lower(),
-				"selected": false, "rolling": false,
+			"selected": false, "rolling": false,
 			"kept": false, "isShadowRemnant": false, "isTemp": false,
 			"shadowRemnantPersistent": false, "keptBonusAccum": 0,
 		})

@@ -360,7 +360,7 @@ func _register_soul_shop_relics() -> void:
 		]))
 	_reg_relic(_mk_relic_fx("greedy_hand", "贪婪之手", "金币获取+30%", GameTypes.RelicRarity.RARE,
 		GameTypes.RelicTrigger.PASSIVE, [
-			EffectTypes.create_effect(EffectTypes.EffectType.GOLD_GAIN,
+		EffectTypes.create_effect(EffectTypes.EffectType.GAIN_GOLD,
 				{"value": 30, "mode": "percent"}, EffectTypes.TriggerType.PASSIVE, EffectTypes.EffectScope.RUN),
 		]))
 	_reg_relic(_mk_relic_fx("crimson_grail", "绯红圣杯", "击杀敌人恢复8HP", GameTypes.RelicRarity.RARE,
@@ -385,7 +385,7 @@ func _register_soul_shop_relics() -> void:
 		]))
 	_reg_relic(_mk_relic_fx("symmetry_seeker", "对称追寻者", "对子伤害+20%", GameTypes.RelicRarity.RARE,
 		GameTypes.RelicTrigger.ON_PLAY, [
-			EffectTypes.create_effect(EffectTypes.EffectType.DAMAGE_MULT,
+		EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT,
 				{"value": 0.2, "condition": "hand_type_pair"}, EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT),
 		]))
 	_reg_relic(_mk_relic_fx("iron_banner", "铁旗", "每回合开始获得3护甲", GameTypes.RelicRarity.UNCOMMON,

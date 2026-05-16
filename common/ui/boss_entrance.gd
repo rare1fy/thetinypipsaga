@@ -104,7 +104,7 @@ func _build_ui() -> void:
 	center.add_child(name_label)
 
 	# 副标题
-	var subtitle := CHAPTER_SUBTITLES.get(_chapter, "深渊之主") if not _is_final else "终焉主宰"
+	var subtitle: String = CHAPTER_SUBTITLES.get(_chapter, "深渊之主") if not _is_final else "终焉主宰"
 	var sub_label := Label.new()
 	sub_label.text = subtitle
 	sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
