@@ -33,13 +33,31 @@ var guard_rage: int = 0         ## Guardian 防御怒气层数
 var blood_fury: int = 0         ## Warrior 血怒层数（受伤后累加，每层+25%攻击）
 var vengeance_stacks: int = 0   ## Berserker 复仇层数（队友死亡时+50%/层）
 
-## v0.5 控制状态
-var cc_taunt_turns: int = 0     ## 嘲讽剩余回合
-var cc_stun_turns: int = 0      ## 眩晕剩余回合
-var cc_polymorph_turns: int = 0 ## 变羊剩余回合
-var cc_blind_turns: int = 0     ## 致盲剩余回合
-var cc_disarm_turns: int = 0    ## 缴械剩余回合
+## v0.5 控制状态 — 统一用 Dictionary 管理，key = 控制类型名, value = 剩余回合数
+var cc_turns: Dictionary = {}  ## {"taunt": 2, "stun": 1, ...}
 var cc_immunity: bool = false   ## 配置级免控标记
+
+## 控制状态便捷访问器
+var cc_taunt_turns: int:
+	get: return cc_turns.get("taunt", 0)
+	set(v): if v > 0: cc_turns["taunt"] = v
+		else: cc_turns.erase("taunt")
+var cc_stun_turns: int:
+	get: return cc_turns.get("stun", 0)
+	set(v): if v > 0: cc_turns["stun"] = v
+		else: cc_turns.erase("stun")
+var cc_polymorph_turns: int:
+	get: return cc_turns.get("polymorph", 0)
+	set(v): if v > 0: cc_turns["polymorph"] = v
+		else: cc_turns.erase("polymorph")
+var cc_blind_turns: int:
+	get: return cc_turns.get("blind", 0)
+	set(v): if v > 0: cc_turns["blind"] = v
+		else: cc_turns.erase("blind")
+var cc_disarm_turns: int:
+	get: return cc_turns.get("disarm", 0)
+	set(v): if v > 0: cc_turns["disarm"] = v
+		else: cc_turns.erase("disarm")
 
 
 ## 从配置创建敌人实例

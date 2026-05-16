@@ -684,97 +684,97 @@
     {
       "code": "ET01",
       "key": "damage",
-      "desc": "造成伤害（加法）对应 DiceDef.bonus_damage / RelicDef.damage"
+      "desc": "造成伤害（加法）对应 EffectType.BONUS_DAMAGE params.value"
     },
     {
       "code": "ET02",
       "key": "damage_mult",
-      "desc": "伤害倍率（乘法）对应 DiceDef.bonus_mult / RelicDef.multiplier"
+      "desc": "伤害倍率（乘法）对应 EffectType.DAMAGE_MULT params.value"
     },
     {
       "code": "ET03",
       "key": "armor",
-      "desc": "获得护甲 对应 DiceDef.armor / RelicDef.armor"
+      "desc": "获得护甲 对应 EffectType.ARMOR params.value"
     },
     {
       "code": "ET04",
       "key": "heal",
-      "desc": "恢复生命 对应 DiceDef.heal / RelicDef.heal"
+      "desc": "恢复生命 对应 EffectType.HEAL params.value"
     },
     {
       "code": "ET05",
       "key": "pierce",
-      "desc": "穿甲 对应 DiceDef.pierce / RelicDef.pierce"
+      "desc": "穿甲 对应 EffectType.PIERCE params.value"
     },
     {
       "code": "ET06",
       "key": "self_damage",
-      "desc": "自残 对应 DiceDef.self_damage"
+      "desc": "自残 对应 EffectType.SELF_DAMAGE params.value"
     },
     {
       "code": "ET07",
       "key": "status_to_enemy",
-      "desc": "给敌人施加状态，param_ref 用 ST紧凑编码"
+      "desc": "给敌人施加状态 对应 EffectType.APPLY_STATUS params.status/value/target"
     },
     {
       "code": "ET08",
       "key": "status_to_self",
-      "desc": "给自身施加状态，param_ref 用 ST紧凑编码"
+      "desc": "给自身施加状态 对应 EffectType.APPLY_STATUS params.target=self"
     },
     {
       "code": "ET09",
       "key": "extra_dice",
-      "desc": "衍生骰子，param_key 常用：grant_shadow_die / clone_self"
+      "desc": "衍生骰子 对应 EffectType.GRANT_SHADOW_DIE / CLONE_SELF"
     },
     {
       "code": "ET10",
       "key": "bonus_on_keep",
-      "desc": "保留到下回合的加成 对应 DiceDef.bonus_on_keep / bonus_per_turn_kept"
+      "desc": "保留到下回合的加成 对应 EffectType.BONUS_ON_KEEP params.value"
     },
     {
       "code": "ET11",
       "key": "scale_flag",
-      "desc": "缩放标记（条件触发类）param_key 指具体字段名"
+      "desc": "缩放标记（条件触发类）对应 EffectType 的 condition 字段"
     },
     {
       "code": "ET12",
       "key": "special",
-      "desc": "特殊逻辑（代码写死）param_key = 字段名，param_value = 值"
+      "desc": "特殊逻辑 对应各专用 EffectType（EXECUTE/DETONATE/ESCALATE 等）"
     },
     {
       "code": "ET20",
       "key": "gold_bonus",
-      "desc": "金币加成 对应 RelicDef.gold_bonus"
+      "desc": "金币加成 对应 EffectType.GOLD_GAIN params.value"
     },
     {
       "code": "ET21",
       "key": "draw_bonus",
-      "desc": "抽牌加成 对应 RelicDef.draw_count_bonus"
+      "desc": "抽牌加成 对应 EffectType.MODIFY_DRAW_COUNT params.value"
     },
     {
       "code": "ET22",
       "key": "shop_discount",
-      "desc": "商店折扣 对应 RelicDef.shop_discount"
+      "desc": "商店折扣 对应 EffectType.SHOP_DISCOUNT params.value"
     },
     {
       "code": "ET23",
       "key": "free_rerolls",
-      "desc": "免费重投 对应 RelicDef.free_rerolls"
+      "desc": "免费重投 对应 EffectType.GRANT_REROLL params.count"
     },
     {
       "code": "ET24",
       "key": "extra_play",
-      "desc": "额外出牌 对应 RelicDef.extra_play"
+      "desc": "额外出牌 对应 EffectType.GRANT_EXTRA_PLAY params.count"
     },
     {
       "code": "ET25",
       "key": "extra_reroll",
-      "desc": "额外重投 对应 RelicDef.extra_reroll"
+      "desc": "额外重投 对应 EffectType.GRANT_REROLL params.count"
     },
     {
       "code": "ET26",
       "key": "extra_draw",
-      "desc": "额外抽牌 对应 RelicDef.extra_draw"
+      "desc": "额外抽牌 对应 EffectType.MODIFY_DRAW_COUNT params.value"
     }
   ],
   "enum_status_type": [

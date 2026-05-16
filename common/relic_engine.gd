@@ -199,6 +199,9 @@ static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_
 		PlayerState.hp += actual_heal
 		if actual_heal > 0:
 			EventBus.floating_text.emit("+%dHP" % actual_heal, Color.GREEN, "player", "")
+	if result.self_damage > 0:
+		PlayerState.hp = maxi(1, PlayerState.hp - result.self_damage)
+		EventBus.floating_text.emit("-%dHP" % result.self_damage, Color.RED, "player", "")
 	if result.extra_plays > 0:
 		TurnManager.plays_left += result.extra_plays
 	if result.extra_rerolls > 0:
@@ -208,6 +211,14 @@ static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_
 	if result.gold_gain > 0:
 		PlayerState.gold += result.gold_gain
 		EventBus.floating_text.emit("+%d金币" % result.gold_gain, Color.YELLOW, "player", "")
+	if not result.apply_statuses.is_empty():
+		for st: Dictionary in result.apply_statuses:
+			var st_type: GameTypes.StatusType = EffectTypes.status_name_to_type(st.get("status", ""))
+			var st_value: int = st.get("value", 1)
+			var st_duration: int = st.get("duration", 3)
+			var st_target: String = st.get("target", "self")
+			if st_target == "self":
+				GameManager.add_status(st_type, st_value, st_duration)
 
 
 ## 构建执行上下文

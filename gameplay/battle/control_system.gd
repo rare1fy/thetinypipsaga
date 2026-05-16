@@ -42,19 +42,12 @@ static func apply_control(
 		return false
 
 	# 施加控制
+	var cc_key: String = _type_to_key(control_type)
 	match control_type:
-		ControlType.TAUNT:
-			target.cc_taunt_turns = maxi(target.cc_taunt_turns, duration)
-		ControlType.STUN:
-			target.cc_stun_turns = maxi(target.cc_stun_turns, duration)
 		ControlType.KNOCKBACK:
 			target.distance = mini(3, target.distance + 1)  # 最大距离3
-		ControlType.POLYMORPH:
-			target.cc_polymorph_turns = maxi(target.cc_polymorph_turns, duration)
-		ControlType.BLIND:
-			target.cc_blind_turns = maxi(target.cc_blind_turns, duration)
-		ControlType.DISARM:
-			target.cc_disarm_turns = maxi(target.cc_disarm_turns, duration)
+		_:
+			target.cc_turns[cc_key] = maxi(target.cc_turns.get(cc_key, 0), duration)
 
 	BattleLog.log_player("🎯 %s 被施加 %s（%d回合）" % [target.name, _type_name(control_type), duration])
 	return true
@@ -81,22 +74,22 @@ static func _is_cc_immune(target: EnemyInstance, control_type: ControlType) -> b
 ## ============================================================
 
 static func should_skip_action(e: EnemyInstance) -> bool:
-	return e.cc_stun_turns > 0 or e.cc_polymorph_turns > 0
+	return e.cc_turns.get("stun", 0) > 0 or e.cc_turns.get("polymorph", 0) > 0
 
 
 ## 查询：嘲讽中（覆写意图为普攻×0.7）
 static func is_taunted(e: EnemyInstance) -> bool:
-	return e.cc_taunt_turns > 0
+	return e.cc_turns.get("taunt", 0) > 0
 
 
 ## 查询：致盲中（50% miss）
 static func is_blinded(e: EnemyInstance) -> bool:
-	return e.cc_blind_turns > 0
+	return e.cc_turns.get("blind", 0) > 0
 
 
 ## 查询：缴械中（无法攻击）
 static func is_disarmed(e: EnemyInstance) -> bool:
-	return e.cc_disarm_turns > 0
+	return e.cc_turns.get("disarm", 0) > 0
 
 
 ## ============================================================
@@ -107,16 +100,13 @@ static func tick_all(enemies: Array[EnemyInstance]) -> void:
 	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
 			continue
-		if e.cc_taunt_turns > 0:
-			e.cc_taunt_turns -= 1
-		if e.cc_stun_turns > 0:
-			e.cc_stun_turns -= 1
-		if e.cc_polymorph_turns > 0:
-			e.cc_polymorph_turns -= 1
-		if e.cc_blind_turns > 0:
-			e.cc_blind_turns -= 1
-		if e.cc_disarm_turns > 0:
-			e.cc_disarm_turns -= 1
+		var expired_keys: Array[String] = []
+		for key: String in e.cc_turns:
+			e.cc_turns[key] -= 1
+			if e.cc_turns[key] <= 0:
+				expired_keys.append(key)
+		for key: String in expired_keys:
+			e.cc_turns.erase(key)
 
 
 ## ============================================================
@@ -132,3 +122,14 @@ static func _type_name(ct: ControlType) -> String:
 		ControlType.BLIND: return "致盲"
 		ControlType.DISARM: return "缴械"
 		_: return "未知"
+
+
+static func _type_to_key(ct: ControlType) -> String:
+	match ct:
+		ControlType.TAUNT: return "taunt"
+		ControlType.STUN: return "stun"
+		ControlType.KNOCKBACK: return "knockback"
+		ControlType.POLYMORPH: return "polymorph"
+		ControlType.BLIND: return "blind"
+		ControlType.DISARM: return "disarm"
+		_: return "unknown"
