@@ -225,8 +225,8 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		view.enemy_clicked.connect(_on_enemy_clicked)
 		enemy_views.append(view)
 
-	# 更新关卡标签（顶部显示当前楼层深度）
-	stage_label.text = "第 %d 层" % (GameManager.current_node + 1)
+	# 更新状态栏（包含楼层+等级信息）
+	_refresh_status_bar()
 
 	# 战斗日志：开局
 	BattleLog.clear()
@@ -689,6 +689,13 @@ func _refresh_status_bar() -> void:
 	gold_label.text = "金币: %d" % PlayerState.gold
 	turn_label.text = "回合 %d" % GameManager.battle_turn
 	class_icon.text = _get_class_icon_text(PlayerState.player_class)
+	# 等级/经验显示
+	if stage_label and XpSystem:
+		var floor_text: String = "F%d" % (GameManager.current_node + 1)
+		if XpSystem.level >= XpSystem.MAX_LEVEL:
+			stage_label.text = "%s | Lv.%d MAX" % [floor_text, XpSystem.level]
+		else:
+			stage_label.text = "%s | Lv.%d (%d/%d)" % [floor_text, XpSystem.level, XpSystem.xp, XpSystem.xp_to_next]
 
 ## 职业像素字符图标（美术资源到位前的临时占位，对齐 RULES Q1=B）
 func _get_class_icon_text(class_id: String) -> String:

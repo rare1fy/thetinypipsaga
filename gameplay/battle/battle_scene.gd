@@ -562,10 +562,17 @@ func _handle_victory() -> void:
 	# 3. 统计更新
 	StatsTracker.stats.battlesWon = int(StatsTracker.stats.get("battlesWon", 0)) + 1
 
-	# 4. 遗物 tick：incrementFloorsCleared + tickHourglass
+	# 4. 经验值奖励 — 根据当前节点类型给予 XP
+	var node_type_str: String = _get_current_node_type_for_xp()
+	var XpSystemScript := preload("res://common/autoload/xp_system.gd")
+	var xp_gain: int = XpSystemScript.roll_kill_xp(node_type_str)
+	XpSystem.apply_xp_gain(xp_gain)
+	BattleLog.log_write("✨ 获得 %d 经验值" % xp_gain)
+
+	# 5. 遗物 tick：incrementFloorsCleared + tickHourglass
 	# （简化：当前 Godot 版遗物 tick 机制与原版不同，跳过复杂逻辑）
 
-	# 5. 地图标记当前节点为 completed
+	# 6. 地图标记当前节点为 completed
 	for node: MapGenerator.MapNode in GameManager.map_nodes:
 		if node.depth == GameManager.current_node:
 			node.visited = true
@@ -578,6 +585,16 @@ func _handle_victory() -> void:
 	# 播放胜利音效
 	SoundPlayer.play_sound("victory")
 
+	# 7. 检查升级弹窗（经验值可能触发了升级）
+	if XpSystem.has_pending_level_up():
+		var LevelUpModalRef := preload("res://common/ui/level_up_modal.gd")
+		LevelUpModalRef.check_and_show()
+		# 等待所有升级选择完成后再切换阶段
+		while XpSystem.has_pending_level_up():
+			await get_tree().create_timer(0.1).timeout
+			if not is_inside_tree():
+				return
+
 	if is_chapter_boss:
 		var has_next_chapter: bool = GameManager.advance_chapter()
 		if has_next_chapter:
@@ -587,6 +604,16 @@ func _handle_victory() -> void:
 	else:
 		# 普通战斗/精英/中Boss → 骰子奖励
 		GameManager.set_phase(GameTypes.GamePhase.DICE_REWARD)
+
+## 获取当前节点类型字符串（用于 XpSystem 经验计算）
+func _get_current_node_type_for_xp() -> String:
+	for node: MapGenerator.MapNode in GameManager.map_nodes:
+		if node.depth == GameManager.current_node:
+			match node.type:
+				GameTypes.NodeType.ELITE: return "elite"
+				GameTypes.NodeType.BOSS: return "boss"
+				_: return "normal"
+	return "normal"
 
 func _on_battle_lost() -> void:
 	# BattleController 已切 GAME_OVER，这里仅作兜底
