@@ -54,9 +54,27 @@ const TIP_OFFSET_Y := -12.0  # 骰子上方的间距
 @onready var _faces_label: Label = %FacesLabel
 @onready var _extra_label: Label = %ExtraLabel
 @onready var _arrow: Control = %Arrow
+## 效果列表标签（动态创建，不依赖 tscn）
+var _effects_label: Label = null
 
 func _ready() -> void:
 	_arrow.draw.connect(_draw_arrow)
+	# 在 DescLabel 和 FacesLabel 之间插入效果列表标签
+	_effects_label = Label.new()
+	_effects_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_effects_label.add_theme_font_size_override("font_size", 11)
+	_effects_label.add_theme_color_override("font_color", Color("#b0d0f0"))
+	_effects_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	_effects_label.add_theme_constant_override("outline_size", 1)
+	_effects_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_effects_label.custom_minimum_size.x = TIP_WIDTH - 20
+	_effects_label.visible = false
+	# 插入到 DescLabel 之后
+	var vbox: VBoxContainer = _desc_label.get_parent() as VBoxContainer
+	if vbox:
+		var desc_idx: int = _desc_label.get_index()
+		vbox.add_child(_effects_label)
+		vbox.move_child(_effects_label, desc_idx + 1)
 	visible = false
 
 func _draw_arrow() -> void:
@@ -89,10 +107,15 @@ func show_for_die(die: Dictionary, dice_global_pos: Vector2, player_class: Strin
 	else:
 		tip_name = def.name if not def.name.is_empty() else def_id
 
-	# 决定描述
+	# 决定描述：优先从 effects[] 生成，fallback 到旧 description
 	var tip_desc: String
+	var effect_lines: Array[String] = []
 	if not collapsed_elem.is_empty() and ELEM_DESCS.has(collapsed_elem):
 		tip_desc = ELEM_DESCS[collapsed_elem]
+	elif not def.effects.is_empty():
+		# 从 effects 数组自动生成描述
+		effect_lines = EffectTypes.describe_effects(def.effects)
+		tip_desc = ""  # 不再显示旧 description
 	else:
 		tip_desc = def.description
 
@@ -103,7 +126,6 @@ func show_for_die(die: Dictionary, dice_global_pos: Vector2, player_class: Strin
 	elif CLASS_COLORS.has(player_class):
 		tip_color = CLASS_COLORS[player_class]
 	else:
-		# id前缀推断
 		if def_id.begins_with("w_"):
 			tip_color = Color("#ff6060")
 		elif def_id.begins_with("mage_"):
@@ -119,6 +141,13 @@ func show_for_die(die: Dictionary, dice_global_pos: Vector2, player_class: Strin
 
 	_desc_label.text = tip_desc
 	_desc_label.visible = not tip_desc.is_empty()
+
+	# 效果列表
+	if effect_lines.is_empty():
+		_effects_label.visible = false
+	else:
+		_effects_label.text = "\n".join(effect_lines)
+		_effects_label.visible = true
 
 	# 面值
 	var face_strs := PackedStringArray()

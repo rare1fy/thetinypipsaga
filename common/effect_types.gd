@@ -579,3 +579,214 @@ static func status_name_to_type(name: String) -> int:
 		_:
 			push_warning("[EffectTypes] 未知状态名: %s" % name)
 			return -1
+
+
+# ============================================================
+# 效果描述生成（纯静态，不依赖运行时上下文，用于 Tooltip/UI）
+# ============================================================
+
+## 状态名中文映射
+const STATUS_CN: Dictionary = {
+	"poison": "中毒", "burn": "灼烧", "vulnerable": "易伤",
+	"weak": "虚弱", "freeze": "冻结", "slow": "减速",
+	"dodge": "闪避", "strength": "力量", "armor": "护甲",
+}
+
+## 控制类型中文映射
+const CONTROL_CN: Dictionary = {
+	"stun": "眩晕", "knockback": "击退", "pull": "拉拽",
+	"taunt": "嘲讽", "silence": "沉默", "root": "定身",
+}
+
+## 将单个效果字典转为人类可读的描述字符串
+static func describe_effect(effect: Dictionary) -> String:
+	var type: int = effect.get("type", -1)
+	var params: Dictionary = effect.get("params", {})
+
+	match type:
+		EffectType.BONUS_DAMAGE:
+			return "追加 +%d 伤害" % params.get("value", 0)
+		EffectType.BONUS_DAMAGE_SCALED:
+			var source: String = params.get("source", "points")
+			var ratio: float = params.get("ratio", 0.0)
+			var source_cn: String = "点数" if source == "points" else source
+			return "追加 %s×%.0f%% 伤害" % [source_cn, ratio * 100]
+		EffectType.BONUS_MULT:
+			return "伤害 +%.0f%%" % (params.get("value", 0.0) * 100)
+		EffectType.AOE:
+			var val: int = params.get("value", 0)
+			return "群伤" + (" +%d" % val if val > 0 else "")
+		EffectType.SPLASH:
+			return "溅射 %.0f%%" % (params.get("ratio", 0.0) * 100)
+		EffectType.OVERKILL_TRANSFER:
+			return "溢出转移 %.0f%%" % (params.get("ratio", 0.0) * 100)
+		EffectType.PIERCE:
+			return "穿甲 %d" % params.get("value", 0)
+		EffectType.TRUE_DAMAGE:
+			return "真实伤害 %d" % params.get("value", 0)
+		EffectType.EXECUTE:
+			return "处决（HP≤%.0f%%）" % (params.get("threshold", 0.0) * 100)
+		EffectType.ARMOR_BREAK:
+			return "摧毁护甲"
+		EffectType.ESCALATE:
+			return "每次使用伤害递增"
+		EffectType.DETONATE:
+			var st: String = STATUS_CN.get(params.get("status", ""), params.get("status", ""))
+			return "引爆%s（每层%d伤害）" % [st, params.get("damage_per_stack", 0)]
+		EffectType.HEAL:
+			return "回复 %d HP" % params.get("value", 0)
+		EffectType.HEAL_ON_TRIGGER:
+			return "条件触发治疗"
+		EffectType.ARMOR:
+			var val: int = params.get("value", 0)
+			var source: String = params.get("source", "")
+			if source == "points":
+				var ratio: float = params.get("ratio", 1.0)
+				var desc := "护甲=点数×%.1f" % ratio
+				var scar: Dictionary = params.get("scar_bonus", {})
+				if not scar.is_empty():
+					desc += "（伤痕≥%d时+%.0f%%）" % [scar.get("threshold", 0), scar.get("ratio", 0.0) * 100]
+				return desc
+			return "获得 %d 护甲" % val
+		EffectType.BARRIER:
+			return "获得 %d 屏障" % params.get("value", 0)
+		EffectType.MAX_HP_CHANGE:
+			return "最大HP %+d" % params.get("delta", 0)
+		EffectType.APPLY_STATUS:
+			var st: String = STATUS_CN.get(params.get("status", ""), params.get("status", ""))
+			var val: int = params.get("value", 0)
+			var target: String = params.get("target", "enemy")
+			var prefix: String = "" if target == "enemy" else "自身"
+			return "%s%s +%d层" % [prefix, st, val]
+		EffectType.PURIFY:
+			return "净化负面状态"
+		EffectType.CONTROL:
+			var ctrl: String = CONTROL_CN.get(params.get("control", ""), params.get("control", ""))
+			var dur: int = params.get("duration", 0)
+			var dist: int = params.get("distance", 0)
+			var target: String = params.get("target", "main")
+			var target_cn: String = "全体" if target == "all" else "目标"
+			if dist > 0:
+				return "%s%s %d格" % [ctrl, target_cn, dist]
+			if dur > 0:
+				return "%s%s %d回合" % [ctrl, target_cn, dur]
+			return "%s%s" % [ctrl, target_cn]
+		EffectType.IGNORE_TAUNT:
+			return "无视嘲讽"
+		EffectType.SELF_DAMAGE:
+			if params.has("percent"):
+				return "自伤 %.0f%% HP" % (params.get("percent", 0.0) * 100)
+			return "自伤 %d" % params.get("value", 0)
+		EffectType.BERSERK:
+			return "狂暴 %d回合（伤害+%.0f%%）" % [params.get("turns", 0), params.get("damage_mult", 0.0) * 100]
+		EffectType.BLOOD_CHAIN:
+			return "血锁链"
+		EffectType.SOLO_SEAL:
+			return "单挑（伤害×%.1f）" % params.get("damage_mult", 0.0)
+		EffectType.BOUNCE:
+			return "使用后弹回手牌"
+		EffectType.RECOVER:
+			return "回收 %d 骰子" % params.get("count", 0)
+		EffectType.GRANT_PLAY:
+			return "+%d 出牌次数" % params.get("count", 0)
+		EffectType.GRANT_REROLL:
+			return "+%d 免费重投" % params.get("count", 0)
+		EffectType.DRAW:
+			return "+%d 抽牌" % params.get("count", 0)
+		EffectType.LOCK_DIE:
+			return "锁定骰子"
+		EffectType.RETURN_TO_DECK:
+			return "使用后回库"
+		EffectType.GRANT_TEMP_DIE:
+			return "产出 %d 临时骰" % params.get("count", 1)
+		EffectType.CONSUME_TEMP_DIE:
+			return "消耗临时骰"
+		EffectType.TRANSFORM_DIE:
+			return "变形骰子"
+		EffectType.PRESERVE_DIE:
+			return "保留骰子"
+		EffectType.INSERT_CURSE_DIE:
+			return "塞入废骰 ×%d" % params.get("count", 1)
+		EffectType.REPLACE_PLAYER_DIE:
+			return "替换骰子"
+		EffectType.MODIFY_POINTS:
+			return "点数 %+d" % params.get("delta", 0)
+		EffectType.COPY_VALUE:
+			return "复制点数"
+		EffectType.REVERSE_VALUE:
+			return "翻转点数（7-x）"
+		EffectType.OVERRIDE_VALUE:
+			return "覆写点数 → %d" % params.get("value", 0)
+		EffectType.BONUS_ON_KEEP:
+			return "每保留1回合 +%d 伤害" % params.get("value", 0)
+		EffectType.UNIFY_ELEMENT:
+			return "统一元素"
+		EffectType.LOCK_ELEMENT:
+			return "锁定元素 %d回合" % params.get("duration", 0)
+		EffectType.GAIN_GOLD:
+			return "+%d 金币" % params.get("value", 0)
+		EffectType.DAMAGE_TO_GOLD:
+			return "伤害转金币 %.0f%%" % (params.get("ratio", 0.0) * 100)
+		EffectType.SHOP_DISCOUNT:
+			return "商店折扣 %.0f%%" % (params.get("percent", 0.0) * 100)
+		EffectType.STEAL_GOLD:
+			return "偷取 %d 金币" % params.get("value", 0)
+		EffectType.STEAL_ARMOR:
+			return "偷取护甲"
+		EffectType.SCAR_CONSUME:
+			return "消耗伤痕（每层+%.0f%%伤害）" % (params.get("bonus_per_stack", 0.0) * 100)
+		EffectType.SCAR_BONUS:
+			return "伤痕加成（每层+%.0f%%）" % (params.get("per_stack", 0.0) * 100)
+		EffectType.CHARGE:
+			return "蓄力 %d回合" % params.get("turns", 0)
+		EffectType.CHAIN_BOLT:
+			return "连锁闪电（弹射%d次）" % params.get("bounce", 0)
+		EffectType.BURN_ECHO:
+			return "灼烧回响"
+		EffectType.ELEMENT_TRIGGER:
+			return "元素触发"
+		EffectType.BARRIER_TO_DAMAGE:
+			return "屏障转伤 %.0f%%" % (params.get("ratio", 0.0) * 100)
+		EffectType.POISON_FROM_VALUE:
+			return "施毒=点数+%d" % params.get("bonus", 0)
+		EffectType.POISON_FROM_DICE_COUNT:
+			return "每骰施毒 %d" % params.get("per_dice", 0)
+		EffectType.AMPLIFY_SELF:
+			return "放大 ×%.1f" % params.get("mult", 1.0)
+		EffectType.MODIFY_DRAW_COUNT:
+			return "抽牌数 %+d" % params.get("delta", 0)
+		EffectType.MODIFY_HAND_LIMIT:
+			return "手牌上限 %+d" % params.get("delta", 0)
+		EffectType.ALL_DICE_POINTS_PLUS:
+			return "全骰点数 +%d" % params.get("value", 0)
+		EffectType.DEATH_IMMUNITY:
+			return "免死（CD %d回合）" % params.get("cd_turns", 0)
+		EffectType.DAMAGE_SHIELD:
+			return "伤害护盾 %d（%d回合）" % [params.get("value", 0), params.get("duration", 0)]
+		_:
+			return get_effect_name(type)
+
+
+## 将效果数组转为描述列表（附带条件标注）
+static func describe_effects(effects: Array) -> Array[String]:
+	var descs: Array[String] = []
+	for effect: Dictionary in effects:
+		var desc: String = describe_effect(effect)
+		if desc.is_empty():
+			continue
+		var condition: String = effect.get("params", {}).get("condition", "")
+		if condition != "":
+			desc = "[%s] %s" % [_condition_to_cn(condition), desc]
+		descs.append(desc)
+	return descs
+
+
+## 条件名中文映射
+static func _condition_to_cn(condition: String) -> String:
+	match condition:
+		"full_hp": return "满血时"
+		"not_full_hp": return "未满血时"
+		"was_hit": return "受伤后"
+		"has_scar": return "有伤痕时"
+		"berserk": return "狂暴中"
+		_: return condition
