@@ -5,6 +5,8 @@
 class_name DamagePreview
 extends PanelContainer
 
+const HandTypeEffects := preload("res://data/hand_type_effects.gd")
+
 # UI 子节点
 var _hand_label: Label = null           # 当前牌型
 var _damage_label: Label = null         # 预计伤害

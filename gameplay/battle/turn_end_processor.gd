@@ -93,17 +93,17 @@ static func _resolve_meditation_skip(played_this_turn: bool, _controller: Battle
 			if eff_type == EffectTypes.EffectType.HEAL:
 				PlayerState.heal(params.get("value", 0))
 			elif eff_type == EffectTypes.EffectType.PURIFY:
-			var debuff_types: Array[int] = [
-				GameTypes.StatusType.POISON, GameTypes.StatusType.BURN,
-				GameTypes.StatusType.VULNERABLE, GameTypes.StatusType.WEAK,
-			]
-			for st: int in debuff_types:
-				if PlayerState.has_status(st):
-					PlayerState.statuses = PlayerState.statuses.filter(
-						func(s: StatusEffect) -> bool: return s.type != st
-					)
-					VFX.show_toast("冥想净化", "buff")
-					break
+				var debuff_types: Array[int] = [
+					GameTypes.StatusType.POISON, GameTypes.StatusType.BURN,
+					GameTypes.StatusType.VULNERABLE, GameTypes.StatusType.WEAK,
+				]
+				for st: int in debuff_types:
+					if PlayerState.has_status(st):
+						PlayerState.statuses = PlayerState.statuses.filter(
+							func(s: StatusEffect) -> bool: return s.type != st
+						)
+						VFX.show_toast("冥想净化", "buff")
+						break
 
 
 # ============================================================

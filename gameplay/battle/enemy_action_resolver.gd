@@ -5,6 +5,8 @@
 class_name EnemyActionResolver
 
 const EnemyMgr = preload("res://gameplay/battle/battle_enemy_manager.gd")
+const EnemyEffectBridge = preload("res://gameplay/battle/enemy_effect_bridge.gd")
+const EffectEngine = preload("res://gameplay/battle/effect_engine.gd")
 
 const GUARDIAN_DEFENSE_CYCLE: int = 2  ## 每 N 回合上一次盾并嘲讽
 const GUARDIAN_SHIELD_MULT: float = 1.5
@@ -281,8 +283,8 @@ static func _resolve_via_effect_engine(
 			var wounded := _find_wounded_allies(e)
 			if wounded.size() > 0:
 				heal_target = wounded[randi() % wounded.size()]
-		elif heal_target_scope == EffectTypes.TargetScope.ALLY:
-			# ALLY = 血量最低友军（对齐 Priest 治疗优先级）
+		elif heal_target_scope == EffectTypes.TargetScope.ALLY_LOWEST_HP:
+			# ALLY_LOWEST_HP = 血量最低友军（对齐 Priest 治疗优先级）
 			var wounded := _find_wounded_allies(e)
 			if wounded.size() > 0:
 				heal_target = wounded[0]  # _find_wounded_allies 已按血量排序

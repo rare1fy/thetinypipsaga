@@ -3,10 +3,10 @@
 class_name BattleController
 extends Node2D
 
-# 以下 3 个类已通过全局 class_name 导出，不再 preload 避免 SHADOWED_GLOBAL_IDENTIFIER：
-#   - PlayHandlerBridge (play_handler_bridge.gd)
-#   - RerollHandler (reroll_handler.gd)
-#   - TurnEndProcessor (turn_end_processor.gd)
+# 以下 3 个类已通过全局 class_name 导出，不再 preload 避免循环依赖：
+#   - PlayHandlerBridge (play_handler_bridge.gd) — 引用 BattleController
+#   - RerollHandler (reroll_handler.gd) — 引用 BattleController
+#   - TurnEndProcessor (turn_end_processor.gd) — 引用 BattleController
 const ClassDefData = preload("res://data/class_def.gd")
 const EnemyMgr = preload("res://gameplay/battle/battle_enemy_manager.gd")
 
@@ -267,6 +267,8 @@ func _begin_player_turn() -> void:
 	# 防重入 & gameover 检查（Godot 设计规范 §4.3）
 	if GameManager.phase == GameTypes.GamePhase.GAME_OVER:
 		return
+	# 兜底清空：防止上回合异常中断后残留脏状态
+	PlayerState.pending_hand_statuses.clear()
 	GameManager.is_enemy_turn = false
 	GameManager.set_phase(GameTypes.GamePhase.PLAYER_TURN)
 	GameManager.battle_turn += 1

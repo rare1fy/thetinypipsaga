@@ -15,8 +15,12 @@ class_name HandTypeEffects
 # 牌型效果配置
 # ============================================================
 
+static var _cache: Dictionary = {}
+
 static func get_all() -> Dictionary:
-	return {
+	if not _cache.is_empty():
+		return _cache
+	_cache = {
 		# ---- 基础牌型 ----
 		"普通攻击": _entry([], false),
 
@@ -44,7 +48,7 @@ static func get_all() -> Dictionary:
 				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT,
 				EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.MAIN
 			),
-		], false, "易伤x1"),
+], false, "易伤x1（3回合）"),
 
 		"四条": _entry([
 			EffectTypes.create_effect(
@@ -52,7 +56,7 @@ static func get_all() -> Dictionary:
 				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT,
 				EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.MAIN
 			),
-		], true, "易伤x2"),
+], true, "易伤x2（3回合）"),
 
 		"五条": _entry([], true),
 
@@ -137,6 +141,7 @@ static func get_all() -> Dictionary:
 
 		"皇家元素顺": _entry([], true, "", 0, true),
 	}
+	return _cache
 
 
 # ============================================================

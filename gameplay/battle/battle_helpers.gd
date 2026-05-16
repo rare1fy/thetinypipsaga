@@ -3,6 +3,8 @@
 
 class_name BattleHelpers
 
+const HandTypeEffects := preload("res://data/hand_type_effects.gd")
+
 
 ## 优先嘲讽目标 → 否则第一个存活敌人
 static func pick_target(enemies: Array[EnemyInstance], target_uid: String) -> EnemyInstance:

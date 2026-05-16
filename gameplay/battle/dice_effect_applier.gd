@@ -267,30 +267,9 @@ static func _get_target_from_views(enemy_views: Array[Node]) -> EnemyInstance:
 	return null
 
 
-## 状态名字符串 → GameTypes.StatusType 映射
+## 状态名字符串 → GameTypes.StatusType 映射（委托给 EffectTypes 公共方法）
 static func _status_name_to_type(name: String) -> int:
-	match name:
-		"poison":
-			return GameTypes.StatusType.POISON
-		"burn":
-			return GameTypes.StatusType.BURN
-		"vulnerable":
-			return GameTypes.StatusType.VULNERABLE
-		"weak":
-			return GameTypes.StatusType.WEAK
-		"freeze":
-			return GameTypes.StatusType.FREEZE
-		"slow":
-			return GameTypes.StatusType.SLOW
-		"strength":
-			return GameTypes.StatusType.STRENGTH if "STRENGTH" in GameTypes.StatusType else -1
-		"dodge":
-			return GameTypes.StatusType.DODGE if "DODGE" in GameTypes.StatusType else -1
-		"armor":
-			return GameTypes.StatusType.ARMOR if "ARMOR" in GameTypes.StatusType else -1
-		_:
-			push_warning("[DiceEffectApplier] 未知状态名: %s" % name)
-			return -1
+	return EffectTypes.status_name_to_type(name)
 
 
 ## 控制类型字符串 → ControlSystem.ControlType 映射

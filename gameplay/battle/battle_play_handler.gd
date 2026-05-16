@@ -5,6 +5,8 @@
 class_name BattlePlayHandler
 extends RefCounted
 
+const HandTypeEffects := preload("res://data/hand_type_effects.gd")
+
 
 # ============================================================
 # 出牌加成计算

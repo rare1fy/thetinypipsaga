@@ -6,6 +6,8 @@
 class_name EnemyEffectBridge
 extends RefCounted
 
+const EffectEngine = preload("res://gameplay/battle/effect_engine.gd")
+
 
 ## 将敌人行动转换为 effects 数组
 ## action: 来自 EnemyInstance.get_action() 的字典
