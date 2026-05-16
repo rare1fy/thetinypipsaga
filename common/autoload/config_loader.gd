@@ -613,6 +613,14 @@ static func load_enemy_configs() -> Dictionary:
 				act.base_value = int(a.get("base_value", 0))
 				act.description = a.get("description", "")
 				act.scalable = _as_bool(a.get("scalable", true))
+				# [v2] 解析 effects 数组（JSON 中直接配置的效果列表）
+				var raw_effects: Array = a.get("effects", [])  # [RULES-B2-EXEMPT]
+				if not raw_effects.is_empty():
+					var typed_effects: Array[Dictionary] = []
+					for fx in raw_effects:
+						if fx is Dictionary:
+							typed_effects.append(fx)
+					act.effects = typed_effects
 				acts.append(act)
 			phase.actions = acts
 			phases_arr.append(phase)

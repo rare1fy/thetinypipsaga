@@ -81,7 +81,11 @@ func get_action() -> Dictionary:
 			val = int(action.base_value * _dmg_scale())
 		else:
 			val = action.base_value
-		return { type = _action_type_str(action.type), value = val, description = action.description }
+		var result: Dictionary = { type = _action_type_str(action.type), value = val, description = action.description }
+		# [v2] 携带 effects 数组 — 非空时 EnemyActionResolver 直接走 EffectEngine
+		if not action.effects.is_empty():
+			result["effects"] = action.effects
+		return result
 	return { type = "攻击", value = attack_dmg }
 
 
