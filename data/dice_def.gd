@@ -86,6 +86,16 @@ func get_points_avg() -> float:
 	return float(get_points_total()) / float(faces.size())
 
 
+## 获取用于 UI 显示的描述文本
+## 优先从 effects[] 自动生成，fallback 到旧 description 字段
+func get_display_description() -> String:
+	if not effects.is_empty():
+		var lines: Array[String] = EffectTypes.describe_effects(effects)
+		if not lines.is_empty():
+			return " / ".join(lines)
+	return description
+
+
 ## 校验所有效果的参数完整性（开发期调用）
 func validate_all_effects() -> bool:
 	var all_valid: bool = true

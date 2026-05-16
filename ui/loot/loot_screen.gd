@@ -55,7 +55,7 @@ func _generate_loot() -> void:
 	
 	for def in choices:
 		var btn := Button.new()
-		btn.text = "%s (%s) — %s" % [def.name, _dice_rarity_name(def.rarity), def.description]
+		btn.text = "%s (%s) — %s" % [def.name, _dice_rarity_name(def.rarity), def.get_display_description()]
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		btn.pressed.connect(_on_pick_dice.bind(def))
 		dice_container.add_child(btn)

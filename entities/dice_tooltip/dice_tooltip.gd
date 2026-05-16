@@ -117,7 +117,7 @@ func show_for_die(die: Dictionary, dice_global_pos: Vector2, player_class: Strin
 		effect_lines = EffectTypes.describe_effects(def.effects)
 		tip_desc = ""  # 不再显示旧 description
 	else:
-		tip_desc = def.description
+		tip_desc = def.get_display_description()
 
 	# 决定名字颜色
 	var tip_color: Color

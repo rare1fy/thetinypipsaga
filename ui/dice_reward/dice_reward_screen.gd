@@ -29,7 +29,7 @@ func _generate_choices() -> void:
 	
 	for def in choices:
 		var btn := Button.new()
-		btn.text = "%s — %s" % [def.name, def.description]
+		btn.text = "%s — %s" % [def.name, def.get_display_description()]
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		btn.pressed.connect(_on_pick.bind(def))
 		dice_container.add_child(btn)

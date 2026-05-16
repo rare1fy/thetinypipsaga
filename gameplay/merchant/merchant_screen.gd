@@ -88,7 +88,7 @@ func _generate_shop() -> void:
 		dice_pool.append({
 			"id": dice_id,
 			"name": ddef.name,
-			"desc": ddef.description,
+			"desc": ddef.get_display_description(),
 			"rarity": rarity_str,
 		})
 	dice_pool.shuffle()
