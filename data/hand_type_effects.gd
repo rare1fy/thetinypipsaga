@@ -17,6 +17,10 @@ class_name HandTypeEffects
 
 static var _cache: Dictionary = {}
 
+## 清空缓存（mod/热更配置后调用）
+static func invalidate_cache() -> void:
+	_cache.clear()
+
 static func get_all() -> Dictionary:
 	if not _cache.is_empty():
 		return _cache
@@ -48,7 +52,7 @@ static func get_all() -> Dictionary:
 				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT,
 				EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.MAIN
 			),
-], false, "易伤x1（3回合）"),
+		], false, "易伤+1层"),
 
 		"四条": _entry([
 			EffectTypes.create_effect(
@@ -56,7 +60,7 @@ static func get_all() -> Dictionary:
 				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.INSTANT,
 				EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.MAIN
 			),
-], true, "易伤x2（3回合）"),
+		], true, "易伤+2层"),
 
 		"五条": _entry([], true),
 

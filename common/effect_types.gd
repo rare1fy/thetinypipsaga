@@ -571,8 +571,11 @@ static func status_name_to_type(name: String) -> int:
 		"slow":
 			return GameTypes.StatusType.SLOW
 		"dodge":
-			return GameTypes.StatusType.DODGE
+			return GameTypes.StatusType.DODGE if "DODGE" in GameTypes.StatusType else -1
 		"strength":
 			return GameTypes.StatusType.STRENGTH if "STRENGTH" in GameTypes.StatusType else -1
+		"armor":
+			return GameTypes.StatusType.ARMOR if "ARMOR" in GameTypes.StatusType else -1
 		_:
+			push_warning("[EffectTypes] 未知状态名: %s" % name)
 			return -1
