@@ -1,0 +1,339 @@
+## 出牌桥接器
+## 从 battle_controller.gd 拆出（B1 行数限制）
+## 职责：出牌结算的完整流程（演出 → 攻击动画 → 伤害 → 受击 → 遗物 → 延迟刷新）
+## 对应原版 useBattleCombat.tsx 的 playSelectedDice
+##
+## 时序契约（2026-04-30 刘叔重排）：
+##   点击出牌 → 结算演出（await） → 玩家攻击动画 → 敌人受击动画+伤害飘字
+class_name PlayHandlerBridge
+extends Node
+
+const DiceEffectResolver = preload("res://gameplay/battle/dice_effect_resolver.gd")
+const DiceEffectApplier = preload("res://gameplay/battle/dice_effect_applier.gd")
+const BattleHelpers = preload("res://gameplay/battle/battle_helpers.gd")
+const EnemyMgr = preload("res://gameplay/battle/battle_enemy_manager.gd")
+const ClassDefData = preload("res://data/class_def.gd")
+
+
+# ============================================================
+# 出牌执行（时序：演出 → 攻击 → 受击）
+# ============================================================
+
+## 执行出牌（替代 battle_controller._on_play_pressed 的业务逻辑）
+## 由 BattleController 调用，必须作为 controller 子节点存在
+func execute(controller: BattleController) -> void:
+	if controller.selected_dice_indices.is_empty() or controller._is_resolving:
+		return
+
+	var selected_dice: Array[Dictionary] = controller._collect_selected_dice()
+	var hand_result: Dictionary = HandEvaluator.check_hands(selected_dice)
+	var active_hands: Array[String] = []
+	active_hands.assign(hand_result.get("activeHands", []))
+	var is_pure_normal: bool = active_hands.size() == 1 and active_hands[0] == "普通攻击"
+
+	# §6.1 / §6.2 多选普攻守卫
+	var class_def: ClassDef = ClassDefData.get_all().get(PlayerState.player_class) as ClassDef
+	var can_multi_normal: bool = class_def != null and class_def.normal_attack_multi_select
+	if is_pure_normal and selected_dice.size() > 1:
+		if not can_multi_normal:
+			BattleLog.log_status("⚠️ 不成牌型时只能出 1 颗骰子")
+			return
+		else:
+			BattleLog.log_status("⚔️ 多选普通攻击：特殊骰子效果将被禁用！")
+
+	# §6.5 第 5 级：skipOnPlay = 战士多选普攻
+	var skip_on_play: bool = can_multi_normal and is_pure_normal and selected_dice.size() > 1
+
+	controller._is_resolving = true
+	controller.action_btn.disabled = true
+	SoundPlayer.play_sound("player_attack")
+
+	# ── §6.4 盗贼连击钩子 ──
+	var current_combo: int = PlayerState.combo_count
+	var last_hand: String = PlayerState.last_play_hand_type
+	if PlayerState.player_class == "rogue":
+		if current_combo == 0:
+			var wr_c: WeakRef = weakref(controller)
+			controller.get_tree().create_timer(0.2).timeout.connect(func() -> void:
+				var c: BattleController = wr_c.get_ref() as BattleController
+				if c == null or not c.is_inside_tree():
+					return
+				TurnManager.free_rerolls_left += 1
+				var pp: Vector2 = c.hp_bar.global_position + c.hp_bar.size * 0.5
+				VFX.spawn_status_text(c._float_layer, pp, "连击预备: +1免费重投")
+			)
+		elif current_combo == 1 and not is_pure_normal:
+			var wr_c2: WeakRef = weakref(controller)
+			controller.get_tree().create_timer(0.2).timeout.connect(func() -> void:
+				var c: BattleController = wr_c2.get_ref() as BattleController
+				if c == null or not c.is_inside_tree():
+					return
+				var pp: Vector2 = c.hp_bar.global_position + c.hp_bar.size * 0.5
+				VFX.spawn_status_text(c._float_layer, pp, "连击! +20%伤害")
+			)
+
+	# ── 骰子 onPlay 特效结算 ──
+	var dice_in_hand: Array[DiceDef] = []
+	var unselected_dice: Array[DiceDef] = []
+	for die_dict: Dictionary in DiceBag.hand_dice:
+		var d_def: DiceDef = GameData.get_dice_def(die_dict.get("defId", ""))
+		if d_def:
+			dice_in_hand.append(d_def)
+			if not die_dict.get("selected", false):
+				unselected_dice.append(d_def)
+
+	var dice_effect_result: DiceEffectResolver.ResolveResult = \
+		DiceEffectResolver.resolve_on_play(
+			DiceEffectApplier.get_dice_def_for_selected(selected_dice),
+			PlayerState.hp,
+			PlayerState.max_hp,
+			GameManager.rerolls_this_turn,
+			current_combo,
+			PlayerState.armor,
+			DiceEffectApplier.get_target_enemy_instance(EnemyMgr.get_target_enemy(controller.enemy_views)),
+			EnemyMgr.collect_enemy_instances(controller.enemy_views),
+			dice_in_hand,
+			unselected_dice,
+			skip_on_play
+		)
+
+	# §6.6 第 8 / 9 级修正因子
+	var player_weak: bool = PlayerState.has_status(GameTypes.StatusType.WEAK)
+	var target_instance: EnemyInstance = DiceEffectApplier.get_target_enemy_instance(EnemyMgr.get_target_enemy(controller.enemy_views))
+	var vulnerable_layers: int = 0
+	if target_instance != null:
+		vulnerable_layers = StatusService.get_value(target_instance.statuses, GameTypes.StatusType.VULNERABLE)
+	var rogue_combo_bonus: bool = PlayerState.player_class == "rogue" and current_combo >= 1 and not is_pure_normal
+	var this_hand_type: String = hand_result.get("bestHand", "")
+	var precision_combo: bool = PlayerState.player_class == "rogue" and current_combo == 1 and last_hand != "" and last_hand == this_hand_type and not is_pure_normal
+
+	# v0.5 伤害公式：(Σ点数 + baseDamage) × handMultiplier × outcome.multiplier
+	var outcome_multiplier: float = BattlePlayHandler.calc_outcome_multiplier(hand_result.bestHand)
+	# 骰子特效的 bonus_mult 作为 outcome.multiplier 的因子连乘
+	if dice_effect_result.bonus_mult > 0.0:
+		outcome_multiplier *= (1.0 + dice_effect_result.bonus_mult)
+	var bonus_base_damage: int = BattlePlayHandler.calc_bonus_base_damage() + dice_effect_result.bonus_damage
+	var total_damage: int = HandEvaluator.calculate_damage(
+		selected_dice, hand_result, bonus_base_damage, outcome_multiplier,
+		PlayerState.hand_type_upgrades,
+		player_weak, vulnerable_layers, rogue_combo_bonus, precision_combo
+	)
+	BattleLog.log_dice("[DIAG] hand=%s outcome_mult=%.2f base_dmg=%d total=%d combo=%d fury=%d rage=%.2f weak=%s vuln_layers=%d rogue_combo=%s skip_op=%s" % [
+		hand_result.bestHand, outcome_multiplier, bonus_base_damage, total_damage,
+		current_combo, PlayerState.blood_reroll_count, PlayerState.warrior_rage_mult,
+		player_weak, vulnerable_layers, rogue_combo_bonus, skip_on_play
+	])
+
+	# 应用特效结果（护甲转伤害等 onPlay 效果，不含伤害应用）
+	DiceEffectApplier.apply(dice_effect_result, controller.enemy_views, controller._refresh_status_bar, dice_in_hand, controller.hp_bar)
+
+	# §6.6 第 3 级 — pierce 聚合
+	var total_pierce: int = dice_effect_result.pierce + RelicEngine.get_on_play_pierce(PlayerState.relics)
+
+	# ── 时序编排：演出 → 攻击 → 受击 ──
+	var hand_name: String = hand_result.get("bestHand", "")
+	if hand_name != "":
+		BattleLog.log_dice("%s → %d 伤害" % [hand_name, total_damage])
+	else:
+		BattleLog.log_dice("出牌 → %d 伤害" % total_damage)
+
+	# 阶段 1：结算演出（await 等待四阶段播完 + 收尾淡出）
+	print_rich("[color=green][PlayHandlerBridge] 阶段1: 开始结算演出[/color]")
+	await _play_settlement(controller, hand_name, selected_dice, outcome_multiplier, bonus_base_damage, total_damage, hand_result)
+	print_rich("[color=green][PlayHandlerBridge] 阶段1: 结算演出完成[/color]")
+
+	# 阶段 2：玩家攻击动画（等待动画完成再触发受击，避免同时播放）
+	var battle_scene: BattleScene = controller.owner as BattleScene
+	print_rich("[color=green][PlayHandlerBridge] 阶段2: battle_scene=%s player_hands=%s[/color]" % [battle_scene != null, battle_scene != null and battle_scene.player_hands != null])
+	if battle_scene != null and battle_scene.player_hands != null:
+		battle_scene.player_hands.play_attack()
+		# 刘叔需求 1：玩家出手时背景下压推拉（摄像机跟手）
+		var bg: BgParallax = battle_scene.get_node_or_null("%SceneBG") as BgParallax
+		if bg != null:
+			bg.play_attack_push()
+		print_rich("[color=green][PlayHandlerBridge] 阶段2: 等待 attack_finished[/color]")
+		await battle_scene.player_hands.attack_finished
+		print_rich("[color=green][PlayHandlerBridge] 阶段2: attack_finished 收到[/color]")
+
+	# 阶段 3：伤害应用 + 敌人受击动画 + 飘字
+	# 必须 await 到 _on_after_play_resolve 完成，否则 BattleController 会在
+	# 0.5s timer 触发前 queue_free 本 bridge，导致 _is_resolving 永远卡 true。
+	print_rich("[color=green][PlayHandlerBridge] 阶段3: 开始伤害应用[/color]")
+	await _apply_damage_and_after(
+		controller, total_damage, selected_dice, hand_result, dice_effect_result,
+		total_pierce, is_pure_normal
+	)
+	print_rich("[color=green][PlayHandlerBridge] 阶段3: 伤害应用完成[/color]")
+
+
+# ============================================================
+# 伤害应用 + 敌人受击动画
+# ============================================================
+
+func _apply_damage_and_after(
+	controller: BattleController,
+	total_damage: int,
+	selected_dice: Array[Dictionary],
+	hand_result: Dictionary,
+	dice_effect_result: DiceEffectResolver.ResolveResult,
+	total_pierce: int,
+	is_pure_normal: bool
+) -> void:
+	# 1. 牌型附带效果（先于伤害应用，获取 true_damage / ignore_taunt 标记）
+	var armor_before: int = PlayerState.armor
+	var base_damage: int = HandEvaluator.calculate_base_damage(selected_dice, hand_result, PlayerState.hand_type_upgrades)
+	var hand_effect_result: EffectEngine.ExecuteResult = BattlePlayHandler.apply_hand_effects(hand_result, base_damage)
+	var armor_gained: int = PlayerState.armor - armor_before
+	if armor_gained > 0:
+		var player_pos: Vector2 = controller.hp_bar.global_position + controller.hp_bar.size * 0.5
+		VFX.spawn_armor_text(controller._float_layer, player_pos, armor_gained)
+
+	# 1b. 消费牌型附带状态效果（施加给目标敌人）
+	if not PlayerState.pending_hand_statuses.is_empty():
+		var target_view_for_status: Node = EnemyMgr.get_target_enemy(controller.enemy_views)
+		if target_view_for_status != null and target_view_for_status.has_method("get_enemy_instance"):
+			var target_inst: EnemyInstance = target_view_for_status.get_enemy_instance()
+			if target_inst != null:
+				for st: Dictionary in PlayerState.pending_hand_statuses:
+					var st_name: String = st.get("status", "")
+					var st_value: int = st.get("value", 0)
+					var st_type: int = _status_name_to_type(st_name)
+					if st_type >= 0:
+						StatusService.add(target_inst.statuses, st_type, st_value, 3)
+						BattleLog.log_status("✦ 牌型效果: %s x%d" % [st_name, st_value])
+		PlayerState.pending_hand_statuses.clear()
+
+	# 2. 伤害应用（含受击动画 + 飘字）
+	# 葫芦系真伤：total_pierce 设为极大值绕过护甲
+	var effective_pierce: int = total_pierce
+	if hand_effect_result.true_damage > 0 or hand_effect_result.ignore_taunt:
+		# 真实伤害 = 无视护甲，用极大 pierce 值实现
+		effective_pierce = 99999
+		BattleLog.log_dice("✦ 牌型效果: 真实伤害（无视护甲）")
+	BattlePlayHandler.apply_damage_to_enemies(
+		total_damage, selected_dice, hand_result, dice_effect_result,
+		EnemyMgr.get_living_enemies(controller.enemy_views), EnemyMgr.get_target_enemy(controller.enemy_views),
+		controller._float_layer, controller.world_layer,
+		effective_pierce
+	)
+
+	# 3. 重击音效（主目标高伤害时）
+	if total_damage >= 20:
+		SoundPlayer.play_sound("heavy_impact")
+
+	# 4. combo 飘字
+	var combo: int = PlayerState.combo_count
+	if combo > 1:
+		var combo_pos: Vector2 = Vector2(
+			controller.get_viewport_rect().size.x * 0.5,
+			controller.get_viewport_rect().size.y * 0.35
+		)
+		VFX.spawn_combo_text(controller._float_layer, combo_pos, combo)
+		SoundPlayer.play_sound("combo_hit")
+
+	# 5. 触发遗物 onPlay
+	RelicEngine.on_play(PlayerState.relics, controller, selected_dice.duplicate(), hand_result.get("bestHand", ""))
+
+	# 6. 出牌状态写回
+	PlayerState.last_play_hand_type = hand_result.get("bestHand", "")
+	if is_pure_normal:
+		PlayerState.consecutive_normal_attacks += 1
+	else:
+		PlayerState.consecutive_normal_attacks = 0
+
+	var target_view: Node = EnemyMgr.get_target_enemy(controller.enemy_views)
+	if target_view != null and target_view.has_method("get_enemy_instance"):
+		var target_inst2: EnemyInstance = target_view.get_enemy_instance()
+		if target_inst2 != null and target_inst2.uid != "":
+			var prev: int = PlayerState.plays_per_enemy.get(target_inst2.uid, 0)
+			PlayerState.plays_per_enemy[target_inst2.uid] = prev + 1
+
+	# 7. 检查胜负
+	if EnemyMgr.check_battle_over(controller.enemy_views, controller._on_battle_ended.bind(true), controller):
+		return
+
+	# 8. 标记已出骰子 + 消耗出牌次数
+	print_rich("[color=green][PlayHandlerBridge] 步骤8: mark_spent_and_after_play, plays_left=%d[/color]" % GameManager.plays_left)
+	BattlePlayHandler.mark_spent_and_after_play(controller.selected_dice_indices, dice_effect_result)
+	print_rich("[color=green][PlayHandlerBridge] 步骤8: after_play后 plays_left=%d, hand_dice.size=%d[/color]" % [GameManager.plays_left, DiceBag.hand_dice.size()])
+	controller.selected_dice_indices.clear()
+
+	# 9. 延迟刷新 UI（await 等计时器触发 + _on_after_play_resolve 完成）
+	print_rich("[color=green][PlayHandlerBridge] 步骤9: _schedule_after_play_resolve[/color]")
+	await _schedule_after_play_resolve(controller)
+
+
+# ============================================================
+# 结算演出
+# ============================================================
+
+func _play_settlement(
+	controller: BattleController,
+	hand_name: String,
+	selected_dice: Array[Dictionary],
+	outcome_mult: float,
+	bonus_base_damage: int,
+	total_damage: int,
+	hand_result: Dictionary
+) -> void:
+	var settlement: SettlementPlayer = controller.get_node_or_null("%SettlementPlayer")
+	if settlement == null:
+		settlement = SettlementPlayer.new()
+		settlement.name = "SettlementPlayer"
+		controller.add_child(settlement)
+	var dice_values: Array[int] = []
+	for d: Dictionary in selected_dice:
+		dice_values.append(d.get("value", 0))
+	var has_aoe: bool = BattleHelpers.detect_aoe(selected_dice, hand_result)
+	# await 等待结算演出四阶段全部播完 + 收尾淡出
+	await settlement.play({
+		"hand_name": hand_name,
+		"dice_values": dice_values,
+		"outcome_mult": outcome_mult,
+		"bonus_base_damage": bonus_base_damage,
+		"total_damage": total_damage,
+		"has_aoe": has_aoe,
+	})
+
+
+# ============================================================
+# 出牌结算后延迟刷新
+# ============================================================
+
+func _schedule_after_play_resolve(controller: BattleController) -> void:
+	# [BUGFIX-TURN-STUCK] 改为 await 风格：
+	# 旧实现把 lambda 挂在 SceneTreeTimer 上，timer 持有 self(bridge)；
+	# 但 BattleController 会在 execute 返回后立即 queue_free 本 bridge，
+	# 导致 0.5s 后 lambda 触发时 self 已失效，_on_after_play_resolve 根本不执行，
+	# _is_resolving 一直为 true，所有按钮卡死、自动结束回合也不触发。
+	# 改为 await 后，execute 的 await 链会一直延伸到此处完成才返回，
+	# bridge 才会被释放，彻底消除 race。
+	await get_tree().create_timer(0.5).timeout
+	if not is_instance_valid(controller) or not controller.is_inside_tree():
+		return
+	_on_after_play_resolve(controller)
+
+
+func _on_after_play_resolve(controller: BattleController) -> void:
+	print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: is_inside_tree=%s[/color]" % controller.is_inside_tree())
+	if not controller.is_inside_tree():
+		return
+	EnemyMgr.refresh_enemy_views(controller.enemy_views)
+	controller._refresh_status_bar()
+	controller._is_resolving = false
+	print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: _is_resolving=false, plays_left=%d, hand_dice.size=%d[/color]" % [GameManager.plays_left, DiceBag.hand_dice.size()])
+	if GameManager.plays_left <= 0 or DiceBag.hand_dice.is_empty():
+		print_rich("[color=green][PlayHandlerBridge] _on_after_play_resolve: 触发 _check_auto_end_turn[/color]")
+		controller._check_auto_end_turn()
+	else:
+		controller._refresh_hand_display()
+		var dp: DamagePreview = controller._get_damage_preview()
+		if dp:
+			dp.refresh([])
+	# 统一刷新三个按钮（play/reroll/end_turn），修复出牌后按钮禁用态残留
+	controller._update_button_states()
+
+
+## 状态名 → GameTypes.StatusType 映射（委托给 EffectTypes 公共方法）
+static func _status_name_to_type(name: String) -> int:
+	return EffectTypes.status_name_to_type(name)

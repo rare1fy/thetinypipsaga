@@ -19,7 +19,7 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-TSCN_PATH = Path(r"C:\Users\slimboiliu\TheTiny-PipSaga\scenes\battle\battle_scene.tscn")
+TSCN_PATH = Path(r"C:\Users\slimboiliu\TheTiny-PipSaga\gameplay\battle\battle_scene.tscn")
 BACKUP_PATH = TSCN_PATH.with_suffix(".tscn.bak")
 
 # 污染范围（1-based line 号）
