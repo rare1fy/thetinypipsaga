@@ -224,6 +224,19 @@
       "flag_cracked": false
     },
     {
+      "id": "D0124",
+      "legacy_key": "w_ironwall",
+      "class": "C01",
+      "name": "铁壁",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA1",
+      "element": "EL0",
+      "description": "出牌时获得护甲=本骰点数。简单朴实的防御手段。",
+      "effect_group": "EG0124",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
       "id": "D0101",
       "legacy_key": "w_bloodthirst",
       "class": "C01",
@@ -1802,6 +1815,14 @@
       "param_value": "1",
       "param_ref": "",
       "note": "铁壁符文 打出时消耗全部护甲AOE+嘲讽"
+    },
+    {
+      "effect_group": "EG0124",
+      "effect_type": "ET03",
+      "param_key": "armor",
+      "param_value": "1.0",
+      "param_ref": "points",
+      "note": "铁壁 获得护甲=本骰点数"
     },
     {
       "effect_group": "EG0206",

@@ -207,7 +207,7 @@ func _refresh() -> void:
 			return a < b
 		if da.rarity != db.rarity:
 			return da.rarity > db.rarity
-		return da.display_name < db.display_name
+		return da.name < db.name
 	)
 
 	for dice_id: String in sorted_list:
@@ -231,7 +231,7 @@ func _make_dice_card(def: DiceDef) -> PanelContainer:
 
 	# 骰子名
 	var name_label := Label.new()
-	name_label.text = def.display_name
+	name_label.text = def.name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.add_theme_font_size_override("font_size", 11)
 	name_label.add_theme_color_override("font_color", RARITY_COLORS.get(def.rarity, Color.WHITE))
@@ -256,7 +256,7 @@ func _make_dice_card(def: DiceDef) -> PanelContainer:
 
 func _show_tooltip(def: DiceDef, anchor: Control) -> void:
 	_tooltip_panel.visible = true
-	_tooltip_name.text = def.display_name
+	_tooltip_name.text = def.name
 	_tooltip_name.add_theme_color_override("font_color", RARITY_COLORS.get(def.rarity, Color.WHITE))
 	_tooltip_faces.text = "面值: %s" % str(def.faces)
 	_tooltip_desc.text = def.get_display_description()
