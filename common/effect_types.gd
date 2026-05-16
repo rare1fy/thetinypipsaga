@@ -601,8 +601,8 @@ const STATUS_CN: Dictionary = {
 
 ## 控制类型中文映射
 const CONTROL_CN: Dictionary = {
-	"stun": "眩晕", "knockback": "击退", "pull": "拉拽",
-	"taunt": "嘲讽", "silence": "沉默", "root": "定身",
+	"stun": "眩晕", "knockback": "击退", "taunt": "嘲讽",
+	"polymorph": "变羊", "blind": "致盲", "disarm": "缴械", "root": "定身",
 }
 
 ## 将单个效果字典转为人类可读的描述字符串
