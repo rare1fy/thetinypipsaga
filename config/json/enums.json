@@ -52,8 +52,8 @@
     {
       "id": "EL2",
       "type": "元素",
-      "name": "风",
-      "legacy_key": "WIND",
+      "name": "冰",
+      "legacy_key": "ICE",
       "note": ""
     },
     {
@@ -684,97 +684,97 @@
     {
       "code": "ET01",
       "key": "damage",
-      "desc": "造成伤害（加法）对应 EffectType.BONUS_DAMAGE params.value"
+      "desc": "造成伤害（加法）对应 DiceDef.bonus_damage / RelicDef.damage"
     },
     {
       "code": "ET02",
       "key": "damage_mult",
-      "desc": "伤害倍率（乘法）对应 EffectType.DAMAGE_MULT params.value"
+      "desc": "伤害倍率（乘法）对应 DiceDef.bonus_mult / RelicDef.multiplier"
     },
     {
       "code": "ET03",
       "key": "armor",
-      "desc": "获得护甲 对应 EffectType.ARMOR params.value"
+      "desc": "获得护甲 对应 DiceDef.armor / RelicDef.armor"
     },
     {
       "code": "ET04",
       "key": "heal",
-      "desc": "恢复生命 对应 EffectType.HEAL params.value"
+      "desc": "恢复生命 对应 DiceDef.heal / RelicDef.heal"
     },
     {
       "code": "ET05",
       "key": "pierce",
-      "desc": "穿甲 对应 EffectType.PIERCE params.value"
+      "desc": "穿甲 对应 DiceDef.pierce / RelicDef.pierce"
     },
     {
       "code": "ET06",
       "key": "self_damage",
-      "desc": "自残 对应 EffectType.SELF_DAMAGE params.value"
+      "desc": "自残 对应 DiceDef.self_damage"
     },
     {
       "code": "ET07",
       "key": "status_to_enemy",
-      "desc": "给敌人施加状态 对应 EffectType.APPLY_STATUS params.status/value/target"
+      "desc": "给敌人施加状态，param_ref 用 ST紧凑编码"
     },
     {
       "code": "ET08",
       "key": "status_to_self",
-      "desc": "给自身施加状态 对应 EffectType.APPLY_STATUS params.target=self"
+      "desc": "给自身施加状态，param_ref 用 ST紧凑编码"
     },
     {
       "code": "ET09",
       "key": "extra_dice",
-      "desc": "衍生骰子 对应 EffectType.GRANT_SHADOW_DIE / CLONE_SELF"
+      "desc": "衍生骰子，param_key 常用：grant_shadow_die / clone_self"
     },
     {
       "code": "ET10",
       "key": "bonus_on_keep",
-      "desc": "保留到下回合的加成 对应 EffectType.BONUS_ON_KEEP params.value"
+      "desc": "保留到下回合的加成 对应 DiceDef.bonus_on_keep / bonus_per_turn_kept"
     },
     {
       "code": "ET11",
       "key": "scale_flag",
-      "desc": "缩放标记（条件触发类）对应 EffectType 的 condition 字段"
+      "desc": "缩放标记（条件触发类）param_key 指具体字段名"
     },
     {
       "code": "ET12",
       "key": "special",
-      "desc": "特殊逻辑 对应各专用 EffectType（EXECUTE/DETONATE/ESCALATE 等）"
+      "desc": "特殊逻辑（代码写死）param_key = 字段名，param_value = 值"
     },
     {
       "code": "ET20",
       "key": "gold_bonus",
-      "desc": "金币加成 对应 EffectType.GOLD_GAIN params.value"
+      "desc": "金币加成 对应 RelicDef.gold_bonus"
     },
     {
       "code": "ET21",
       "key": "draw_bonus",
-      "desc": "抽牌加成 对应 EffectType.MODIFY_DRAW_COUNT params.value"
+      "desc": "抽牌加成 对应 RelicDef.draw_count_bonus"
     },
     {
       "code": "ET22",
       "key": "shop_discount",
-      "desc": "商店折扣 对应 EffectType.SHOP_DISCOUNT params.value"
+      "desc": "商店折扣 对应 RelicDef.shop_discount"
     },
     {
       "code": "ET23",
       "key": "free_rerolls",
-      "desc": "免费重投 对应 EffectType.GRANT_REROLL params.count"
+      "desc": "免费重投 对应 RelicDef.free_rerolls"
     },
     {
       "code": "ET24",
       "key": "extra_play",
-      "desc": "额外出牌 对应 EffectType.GRANT_EXTRA_PLAY params.count"
+      "desc": "额外出牌 对应 RelicDef.extra_play"
     },
     {
       "code": "ET25",
       "key": "extra_reroll",
-      "desc": "额外重投 对应 EffectType.GRANT_REROLL params.count"
+      "desc": "额外重投 对应 RelicDef.extra_reroll"
     },
     {
       "code": "ET26",
       "key": "extra_draw",
-      "desc": "额外抽牌 对应 EffectType.MODIFY_DRAW_COUNT params.value"
+      "desc": "额外抽牌 对应 RelicDef.extra_draw"
     }
   ],
   "enum_status_type": [
@@ -819,6 +819,12 @@
       "key": "ARMOR",
       "name_cn": "护甲",
       "desc": "抵挡伤害"
+    },
+    {
+      "code": "ST08",
+      "key": "SLOW",
+      "name_cn": "缓慢",
+      "desc": "部分行动延迟"
     },
     {
       "code": "ST09",
@@ -937,23 +943,43 @@
     },
     {
       "idx": 9,
+      "key": "SAME_ELEMENT",
+      "name_cn": "同元素"
+    },
+    {
+      "idx": 10,
       "key": "FULL_HOUSE",
       "name_cn": "葫芦"
     },
     {
-      "idx": 10,
+      "idx": 11,
       "key": "FOUR_OF_KIND",
       "name_cn": "四条"
     },
     {
-      "idx": 11,
+      "idx": 12,
       "key": "FIVE_OF_KIND",
       "name_cn": "五条"
     },
     {
-      "idx": 12,
+      "idx": 13,
       "key": "SIX_OF_KIND",
       "name_cn": "六条"
+    },
+    {
+      "idx": 14,
+      "key": "ELEMENT_STRAIGHT",
+      "name_cn": "元素顺"
+    },
+    {
+      "idx": 15,
+      "key": "ELEMENT_FULL_HOUSE",
+      "name_cn": "元素葫芦"
+    },
+    {
+      "idx": 16,
+      "key": "ROYAL_ELEMENT_STRAIGHT",
+      "name_cn": "皇家元素顺"
     }
   ]
 }
