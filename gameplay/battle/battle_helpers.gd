@@ -107,13 +107,21 @@ static func compute_dice_on_play_extras(selected_dice: Array[Dictionary]) -> Arr
 	var extras: Array[Dictionary] = []
 	for d: Dictionary in selected_dice:
 		var def: DiceDef = GameData.get_dice_def(d.defId)
-		if def.shadow_clone_play:
+		if _has_shadow_clone_effect(def):
 			var clone: Dictionary = d.duplicate()
 			clone.id = randi()
 			clone.spent = true
 			clone["isShadowRemnant"] = true
 			extras.append(clone)
 	return extras
+
+
+## 检查骰子是否有影分身效果（通过 effects 数组判断）
+static func _has_shadow_clone_effect(def: DiceDef) -> bool:
+	for eff: Dictionary in def.effects:
+		if eff.get("type", -1) == EffectTypes.EffectType.GRANT_PLAY:
+			return true
+	return false
 
 
 ## AOE 检测（雷元素 或 顺子 / 多条 / 元素系顺子牌型）
