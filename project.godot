@@ -46,7 +46,6 @@ gdscript/warnings/shadowed_variable_base_class=0
 window/size/viewport_width=720
 window/size/viewport_height=1280
 window/stretch/mode="viewport"
-window/stretch/scale=4.0
 window/handheld/orientation=1
 
 [dotnet]

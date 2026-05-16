@@ -290,6 +290,52 @@ static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTy
 		"splash":
 			return EffectTypes.create_effect(EffectTypes.EffectType.SPLASH,
 				{"ratio": float(value)}, trigger)
+		"reverse_value":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.REVERSE_VALUE, {}, trigger)
+		"armor_from_value":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+					{"value": 0, "source": "points", "ratio": 1.0}, trigger)
+		"execute_mult":
+			return EffectTypes.create_effect(EffectTypes.EffectType.EXECUTE,
+				{"threshold": 0.3, "mult": float(value)}, trigger)
+		"self_berserk":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.BERSERK,
+					{"turns": 2, "damage_mult": 0.5, "taken_mult": 0.3, "gamble_cost": 0.0}, trigger)
+		"fury_stack":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.ESCALATE,
+					{"per_trigger": 0.1, "cap": 1.0}, trigger)
+		"combo_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT,
+				{"value": float(value), "condition": "combo"}, EffectTypes.TriggerType.ON_COMBO)
+		"grant_shadow_die":
+			return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_TEMP_DIE,
+				{"die_type": "shadow", "count": int(value)}, trigger)
+		"poison_base":
+			return EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
+				{"status": "poison", "value": int(value), "target": "enemy"}, trigger)
+		"shadow_clone_play":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.GRANT_PLAY,
+					{"count": 1, "condition": "combo"}, EffectTypes.TriggerType.ON_COMBO)
+		"bonus_per_turn_kept":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_ON_KEEP,
+				{"value": int(value), "cap": 99}, EffectTypes.TriggerType.ON_KEEP)
+		"keep_bonus_cap":
+			# 仅作为 bonus_on_keep 的 cap 参数，单独出现时忽略（由 bonus_per_turn_kept 一起处理）
+			return {}
+		"split_dice", "magnet_dice", "joker_dice", "chaos_dice":
+			# 特殊骰子标记，由骰子 id 本身驱动逻辑，不需要转为 effect
+			return {}
+		"scale_with_blood_rerolls":
+			# 血重投缩放：伤害随重投次数增长，由 DiceSpecialEffects 运行时处理
+			return {}
+		"is_elemental":
+			# 元素标记：由骰子 element 字段驱动，不需要额外 effect
+			return {}
 		_:
 			push_warning("[ConfigLoader] 未映射的骰子参数: %s = %s" % [key, str(value)])
 	return {}
@@ -416,6 +462,29 @@ static func _param_to_effect(key: String, value: Variant, trigger_type: EffectTy
 		"armor_break":
 			if _as_bool(value):
 				return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR_BREAK, {}, trigger_type)
+		"keep_unplayed_once":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.PRESERVE_DIE,
+					{}, EffectTypes.TriggerType.ON_TURN_END)
+		"keep_highest_die":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.PRESERVE_DIE,
+					{"condition": "highest"}, EffectTypes.TriggerType.ON_TURN_END)
+		"max_points_unlocked":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.ALL_DICE_POINTS_PLUS,
+					{"value": 1}, EffectTypes.TriggerType.PASSIVE)
+		"pair_as_triplet":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.HAND_TYPE_TOLERANCE,
+					{"type": "same", "tolerance": 1}, EffectTypes.TriggerType.PASSIVE)
+		"straight_upgrade":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.HAND_TYPE_TOLERANCE,
+					{"type": "straight", "tolerance": 1}, EffectTypes.TriggerType.PASSIVE)
+		"max_counter":
+			# 计数器上限：由遗物运行时逻辑管理，不转为 effect
+			return {}
 		_:
 			push_warning("[ConfigLoader] 未映射的遗物参数: %s = %s" % [key, str(value)])
 	return {}

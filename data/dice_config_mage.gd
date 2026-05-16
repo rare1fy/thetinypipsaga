@@ -164,7 +164,7 @@ static func _chain_lightning() -> Dictionary:
 	return {
 		"id": "mage_chain_lightning",
 		"name": "连锁闪电",
-		"element": GameTypes.DiceElement.LIGHTNING,
+		"element": GameTypes.DiceElement.THUNDER,
 		"faces": [2, 3, 4, 4, 5, 6],
 		"rarity": GameTypes.DiceRarity.EPIC,
 		"class_type": "mage",

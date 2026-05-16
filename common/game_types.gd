@@ -7,7 +7,7 @@ class_name GameTypes
 # ============================================================
 
 enum DiceElement { NORMAL, FIRE, ICE, THUNDER, POISON, HOLY, SHADOW, WIND }
-enum DiceRarity { COMMON, UNCOMMON, RARE, LEGENDARY, CURSE }
+enum DiceRarity { COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, CURSE }
 
 # ============================================================
 # 牌型
