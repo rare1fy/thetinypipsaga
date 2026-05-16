@@ -128,6 +128,9 @@ static func _remove_dead_views(enemy_views: Array[Node], settled_uids: Array[Str
 				to_remove.append(view)
 	for view: Node in to_remove:
 		enemy_views.erase(view)
+		# 播放死亡台词
+		if view.has_method("play_random_quote"):
+			view.play_random_quote("death")
 		# 延迟销毁：给死亡动画 0.6s 播放时间
 		if view.has_method("play_hurt"):
 			view.play_hurt()
@@ -147,7 +150,14 @@ static func _auto_select_next_target(enemy_views: Array[Node]) -> void:
 	if living.is_empty():
 		GameManager.target_enemy_uid = ""
 		return
-	var first_view: Node = living[0]
-	if first_view.has_method("get_enemy_uid"):
-		GameManager.target_enemy_uid = first_view.get_enemy_uid()
+	# 优先选中Guardian类型敌人（原版行为）
+	var target_view: Node = living[0]
+	for view: Node in living:
+		if view.has_method("get_enemy_instance"):
+			var inst: EnemyInstance = view.get_enemy_instance()
+			if inst and inst.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
+				target_view = view
+				break
+	if target_view.has_method("get_enemy_uid"):
+		GameManager.target_enemy_uid = target_view.get_enemy_uid()
 	refresh_enemy_views(enemy_views)

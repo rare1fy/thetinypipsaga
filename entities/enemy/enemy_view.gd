@@ -71,6 +71,7 @@ func set_slot_index(index: int) -> void:
 # 美术层状态：是否用序列帧替代了占位方块
 var _has_art: bool = false
 var _death_played: bool = false
+var _boss_phase_switched: bool = false  ## Boss阶段切换标记（只触发一次）
 
 # 变更检测：避免无谓重算（W1 优化）
 var _last_distance: int = -1
@@ -273,9 +274,41 @@ func take_damage(amount: int, pierce: int = 0) -> void:
 	var prev_hp: int = _enemy.hp
 	_enemy.hp = maxi(0, _enemy.hp - remaining)
 	_refresh_visual()
+	# Boss阶段切换检测：HP跨越阈值时触发phase2_taunt台词
+	if remaining > 0 and _enemy.hp > 0 and _enemy.hp < prev_hp:
+		_check_boss_phase_switch(prev_hp)
 	# P2 Trait: Warrior 受伤后累加 bloodFury（实际扣了血才触发）
 	if remaining > 0 and _enemy.hp < prev_hp and _enemy.hp > 0:
 		EnemyTraits.apply_blood_fury_on_hurt(_enemy)
+
+
+## Boss阶段切换检测：HP跨越配置中的hp_threshold时触发演出
+func _check_boss_phase_switch(prev_hp: int) -> void:
+	if _boss_phase_switched or _enemy == null:
+		return
+	var cfg: EnemyConfig = EnemyConfig.get_config(_enemy.config_id)
+	if cfg == null:
+		return
+	# 遍历phases找到有hp_threshold的阶段，检测是否刚跨越
+	for phase: EnemyConfig.EnemyPhase in cfg.phases:
+		if phase.hp_threshold <= 0.0:
+			continue
+		var threshold_hp: int = int(float(_enemy.max_hp) * phase.hp_threshold)
+		# prev_hp >= threshold 且 current_hp < threshold → 刚跨越
+		if prev_hp >= threshold_hp and _enemy.hp < threshold_hp:
+			_boss_phase_switched = true
+			# 播放phase2_taunt台词
+			if cfg.quotes != null and not cfg.quotes.phase2_taunt.is_empty():
+				show_quote(cfg.quotes.phase2_taunt[randi() % cfg.quotes.phase2_taunt.size()])
+			# 闪烁特效：短暂变红表示阶段切换
+			if _visual_root != null:
+				var tw := create_tween()
+				tw.tween_property(_visual_root, "modulate", Color(1.5, 0.3, 0.3, 1.0), 0.15)
+				tw.tween_property(_visual_root, "modulate", Color(1, 1, 1, 1), 0.15)
+				tw.tween_property(_visual_root, "modulate", Color(1.5, 0.3, 0.3, 1.0), 0.15)
+				tw.tween_property(_visual_root, "modulate", Color(1, 1, 1, 1), 0.15)
+			BattleLog.log_write("⚠ %s 进入狂暴阶段！" % _enemy.name)
+			break
 
 
 func is_alive() -> bool:

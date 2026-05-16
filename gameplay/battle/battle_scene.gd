@@ -511,6 +511,9 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 
 	BattleLog.log_write("⚔ 第 %d 波敌人来袭！" % (next_wave_idx + 1))
 
+	# 波次切换全屏公告
+	_show_wave_announcement(next_wave_idx + 1)
+
 	# 重新抽牌（法师吟唱时保留手牌）
 	if not is_mage_chanting:
 		# 非吟唱：清空手牌，从骰子库重新抽
@@ -582,6 +585,18 @@ func _handle_victory() -> void:
 	var depth: int = GameManager.current_node
 	var is_chapter_boss: bool = depth >= GameBalance.MAP_CONFIG.totalLayers - 1
 
+	# 6b. 终焉Boss奖励：+1抽牌上限（原版 lootHandler.ts isFinalBoss → diceCount+1）
+	if is_chapter_boss:
+		GameManager.draw_count += 1
+		BattleLog.log_write("🎲 击败Boss！抽牌上限 +1（当前 %d）" % GameManager.draw_count)
+
+	# 6c. 精英额外奖励：额外金币（原版 LOOT_CONFIG.eliteRewards）
+	var node_type_str: String = _get_current_node_type_for_xp()
+	if node_type_str == "elite":
+		var elite_bonus_gold: int = 15 + randi() % 16  # 15-30 额外金币
+		GameManager.gold += elite_bonus_gold
+		BattleLog.log_write("💰 精英战额外奖励：+%d 金币" % elite_bonus_gold)
+
 	# 播放胜利音效
 	SoundPlayer.play_sound("victory")
 
@@ -618,3 +633,38 @@ func _get_current_node_type_for_xp() -> String:
 func _on_battle_lost() -> void:
 	# BattleController 已切 GAME_OVER，这里仅作兜底
 	pass
+
+
+## 波次切换全屏公告动画
+func _show_wave_announcement(wave_num: int) -> void:
+	var label := Label.new()
+	label.text = "第 %d 波" % wave_num
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 32)
+	label.add_theme_color_override("font_color", Color("#ffffff"))
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 2)
+	label.set_anchors_preset(Control.PRESET_CENTER)
+	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	label.grow_vertical = Control.GROW_DIRECTION_BOTH
+	label.custom_minimum_size = Vector2(300, 60)
+	label.modulate = Color(1, 1, 1, 0)
+	label.z_index = 100
+	# 用 CanvasLayer 确保在最上层
+	var canvas := CanvasLayer.new()
+	canvas.layer = 50
+	add_child(canvas)
+	canvas.add_child(label)
+	# 居中定位
+	label.position = Vector2(
+		(get_viewport().get_visible_rect().size.x - 300) * 0.5,
+		get_viewport().get_visible_rect().size.y * 0.35
+	)
+	# 动画：淡入 → 停留 → 淡出
+	var tw := create_tween()
+	tw.tween_property(label, "modulate", Color(1, 1, 1, 1), 0.3)
+	tw.tween_interval(1.0)
+	tw.tween_property(label, "modulate", Color(1, 1, 1, 0), 0.4)
+	tw.tween_callback(canvas.queue_free)
