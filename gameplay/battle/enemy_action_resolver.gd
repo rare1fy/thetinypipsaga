@@ -11,10 +11,6 @@ const EffectEngine = preload("res://gameplay/battle/effect_engine.gd")
 const GUARDIAN_DEFENSE_CYCLE: int = 2  ## 每 N 回合上一次盾并嘲讽
 const GUARDIAN_SHIELD_MULT: float = 1.5
 
-## 精英 / Boss 回合末专属行为（塞废骰 / 叠护甲），§9.5
-## 用 preload 显式声明，避免 class_name 编译顺序导致的 "Identifier not declared" 报错
-const _EliteBossBehavior = preload("res://gameplay/battle/elite_boss_behavior.gd")
-
 ## controller 退出树时仍可能触发 pending timer 的 lambda，
 ## 用 WeakRef 包裹 controller 引用，引擎不会报 "Lambda capture was freed" 警告。
 ## 在 lambda 内通过 ref.get_ref() 取回 Object，返回 null 说明已释放，安全跳过。
@@ -139,8 +135,8 @@ static func _resolve_enemy_action(controller: Node, e: EnemyInstance, wr: WeakRe
 
 ## 敌人回合末结算：玩家 POISON/BURN DoT + 状态 tick，然后进入下一玩家回合
 static func _end_turn_cleanup(controller: Node) -> void:
-	# §9.5 精英 / Boss 专属：塞废骰 + 叠护甲（在 DoT 结算之前，对齐原版 elites.ts 调用点）
-	_EliteBossBehavior.process(controller, GameManager.battle_turn)
+	# 精英/Boss 塞废骰+叠护甲已在 battle_controller._begin_enemy_turn 中通过 EliteEnhancer 处理
+	# 此处不再重复调用（原 EliteBossBehavior.process 已合并删除）
 
 	# [FIX-P4] 玩家中毒结算（旧版 enemy_ai.gd 中有，新版遗漏）
 	var poison: int = GameManager.get_status_value(GameTypes.StatusType.POISON)

@@ -24,14 +24,20 @@ const BOSS_ARMOR_CYCLE: int = 2          ## Boss 叠护甲周期
 
 
 ## ============================================================
-## 判定函数
+## 判定函数（优先用 config.category，fallback 到 HP 阈值）
 ## ============================================================
 
 static func is_elite(e: EnemyInstance) -> bool:
+	var cfg: EnemyConfig = EnemyConfig.get_config(e.config_id)
+	if cfg != null:
+		return cfg.category == EnemyConfig.EnemyCategory.ELITE
 	return e.max_hp > HP_THRESHOLD_ELITE and e.max_hp <= HP_THRESHOLD_BOSS
 
 
 static func is_boss(e: EnemyInstance) -> bool:
+	var cfg: EnemyConfig = EnemyConfig.get_config(e.config_id)
+	if cfg != null:
+		return cfg.category == EnemyConfig.EnemyCategory.BOSS
 	return e.max_hp > HP_THRESHOLD_BOSS
 
 
