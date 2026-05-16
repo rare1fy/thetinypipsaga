@@ -114,6 +114,9 @@ func start_run(class_id: String) -> void:
 	# 委托 StatsTracker
 	StatsTracker.reset_stats()
 	
+	# 委托 XpSystem
+	XpSystem.reset()
+	
 	# 发射初始信号（仅数据信号，不触发场景切换）
 	hp_changed.emit(PlayerState.hp, PlayerState.max_hp)
 	armor_changed.emit(PlayerState.armor)

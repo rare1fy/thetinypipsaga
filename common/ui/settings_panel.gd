@@ -9,6 +9,11 @@
 extends VBoxContainer
 
 const ModalHubRef := preload("res://common/ui/modal_hub.gd")
+const StatsModalRef := preload("res://common/ui/stats_modal.gd")
+const DiceGuideModalRef := preload("res://common/ui/dice_guide_modal.gd")
+const EnemyBestiaryModalRef := preload("res://common/ui/enemy_bestiary_modal.gd")
+const TutorialOverlayRef := preload("res://common/ui/tutorial_overlay.gd")
+const GmDebugPanelRef := preload("res://common/ui/gm_debug_panel.gd")
 
 
 # ============================================================
@@ -71,6 +76,36 @@ func _build_controls() -> void:
 		log_btn.pressed.connect(_on_view_battle_log_pressed)
 		add_child(log_btn)
 
+	# 图鉴入口
+	add_child(HSeparator.new())
+	
+	var guide_grid := GridContainer.new()
+	guide_grid.columns = 2
+	guide_grid.add_theme_constant_override("h_separation", 6)
+	guide_grid.add_theme_constant_override("v_separation", 6)
+	
+	var stats_btn := Button.new()
+	stats_btn.text = "📊 战斗统计"
+	stats_btn.pressed.connect(_on_stats_pressed)
+	guide_grid.add_child(stats_btn)
+	
+	var dice_guide_btn := Button.new()
+	dice_guide_btn.text = "🎲 骰子图鉴"
+	dice_guide_btn.pressed.connect(_on_dice_guide_pressed)
+	guide_grid.add_child(dice_guide_btn)
+	
+	var enemy_guide_btn := Button.new()
+	enemy_guide_btn.text = "👹 敌人图鉴"
+	enemy_guide_btn.pressed.connect(_on_enemy_guide_pressed)
+	guide_grid.add_child(enemy_guide_btn)
+	
+	var tutorial_btn := Button.new()
+	tutorial_btn.text = "📖 新手引导"
+	tutorial_btn.pressed.connect(_on_tutorial_pressed)
+	guide_grid.add_child(tutorial_btn)
+	
+	add_child(guide_grid)
+	
 	# 危险区：放弃当前冒险
 	if SaveManager.has_run_save():
 		var abandon_btn := Button.new()
@@ -79,6 +114,13 @@ func _build_controls() -> void:
 		abandon_btn.pressed.connect(_on_abandon_pressed)
 		add_child(abandon_btn)
 
+	# GM 调试面板入口
+	add_child(HSeparator.new())
+	var gm_btn := Button.new()
+	gm_btn.text = "🔧 GM 调试面板"
+	gm_btn.add_theme_color_override("font_color", Color("#ff6060"))
+	gm_btn.pressed.connect(_on_gm_debug_pressed)
+	add_child(gm_btn)
 	
 	# 统计摘要
 	var meta := SaveManager.load_meta()
@@ -213,3 +255,35 @@ func _on_view_battle_log_pressed() -> void:
 	scroll.add_child(vbox)
 
 	ModalHubRef.open(scroll, "战斗日志", {"size": Vector2(480, 600), "close_on_backdrop": true})
+
+
+# ============================================================
+# 图鉴入口
+# ============================================================
+
+func _on_stats_pressed() -> void:
+	var modal := StatsModalRef.new()
+	ModalHubRef.open(modal, "战斗统计", {"size": Vector2(420, 600), "close_on_backdrop": true})
+
+
+func _on_dice_guide_pressed() -> void:
+	var modal := DiceGuideModalRef.new()
+	ModalHubRef.open(modal, "骰子图鉴", {"size": Vector2(480, 640), "close_on_backdrop": true})
+
+
+func _on_enemy_guide_pressed() -> void:
+	var modal := EnemyBestiaryModalRef.new()
+	ModalHubRef.open(modal, "敌人图鉴", {"size": Vector2(480, 640), "close_on_backdrop": true})
+
+
+func _on_tutorial_pressed() -> void:
+	var modal := TutorialOverlayRef.new()
+	modal.tutorial_completed.connect(func():
+		VFX.show_toast("教程已完成", "buff")
+	)
+	ModalHubRef.open(modal, "新手引导", {"size": Vector2(440, 600), "close_on_backdrop": false, "close_on_esc": true})
+
+
+func _on_gm_debug_pressed() -> void:
+	var panel := GmDebugPanelRef.new()
+	ModalHubRef.open(panel, "GM 调试", {"size": Vector2(480, 640), "close_on_backdrop": true})

@@ -34,6 +34,34 @@ func _ready() -> void:
 	print("[GameData] dice=%d relics=%d (json=%s)" % [_dice_defs.size(), _relic_defs.size(), str(USE_JSON_CONFIG)])
 
 
+## 获取所有骰子定义
+func get_all_dice() -> Dictionary:
+	return _dice_defs
+
+
+## 获取所有遗物定义（返回 Dictionary[String, Dictionary]）
+func get_all_relics() -> Dictionary:
+	var result: Dictionary = {}
+	for id: String in _relic_defs:
+		var rdef: RelicDef = _relic_defs[id]
+		var rarity_str: String = "common"
+		match rdef.rarity:
+			GameTypes.RelicRarity.COMMON: rarity_str = "common"
+			GameTypes.RelicRarity.UNCOMMON: rarity_str = "uncommon"
+			GameTypes.RelicRarity.RARE: rarity_str = "rare"
+			GameTypes.RelicRarity.LEGENDARY: rarity_str = "legendary"
+		result[id] = {
+			"id": rdef.id, "name": rdef.name, "description": rdef.description,
+			"rarity": rarity_str,
+		}
+	return result
+
+
+## 获取所有敌人配置（从 JSON 加载）
+func get_all_enemies() -> Dictionary:
+	return ConfigLoader.load_enemy_configs()
+
+
 ## 获取骰子定义
 func get_dice_def(id: String) -> DiceDef:
 	if _dice_defs.has(id):
