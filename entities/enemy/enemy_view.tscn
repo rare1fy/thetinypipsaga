@@ -232,6 +232,22 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 8
 horizontal_alignment = 1
 
+[node name="QuoteBubble" type="Label" parent="VisualRoot/HeadUI"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 0
+offset_left = -60.0
+offset_top = -50.0
+offset_right = -60.0
+offset_bottom = -50.0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="ClickArea" type="Area2D" parent="."]
 unique_name_in_owner = true
 

@@ -131,6 +131,9 @@ static func _play_enemy_attack_anim(controller: Node, e: EnemyInstance) -> void:
 		if view.has_method("get_enemy_uid") and view.get_enemy_uid() == e.uid:
 			if view.has_method("play_attack_anim"):
 				view.play_attack_anim()
+			# 30% 概率播放攻击台词（避免每次都说话太吵）
+			if randf() < 0.3 and view.has_method("play_random_quote"):
+				view.play_random_quote("attack")
 			break
 
 ## 执行敌人 AI 行动 + 伤害结算 + 延迟进入下一个敌人

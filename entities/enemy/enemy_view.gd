@@ -52,6 +52,7 @@ var _enemy: EnemyInstance = null
 @onready var _armor_icon: Label = %ArmorIcon
 @onready var _armor_label: Label = %ArmorLabel
 @onready var _status_container: HBoxContainer = %StatusContainer
+@onready var _quote_bubble: Label = %QuoteBubble
 
 # 运行时创建的距离圆点
 var _distance_dots: Array[ColorRect] = []
@@ -177,6 +178,13 @@ func _play_death_anim() -> void:
 ## 受击动画：闪白 + 位移抖动（外部调用，玩家出牌命中时触发）
 ## 优先播放序列帧 hurt 动画（如果美术提供了），否则走代码驱动的闪白+抖动
 func play_hurt() -> void:
+	# 20% 概率播放受伤台词
+	if randf() < 0.2:
+		play_random_quote("hurt")
+	# 低血量台词（HP < 30% 时触发一次）
+	if _enemy and _enemy.hp > 0 and float(_enemy.hp) / float(_enemy.max_hp) < 0.3:
+		if randf() < 0.4:
+			play_random_quote("low_hp")
 	# 尝试序列帧 hurt 动画（美术后续可补 hurt 帧，不补也走下面的代码兜底）
 	if _has_art and _art_sprite != null and _art_sprite.sprite_frames != null:
 		if _art_sprite.sprite_frames.has_animation(EnemyArtMapping.HURT_ANIM):
@@ -560,7 +568,16 @@ func _build_tooltip_text() -> String:
 		return ""
 	var cfg: EnemyConfig = EnemyConfig.get_config(_enemy.config_id)
 	var lines: Array[String] = []
-	lines.append("【%s】" % (cfg.name if cfg else _enemy.config_id))
+	# 名字 + Boss/精英标记
+	var name_str: String = cfg.name if cfg else _enemy.config_id
+	if cfg:
+		match cfg.category:
+			EnemyConfig.EnemyCategory.BOSS:
+				var rank_str: String = "终焉Boss" if cfg.boss_rank == EnemyConfig.BossRank.FINAL else "Boss"
+				name_str = "👑 %s [%s]" % [name_str, rank_str]
+			EnemyConfig.EnemyCategory.ELITE:
+				name_str = "⭐ %s [精英]" % name_str
+	lines.append("【%s】" % name_str)
 	lines.append("HP %d / %d" % [_enemy.hp, _enemy.max_hp])
 	lines.append("攻击 %d" % _enemy.attack_dmg)
 	if _enemy.armor > 0:
@@ -580,6 +597,12 @@ func _build_tooltip_text() -> String:
 		lines.append("状态：")
 		for s: StatusEffect in _enemy.statuses:
 			lines.append("• %s" % _status_tooltip_line(s))
+	# Boss 特殊能力提示
+	if cfg and cfg.summons != null:
+		lines.append("")
+		lines.append("⚠ 可召唤援军")
+	if cfg and cfg.revive != null:
+		lines.append("⚠ 死亡时分裂")
 	return "\n".join(lines)
 
 
@@ -616,3 +639,50 @@ static func _status_tooltip_line(s: StatusEffect) -> String:
 		_:
 			status_name = "未知状态"
 	return "%s %d（%d 回合） — %s" % [status_name, s.value, s.duration, desc]
+
+
+# ── 台词气泡
+
+var _quote_tween: Tween = null
+
+## 显示台词气泡（自动淡出）
+func show_quote(text: String, duration: float = 2.5) -> void:
+	if _quote_bubble == null or text.is_empty():
+		return
+	# 取消上一个气泡动画
+	if _quote_tween and _quote_tween.is_valid():
+		_quote_tween.kill()
+	_quote_bubble.text = text
+	_quote_bubble.modulate = Color(1, 1, 1, 0)
+	_quote_bubble.visible = true
+	_quote_tween = create_tween()
+	# 淡入
+	_quote_tween.tween_property(_quote_bubble, "modulate", Color(1, 1, 1, 1), 0.25)
+	# 浮动效果
+	_quote_tween.parallel().tween_property(_quote_bubble, "position:y", _quote_bubble.position.y - 4.0, 0.3).set_ease(Tween.EASE_OUT)
+	# 持续显示
+	_quote_tween.tween_interval(duration)
+	# 淡出
+	_quote_tween.tween_property(_quote_bubble, "modulate", Color(1, 1, 1, 0), 0.4)
+	_quote_tween.tween_callback(func() -> void: _quote_bubble.visible = false)
+
+
+## 根据台词类型随机播放一条台词
+func play_random_quote(quote_type: String) -> void:
+	if _enemy == null:
+		return
+	var cfg: EnemyConfig = EnemyConfig.get_config(_enemy.config_id)
+	if cfg == null or cfg.quotes == null:
+		return
+	var pool: Array[String] = []
+	match quote_type:
+		"enter": pool = cfg.quotes.enter
+		"death": pool = cfg.quotes.death
+		"attack": pool = cfg.quotes.attack
+		"hurt": pool = cfg.quotes.hurt
+		"low_hp": pool = cfg.quotes.low_hp
+		"greet": pool = cfg.quotes.greet
+		"dispatch": pool = cfg.quotes.dispatch
+	if pool.is_empty():
+		return
+	show_quote(pool[randi() % pool.size()])

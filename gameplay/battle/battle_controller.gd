@@ -245,6 +245,26 @@ func start_battle(encounter: Dictionary = {}) -> void:
 	if not enemy_names.is_empty():
 		BattleLog.log_enemy("敌人登场：%s" % ", ".join(enemy_names))
 
+	# Boss 入场演出 + 敌人入场台词
+	var has_boss: bool = false
+	for view: EnemyView in enemy_views:
+		var inst: EnemyInstance = view.get_enemy_instance()
+		if inst == null:
+			continue
+		var cfg: EnemyConfig = EnemyConfig.get_config(inst.config_id)
+		if cfg == null:
+			continue
+		if cfg.category == EnemyConfig.EnemyCategory.BOSS:
+			has_boss = true
+			var is_final: bool = cfg.boss_rank == EnemyConfig.BossRank.FINAL
+			var entrance: BossEntrance = BossEntrance.play(self, cfg.name, GameManager.chapter, is_final)
+			await entrance.entrance_finished
+			# Boss 入场台词
+			view.play_random_quote("greet")
+		else:
+			# 普通/精英敌人入场台词
+			view.play_random_quote("enter")
+
 	# 首回合：battle_init 不触发 endTurn，需手动抽一次牌（对应原版 battleInit.ts 初始抽牌）
 	# 后续回合的抽牌由 TurnManager.end_turn_and_draw_phase 在敌人回合结束后执行
 	TurnManager.plays_left = TurnManager.max_plays
