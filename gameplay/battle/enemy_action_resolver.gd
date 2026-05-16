@@ -229,9 +229,13 @@ static func _resolve_via_effect_engine(
 	var result := EffectEngine.execute(effects, ctx)
 
 	# 应用结果到游戏状态
-	# 伤害
+	# 伤害（经过 dmg_scale 缩放 + Trait 修正）
 	if result.bonus_damage > 0:
 		var final_dmg: int = result.bonus_damage
+		# 基础攻击力缩放（与旧路径 get_action() 中的 _dmg_scale() 一致）
+		var config := EnemyConfig.get_config(e.config_id)
+		if config and config.base_dmg > 0 and e.attack_dmg != config.base_dmg:
+			final_dmg = int(float(final_dmg) * float(e.attack_dmg) / float(config.base_dmg))
 		# Trait 攻击力修正
 		var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)
 		if trait_mul > 1.0:

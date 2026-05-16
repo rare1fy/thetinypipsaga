@@ -213,7 +213,10 @@ static func _apply_result(result: EffectEngine.ExecuteResult, game: Node, relic_
 		EventBus.floating_text.emit("+%d金币" % result.gold_gain, Color.YELLOW, "player", "")
 	if not result.apply_statuses.is_empty():
 		for st: Dictionary in result.apply_statuses:
-			var st_type: GameTypes.StatusType = EffectTypes.status_name_to_type(st.get("status", ""))
+			var st_type: int = EffectTypes.status_name_to_type(st.get("status", ""))
+			if st_type < 0:
+				push_warning("RelicEngine: 未知状态名 '%s'" % st.get("status", ""))
+				continue
 			var st_value: int = st.get("value", 1)
 			var st_duration: int = st.get("duration", 3)
 			var st_target: String = st.get("target", "self")

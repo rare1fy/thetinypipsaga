@@ -100,13 +100,11 @@ static func tick_all(enemies: Array[EnemyInstance]) -> void:
 	for e: EnemyInstance in enemies:
 		if e.hp <= 0:
 			continue
-		var expired_keys: Array[String] = []
-		for key: String in e.cc_turns:
+		var keys: Array = e.cc_turns.keys()  # 显式快照，避免遍历中修改风险
+		for key: String in keys:
 			e.cc_turns[key] -= 1
 			if e.cc_turns[key] <= 0:
-				expired_keys.append(key)
-		for key: String in expired_keys:
-			e.cc_turns.erase(key)
+				e.cc_turns.erase(key)
 
 
 ## ============================================================

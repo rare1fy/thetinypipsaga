@@ -728,9 +728,9 @@ static func _phase(hp_threshold: float, actions: Array[EnemyAction]) -> EnemyPha
 	return p
 
 ## 行动构造 — 直接走 EffectEngine，不经过 description 字符串匹配
-static func _action_fx(type: int, base_value: int, effects: Array[Dictionary], scalable: bool = true) -> EnemyAction:
+static func _action_fx(type: int, base_value: int, effects: Array[Dictionary], scalable: bool = true, description: String = "") -> EnemyAction:
 	var a := EnemyAction.new()
-	a.type = type; a.base_value = base_value; a.scalable = scalable; a.effects = effects
+	a.type = type; a.base_value = base_value; a.scalable = scalable; a.effects = effects; a.description = description
 	return a
 
 ## [v2] 效果构建快捷方法 — 消除配置中的 EffectTypes 冗长引用
