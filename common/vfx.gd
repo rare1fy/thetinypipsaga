@@ -374,9 +374,9 @@ static func _create_floating_label(parent: Node, pos: Vector2, text: String, fon
 ## Boss 出场 / Warning
 ## ==========================================
 
-static func boss_entrance(node: Node, duration: float = 0.5) -> void:
-	# 由 BossEntrance 类处理完整演出，此处保留兼容接口
-	BossEntrance.play(node, "Boss", 1, false)
+## @deprecated 请直接使用 BossEntrance.play()
+static func boss_entrance(node: Node, _duration: float = 0.5, boss_name: String = "Boss", chapter: int = 1, is_final: bool = false) -> void:
+	BossEntrance.play(node, boss_name, chapter, is_final)
 
 
 static func warning_flash(control: Control, count: int = 3, period: float = 0.5) -> void:

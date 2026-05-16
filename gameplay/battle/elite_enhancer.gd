@@ -49,37 +49,34 @@ static func is_boss(e: EnemyInstance) -> bool:
 static func process_elite_dice(e: EnemyInstance, battle_turn: int) -> bool:
 	if battle_turn <= 0:
 		return false
+	var triggered: bool = false
 
 	# 精英：每 ELITE_DICE_CYCLE 回合塞碎裂骰子
 	if is_elite(e) and battle_turn % ELITE_DICE_CYCLE == 0:
-		DiceBag.owned_dice.append({"defId": "cracked", "level": 1})
-		DiceBag.dice_bag.append("cracked")
-		VFX.show_toast("%s 塞入碎裂骰子！" % e.name, "damage")
-		BattleLog.log_enemy("⚠ %s 向你的骰子库塞入了一颗碎裂骰子！" % e.name)
-		SoundPlayer.play_sound("enemy_skill")
-		return true
+		_stuff_dice(e, "cracked", "%s 塞入碎裂骰子！" % e.name)
+		triggered = true
 
-	# Boss
+	# Boss：诅咒骰和碎裂骰独立判定（可同回合触发）
 	if is_boss(e):
 		var hp_ratio: float = float(e.hp) / float(e.max_hp) if e.max_hp > 0 else 1.0
 		# 低HP时塞诅咒骰子
 		if hp_ratio < BOSS_CURSE_HP_RATIO and battle_turn % BOSS_CURSE_CYCLE == 0:
-			DiceBag.owned_dice.append({"defId": "cursed", "level": 1})
-			DiceBag.dice_bag.append("cursed")
-			VFX.show_toast("%s 施放诅咒！" % e.name, "damage")
-			BattleLog.log_enemy("⚠ %s 施放诅咒，塞入诅咒骰子！" % e.name)
-			SoundPlayer.play_sound("enemy_skill")
-			return true
-		# 否则塞碎裂骰子
+			_stuff_dice(e, "cursed", "%s 施放诅咒！" % e.name)
+			triggered = true
+		# 碎裂骰子（独立判定，不与诅咒互斥）
 		if battle_turn % BOSS_CRACKED_CYCLE == 0:
-			DiceBag.owned_dice.append({"defId": "cracked", "level": 1})
-			DiceBag.dice_bag.append("cracked")
-			VFX.show_toast("%s 塞入碎裂骰子！" % e.name, "damage")
-			BattleLog.log_enemy("⚠ %s 向你的骰子库塞入了一颗碎裂骰子！" % e.name)
-			SoundPlayer.play_sound("enemy_skill")
-			return true
+			_stuff_dice(e, "cracked", "%s 塞入碎裂骰子！" % e.name)
+			triggered = true
 
-	return false
+	return triggered
+
+
+static func _stuff_dice(e: EnemyInstance, def_id: String, toast_msg: String) -> void:
+	DiceBag.owned_dice.append({"defId": def_id, "level": 1})
+	DiceBag.dice_bag.append(def_id)
+	VFX.show_toast(toast_msg, "damage")
+	BattleLog.log_enemy("⚠ %s" % toast_msg)
+	SoundPlayer.play_sound("enemy_skill")
 
 
 ## ============================================================

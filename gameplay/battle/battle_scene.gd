@@ -306,8 +306,29 @@ func _spawn_topleft_buttons() -> void:
 	_spawn_guide_button(root, "🏺", "遗物图鉴", Vector2(48, 8), _on_relic_guide_pressed)
 	_spawn_guide_button(root, "⚙", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
 	# 骰子库/弃骰库按钮（右上角）
-	_spawn_guide_button(root, "🎲", "骰子库", Vector2(-88, 8), _on_draw_pile_pressed)
-	_spawn_guide_button(root, "♻", "弃骰库", Vector2(-48, 8), _on_discard_pile_pressed)
+	var draw_btn := Button.new()
+	draw_btn.text = "🎲"
+	draw_btn.tooltip_text = "骰子库"
+	draw_btn.add_theme_font_size_override("font_size", 16)
+	draw_btn.custom_minimum_size = Vector2(32, 32)
+	draw_btn.flat = true
+	draw_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
+	draw_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	draw_btn.position = Vector2(-80, 8)
+	draw_btn.pressed.connect(_on_draw_pile_pressed)
+	root.add_child(draw_btn)
+
+	var discard_btn := Button.new()
+	discard_btn.text = "♻"
+	discard_btn.tooltip_text = "弃骰库"
+	discard_btn.add_theme_font_size_override("font_size", 16)
+	discard_btn.custom_minimum_size = Vector2(32, 32)
+	discard_btn.flat = true
+	discard_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
+	discard_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	discard_btn.position = Vector2(-40, 8)
+	discard_btn.pressed.connect(_on_discard_pile_pressed)
+	root.add_child(discard_btn)
 
 
 func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
