@@ -12,19 +12,8 @@ var _armor_label: Label = null          # 护甲（仅有时显示）
 var _status_label: Label = null         # 状态效果提示
 var _aoe_label: Label = null            # AOE 提示（仅雷元素 / 特定牌型）
 
-# 牌型附带护甲/状态表（v0.5 对齐）
-const HAND_EFFECT_TABLE: Dictionary = {
-	"对子": {"armor": 0, "status": ""},
-	"连对": {"armor": 5, "status": ""},
-	"三连对": {"armor": 8, "status": ""},
-	"三条": {"armor": 0, "status": "易伤x1"},
-	"4顺": {"armor": 0, "status": "虚弱x1（1回合）"},
-	"葫芦": {"armor": 0, "status": "真实伤害（无视护甲+减伤）"},
-	"大葫芦": {"armor": 0, "status": "真实伤害（无视护甲+减伤）"},
-	"5顺": {"armor": 0, "status": "虚弱x2（1回合）"},
-	"四条": {"armor": 0, "status": "易伤x2"},
-	"6顺": {"armor": 10, "status": "虚弱x3（1回合）"},
-}
+# 牌型附带护甲/状态表 — 从 HandTypeEffects 配置表读取
+static var HAND_EFFECT_TABLE: Dictionary = HandTypeEffects.get_display_table()
 
 
 func _ready() -> void:
@@ -249,8 +238,5 @@ func _get_best_effect(active_hands: Array[String]) -> Dictionary:
 
 ## §6.6 第 2 级判定：是否含同元素系牌型
 func _has_elemental_hand(active_hands: Array[String]) -> bool:
-	const ELEMENTAL_HANDS: Array[String] = ["同元素", "元素顺", "元素葫芦", "皇家元素顺"]
-	for h: String in active_hands:
-		if h in ELEMENTAL_HANDS:
-			return true
+	return HandTypeEffects.has_elemental_hand(active_hands)
 	return false

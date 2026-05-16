@@ -116,21 +116,17 @@ static func compute_dice_on_play_extras(selected_dice: Array[Dictionary]) -> Arr
 
 ## AOE 检测（雷元素 或 顺子 / 多条 / 元素系顺子牌型）
 ## 演出 Phase4 震屏强度 + UI AOE 标识共用
-## §6.8 对齐：aoe_hands = ['顺子','4顺','5顺','6顺','三连对','四条','五条','六条','元素顺','元素葫芦','皇家元素顺']
+## §6.8 对齐：AOE 判定从 HandTypeEffects 配置表读取
 static func detect_aoe(selected_dice: Array[Dictionary], hand_result: Dictionary) -> bool:
+	# 雷元素骰子自带 AOE
 	for d: Dictionary in selected_dice:
 		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
 		if elem == "thunder":
 			return true
-	var aoe_hands := [
-		"顺子", "4顺", "5顺", "6顺",
-		"三连对", "四条", "五条", "六条",
-		"元素顺", "元素葫芦", "皇家元素顺",
-	]
-	for h: String in hand_result.get("activeHands", []):
-		if h in aoe_hands:
-			return true
-	return false
+	# 牌型 AOE 从配置表判定
+	var active: Array[String] = []
+	active.assign(hand_result.get("activeHands", []))
+	return HandTypeEffects.has_aoe_in_active(active)
 
 
 ## 主导元素 — 取本次出牌中出现次数最多的非 normal 元素，用于受击粒子配色

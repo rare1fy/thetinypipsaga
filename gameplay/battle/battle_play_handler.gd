@@ -152,34 +152,47 @@ static func _get_view_center(view: Node) -> Vector2:
 # 牌型附带效果
 # ============================================================
 
-## 应用牌型附带效果（护甲/状态）
-## §6.6 第 2 级：同元素系牌型（同元素 / 元素顺 / 元素葫芦 / 皇家元素顺）
-##   → 额外获得等量于本次 baseDamage 的护甲（原版 expectedOutcomeCalc.ts 第 2 级）
-## 参数 base_damage：本次出牌的 baseDamage（点数和 × 牌型倍率），用于元素系护甲转化
+## 应用牌型附带效果（护甲/状态/真伤标记等）
+## 通过 HandTypeEffects 配置表获取效果列表，走 EffectEngine 执行
+## 参数 base_damage：本次出牌的 baseDamage，用于元素系护甲转化
 static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) -> void:
 	var active: Array[String] = []
 	active.assign(hand_result.get("activeHands", []))
-	var best_effect: Dictionary = get_best_hand_effect(active)
-	if best_effect.get("armor", 0) > 0:
-		PlayerState.gain_armor(best_effect.armor)
+
+	# 收集所有激活牌型的效果
+	var all_effects: Array[Dictionary] = []
+	for h: String in active:
+		var effs: Array[Dictionary] = HandTypeEffects.get_effects(h)
+		all_effects.append_array(effs)
+
+	# 通过 EffectEngine 执行（护甲/状态等）
+	if not all_effects.is_empty():
+		var ctx := EffectEngine.ExecuteContext.new()
+		ctx.player_hp = PlayerState.hp
+		ctx.player_max_hp = PlayerState.max_hp
+		ctx.source = EffectTypes.EffectSource.HAND_TYPE
+		var result := EffectEngine.execute(all_effects, ctx)
+		# 应用护甲
+		if result.armor > 0:
+			PlayerState.gain_armor(result.armor)
+		# 应用状态（施加给目标敌人）
+		if not result.apply_statuses.is_empty():
+			for status: Dictionary in result.apply_statuses:
+				var st_name: String = status.get("status", "")
+				var st_value: int = status.get("value", 0)
+				# 牌型状态效果由 battle_controller 在伤害应用时处理
+				# 这里只记录到 PlayerState 供后续消费
+				PlayerState.pending_hand_statuses.append(status)
+
 	# §6.6 第 2 级：同元素系牌型 → base_damage 转护甲
-	if base_damage > 0 and _has_elemental_hand(active):
+	if base_damage > 0 and HandTypeEffects.has_elemental_hand(active):
 		PlayerState.gain_armor(base_damage)
 
 
-## 判断是否包含同元素系牌型
-static func _has_elemental_hand(active_hands: Array[String]) -> bool:
-	const ELEMENTAL_HANDS: Array[String] = ["同元素", "元素顺", "元素葫芦", "皇家元素顺"]
-	for h: String in active_hands:
-		if h in ELEMENTAL_HANDS:
-			return true
-	return false
-
-
-## 查 HAND_EFFECT_TABLE 获取最佳牌型效果
+## 查 HandTypeEffects 获取最佳牌型效果（UI 显示用）
 static func get_best_hand_effect(active_hands: Array[String]) -> Dictionary:
 	var best: Dictionary = {"armor": 0, "status": ""}
-	var table: Dictionary = DamagePreview.HAND_EFFECT_TABLE
+	var table: Dictionary = HandTypeEffects.get_display_table()
 	for h: String in active_hands:
 		var eff: Dictionary = table.get(h, {})
 		if eff.is_empty():

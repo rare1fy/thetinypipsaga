@@ -68,6 +68,8 @@ var black_market_used_this_turn: bool = false
 ## 对齐原版 playsPerEnemy，为 per-enemy 遗物触发（如"同敌第 N 击额外伤害"类）保留数据入口
 ## 战斗结束时由 TurnManager 统一清空
 var plays_per_enemy: Dictionary = {}
+## 牌型附带状态效果（由 apply_hand_effects 写入，battle_controller 消费后清空）
+var pending_hand_statuses: Array[Dictionary] = []
 var fortune_wheel_used: bool = false
 var temp_draw_count_bonus: int = 0
 

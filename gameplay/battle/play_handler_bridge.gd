@@ -200,6 +200,21 @@ func _apply_damage_and_after(
 		var player_pos: Vector2 = controller.hp_bar.global_position + controller.hp_bar.size * 0.5
 		VFX.spawn_armor_text(controller._float_layer, player_pos, armor_gained)
 
+	# 3b. 消费牌型附带状态效果（施加给目标敌人）
+	if not PlayerState.pending_hand_statuses.is_empty():
+		var target_view_for_status: Node = EnemyMgr.get_target_enemy(controller.enemy_views)
+		if target_view_for_status != null and target_view_for_status.has_method("get_enemy_instance"):
+			var target_inst: EnemyInstance = target_view_for_status.get_enemy_instance()
+			if target_inst != null:
+				for st: Dictionary in PlayerState.pending_hand_statuses:
+					var st_name: String = st.get("status", "")
+					var st_value: int = st.get("value", 0)
+					var st_type: int = _status_name_to_type(st_name)
+					if st_type >= 0:
+						StatusService.add(target_inst.statuses, st_type, st_value, 3)
+						BattleLog.log_status("✦ 牌型效果: %s x%d" % [st_name, st_value])
+		PlayerState.pending_hand_statuses.clear()
+
 	# 4. combo 飘字
 	var combo: int = PlayerState.combo_count
 	if combo > 1:
@@ -311,3 +326,22 @@ func _on_after_play_resolve(controller: BattleController) -> void:
 			dp.refresh([])
 	# 统一刷新三个按钮（play/reroll/end_turn），修复出牌后按钮禁用态残留
 	controller._update_button_states()
+
+
+## 状态名 → GameTypes.StatusType 映射
+static func _status_name_to_type(name: String) -> int:
+	match name:
+		"poison":
+			return GameTypes.StatusType.POISON
+		"burn":
+			return GameTypes.StatusType.BURN
+		"vulnerable":
+			return GameTypes.StatusType.VULNERABLE
+		"weak":
+			return GameTypes.StatusType.WEAK
+		"freeze":
+			return GameTypes.StatusType.FREEZE
+		"slow":
+			return GameTypes.StatusType.SLOW
+		_:
+			return -1
