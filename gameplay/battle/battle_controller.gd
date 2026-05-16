@@ -35,6 +35,9 @@ var enemy_container: Node2D = null
 @onready var dice_container: HBoxContainer = %DiceContainer
 @onready var action_btn: Button = %ActionBtn
 @onready var reroll_btn: Button = %RerollBtn
+@onready var draw_pile_label: Label = %DrawPileLabel
+@onready var discard_pile_label: Label = %DiscardPileLabel
+@onready var wave_label: Label = %WaveLabel
 
 # 飘字覆盖层（UILayer/Root 下，不受震屏影响）
 var _float_layer: Control = null
@@ -224,6 +227,9 @@ func start_battle(encounter: Dictionary = {}) -> void:
 			view.position = init_visuals.position
 		view.enemy_clicked.connect(_on_enemy_clicked)
 		enemy_views.append(view)
+
+	# 自动选中第一个敌人作为默认目标
+	EnemyMgr.auto_select_first_target(enemy_views)
 
 	# 更新状态栏（包含楼层+等级信息）
 	_refresh_status_bar()
@@ -696,6 +702,19 @@ func _refresh_status_bar() -> void:
 			stage_label.text = "%s | Lv.%d MAX" % [floor_text, XpSystem.level]
 		else:
 			stage_label.text = "%s | Lv.%d (%d/%d)" % [floor_text, XpSystem.level, XpSystem.xp, XpSystem.xp_to_next]
+	# 骰子队列信息
+	if draw_pile_label:
+		draw_pile_label.text = "🎲 抽牌堆: %d" % DiceBag.dice_bag.size()
+	if discard_pile_label:
+		discard_pile_label.text = "♻ 弃牌堆: %d" % DiceBag.discard_pile.size()
+	# 波次信息
+	if wave_label:
+		var waves: Array[Dictionary] = GameManager.battle_waves
+		if waves.size() > 1:
+			wave_label.text = "第%d波 / %d波" % [GameManager.current_wave_index + 1, waves.size()]
+			wave_label.visible = true
+		else:
+			wave_label.visible = false
 
 ## 职业像素字符图标（美术资源到位前的临时占位，对齐 RULES Q1=B）
 func _get_class_icon_text(class_id: String) -> String:

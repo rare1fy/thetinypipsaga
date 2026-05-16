@@ -98,7 +98,12 @@ static func check_battle_over(enemy_views: Array[Node], on_victory: Callable, co
 	var new_enemies: Array[EnemyInstance] = []
 	var settled: Array[String] = BattleHelpers.settle_enemy_deaths(instances, new_enemies)
 	if not settled.is_empty():
+		# 从场景中移除死亡敌人视图节点
+		_remove_dead_views(enemy_views, settled)
 		refresh_enemy_views(enemy_views)
+		# 如果当前目标已死亡，自动切换到下一个存活敌人
+		if GameManager.target_enemy_uid in settled:
+			_auto_select_next_target(enemy_views)
 	# P2: 分裂产生的新敌人需要生成视图
 	if new_enemies.size() > 0 and controller != null:
 		for minion: EnemyInstance in new_enemies:
@@ -109,3 +114,40 @@ static func check_battle_over(enemy_views: Array[Node], on_victory: Callable, co
 		on_victory.call()
 		return true
 	return false
+
+
+## 从 enemy_views 中移除已死亡的视图节点（播放死亡动画后延迟销毁）
+static func _remove_dead_views(enemy_views: Array[Node], settled_uids: Array[String]) -> void:
+	var to_remove: Array[Node] = []
+	for view: Node in enemy_views:
+		if not is_instance_valid(view):
+			continue
+		if view.has_method("get_enemy_uid"):
+			var uid: String = view.get_enemy_uid()
+			if uid in settled_uids:
+				to_remove.append(view)
+	for view: Node in to_remove:
+		enemy_views.erase(view)
+		# 延迟销毁：给死亡动画 0.6s 播放时间
+		if view.has_method("play_hurt"):
+			view.play_hurt()
+		var tw: Tween = view.create_tween()
+		tw.tween_interval(0.6)
+		tw.tween_property(view, "modulate", Color(1, 1, 1, 0), 0.3)
+		tw.tween_callback(view.queue_free)
+
+
+## 自动选中下一个存活敌人
+static func auto_select_first_target(enemy_views: Array[Node]) -> void:
+	_auto_select_next_target(enemy_views)
+
+
+static func _auto_select_next_target(enemy_views: Array[Node]) -> void:
+	var living: Array[Node] = get_living_enemies(enemy_views)
+	if living.is_empty():
+		GameManager.target_enemy_uid = ""
+		return
+	var first_view: Node = living[0]
+	if first_view.has_method("get_enemy_uid"):
+		GameManager.target_enemy_uid = first_view.get_enemy_uid()
+	refresh_enemy_views(enemy_views)

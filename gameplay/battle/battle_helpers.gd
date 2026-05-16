@@ -81,6 +81,15 @@ static func settle_enemy_deaths(enemies: Array[EnemyInstance], new_enemies_out: 
 			# 正常死亡
 			GameManager.add_gold(e.drop_gold)
 			GameManager.stats.enemiesKilled += 1
+			# 魂晶产出：溢出伤害 × 深度倍率 × 转化率
+			var overkill: int = absi(e.hp)
+			var capped_overkill: int = mini(overkill, e.max_hp)
+			if capped_overkill > 0:
+				var depth_mult: float = GameBalance.get_soul_crystal_mult(GameManager.current_node, 1.0) + XpSystem.level_soul_bonus
+				var soul_gain: int = maxi(1, ceili(capped_overkill * depth_mult * GameBalance.SOUL_CRYSTAL_CONFIG.conversionRate))
+				GameManager.souls += soul_gain
+				BattleLog.log_write("💎 +%d 魂晶 (溢出%d × %.0f%%倍率)" % [soul_gain, capped_overkill, depth_mult * 100])
+				VFX.show_toast("+%d 魂晶" % soul_gain, "buff")
 			e.hp = -9999
 			settled.append(e.uid)
 	# P2 Trait: Berserker vengeance — 队友死亡时存活的 berserker +1 层

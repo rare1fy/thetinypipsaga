@@ -10,6 +10,7 @@ extends Node2D
 @onready var _chapter_label: Label = %ChapterLabel
 @onready var _gold_label: Label = %GoldLabel
 @onready var _hp_label: Label = %HpLabel
+@onready var _scroll: ScrollContainer = _graph.get_parent() as ScrollContainer
 
 var _map_nodes: Array[MapGenerator.MapNode] = []
 
@@ -31,6 +32,9 @@ func _ready() -> void:
 			_refresh_header()
 			_graph.set_map_nodes(_map_nodes)
 		SaveManager.save_run()
+		# 延迟一帧后自动滚动到当前可用节点
+		await get_tree().process_frame
+		_scroll_to_current_node()
 
 	_refresh_header()
 
@@ -53,6 +57,9 @@ func _generate_map() -> void:
 	GameManager.map_nodes = _map_nodes
 	_refresh_header()
 	_graph.set_map_nodes(_map_nodes)
+	# 延迟一帧后自动滚动到当前可用节点
+	await get_tree().process_frame
+	_scroll_to_current_node()
 
 
 func _refresh_header() -> void:
@@ -60,6 +67,28 @@ func _refresh_header() -> void:
 	_chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[chapter_idx]
 	_gold_label.text = "金币: %d" % GameManager.gold
 	_hp_label.text = "HP %d/%d" % [GameManager.hp, GameManager.max_hp]
+
+
+## 自动滚动到当前可用节点（最低的 available 节点居中显示）
+func _scroll_to_current_node() -> void:
+	if _scroll == null or _map_nodes.is_empty():
+		return
+	# 找到第一个 available 节点
+	var target_node: MapGenerator.MapNode = null
+	for n: MapGenerator.MapNode in _map_nodes:
+		if n.available:
+			if target_node == null or n.depth < target_node.depth:
+				target_node = n
+	if target_node == null:
+		return
+	# 计算节点在 MapGraphView 中的 y 坐标
+	var node_y: float = _graph._node_screen_pos(target_node).y
+	# 滚动使节点居中
+	var scroll_target: float = node_y - _scroll.size.y * 0.5
+	scroll_target = clampf(scroll_target, 0.0, _graph.custom_minimum_size.y - _scroll.size.y)
+	# 平滑滚动
+	var tw: Tween = create_tween()
+	tw.tween_property(_scroll, "scroll_vertical", int(scroll_target), 0.4).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
 func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
