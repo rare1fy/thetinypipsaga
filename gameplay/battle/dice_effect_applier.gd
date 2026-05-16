@@ -122,7 +122,7 @@ static func apply(
 
 	# 统一元素：将手牌所有元素骰子坍缩为同一随机元素
 	if effect_result.unify_element:
-var elements := ["fire", "wind", "thunder", "poison", "holy"]
+		var elements := ["fire", "wind", "thunder", "poison", "holy"]
 		var chosen: String = elements[randi() % elements.size()]
 		for die_dict: Dictionary in DiceBag.hand_dice:
 			var elem: String = die_dict.get("collapsedElement", die_dict.get("element", "normal"))

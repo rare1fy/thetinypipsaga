@@ -150,7 +150,7 @@ static func dominant_element(selected_dice: Array[Dictionary]) -> String:
 	if counts.is_empty():
 		return "physical"
 	# 平局打破：火>雷>冰>毒>圣
-var priority := ["fire", "thunder", "wind", "poison", "holy"]
+	var priority := ["fire", "thunder", "wind", "poison", "holy"]
 	var best := ""
 	var best_count := 0
 	var best_rank := 999
