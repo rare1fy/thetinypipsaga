@@ -193,6 +193,10 @@ func _on_player_game_over() -> void:
 	if player_hands == null:
 		return
 	player_hands.play_death()
+	# 死亡过渡动画 → 完成后切 GAME_OVER
+	DeathTransition.play(self, func():
+		GameManager.set_phase(GameTypes.GamePhase.GAME_OVER)
+	)
 
 
 ## [E2-FIX] Autoload 信号连接必须在场景离开时断开
@@ -274,7 +278,22 @@ func _bootstrap_from_pending_wave() -> void:
 		return
 	# 用完即清，防止下一次战斗复用旧数据
 	GameManager.pending_wave = []
-	controller.start_battle({"enemies": wave})
+
+	# Boss 入场演出：检查波次中是否有 Boss 级敌人
+	var boss_enemy: EnemyInstance = null
+	for e in wave:
+		if e is EnemyInstance and EliteEnhancer.is_boss(e):
+			boss_enemy = e
+			break
+
+	if boss_enemy != null:
+		var depth: int = GameManager.current_depth
+		var is_final: bool = depth >= GameBalance.MAP_CONFIG.totalLayers - 1
+		BossEntrance.play(self, boss_enemy.display_name, GameManager.chapter, is_final, func():
+			controller.start_battle({"enemies": wave})
+		)
+	else:
+		controller.start_battle({"enemies": wave})
 
 
 func _spawn_topleft_buttons() -> void:
@@ -286,6 +305,9 @@ func _spawn_topleft_buttons() -> void:
 	_spawn_guide_button(root, "📖", "牌型图鉴", Vector2(8, 8), _on_hand_guide_pressed)
 	_spawn_guide_button(root, "🏺", "遗物图鉴", Vector2(48, 8), _on_relic_guide_pressed)
 	_spawn_guide_button(root, "⚙", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
+	# 骰子库/弃骰库按钮（右上角）
+	_spawn_guide_button(root, "🎲", "骰子库", Vector2(-88, 8), _on_draw_pile_pressed)
+	_spawn_guide_button(root, "♻", "弃骰库", Vector2(-48, 8), _on_discard_pile_pressed)
 
 
 func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
@@ -327,6 +349,26 @@ func _on_settings_pressed() -> void:
 		"设置",
 		{"size": Vector2(480, 680), "close_on_backdrop": true}
 	)
+
+
+var _dice_bag_panel: DiceBagPanel = null
+
+func _on_draw_pile_pressed() -> void:
+	SoundPlayer.play_sound("click")
+	_open_dice_bag_panel(DiceBagPanel.PanelMode.DRAW_PILE)
+
+
+func _on_discard_pile_pressed() -> void:
+	SoundPlayer.play_sound("click")
+	_open_dice_bag_panel(DiceBagPanel.PanelMode.DISCARD_PILE)
+
+
+func _open_dice_bag_panel(mode: DiceBagPanel.PanelMode) -> void:
+	if _dice_bag_panel != null and is_instance_valid(_dice_bag_panel):
+		_dice_bag_panel.queue_free()
+	_dice_bag_panel = DiceBagPanel.new()
+	add_child(_dice_bag_panel)
+	_dice_bag_panel.open(mode)
 
 func _on_battle_started(encounter: Dictionary) -> void:
 	controller.start_battle(encounter)

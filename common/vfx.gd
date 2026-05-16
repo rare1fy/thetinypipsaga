@@ -371,15 +371,21 @@ static func _create_floating_label(parent: Node, pos: Vector2, text: String, fon
 
 
 ## ==========================================
-## Boss 出场 / Warning — no-op
+## Boss 出场 / Warning
 ## ==========================================
 
-static func boss_entrance(_node: Node, _duration: float = 0.5) -> void:
-	pass
+static func boss_entrance(node: Node, duration: float = 0.5) -> void:
+	# 由 BossEntrance 类处理完整演出，此处保留兼容接口
+	BossEntrance.play(node, "Boss", 1, false)
 
 
-static func warning_flash(_control: Control, _count: int = 3, _period: float = 0.5) -> void:
-	pass
+static func warning_flash(control: Control, count: int = 3, period: float = 0.5) -> void:
+	if control == null:
+		return
+	var tw := control.create_tween()
+	tw.set_loops(count)
+	tw.tween_property(control, "modulate:a", 0.3, period * 0.5)
+	tw.tween_property(control, "modulate:a", 1.0, period * 0.5)
 
 
 ## ==========================================
