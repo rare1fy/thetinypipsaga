@@ -466,8 +466,8 @@ static func _element_palette(element: String) -> Array[Color]:
 	match element:
 		"fire":
 			return [Color(1.0, 0.5, 0.15), Color(1.0, 0.85, 0.25), Color(0.95, 0.3, 0.1)]
-		"ice":
-			return [Color(0.55, 0.85, 1.0), Color(0.8, 0.95, 1.0), Color.WHITE]
+		"wind":
+			return [Color(0.5, 0.9, 0.7), Color(0.7, 1.0, 0.85), Color.WHITE]
 		"thunder":
 			return [Color(1.0, 1.0, 0.5), Color(0.7, 0.7, 1.0), Color.WHITE]
 		"poison":

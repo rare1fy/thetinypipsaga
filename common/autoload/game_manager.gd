@@ -63,7 +63,7 @@ func start_run(class_id: String) -> void:
 	
 	# 魂晶商店常驻遗物：从 meta 存档加载已解锁的遗物
 	var meta: Dictionary = SaveManager.load_meta()
-	var unlocked_relics: Array = meta.get("unlocked_start_relics", [])
+	var unlocked_relics: Array = meta.get("soul_shop_relics", [])
 	var added_ids: Dictionary = {}  # 防御性去重
 	for relic_id: Variant in unlocked_relics:
 		var rid: String = str(relic_id)
@@ -381,9 +381,6 @@ func after_play() -> void:
 
 func consume_play() -> void:
 	TurnManager.consume_play()
-
-func end_player_turn() -> void:
-	TurnManager.end_player_turn()
 
 func execute_draw_phase() -> void:
 	TurnManager.execute_draw_phase()

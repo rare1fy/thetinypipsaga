@@ -17,7 +17,7 @@
 ├── data/                # 数据定义
 │   ├── class_def.gd     # 职业 (嗜血狂战/星界魔导/影锋刺客)
 │   ├── dice_def.gd      # 骰子定义
-│   ├── enemy_config.gd  # 敌人配置 (5章)
+│   ├── enemy_config.gd  # 敌人类型定义 (JSON加载)
 │   ├── relic_def.gd     # 遗物定义
 │   └── game_balance.gd  # 平衡数值
 ├── entities/enemy/      # 敌人实例

@@ -88,7 +88,7 @@ static func element_from_code(code: String) -> int:
 	match code:
 		"EL0": return GameTypes.DiceElement.NORMAL
 		"EL1": return GameTypes.DiceElement.FIRE
-		"EL2": return GameTypes.DiceElement.ICE
+"EL2": return GameTypes.DiceElement.WIND
 		"EL3": return GameTypes.DiceElement.THUNDER
 		"EL4": return GameTypes.DiceElement.POISON
 		"EL5": return GameTypes.DiceElement.HOLY
@@ -197,6 +197,8 @@ static func load_dice_defs() -> Dictionary:
 						d.copy_majority_element = _as_bool(eff.get("param_value", false))
 					"dual_element":
 						d.dual_element = _as_bool(eff.get("param_value", false))
+					"is_rune":
+						d.is_rune = _as_bool(eff.get("param_value", false))
 
 		defs[d.id] = d
 	return defs

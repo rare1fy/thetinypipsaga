@@ -13,7 +13,7 @@ extends Control
 # ── 元素配置（同步 dice_button.gd）
 const ELEM_NAMES: Dictionary = {
 	"fire":    "火焰骰子",
-	"ice":     "冰霜骰子",
+	"wind":    "风系骰子",
 	"thunder": "雷电骰子",
 	"poison":  "剧毒骰子",
 	"holy":    "神圣骰子",
@@ -22,7 +22,7 @@ const ELEM_NAMES: Dictionary = {
 
 const ELEM_DESCS: Dictionary = {
 	"fire":    "造成额外灼烧伤害（持续2回合）",
-	"ice":     "冻结敌人，令其跳过1回合行动",
+	"wind":    "击退敌人并造成2点基础伤害",
 	"thunder": "雷击造成AOE范围伤害",
 	"poison":  "施加毒素持续掉血",
 	"holy":    "治疗自身并净化负面状态",
@@ -31,7 +31,7 @@ const ELEM_DESCS: Dictionary = {
 
 const ELEM_COLORS: Dictionary = {
 	"fire":    Color("#ff8040"),
-	"ice":     Color("#60c0f0"),
+	"wind":    Color("#80e0a0"),
 	"thunder": Color("#e0d040"),
 	"poison":  Color("#60e060"),
 	"holy":    Color("#e0d8a0"),

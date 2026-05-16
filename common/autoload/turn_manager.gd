@@ -86,6 +86,7 @@ func after_play() -> void:
 	if PlayerState.player_class == "mage":
 		PlayerState.charge_stacks = 0
 		PlayerState.mage_overcharge_mult = 0.0
+		PlayerState.mage_disruption_hits = 0  # v0.5 法脉紊乱重置
 	
 	# [FIX-P3] 盗贼连击补牌：每连击1次，下回合抽牌+1（最多+2）
 	if PlayerState.player_class == "rogue" and PlayerState.combo_count >= 2:
@@ -98,14 +99,6 @@ func after_play() -> void:
 func consume_play() -> void:
 	plays_left = maxi(0, plays_left - 1)
 	PlayerState.combo_count += 1
-
-
-## [DEPRECATED v0.4] 不要再调用本函数
-## 原逻辑已拆分：回合收尾 → end_turn_and_draw_phase()；法师吟唱 → battle_controller._process_turn_end_and_enemy_phase()
-## 保留函数体仅为兼容旧代码路径，下次清理时删除
-func end_player_turn() -> void:
-	push_warning("[TurnManager] end_player_turn() is deprecated, use end_turn_and_draw_phase() instead")
-	execute_draw_phase()
 
 
 ## 抽牌阶段（委托 DrawPhaseResolver 纯函数 + 写回 autoload 状态）
@@ -177,6 +170,9 @@ func execute_draw_phase(played_this_turn_override: Variant = null) -> void:
 	DiceBag.hand_dice = all_hand
 	DiceBag.dice_updated.emit()
 
+	# 10. v0.5 符文骰 ON_HOLD 被动效果（手牌确定后触发）
+	_apply_rune_hold_effects(all_hand)
+
 	# [DIAG] 诊断日志：抽牌阶段结算结果
 	print_rich("[color=cyan][TurnManager][DIAG] draw_phase result: kept=%d drawn=%d hand_size=%d discard_ids=%s[/color]" % [
 		result.kept_dice.size(), fresh_dice.size(), all_hand.size(), str(result.discard_ids)
@@ -191,6 +187,33 @@ func execute_draw_phase(played_this_turn_override: Variant = null) -> void:
 		DiceBag.toast_requested.emit(t.msg, t.type)
 
 
-func _discard_hand() -> void:
-	# 弃牌逻辑在 execute_draw_phase 中处理
-	pass
+
+## v0.5 符文骰 ON_HOLD 被动效果
+## 遍历手牌中的符文骰，触发其 ON_HOLD 效果（每回合抽牌后执行一次）
+func _apply_rune_hold_effects(hand: Array[Dictionary]) -> void:
+	for d: Dictionary in hand:
+		var def: DiceDef = GameData.get_dice_def(d.get("defId", ""))
+		if def == null or not def.is_rune:
+			continue
+		var hold_effects: Array[Dictionary] = def.get_effects_for_trigger(EffectTypes.TriggerType.ON_HOLD)
+		if hold_effects.is_empty():
+			continue
+		# 通过 EffectEngine 执行 ON_HOLD 效果
+		var ctx: Dictionary = {
+			"source": "rune_hold",
+			"dice_id": def.id,
+			"dice_name": def.name,
+		}
+		var result := EffectEngine.execute(hold_effects, ctx)
+		# 应用结果
+		if result.armor > 0:
+			PlayerState.gain_armor(result.armor)
+		if result.heal > 0:
+			PlayerState.heal(result.heal)
+		if result.bonus_draw > 0:
+			PlayerState.temp_draw_count_bonus += result.bonus_draw
+		if result.bonus_reroll > 0:
+			free_rerolls_left += result.bonus_reroll
+		if result.bonus_damage > 0:
+			PlayerState.next_play_bonus_mult += float(result.bonus_damage) / 100.0
+		VFX.show_toast("符文: %s" % def.name, "buff")

@@ -13,7 +13,7 @@ extends RefCounted
 # ============================================================
 
 ## 元素坍缩可选元素（fire/ice/thunder/poison/holy）
-const ELEMENTAL_COLLAPSE_ELEMENTS: Array[String] = ["fire", "ice", "thunder", "poison", "holy"]
+const ELEMENTAL_COLLAPSE_ELEMENTS: Array[String] = ["fire", "wind", "thunder", "poison", "holy"]
 
 
 # ============================================================

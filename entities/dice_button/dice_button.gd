@@ -108,7 +108,7 @@ func _refresh_visual() -> void:
 func _element_color(elem: String) -> Color:
 	match elem:
 		"fire": return Color(0.85, 0.30, 0.15, 1.0)
-		"ice": return Color(0.22, 0.55, 0.85, 1.0)
+		"wind": return Color(0.30, 0.75, 0.50, 1.0)
 		"thunder": return Color(0.85, 0.80, 0.20, 1.0)
 		"poison": return Color(0.30, 0.70, 0.30, 1.0)
 		"holy": return Color(0.92, 0.88, 0.55, 1.0)
@@ -118,7 +118,7 @@ func _element_color(elem: String) -> Color:
 func _element_icon_text(elem: String) -> String:
 	match elem:
 		"fire": return "🔥"
-		"ice": return "❄"
+		"wind": return "🌪"
 		"thunder": return "⚡"
 		"poison": return "☠"
 		"holy": return "✦"

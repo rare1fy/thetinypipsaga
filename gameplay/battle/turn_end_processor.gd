@@ -61,6 +61,7 @@ static func _resolve_mage_chant(played_this_turn: bool, controller: BattleContro
 		# 出了牌就重置吟唱（护甲在回合收尾 end_turn_and_draw_phase 统一清零）
 		PlayerState.charge_stacks = 0
 		PlayerState.mage_overcharge_mult = 0.0
+		PlayerState.mage_disruption_hits = 0  # v0.5 法脉紊乱重置
 
 
 ## §8.2 在玩家 HP 条上浮出 "+N 护甲" 文字
@@ -117,8 +118,15 @@ static func _resolve_taunt_backlash(played_this_turn: bool, _controller: BattleC
 	var has_taunt: bool = false
 	for dice_id: String in DiceBag.dice_played_this_turn:
 		var def: DiceDef = GameData.get_dice_def(dice_id)
-		if def and def.taunt_all:
-			has_taunt = true
+		if def == null:
+			continue
+		for eff: Dictionary in def.effects:
+			if eff.get("type", -1) == EffectTypes.EffectType.CONTROL:
+				var ctrl: String = eff.get("params", {}).get("control", "")
+				if ctrl == "taunt" and eff.get("params", {}).get("target", "") == "all":
+					has_taunt = true
+					break
+		if has_taunt:
 			break
 
 	if not has_taunt:

@@ -50,7 +50,7 @@ func _load_meta() -> Dictionary:
 	var raw: Dictionary = SaveManager.load_meta()
 	return {
 		"souls": raw.get("permanent_souls", 0),
-		"unlocked": raw.get("unlocked_start_relics", []),
+		"unlocked": raw.get("soul_shop_relics", []),
 		"total_runs": raw.get("total_runs", 0),
 		"total_wins": raw.get("total_wins", 0),
 		"highest_overkill": raw.get("highest_overkill", 0),
@@ -60,7 +60,7 @@ func _load_meta() -> Dictionary:
 func _save_meta() -> void:
 	var raw: Dictionary = SaveManager.load_meta()
 	raw["permanent_souls"] = _meta["souls"]
-	raw["unlocked_start_relics"] = _meta["unlocked"]
+	raw["soul_shop_relics"] = _meta["unlocked"]
 	SaveManager.save_meta(raw)
 
 

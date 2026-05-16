@@ -42,6 +42,20 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 					run_turn(c, living, index + 1)
 		)
 		return
+	# v0.5 缴械：无法使用攻击类行动，跳过（但防御/施法不受影响）
+	if ControlSystem.is_disarmed(e):
+		var action_check: Dictionary = e.get_action()
+		if action_check.get("type", "攻击") == "攻击":
+			BattleLog.log_status("🔒 %s 被缴械，无法攻击" % e.name)
+			VFX.show_toast("%s 缴械!" % e.name, "debuff")
+			EnemyMgr.refresh_enemy_views(controller.enemy_views)
+			controller.get_tree().create_timer(0.3).timeout.connect(
+				func() -> void:
+					var c: Node = wr.get_ref() as Node
+					if c != null and c.is_inside_tree():
+						run_turn(c, living, index + 1)
+			)
+			return
 	# 冻结跳过
 	if e.is_frozen():
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
@@ -218,6 +232,13 @@ static func _resolve_via_effect_engine(
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
+	# v0.5 致盲：攻击类行动有50%概率miss
+	var action_type: String = action.get("type", "攻击")
+	if action_type == "攻击" and ControlSystem.is_blinded(e) and randf() < 0.5:
+		BattleLog.log_status("👁 %s 致盲 → MISS!" % _get_name(e))
+		VFX.show_toast("MISS!", "debuff")
+		e.attack_count += 1
+		return
 	var effects: Array[Dictionary] = EnemyEffectBridge.action_to_effects(action, e)
 	var ctx := EnemyEffectBridge.build_enemy_context(e)
 	var result := EffectEngine.execute(effects, ctx)
@@ -606,6 +627,12 @@ static func _resolve_attacker(
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
+	# v0.5 致盲：攻击有50%概率miss
+	if ControlSystem.is_blinded(e) and randf() < 0.5:
+		BattleLog.log_status("👁 %s 致盲 → MISS!" % _get_name(e))
+		VFX.show_toast("MISS!", "debuff")
+		e.attack_count += 1
+		return
 	SoundPlayer.play_sound("enemy")
 	var damage: int = AttackCalc.get_effective_attack_dmg(
 		e, PlayerState.statuses, e.attack_count, e.is_slowed()
