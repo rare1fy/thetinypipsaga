@@ -38,6 +38,7 @@ var enemy_container: Node2D = null
 @onready var draw_pile_label: Label = %DrawPileLabel
 @onready var discard_pile_label: Label = %DiscardPileLabel
 @onready var wave_label: Label = %WaveLabel
+@onready var player_status_icons: HBoxContainer = %PlayerStatusIcons
 
 # 飘字覆盖层（UILayer/Root 下，不受震屏影响）
 var _float_layer: Control = null
@@ -200,6 +201,9 @@ func start_battle(encounter: Dictionary = {}) -> void:
 	GameManager.hp_lost_this_battle = 0
 	PlayerState.statuses = []
 	PlayerState.plays_per_enemy.clear()  # §6.3 每敌出牌计数在新战斗开始清零
+
+	# 从 owned_dice 重建骰子库（确保骰子奖励/商店购买的新骰子生效）
+	DiceBag.init_dice_bag()
 
 	# 创建敌人视图：优先使用传入的 encounter，否则从 PlayerState.battle_waves 读取
 	var enemies: Array[String] = []
@@ -716,7 +720,8 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 
 func _refresh_status_bar() -> void:
 	_on_hp_changed(PlayerState.hp, PlayerState.max_hp)
-	armor_label.text = "护甲: %d" % PlayerState.armor
+	armor_label.text = "🛡%d" % PlayerState.armor if PlayerState.armor > 0 else ""
+	armor_label.visible = PlayerState.armor > 0
 	gold_label.text = "金币: %d" % PlayerState.gold
 	turn_label.text = "回合 %d" % GameManager.battle_turn
 	class_icon.text = _get_class_icon_text(PlayerState.player_class)
@@ -740,6 +745,8 @@ func _refresh_status_bar() -> void:
 			wave_label.visible = true
 		else:
 			wave_label.visible = false
+	# 玩家状态效果图标
+	_refresh_player_status_icons()
 
 ## 职业像素字符图标（美术资源到位前的临时占位，对齐 RULES Q1=B）
 func _get_class_icon_text(class_id: String) -> String:
@@ -748,6 +755,75 @@ func _get_class_icon_text(class_id: String) -> String:
 		"mage": return "[法]"
 		"rogue": return "[盗]"
 		_: return "[?]"
+
+
+## 刷新玩家状态效果图标（护甲/中毒/灼烧/闪避/易伤/力量/虚弱/冻结/法脉紊乱等）
+func _refresh_player_status_icons() -> void:
+	if player_status_icons == null:
+		return
+	for child: Node in player_status_icons.get_children():
+		child.queue_free()
+	# 护甲 > 0 时显示护甲图标
+	if PlayerState.armor > 0:
+		_add_status_icon("🛡", str(PlayerState.armor), Color(0.42, 0.63, 0.82))
+	# 遍历所有状态效果
+	for status: StatusEffect in PlayerState.statuses:
+		var icon: String = _get_status_icon(status.type)
+		var color: Color = _get_status_color(status.type)
+		var text: String = str(status.value) if status.value > 1 else ""
+		if status.duration > 0 and status.duration < 99:
+			text += "(%d)" % status.duration
+		_add_status_icon(icon, text, color)
+	# 职业专属状态
+	if PlayerState.player_class == "warrior":
+		if PlayerState.scar_stacks > 0:
+			_add_status_icon("🩸", str(PlayerState.scar_stacks), Color(0.8, 0.2, 0.2))
+		if PlayerState.berserk_turns > 0:
+			_add_status_icon("💢", str(PlayerState.berserk_turns), Color(1.0, 0.3, 0.1))
+	elif PlayerState.player_class == "mage":
+		if PlayerState.charge_stacks > 0:
+			_add_status_icon("⚡", str(PlayerState.charge_stacks), Color(0.6, 0.4, 1.0))
+	elif PlayerState.player_class == "rogue":
+		if PlayerState.combo_count > 0:
+			_add_status_icon("🗡", str(PlayerState.combo_count), Color(0.2, 0.9, 0.4))
+
+
+func _add_status_icon(icon: String, text: String, color: Color) -> void:
+	var lbl := Label.new()
+	lbl.text = icon + text
+	lbl.add_theme_font_size_override("font_size", 11)
+	lbl.add_theme_color_override("font_color", color)
+	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+	lbl.add_theme_constant_override("outline_size", 2)
+	player_status_icons.add_child(lbl)
+
+
+static func _get_status_icon(type: GameTypes.StatusType) -> String:
+	match type:
+		GameTypes.StatusType.POISON: return "☠"
+		GameTypes.StatusType.BURN: return "🔥"
+		GameTypes.StatusType.DODGE: return "💨"
+		GameTypes.StatusType.VULNERABLE: return "💔"
+		GameTypes.StatusType.STRENGTH: return "💪"
+		GameTypes.StatusType.WEAK: return "📉"
+		GameTypes.StatusType.ARMOR: return "🛡"
+		GameTypes.StatusType.FREEZE: return "❄"
+		GameTypes.StatusType.ARCANE_DISRUPTION: return "🌀"
+		_: return "?"
+
+
+static func _get_status_color(type: GameTypes.StatusType) -> Color:
+	match type:
+		GameTypes.StatusType.POISON: return Color(0.3, 0.8, 0.2)
+		GameTypes.StatusType.BURN: return Color(1.0, 0.5, 0.1)
+		GameTypes.StatusType.DODGE: return Color(0.5, 0.9, 1.0)
+		GameTypes.StatusType.VULNERABLE: return Color(1.0, 0.3, 0.3)
+		GameTypes.StatusType.STRENGTH: return Color(1.0, 0.8, 0.2)
+		GameTypes.StatusType.WEAK: return Color(0.6, 0.5, 0.7)
+		GameTypes.StatusType.ARMOR: return Color(0.42, 0.63, 0.82)
+		GameTypes.StatusType.FREEZE: return Color(0.5, 0.8, 1.0)
+		GameTypes.StatusType.ARCANE_DISRUPTION: return Color(0.8, 0.3, 0.9)
+		_: return Color.WHITE
 
 func _refresh_hand_display() -> void:
 	for child: Node in dice_container.get_children():

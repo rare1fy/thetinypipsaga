@@ -68,6 +68,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="TopBar" type="PanelContainer" parent="UILayer/Root/VBox"]
@@ -119,6 +120,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="DamagePreview" type="PanelContainer" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
@@ -196,6 +198,12 @@ layout_mode = 2
 theme_type_variation = &"DimLabel"
 theme_override_font_sizes/font_size = 13
 text = "回合 0"
+
+[node name="PlayerStatusIcons" type="HBoxContainer" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="HandPanel" type="PanelContainer" parent="UILayer/Root/VBox"]
 custom_minimum_size = Vector2(0, 220)
