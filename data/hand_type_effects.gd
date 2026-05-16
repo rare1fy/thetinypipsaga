@@ -118,9 +118,9 @@ static func get_all() -> Dictionary:
 		], false, "真实伤害（无视护甲+减伤）"),
 
 		# ---- 元素系（AOE + 同元素护甲转化在 apply 时处理）----
-		"同元素": _entry([], false),
+		"同元素": _entry([], false, "", 0, true),
 
-		"元素顺": _entry([], true),
+		"元素顺": _entry([], true, "", 0, true),
 
 		"元素葫芦": _entry([
 			EffectTypes.create_effect(
@@ -133,9 +133,9 @@ static func get_all() -> Dictionary:
 				EffectTypes.TriggerType.ON_PLAY, EffectTypes.EffectScope.PLAY,
 				EffectTypes.StackingRule.INDEPENDENT, EffectTypes.TargetScope.SELF
 			),
-		], true, "真实伤害（无视护甲+减伤）"),
+		], true, "真实伤害（无视护甲+减伤）", 0, true),
 
-		"皇家元素顺": _entry([], true),
+		"皇家元素顺": _entry([], true, "", 0, true),
 	}
 
 
@@ -169,9 +169,10 @@ static func has_aoe_in_active(active_hands: Array[String]) -> bool:
 
 ## 判断是否包含同元素系牌型（§6.6 第 2 级：baseDamage 转护甲）
 static func has_elemental_hand(active_hands: Array[String]) -> bool:
-	const ELEMENTAL_HANDS: Array[String] = ["同元素", "元素顺", "元素葫芦", "皇家元素顺"]
+	var table: Dictionary = get_all()
 	for h: String in active_hands:
-		if h in ELEMENTAL_HANDS:
+		var entry: Dictionary = table.get(h, {})
+		if entry.get("is_elemental", false):
 			return true
 	return false
 
@@ -213,14 +214,16 @@ static func get_display_table() -> Dictionary:
 
 ## 构建一条牌型配置条目
 static func _entry(
-	effects: Array = [],
+	effects: Array[Dictionary] = [],
 	is_aoe: bool = false,
 	display_status: String = "",
 	display_armor: int = 0,
+	is_elemental: bool = false,
 ) -> Dictionary:
 	return {
 		"effects": effects,
 		"is_aoe": is_aoe,
+		"is_elemental": is_elemental,
 		"display_status": display_status,
 		"display_armor": display_armor,
 	}

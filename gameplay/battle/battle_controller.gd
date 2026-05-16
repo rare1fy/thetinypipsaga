@@ -177,6 +177,7 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		DiceBag.discard_hand_dice(leftover_ids)
 	DiceBag.hand_dice = []
 	DiceBag.dice_played_this_turn.clear()
+	PlayerState.pending_hand_statuses.clear()
 	GameManager.battle_turn = 0
 	GameManager.target_enemy_uid = ""
 	GameManager.taunt_enemy_uid = ""

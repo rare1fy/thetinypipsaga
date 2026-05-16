@@ -553,3 +553,26 @@ static func get_stacking_name(rule: StackingRule) -> String:
 		StackingRule.UNIQUE_REJECT: return "唯一·拒绝"
 		StackingRule.ONCE_PER_SCOPE: return "一次性"
 		_: return "未知规则"
+
+
+## 状态名字符串 → GameTypes.StatusType 映射（公共方法，消除重复）
+static func status_name_to_type(name: String) -> int:
+	match name:
+		"poison":
+			return GameTypes.StatusType.POISON
+		"burn":
+			return GameTypes.StatusType.BURN
+		"vulnerable":
+			return GameTypes.StatusType.VULNERABLE
+		"weak":
+			return GameTypes.StatusType.WEAK
+		"freeze":
+			return GameTypes.StatusType.FREEZE
+		"slow":
+			return GameTypes.StatusType.SLOW
+		"dodge":
+			return GameTypes.StatusType.DODGE
+		"strength":
+			return GameTypes.StatusType.STRENGTH if "STRENGTH" in GameTypes.StatusType else -1
+		_:
+			return -1

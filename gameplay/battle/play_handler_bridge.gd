@@ -179,28 +179,16 @@ func _apply_damage_and_after(
 	total_pierce: int,
 	is_pure_normal: bool
 ) -> void:
-	# 1. 伤害应用（含受击动画 + 飘字）
-	BattlePlayHandler.apply_damage_to_enemies(
-		total_damage, selected_dice, hand_result, dice_effect_result,
-		EnemyMgr.get_living_enemies(controller.enemy_views), EnemyMgr.get_target_enemy(controller.enemy_views),
-		controller._float_layer, controller.world_layer,
-		total_pierce
-	)
-
-	# 2. 重击音效（主目标高伤害时）
-	if total_damage >= 20:
-		SoundPlayer.play_sound("heavy_impact")
-
-	# 3. 牌型附带效果
+	# 1. 牌型附带效果（先于伤害应用，获取 true_damage / ignore_taunt 标记）
 	var armor_before: int = PlayerState.armor
 	var base_damage: int = HandEvaluator.calculate_base_damage(selected_dice, hand_result, PlayerState.hand_type_upgrades)
-	BattlePlayHandler.apply_hand_effects(hand_result, base_damage)
+	var hand_effect_result: EffectEngine.ExecuteResult = BattlePlayHandler.apply_hand_effects(hand_result, base_damage)
 	var armor_gained: int = PlayerState.armor - armor_before
 	if armor_gained > 0:
 		var player_pos: Vector2 = controller.hp_bar.global_position + controller.hp_bar.size * 0.5
 		VFX.spawn_armor_text(controller._float_layer, player_pos, armor_gained)
 
-	# 3b. 消费牌型附带状态效果（施加给目标敌人）
+	# 1b. 消费牌型附带状态效果（施加给目标敌人）
 	if not PlayerState.pending_hand_statuses.is_empty():
 		var target_view_for_status: Node = EnemyMgr.get_target_enemy(controller.enemy_views)
 		if target_view_for_status != null and target_view_for_status.has_method("get_enemy_instance"):
@@ -214,6 +202,24 @@ func _apply_damage_and_after(
 						StatusService.add(target_inst.statuses, st_type, st_value, 3)
 						BattleLog.log_status("✦ 牌型效果: %s x%d" % [st_name, st_value])
 		PlayerState.pending_hand_statuses.clear()
+
+	# 2. 伤害应用（含受击动画 + 飘字）
+	# 葫芦系真伤：total_pierce 设为极大值绕过护甲
+	var effective_pierce: int = total_pierce
+	if hand_effect_result.true_damage > 0 or hand_effect_result.ignore_taunt:
+		# 真实伤害 = 无视护甲，用极大 pierce 值实现
+		effective_pierce = 99999
+		BattleLog.log_dice("✦ 牌型效果: 真实伤害（无视护甲）")
+	BattlePlayHandler.apply_damage_to_enemies(
+		total_damage, selected_dice, hand_result, dice_effect_result,
+		EnemyMgr.get_living_enemies(controller.enemy_views), EnemyMgr.get_target_enemy(controller.enemy_views),
+		controller._float_layer, controller.world_layer,
+		effective_pierce
+	)
+
+	# 3. 重击音效（主目标高伤害时）
+	if total_damage >= 20:
+		SoundPlayer.play_sound("heavy_impact")
 
 	# 4. combo 飘字
 	var combo: int = PlayerState.combo_count
@@ -328,20 +334,6 @@ func _on_after_play_resolve(controller: BattleController) -> void:
 	controller._update_button_states()
 
 
-## 状态名 → GameTypes.StatusType 映射
+## 状态名 → GameTypes.StatusType 映射（委托给 EffectTypes 公共方法）
 static func _status_name_to_type(name: String) -> int:
-	match name:
-		"poison":
-			return GameTypes.StatusType.POISON
-		"burn":
-			return GameTypes.StatusType.BURN
-		"vulnerable":
-			return GameTypes.StatusType.VULNERABLE
-		"weak":
-			return GameTypes.StatusType.WEAK
-		"freeze":
-			return GameTypes.StatusType.FREEZE
-		"slow":
-			return GameTypes.StatusType.SLOW
-		_:
-			return -1
+	return EffectTypes.status_name_to_type(name)

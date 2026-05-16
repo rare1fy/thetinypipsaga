@@ -155,9 +155,11 @@ static func _get_view_center(view: Node) -> Vector2:
 ## 应用牌型附带效果（护甲/状态/真伤标记等）
 ## 通过 HandTypeEffects 配置表获取效果列表，走 EffectEngine 执行
 ## 参数 base_damage：本次出牌的 baseDamage，用于元素系护甲转化
-static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) -> void:
+## 返回 ExecuteResult，调用方可读取 true_damage / ignore_taunt 标记
+static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) -> EffectEngine.ExecuteResult:
 	var active: Array[String] = []
 	active.assign(hand_result.get("activeHands", []))
+	var result := EffectEngine.ExecuteResult.new()
 
 	# 收集所有激活牌型的效果
 	var all_effects: Array[Dictionary] = []
@@ -165,28 +167,26 @@ static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) ->
 		var effs: Array[Dictionary] = HandTypeEffects.get_effects(h)
 		all_effects.append_array(effs)
 
-	# 通过 EffectEngine 执行（护甲/状态等）
+	# 通过 EffectEngine 执行（护甲/状态/真伤/无视嘲讽等）
 	if not all_effects.is_empty():
 		var ctx := EffectEngine.ExecuteContext.new()
 		ctx.player_hp = PlayerState.hp
 		ctx.player_max_hp = PlayerState.max_hp
 		ctx.source = EffectTypes.EffectSource.HAND_TYPE
-		var result := EffectEngine.execute(all_effects, ctx)
+		result = EffectEngine.execute(all_effects, ctx)
 		# 应用护甲
 		if result.armor > 0:
 			PlayerState.gain_armor(result.armor)
-		# 应用状态（施加给目标敌人）
+		# 状态效果暂存，由 PlayHandlerBridge 消费
 		if not result.apply_statuses.is_empty():
 			for status: Dictionary in result.apply_statuses:
-				var st_name: String = status.get("status", "")
-				var st_value: int = status.get("value", 0)
-				# 牌型状态效果由 battle_controller 在伤害应用时处理
-				# 这里只记录到 PlayerState 供后续消费
 				PlayerState.pending_hand_statuses.append(status)
 
 	# §6.6 第 2 级：同元素系牌型 → base_damage 转护甲
 	if base_damage > 0 and HandTypeEffects.has_elemental_hand(active):
 		PlayerState.gain_armor(base_damage)
+
+	return result
 
 
 ## 查 HandTypeEffects 获取最佳牌型效果（UI 显示用）
