@@ -88,8 +88,7 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 		or e.combat_type == GameTypes.EnemyCombatType.GUARDIAN
 	)
 	if is_melee and e.distance > 0:
-		if not e.is_slowed():
-			e.distance = maxi(0, e.distance - 1)
+		e.distance = maxi(0, e.distance - 1)
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
 		controller.get_tree().create_timer(0.3).timeout.connect(
 			func() -> void:
@@ -444,8 +443,6 @@ static func _status_name_to_game_type(name: String) -> int:
 			return GameTypes.StatusType.WEAK
 		"freeze":
 			return GameTypes.StatusType.FREEZE
-		"slow":
-			return GameTypes.StatusType.SLOW
 		_:
 			return -1
 
@@ -482,7 +479,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 			_:
 				# 武力系"技能"视为攻击+rider（简化版：直接当攻击处理）
 				SoundPlayer.play_sound("enemy")
-				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count, e.is_slowed())
+			var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
 				PlayerState.take_damage(damage)
 				e.attack_count += 1
 				BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])
@@ -539,7 +536,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 				_resolve_caster(e)
 			_:
 				SoundPlayer.play_sound("enemy")
-				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count, e.is_slowed())
+			var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
 				PlayerState.take_damage(damage)
 				e.attack_count += 1
 				BattleLog.log_enemy("⚔ %s【%s】→ %d 伤害" % [_get_name(e), desc, damage])
@@ -664,7 +661,7 @@ static func _resolve_attacker(
 ) -> void:
 	SoundPlayer.play_sound("enemy")
 	var damage: int = AttackCalc.get_effective_attack_dmg(
-		e, PlayerState.statuses, e.attack_count, e.is_slowed()
+		e, PlayerState.statuses, e.attack_count
 	)
 	# P2 Trait: trait 攻击力修正（guardRage/archetype）
 	var trait_mul: float = EnemyTraits.attack_trait_multiplier(e)

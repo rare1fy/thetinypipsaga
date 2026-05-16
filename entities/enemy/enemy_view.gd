@@ -515,12 +515,9 @@ func _update_status_icons() -> void:
 			GameTypes.StatusType.VULNERABLE:
 				icon.text = "💔"
 				icon.add_theme_color_override("font_color", Color("#e04040"))
-			GameTypes.StatusType.FREEZE:
+		GameTypes.StatusType.FREEZE:
 				icon.text = "❄"
 				icon.add_theme_color_override("font_color", Color("#80d0ff"))
-			GameTypes.StatusType.SLOW:
-				icon.text = "⬇"
-				icon.add_theme_color_override("font_color", Color("#a0a0a0"))
 			_:
 				icon.text = "?"
 		_status_container.add_child(icon)
@@ -616,8 +613,6 @@ static func _status_tooltip_line(s: StatusEffect) -> String:
 			status_name = "易伤"; desc = "受到伤害提升"
 		GameTypes.StatusType.FREEZE:
 			status_name = "冻结"; desc = "跳过下一次行动"
-		GameTypes.StatusType.SLOW:
-			status_name = "迟缓"; desc = "近战推进减慢"
 		_:
 			status_name = "未知状态"
 	return "%s %d（%d 回合） — %s" % [status_name, s.value, s.duration, desc]

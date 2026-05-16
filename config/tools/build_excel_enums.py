@@ -142,7 +142,6 @@ def build_enums():
         ("ST05", "STRENGTH", "力量", "造成伤害 +等层数"),
         ("ST06", "WEAK", "虚弱", "造成伤害 -25%"),
         ("ST07", "ARMOR", "护甲", "抵挡伤害"),
-        ("ST08", "SLOW", "缓慢", "部分行动延迟"),
         ("ST09", "FREEZE", "冻结", "跳过回合"),
     ]
     for r, data in enumerate(st_rows, start=4):

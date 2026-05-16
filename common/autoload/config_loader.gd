@@ -104,7 +104,6 @@ static func status_from_code(code: String) -> int:
 		"ST05": return GameTypes.StatusType.STRENGTH
 		"ST06": return GameTypes.StatusType.WEAK
 		"ST07": return GameTypes.StatusType.ARMOR
-		"ST08": return GameTypes.StatusType.SLOW
 		"ST09": return GameTypes.StatusType.FREEZE
 	return GameTypes.StatusType.POISON
 

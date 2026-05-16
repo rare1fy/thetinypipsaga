@@ -821,12 +821,6 @@
       "desc": "抵挡伤害"
     },
     {
-      "code": "ST08",
-      "key": "SLOW",
-      "name_cn": "缓慢",
-      "desc": "部分行动延迟"
-    },
-    {
       "code": "ST09",
       "key": "FREEZE",
       "name_cn": "冻结",

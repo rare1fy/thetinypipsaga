@@ -508,7 +508,6 @@ func get_debuff_count() -> int:
 		GameTypes.StatusType.FREEZE,
 		GameTypes.StatusType.WEAK,
 		GameTypes.StatusType.VULNERABLE,
-		GameTypes.StatusType.SLOW,
 	]
 	for s: StatusEffect in PlayerState.statuses:
 		if s.type in DEBUFF_TYPES:

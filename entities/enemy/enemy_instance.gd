@@ -127,10 +127,6 @@ func is_frozen() -> bool:
 	return statuses.any(func(s): return s.type == GameTypes.StatusType.FREEZE and s.duration > 0)
 
 
-func is_slowed() -> bool:
-	return statuses.any(func(s): return s.type == GameTypes.StatusType.SLOW and s.duration > 0)
-
-
 func has_status(st: GameTypes.StatusType) -> bool:
 	return statuses.any(func(s): return s.type == st)
 

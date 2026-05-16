@@ -38,7 +38,7 @@ enum HandType {
 # 状态效果
 # ============================================================
 
-enum StatusType { POISON, BURN, DODGE, VULNERABLE, STRENGTH, WEAK, ARMOR, SLOW, FREEZE, ARCANE_DISRUPTION }
+enum StatusType { POISON, BURN, DODGE, VULNERABLE, STRENGTH, WEAK, ARMOR, FREEZE, ARCANE_DISRUPTION }
 
 # ============================================================
 # 遗物触发时机与稀有度

@@ -574,8 +574,6 @@ static func status_name_to_type(name: String) -> int:
 			return GameTypes.StatusType.WEAK
 		"freeze":
 			return GameTypes.StatusType.FREEZE
-		"slow":
-			return GameTypes.StatusType.SLOW
 		"dodge":
 			return GameTypes.StatusType.DODGE if "DODGE" in GameTypes.StatusType else -1
 		"strength":
@@ -596,7 +594,7 @@ static func status_name_to_type(name: String) -> int:
 ## 状态名中文映射
 const STATUS_CN: Dictionary = {
 	"poison": "中毒", "burn": "灼烧", "vulnerable": "易伤",
-	"weak": "虚弱", "freeze": "冻结", "slow": "减速",
+	"weak": "虚弱", "freeze": "冻结",
 	"dodge": "闪避", "strength": "力量", "armor": "护甲",
 	"arcane_disruption": "法脉紊乱",
 }
