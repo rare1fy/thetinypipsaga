@@ -354,6 +354,81 @@ static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTy
 		"charge_bonus":
 			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE,
 				{"value": int(value), "condition": "charge"}, trigger)
+		# ---- 战士新骰子 param_key 映射 (v0.5) ----
+		"bonus_damage_scaled":
+			# 按某数值×ratio追加基础伤害 {source, ratio, cap?}
+			var params_bds: Dictionary = {"source": str(value), "ratio": 1.0}
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE_SCALED, params_bds, trigger)
+		"bonus_damage_scaled_ratio":
+			# 配合 bonus_damage_scaled 使用，单独出现时忽略
+			return {}
+		"bonus_damage_scaled_cap":
+			# 配合 bonus_damage_scaled 使用，单独出现时忽略
+			return {}
+		"blood_chain":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.BLOOD_CHAIN,
+					{"target": "main"}, trigger)
+		"solo_seal":
+			return EffectTypes.create_effect(EffectTypes.EffectType.SOLO_SEAL,
+				{"damage_mult": float(value)}, trigger)
+		"scar_consume":
+			# 消耗伤痕层数 {ratio, bonus_per_stack}
+			return EffectTypes.create_effect(EffectTypes.EffectType.SCAR_CONSUME,
+				{"ratio": float(value), "bonus_per_stack": 0.0}, trigger)
+		"scar_bonus":
+			# 伤痕加成（不消耗）{per_stack}
+			return EffectTypes.create_effect(EffectTypes.EffectType.SCAR_BONUS,
+				{"per_stack": float(value)}, trigger)
+		"control_taunt":
+			# 施加嘲讽 {control, duration, target}
+			return EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": "taunt", "duration": int(value), "target": "all"}, trigger)
+		"control_taunt_single":
+			return EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": "taunt", "duration": int(value), "target": "main"}, trigger)
+		"control_stun":
+			# 施加眩晕 {control, duration, target}
+			return EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": "stun", "duration": int(value), "target": "main"}, trigger)
+		"control_stun_aoe":
+			return EffectTypes.create_effect(EffectTypes.EffectType.CONTROL,
+				{"control": "stun", "duration": int(value), "target": "all"}, trigger)
+		"purify_all":
+			if _as_bool(value):
+				return EffectTypes.create_effect(EffectTypes.EffectType.PURIFY,
+					{"scope": "all"}, trigger)
+		"heal_percent":
+			return EffectTypes.create_effect(EffectTypes.EffectType.HEAL,
+				{"value": 0, "source": "percent", "ratio": float(value)}, trigger)
+		"heal_on_kill":
+			return EffectTypes.create_effect(EffectTypes.EffectType.HEAL_ON_TRIGGER,
+				{"trigger": "kill", "percent": float(value)}, trigger)
+		"draw_on_kill":
+			return EffectTypes.create_effect(EffectTypes.EffectType.DRAW,
+				{"count": int(value)}, EffectTypes.TriggerType.ON_KILL)
+		"armor_from_points_mult":
+			return EffectTypes.create_effect(EffectTypes.EffectType.ARMOR,
+				{"value": 0, "source": "points", "ratio": float(value)}, trigger)
+		"apply_vulnerable":
+			return EffectTypes.create_effect(EffectTypes.EffectType.APPLY_STATUS,
+				{"status": "vulnerable", "value": int(value), "target": "enemy"}, trigger)
+		"berserk":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BERSERK,
+				{"turns": int(value), "damage_mult": 0.3, "taken_mult": 0.2, "gamble_cost": 0.5}, trigger)
+		"modify_points":
+			return EffectTypes.create_effect(EffectTypes.EffectType.MODIFY_POINTS,
+				{"delta": int(value)}, trigger)
+		"escalate":
+			return EffectTypes.create_effect(EffectTypes.EffectType.ESCALATE,
+				{"per_trigger": float(value), "cap": 999.0}, trigger)
+		"bonus_mult_condition":
+			# 条件倍率 {value, condition} - value 从 param_value 读，condition 从 param_ref 读
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_MULT,
+				{"value": float(value)}, trigger)
+		"is_rune":
+			# 符文骰标记，由 flag_rune 字段驱动
+			return {}
 		_:
 			push_warning("[ConfigLoader] 未映射的骰子参数: %s = %s" % [key, str(value)])
 	return {}

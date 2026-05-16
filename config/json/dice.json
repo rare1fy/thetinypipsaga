@@ -227,38 +227,24 @@
       "id": "D0101",
       "legacy_key": "w_bloodthirst",
       "class": "C01",
-      "name": "嗜血骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "name": "血之渴望",
+      "faces": [1,2,3,4,5,6],
       "rarity": "RA2",
       "element": "EL0",
-      "description": "卖血重投时+3伤害",
+      "description": "失去最大生命的2%（最少1点），造成6点基础伤害。如果作为普通攻击打出，基础伤害变成10点。",
       "effect_group": "EG0101",
       "flag_cursed": false,
       "flag_cracked": false
     },
     {
       "id": "D0102",
-      "legacy_key": "w_ironwall",
+      "legacy_key": "w_armorbreak",
       "class": "C01",
-      "name": "铁壁骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "name": "碎甲献祭",
+      "faces": [1,2,3,4,5,6],
       "rarity": "RA2",
       "element": "EL0",
-      "description": "出牌时获得等同点数的护甲",
+      "description": "失去最大生命的3%，摧毁目标全部护甲。本击的伤害每有1层伤痕额外+2点（层数越多，这一击越狠）。",
       "effect_group": "EG0102",
       "flag_cursed": false,
       "flag_cracked": false
@@ -267,61 +253,277 @@
       "id": "D0103",
       "legacy_key": "w_fury",
       "class": "C01",
-      "name": "怒火骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "rarity": "RA3",
+      "name": "怒火",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
       "element": "EL0",
-      "description": "受到敌人攻击时永久+1伤害",
+      "description": "越挨打越凶猛。最近一次敌方回合中你每被打掉一次血，本次出牌的增幅倍率+25%（无上限）。若被打掉血≥3次，额外对主目标施加1层易伤。",
       "effect_group": "EG0103",
       "flag_cursed": false,
       "flag_cracked": false
     },
     {
       "id": "D0104",
-      "legacy_key": "w_execute",
+      "legacy_key": "w_warcry",
       "class": "C01",
-      "name": "处刑骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "rarity": "RA3",
+      "name": "战吼",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA2",
       "element": "EL0",
-      "description": "敌人HP≤30%时伤害翻倍",
+      "description": "对目标施加1层易伤（每层使其受到的伤害+50%）。如果最近一次敌方回合中你曾被敌人打掉血，本次伤害额外+50%。",
       "effect_group": "EG0104",
       "flag_cursed": false,
       "flag_cracked": false
     },
     {
       "id": "D0105",
-      "legacy_key": "w_berserker",
+      "legacy_key": "w_revenge",
       "class": "C01",
-      "name": "狂暴骰子",
-      "faces": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "name": "复仇之刃",
+      "faces": [1,2,3,4,5,6],
       "rarity": "RA3",
       "element": "EL0",
-      "description": "自残5点HP，伤害+50%",
+      "description": "越受伤越疼。打出时按你已损失的生命值×25%追加基础伤害（封顶80点）——掉血越多，一击越重。",
       "effect_group": "EG0105",
       "flag_cursed": false,
       "flag_cracked": false
+    },
+    {
+      "id": "D0106",
+      "legacy_key": "w_bloodchain",
+      "class": "C01",
+      "name": "血锁链",
+      "faces": [2,3,3,4,4,5],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "与目标缔结血锁，持续到下个敌方回合结束。期间你受到的伤害和你自伤的损失，都等额传给被锁的敌人。新血锁覆盖旧血锁。",
+      "effect_group": "EG0106",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0107",
+      "legacy_key": "w_lifefurnace",
+      "class": "C01",
+      "name": "生命熔炉",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "不满血时回复生命=本骰点数×2。满血时改为获得护甲=本骰点数×3，并使你本回合下一次出牌伤害+20%。",
+      "effect_group": "EG0107",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0108",
+      "legacy_key": "w_roar",
+      "class": "C01",
+      "name": "怒吼净化",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "怒吼一声，清掉自己身上所有的负面状态，并嘲讽全场敌人1回合（被嘲讽的敌人强制普攻你，伤害降为70%）。每洗掉1层负面状态，对随机敌人造成1点基础伤害。",
+      "effect_group": "EG0108",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0109",
+      "legacy_key": "w_leech",
+      "class": "C01",
+      "name": "孤注之刃",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "仅当作为普通攻击打出时生效——本次出牌伤害×3.0，并按所有打出骰子点数总和追加等量基础伤害。",
+      "effect_group": "EG0109",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0110",
+      "legacy_key": "w_execute",
+      "class": "C01",
+      "name": "斩杀",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA3",
+      "element": "EL0",
+      "description": "残血敌人额外受重伤——目标生命低于25%时本次伤害×2。击杀目标时回复最大生命的10%，并且下回合多抽1颗骰子。",
+      "effect_group": "EG0110",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0111",
+      "legacy_key": "w_bloodblade",
+      "class": "C01",
+      "name": "浴血之刃",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "用伤痕铸就锋芒。打出时消耗当前伤痕的50%；只要消耗成功（≥1层），本骰所有面值永久+1（本场最多+5）。每次搏命重投后，本骰面值也永久+1。",
+      "effect_group": "EG0111",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0112",
+      "legacy_key": "w_unyielding",
+      "class": "C01",
+      "name": "单挑！",
+      "faces": [3,4,4,5,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "与目标1v1决斗，持续1个完整回合。决斗期间：AOE牌型只命中该目标但伤害+40%；你和目标互相造成的伤害+40%；其他敌人对你的攻击全部失效。骰子自带的全体伤害效果不受影响。",
+      "effect_group": "EG0112",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0113",
+      "legacy_key": "w_warhammer",
+      "class": "C01",
+      "name": "战神之锤",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "牌型越大越威猛。组成三条及以上牌型时，按所有打出骰子点数总和的50%追加基础伤害，并眩晕目标1次行动。散打和顺子不触发。",
+      "effect_group": "EG0113",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0114",
+      "legacy_key": "w_giantshield",
+      "class": "C01",
+      "name": "巨人壁垒",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "获得护甲=所有打出骰子点数总和×2.5，并嘲讽全场敌人1回合。如果你身上已有3层及以上伤痕，护甲倍率提升至×3.5。",
+      "effect_group": "EG0114",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0115",
+      "legacy_key": "w_whirlwind",
+      "class": "C01",
+      "name": "旋风斩",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "单颗打出时旋转劈砍——对全体敌人造成本骰点数的伤害，每个被命中的敌人额外承受6点基础伤害，并眩晕1次行动。如果最近一次敌方回合中你曾被打掉血，基础伤害翻倍至12点。",
+      "effect_group": "EG0115",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0116",
+      "legacy_key": "w_cleave",
+      "class": "C01",
+      "name": "顺劈斩",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "击杀目标时，溢出伤害100%转移给随机另一个敌人。",
+      "effect_group": "EG0116",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0117",
+      "legacy_key": "w_quake",
+      "class": "C01",
+      "name": "震地",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "单颗或带牌型打出：本骰点数+3，并对随机一名敌人附加3层易伤。当本次出牌触发战斗本能（散打）时：本次散打的最终伤害额外+30%（封顶+60）。",
+      "effect_group": "EG0117",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0118",
+      "legacy_key": "w_berserk",
+      "class": "C01",
+      "name": "狂暴之心",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "进入狂暴2个玩家回合：造成的伤害+30%，但受到的伤害也+20%。狂暴期间，搏命重投的HP代价-50%。新打出的狂暴会刷新时长，不叠加。",
+      "effect_group": "EG0118",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0119",
+      "legacy_key": "w_bloodgod",
+      "class": "C01",
+      "name": "血神之眼",
+      "faces": [1,2,3,4,5,6],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "嗜血滚雪球。打出时本回合每损失最大生命的1%，本次伤害+15%（最多+120%）。同时按当前伤痕的30%消耗一部分层数，每消耗1层再加5%。三段加成总计封顶+200%。",
+      "effect_group": "EG0119",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0120",
+      "legacy_key": "w_titanfist",
+      "class": "C01",
+      "name": "泰坦之拳",
+      "faces": [6,6,6,6,6,6],
+      "rarity": "RA5",
+      "element": "EL0",
+      "description": "散打的终结一拳。仅普通攻击时生效——失去最大生命的10%，摧毁目标全部护甲，追加30点真实伤害，并保底削掉目标当前生命的60%。本场第2次起效果降级。",
+      "effect_group": "EG0120",
+      "flag_cursed": false,
+      "flag_cracked": false
+    },
+    {
+      "id": "D0121",
+      "legacy_key": "rune_blood_pact",
+      "class": "C01",
+      "name": "血祭符文",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时每次自伤后对血锁目标额外造成3点伤害；打出时消耗全部伤痕层数，每层造成3点真实伤害。",
+      "effect_group": "EG0121",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
+    },
+    {
+      "id": "D0122",
+      "legacy_key": "rune_war_spirit",
+      "class": "C01",
+      "name": "战意符文",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时普通攻击后下次伤痕放大器×1.5；打出时下次普通攻击所有骰子点数翻倍。",
+      "effect_group": "EG0122",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
+    },
+    {
+      "id": "D0123",
+      "legacy_key": "rune_iron_bastion",
+      "class": "C01",
+      "name": "铁壁符文",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时受敌人攻击后获得护甲=伤害的20%；打出时消耗全部护甲，对全体敌人造成护甲80%的伤害并嘲讽1回合。",
+      "effect_group": "EG0123",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
     },
     {
       "id": "D0201",
@@ -557,75 +759,83 @@
     },
     {
       "effect_group": "EG0101",
-      "effect_type": "ET11",
-      "param_key": "scale_with_blood_rerolls",
-      "param_value": "1",
+      "effect_type": "ET06",
+      "param_key": "self_damage_percent",
+      "param_value": "0.02",
       "param_ref": "",
-      "note": "嗜血重投时生效"
+      "note": "血之渴望 自伤2%最大HP"
     },
     {
       "effect_group": "EG0101",
       "effect_type": "ET01",
       "param_key": "bonus_damage",
-      "param_value": "3",
+      "param_value": "6",
       "param_ref": "",
-      "note": "嗜血 +3 伤害"
+      "note": "血之渴望 +6基础伤害（普攻时+10由代码判定）"
+    },
+    {
+      "effect_group": "EG0102",
+      "effect_type": "ET06",
+      "param_key": "self_damage_percent",
+      "param_value": "0.03",
+      "param_ref": "",
+      "note": "碎甲献祭 自伤3%最大HP"
     },
     {
       "effect_group": "EG0102",
       "effect_type": "ET11",
-      "param_key": "armor_from_value",
+      "param_key": "armor_break",
       "param_value": "1",
       "param_ref": "",
-      "note": "护甲 = 点数"
+      "note": "碎甲献祭 摧毁目标全部护甲"
+    },
+    {
+      "effect_group": "EG0102",
+      "effect_type": "ET11",
+      "param_key": "scar_bonus",
+      "param_value": "2.0",
+      "param_ref": "",
+      "note": "碎甲献祭 每层伤痕+2基础伤害"
     },
     {
       "effect_group": "EG0103",
-      "effect_type": "ET12",
-      "param_key": "fury_stack",
+      "effect_type": "ET11",
+      "param_key": "escalate",
+      "param_value": "0.25",
+      "param_ref": "",
+      "note": "怒火 每被打1次+25%倍率"
+    },
+    {
+      "effect_group": "EG0103",
+      "effect_type": "ET07",
+      "param_key": "apply_vulnerable",
       "param_value": "1",
       "param_ref": "",
-      "note": "受击永久+1伤害（代码写死）"
+      "note": "怒火 被打≥3次时施加1层易伤（条件由代码判定）"
     },
     {
       "effect_group": "EG0104",
-      "effect_type": "ET11",
-      "param_key": "execute_threshold",
-      "param_value": "0.3",
+      "effect_type": "ET07",
+      "param_key": "apply_vulnerable",
+      "param_value": "1",
       "param_ref": "",
-      "note": "敌人 HP <= 30% 触发"
+      "note": "战吼 施加1层易伤"
     },
     {
       "effect_group": "EG0104",
-      "effect_type": "ET02",
-      "param_key": "execute_mult",
-      "param_value": "2",
-      "param_ref": "",
-      "note": "处刑 ×2"
-    },
-    {
-      "effect_group": "EG0105",
-      "effect_type": "ET06",
-      "param_key": "self_damage",
-      "param_value": "5",
-      "param_ref": "",
-      "note": "狂暴自残 5"
-    },
-    {
-      "effect_group": "EG0105",
-      "effect_type": "ET11",
-      "param_key": "self_berserk",
-      "param_value": "1",
-      "param_ref": "",
-      "note": "狂暴标记"
-    },
-    {
-      "effect_group": "EG0105",
       "effect_type": "ET02",
       "param_key": "bonus_mult",
       "param_value": "1.5",
       "param_ref": "",
-      "note": "狂暴 ×1.5"
+      "note": "战吼 曾受伤时+50%（条件由代码判定）"
+    },
+    {
+      "effect_group": "EG0105",
+      "effect_type": "ET11",
+      "param_key": "bonus_damage_scaled",
+      "param_value": "lost_hp",
+      "param_ref": "",
+      "note": "复仇之刃 按已损失HP×25%追加基础伤害"
     },
     {
       "effect_group": "EG0201",
@@ -738,6 +948,294 @@
       "param_value": "2",
       "param_ref": "",
       "note": "打出时吟唱回合数视为+2"
+    },
+    {
+      "effect_group": "EG0106",
+      "effect_type": "ET11",
+      "param_key": "blood_chain",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "血锁链 与目标缔结血锁"
+    },
+    {
+      "effect_group": "EG0107",
+      "effect_type": "ET11",
+      "param_key": "heal",
+      "param_value": "0",
+      "param_ref": "",
+      "note": "生命熔炉 回复=点数×2（特殊逻辑由代码判定满血/未满血分支）"
+    },
+    {
+      "effect_group": "EG0108",
+      "effect_type": "ET11",
+      "param_key": "purify_all",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "怒吼净化 清除全部负面状态"
+    },
+    {
+      "effect_group": "EG0108",
+      "effect_type": "ET11",
+      "param_key": "control_taunt",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "怒吼净化 嘲讽全体1回合"
+    },
+    {
+      "effect_group": "EG0109",
+      "effect_type": "ET02",
+      "param_key": "bonus_mult",
+      "param_value": "3.0",
+      "param_ref": "",
+      "note": "孤注之刃 伤害×3.0（仅普通攻击，条件由代码判定）"
+    },
+    {
+      "effect_group": "EG0110",
+      "effect_type": "ET11",
+      "param_key": "execute_threshold",
+      "param_value": "0.25",
+      "param_ref": "",
+      "note": "斩杀 目标HP<25%时触发"
+    },
+    {
+      "effect_group": "EG0110",
+      "effect_type": "ET02",
+      "param_key": "execute_mult",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "斩杀 ×2伤害"
+    },
+    {
+      "effect_group": "EG0110",
+      "effect_type": "ET11",
+      "param_key": "heal_on_kill",
+      "param_value": "0.1",
+      "param_ref": "",
+      "note": "斩杀 击杀回复10%最大HP"
+    },
+    {
+      "effect_group": "EG0110",
+      "effect_type": "ET11",
+      "param_key": "draw_on_kill",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "斩杀 击杀后下回合多抽1"
+    },
+    {
+      "effect_group": "EG0111",
+      "effect_type": "ET11",
+      "param_key": "scar_consume",
+      "param_value": "0.5",
+      "param_ref": "",
+      "note": "浴血之刃 消耗50%伤痕→永久+1面值"
+    },
+    {
+      "effect_group": "EG0112",
+      "effect_type": "ET11",
+      "param_key": "solo_seal",
+      "param_value": "1.4",
+      "param_ref": "",
+      "note": "单挑！ 与目标建立单挑关系 伤害×1.4"
+    },
+    {
+      "effect_group": "EG0113",
+      "effect_type": "ET11",
+      "param_key": "bonus_mult_condition",
+      "param_value": "0.5",
+      "param_ref": "",
+      "note": "战神之锤 ≥三条牌型时+50%基础伤害（条件由代码判定）"
+    },
+    {
+      "effect_group": "EG0113",
+      "effect_type": "ET11",
+      "param_key": "control_stun",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "战神之锤 眩晕主目标1次行动"
+    },
+    {
+      "effect_group": "EG0114",
+      "effect_type": "ET11",
+      "param_key": "armor_from_points_mult",
+      "param_value": "2.5",
+      "param_ref": "",
+      "note": "巨人壁垒 护甲=点数总和×2.5（伤痕≥3时×3.5由代码判定）"
+    },
+    {
+      "effect_group": "EG0114",
+      "effect_type": "ET11",
+      "param_key": "control_taunt",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "巨人壁垒 嘲讽全体1回合"
+    },
+    {
+      "effect_group": "EG0115",
+      "effect_type": "ET11",
+      "param_key": "aoe",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "旋风斩 骰子自带AOE"
+    },
+    {
+      "effect_group": "EG0115",
+      "effect_type": "ET01",
+      "param_key": "bonus_damage",
+      "param_value": "6",
+      "param_ref": "",
+      "note": "旋风斩 每目标+6基础伤害（受伤后翻倍至12由代码判定）"
+    },
+    {
+      "effect_group": "EG0115",
+      "effect_type": "ET11",
+      "param_key": "control_stun_aoe",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "旋风斩 AOE眩晕全体1次行动"
+    },
+    {
+      "effect_group": "EG0116",
+      "effect_type": "ET11",
+      "param_key": "overkill_transfer",
+      "param_value": "1.0",
+      "param_ref": "",
+      "note": "顺劈斩 溢出伤害100%转移"
+    },
+    {
+      "effect_group": "EG0117",
+      "effect_type": "ET11",
+      "param_key": "modify_points",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "震地 本骰点数+3"
+    },
+    {
+      "effect_group": "EG0117",
+      "effect_type": "ET07",
+      "param_key": "apply_vulnerable",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "震地 对随机敌人施加3层易伤"
+    },
+    {
+      "effect_group": "EG0118",
+      "effect_type": "ET11",
+      "param_key": "berserk",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "狂暴之心 进入狂暴2回合（+30%伤害/+20%受伤/搏命代价-50%）"
+    },
+    {
+      "effect_group": "EG0119",
+      "effect_type": "ET11",
+      "param_key": "bonus_damage_scaled",
+      "param_value": "lost_hp",
+      "param_ref": "",
+      "note": "血神之眼 每损失1%HP+15%伤害（封顶+120%）"
+    },
+    {
+      "effect_group": "EG0119",
+      "effect_type": "ET11",
+      "param_key": "scar_consume",
+      "param_value": "0.3",
+      "param_ref": "",
+      "note": "血神之眼 消耗30%伤痕 每层+5%伤害"
+    },
+    {
+      "effect_group": "EG0120",
+      "effect_type": "ET06",
+      "param_key": "self_damage_percent",
+      "param_value": "0.1",
+      "param_ref": "",
+      "note": "泰坦之拳 自伤10%最大HP"
+    },
+    {
+      "effect_group": "EG0120",
+      "effect_type": "ET11",
+      "param_key": "armor_break",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "泰坦之拳 摧毁目标全部护甲"
+    },
+    {
+      "effect_group": "EG0120",
+      "effect_type": "ET11",
+      "param_key": "true_damage",
+      "param_value": "30",
+      "param_ref": "",
+      "note": "泰坦之拳 追加30点真实伤害"
+    },
+    {
+      "effect_group": "EG0121",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "血祭符文 符文骰标记"
+    },
+    {
+      "effect_group": "EG0121",
+      "effect_type": "ET13",
+      "param_key": "bonus_damage",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "血祭符文 持有时自伤后对血锁目标+3伤害"
+    },
+    {
+      "effect_group": "EG0121",
+      "effect_type": "ET14",
+      "param_key": "scar_consume",
+      "param_value": "1.0",
+      "param_ref": "",
+      "note": "血祭符文 打出时消耗100%伤痕 每层3点真实伤害"
+    },
+    {
+      "effect_group": "EG0122",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "战意符文 符文骰标记"
+    },
+    {
+      "effect_group": "EG0122",
+      "effect_type": "ET13",
+      "param_key": "scar_bonus",
+      "param_value": "1.5",
+      "param_ref": "",
+      "note": "战意符文 持有时普攻后下次伤痕放大器×1.5"
+    },
+    {
+      "effect_group": "EG0122",
+      "effect_type": "ET14",
+      "param_key": "bonus_mult",
+      "param_value": "2.0",
+      "param_ref": "",
+      "note": "战意符文 打出时下次普攻点数翻倍"
+    },
+    {
+      "effect_group": "EG0123",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "铁壁符文 符文骰标记"
+    },
+    {
+      "effect_group": "EG0123",
+      "effect_type": "ET13",
+      "param_key": "armor",
+      "param_value": "0",
+      "param_ref": "",
+      "note": "铁壁符文 持有时受攻击后获得护甲=伤害20%"
+    },
+    {
+      "effect_group": "EG0123",
+      "effect_type": "ET14",
+      "param_key": "control_taunt",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "铁壁符文 打出时消耗全部护甲AOE+嘲讽"
     }
   ],
   "status": []
