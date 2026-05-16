@@ -131,6 +131,14 @@ static func _remove_dead_views(enemy_views: Array[Node], settled_uids: Array[Str
 		# 播放死亡台词
 		if view.has_method("play_random_quote"):
 			view.play_random_quote("death")
+		# XP碎片和魂晶碎片飞散特效
+		if view is Node2D:
+			var enemy_pos: Vector2 = (view as Node2D).global_position
+			# XP碎片飞向屏幕左上角（状态栏位置）
+			VFX.xp_burst(view.get_parent(), enemy_pos, Vector2(80, 30), 4)
+			# 魂晶碎片飞向屏幕右上角（魂晶计数器位置）
+			var viewport_w: float = view.get_viewport().get_visible_rect().size.x
+			VFX.soul_burst(view.get_parent(), enemy_pos, Vector2(viewport_w - 80, 30), 3)
 		# 延迟销毁：给死亡动画 0.6s 播放时间
 		if view.has_method("play_hurt"):
 			view.play_hurt()

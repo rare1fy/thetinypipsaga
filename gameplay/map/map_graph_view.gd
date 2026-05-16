@@ -205,12 +205,37 @@ func _apply_node_state(btn: Button, map_node: MapGenerator.MapNode) -> void:
 	if map_node.visited:
 		btn.modulate = node_color_visited
 		btn.disabled = true
+		_stop_node_pulse(btn)
 	elif map_node.available:
 		btn.modulate = node_color_available
 		btn.disabled = false
+		_start_node_pulse(btn)
 	else:
 		btn.modulate = node_color_locked
 		btn.disabled = true
+		_stop_node_pulse(btn)
+
+
+## 可用节点脉冲动画（呼吸发光效果）
+func _start_node_pulse(btn: Button) -> void:
+	if btn.has_meta("pulse_tween"):
+		var old_tw: Tween = btn.get_meta("pulse_tween") as Tween
+		if old_tw != null and old_tw.is_valid():
+			return  # 已在脉冲中
+	var tw := create_tween()
+	tw.set_loops()
+	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(btn, "modulate", node_color_available * 1.3, 0.6)
+	tw.tween_property(btn, "modulate", node_color_available, 0.6)
+	btn.set_meta("pulse_tween", tw)
+
+
+func _stop_node_pulse(btn: Button) -> void:
+	if btn.has_meta("pulse_tween"):
+		var tw: Tween = btn.get_meta("pulse_tween") as Tween
+		if tw != null and tw.is_valid():
+			tw.kill()
+		btn.remove_meta("pulse_tween")
 
 
 func _path_color_for(from_node: MapGenerator.MapNode, to_node: MapGenerator.MapNode) -> Color:

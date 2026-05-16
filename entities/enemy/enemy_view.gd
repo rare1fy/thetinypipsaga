@@ -469,6 +469,8 @@ func _update_hp_display() -> void:
 ##   battle_scene.gd 的 @export 定义 3×4=12 个坐标 + 对应缩放/Y偏移/亮度/z_index
 ##   distance 的值就是属性名中的数字，敌人头上显示"距N"就对应"距离N"这组参数
 ##   所有参数在 Inspector 面板直接调，代码不做任何插值
+var _depth_tween: Tween = null
+
 func _update_depth_visuals() -> void:
 	if _slot_index < 0:
 		return
@@ -477,11 +479,29 @@ func _update_depth_visuals() -> void:
 	if battle_scene == null:
 		return
 	var visuals: Dictionary = battle_scene.get_slot_visuals(_slot_index, dist)
-	position = visuals.position
-	_visual_root.scale = Vector2(visuals.depth_scale, visuals.depth_scale)
-	_visual_root.position.y = visuals.depth_y
-	_visual_root.modulate = Color(visuals.depth_brightness, visuals.depth_brightness, visuals.depth_brightness, 1.0)
+	var target_pos: Vector2 = visuals.position
+	var target_scale: float = visuals.depth_scale
+	var target_y: float = visuals.depth_y
+	var target_brightness: float = visuals.depth_brightness
 	z_index = int(visuals.depth_z)
+	# 首次设置（无动画）或后续迫近（tween平滑位移）
+	if _depth_tween != null and _depth_tween.is_valid():
+		_depth_tween.kill()
+	if position.distance_to(target_pos) < 1.0:
+		# 距离极小，直接设置（避免无意义tween）
+		position = target_pos
+		_visual_root.scale = Vector2(target_scale, target_scale)
+		_visual_root.position.y = target_y
+		_visual_root.modulate = Color(target_brightness, target_brightness, target_brightness, 1.0)
+	else:
+		# 平滑位移（敌人迫近时的tween动画）
+		_depth_tween = create_tween()
+		_depth_tween.set_parallel(true)
+		_depth_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		_depth_tween.tween_property(self, "position", target_pos, 0.35)
+		_depth_tween.tween_property(_visual_root, "scale", Vector2(target_scale, target_scale), 0.35)
+		_depth_tween.tween_property(_visual_root, "position:y", target_y, 0.35)
+		_depth_tween.tween_property(_visual_root, "modulate", Color(target_brightness, target_brightness, target_brightness, 1.0), 0.35)
 
 
 ## 获取 BattleScene 引用 — 通过 owner（场景根节点）向上查找

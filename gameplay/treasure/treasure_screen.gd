@@ -6,6 +6,8 @@ extends Node2D
 @onready var reward_container: VBoxContainer = %RewardContainer
 @onready var take_btn: Button = %TakeBtn
 
+var _chest_opened: bool = false
+
 
 func _ready() -> void:
 	take_btn.pressed.connect(_on_take)
@@ -17,10 +19,45 @@ func _ready() -> void:
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 	visible = new_phase == GameTypes.GamePhase.TREASURE
 	if visible:
-		_generate_treasure()
-		VFX.pop_in(treasure_label, 0.4)
-		VFX.coin_burst(ui_root, treasure_label.position + treasure_label.size * 0.5, 10)
-		VFX.slide_in_from_bottom(reward_container, 20.0, 0.3, 0.2)
+		_chest_opened = false
+		_play_chest_open_sequence()
+
+
+## 宝箱开启动画序列
+func _play_chest_open_sequence() -> void:
+	# 初始状态：隐藏奖励内容
+	treasure_label.modulate.a = 0.0
+	reward_container.modulate.a = 0.0
+	take_btn.modulate.a = 0.0
+	take_btn.disabled = true
+
+	# 阶段1：宝箱震动（模拟开箱）
+	var tw := create_tween()
+	# 震动效果
+	var origin_x: float = treasure_label.position.x
+	tw.tween_property(treasure_label, "position:x", origin_x - 4.0, 0.05)
+	tw.tween_property(treasure_label, "position:x", origin_x + 4.0, 0.05)
+	tw.tween_property(treasure_label, "position:x", origin_x - 3.0, 0.05)
+	tw.tween_property(treasure_label, "position:x", origin_x + 3.0, 0.05)
+	tw.tween_property(treasure_label, "position:x", origin_x, 0.05)
+	# 阶段2：生成奖励内容
+	tw.tween_callback(_generate_treasure)
+	# 阶段3：标题淡入 + 粒子爆发
+	tw.tween_property(treasure_label, "modulate:a", 1.0, 0.3)
+	tw.tween_callback(func() -> void:
+		VFX.coin_burst(ui_root, treasure_label.position + treasure_label.size * 0.5, 12)
+		VFX.victory_burst(ui_root, treasure_label.position + treasure_label.size * 0.5, 8)
+	)
+	# 阶段4：奖励列表从下方滑入
+	tw.tween_interval(0.2)
+	tw.tween_property(reward_container, "modulate:a", 1.0, 0.3)
+	# 阶段5：按钮淡入
+	tw.tween_interval(0.3)
+	tw.tween_property(take_btn, "modulate:a", 1.0, 0.25)
+	tw.tween_callback(func() -> void:
+		take_btn.disabled = false
+		_chest_opened = true
+	)
 
 
 func _generate_treasure() -> void:

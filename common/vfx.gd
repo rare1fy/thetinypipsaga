@@ -547,6 +547,110 @@ static func safe_remove(control: Control, _duration: float = 0.2) -> void:
 
 
 ## ==========================================
+## XP 碎片飞散（击杀敌人后从敌人位置飞向状态栏）
+## ==========================================
+
+static func xp_burst(parent: Node, from_pos: Vector2, to_pos: Vector2, count: int = 5) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if not is_instance_valid(parent):
+		return
+	var colors: Array[Color] = [Color(0.4, 0.8, 1.0), Color(0.6, 0.9, 1.0), Color.WHITE]
+	for i: int in count:
+		var dot := ColorRect.new()
+		dot.custom_minimum_size = Vector2(4, 4)
+		dot.size = Vector2(4, 4)
+		dot.color = colors[i % colors.size()]
+		dot.position = from_pos + Vector2(randf_range(-20, 20), randf_range(-15, 15))
+		dot.z_index = 110
+		parent.add_child(dot)
+		var tw := dot.create_tween()
+		var delay: float = randf_range(0.0, 0.15)
+		tw.tween_interval(delay)
+		tw.tween_property(dot, "position", to_pos, 0.5 + randf_range(0.0, 0.2)).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+		tw.parallel().tween_property(dot, "modulate:a", 0.0, 0.15).set_delay(0.4)
+		tw.tween_callback(dot.queue_free)
+
+
+## ==========================================
+## 魂晶碎片飞散（击杀敌人后从敌人位置飞向魂晶计数器）
+## ==========================================
+
+static func soul_burst(parent: Node, from_pos: Vector2, to_pos: Vector2, count: int = 4) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	if not is_instance_valid(parent):
+		return
+	var colors: Array[Color] = [Color(0.7, 0.3, 1.0), Color(0.9, 0.5, 1.0), Color(1.0, 0.7, 1.0)]
+	for i: int in count:
+		var dot := ColorRect.new()
+		dot.custom_minimum_size = Vector2(5, 5)
+		dot.size = Vector2(5, 5)
+		dot.color = colors[i % colors.size()]
+		dot.position = from_pos + Vector2(randf_range(-15, 15), randf_range(-10, 10))
+		dot.z_index = 110
+		parent.add_child(dot)
+		var tw := dot.create_tween()
+		var delay: float = randf_range(0.0, 0.2)
+		tw.tween_interval(delay)
+		# 先向上弹起再飞向目标
+		var mid_pos: Vector2 = from_pos + Vector2(randf_range(-30, 30), -40)
+		tw.tween_property(dot, "position", mid_pos, 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		tw.tween_property(dot, "position", to_pos, 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+		tw.parallel().tween_property(dot, "modulate:a", 0.0, 0.1).set_delay(0.55)
+		tw.tween_callback(dot.queue_free)
+
+
+## ==========================================
+## Boss 光环（循环脉冲环，挂在Boss脚下）
+## ==========================================
+
+static func boss_aura(parent: Node, center: Vector2, color: Color = Color(0.8, 0.2, 0.2, 0.4), radius: float = 40.0) -> CPUParticles2D:
+	if not ANIMATIONS_ENABLED:
+		return null
+	if not is_instance_valid(parent):
+		return null
+	var p := CPUParticles2D.new()
+	p.position = center
+	p.emitting = true
+	p.one_shot = false
+	p.amount = 8
+	p.lifetime = 1.5
+	p.explosiveness = 0.0
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RING
+	p.emission_ring_radius = radius
+	p.emission_ring_inner_radius = radius * 0.8
+	p.emission_ring_height = 0.0
+	p.emission_ring_axis = Vector3(0, 0, 1)
+	p.direction = Vector2(0, -1)
+	p.spread = 10.0
+	p.initial_velocity_min = 5.0
+	p.initial_velocity_max = 15.0
+	p.gravity = Vector2.ZERO
+	p.scale_amount_min = 1.5
+	p.scale_amount_max = 3.0
+	p.color = color
+	p.z_index = -1
+	parent.add_child(p)
+	return p
+
+
+## ==========================================
+## 奖励爆发（战斗胜利时全屏彩色粒子）
+## ==========================================
+
+static func reward_explosion(parent: Node, center: Vector2, count: int = 20) -> void:
+	if not ANIMATIONS_ENABLED:
+		return
+	var colors: Array[Color] = [
+		Color(1.0, 0.85, 0.2), Color(0.3, 0.9, 0.5),
+		Color(0.4, 0.7, 1.0), Color(1.0, 0.5, 0.2),
+		Color(0.9, 0.3, 0.8), Color.WHITE
+	]
+	_spawn_particles(parent, center, count, colors, 150.0, 1.2, 60.0)
+
+
+## ==========================================
 ## Toast 提示 — 转发到 GameManager.toast_requested 信号
 ## ToastManager 单例监听后会从屏幕底部冒出消息条
 ## type: "info" / "buff" / "damage" / "warn" / "error" / "success"

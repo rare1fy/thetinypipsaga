@@ -591,11 +591,14 @@ func _handle_victory() -> void:
 		BattleLog.log_write("🎲 击败Boss！抽牌上限 +1（当前 %d）" % GameManager.draw_count)
 
 	# 6c. 精英额外奖励：额外金币（原版 LOOT_CONFIG.eliteRewards）
-	var node_type_str: String = _get_current_node_type_for_xp()
 	if node_type_str == "elite":
 		var elite_bonus_gold: int = 15 + randi() % 16  # 15-30 额外金币
 		GameManager.gold += elite_bonus_gold
 		BattleLog.log_write("💰 精英战额外奖励：+%d 金币" % elite_bonus_gold)
+
+	# 胜利特效：全屏奖励爆发
+	var viewport_center: Vector2 = get_viewport().get_visible_rect().size * 0.5
+	VFX.reward_explosion(self, viewport_center, 20)
 
 	# 播放胜利音效
 	SoundPlayer.play_sound("victory")

@@ -259,6 +259,9 @@ func start_battle(encounter: Dictionary = {}) -> void:
 			await entrance.entrance_finished
 			# Boss 入场台词
 			view.play_random_quote("greet")
+			# Boss 脚下光环特效
+			var aura_color: Color = Color(0.9, 0.2, 0.2, 0.35) if is_final else Color(0.8, 0.4, 0.1, 0.3)
+			VFX.boss_aura(view, Vector2(0, 20), aura_color, 35.0)
 		else:
 			# 普通/精英敌人入场台词
 			view.play_random_quote("enter")
