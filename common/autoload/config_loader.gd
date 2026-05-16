@@ -88,7 +88,7 @@ static func element_from_code(code: String) -> int:
 	match code:
 		"EL0": return GameTypes.DiceElement.NORMAL
 		"EL1": return GameTypes.DiceElement.FIRE
-"EL2": return GameTypes.DiceElement.WIND
+		"EL2": return GameTypes.DiceElement.WIND
 		"EL3": return GameTypes.DiceElement.THUNDER
 		"EL4": return GameTypes.DiceElement.POISON
 		"EL5": return GameTypes.DiceElement.HOLY

@@ -479,7 +479,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 			_:
 				# 武力系"技能"视为攻击+rider（简化版：直接当攻击处理）
 				SoundPlayer.play_sound("enemy")
-			var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
+				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
 				PlayerState.take_damage(damage)
 				e.attack_count += 1
 				BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])

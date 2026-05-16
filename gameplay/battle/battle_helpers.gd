@@ -31,7 +31,7 @@ static func apply_element_effects(enemy: EnemyInstance, selected_dice: Array[Dic
 				s.value = burn_val
 				s.duration = 3
 				enemy.statuses.append(s)
-		"wind":
+			"wind":
 				# v0.5 风元素：击退 + 2点基础伤害
 				if enemy.distance < 3:
 					enemy.distance = mini(3, enemy.distance + 1)

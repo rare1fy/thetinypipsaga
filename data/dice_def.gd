@@ -22,6 +22,7 @@ extends Resource
 @export var is_cursed: bool = false
 @export var is_cracked: bool = false
 @export var is_rune: bool = false
+@export var ignore_for_hand_type: bool = false  ## 符文骰不参与牌型判定
 @export var copy_majority_element: bool = false  ## 共鸣骰：复制手牌中最多的元素
 @export var dual_element: bool = false           ## 棱镜骰：双元素坍缩
 

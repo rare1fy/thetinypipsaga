@@ -515,7 +515,7 @@ func _update_status_icons() -> void:
 			GameTypes.StatusType.VULNERABLE:
 				icon.text = "💔"
 				icon.add_theme_color_override("font_color", Color("#e04040"))
-		GameTypes.StatusType.FREEZE:
+			GameTypes.StatusType.FREEZE:
 				icon.text = "❄"
 				icon.add_theme_color_override("font_color", Color("#80d0ff"))
 			_:

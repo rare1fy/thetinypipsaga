@@ -314,7 +314,7 @@ static func _calc_hand_multiplier(active_hands: Array[String], upgrades: Diction
 
 static func _has_ignore_for_hand_type(d: Dictionary) -> bool:
 	var def: DiceDef = GameData.get_dice_def(d.get("defId", "standard"))
-	return def.ignore_for_hand_type
+	return def.get("ignore_for_hand_type") == true if def else false
 
 
 ## 查找可组成牌型的候选骰子
