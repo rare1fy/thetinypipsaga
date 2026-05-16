@@ -22,9 +22,6 @@ const JSON_DIR: String = "res://config/json/"
 static var _balance_cache: Dictionary = {}
 static var _balance_loaded: bool = false
 
-static var _enums_cache: Dictionary = {}
-static var _enums_loaded: bool = false
-
 # ============================================================
 # 通用 JSON 加载
 # ============================================================

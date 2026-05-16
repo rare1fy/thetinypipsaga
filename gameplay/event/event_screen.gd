@@ -69,7 +69,7 @@ func _get_random_hand_type() -> String:
 	return hand_types[randi() % hand_types.size()]
 
 
-func _on_choice_made(choice: Dictionary, event: Dictionary) -> void:
+func _on_choice_made(choice: Dictionary, _event: Dictionary) -> void:
 	var action: Dictionary = choice.get("action", {"type": "noop"})
 	var action_type: String = action.get("type", "noop")
 	

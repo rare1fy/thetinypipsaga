@@ -5,8 +5,6 @@
 class_name EnemyActionResolver
 
 const EnemyMgr = preload("res://gameplay/battle/battle_enemy_manager.gd")
-const EnemyEffectBridge = preload("res://gameplay/battle/enemy_effect_bridge.gd")
-const EffectEngine = preload("res://gameplay/battle/effect_engine.gd")
 
 const GUARDIAN_DEFENSE_CYCLE: int = 2  ## 每 N 回合上一次盾并嘲讽
 const GUARDIAN_SHIELD_MULT: float = 1.5
@@ -91,7 +89,7 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 
 ## 判断敌人本次行动是否为攻击（需要播放攻击动画 + 延迟结算）
 ## Pattern-Driven：从 get_action() 获取行动类型判断
-static func _is_attack_action(e: EnemyInstance, battle_turn: int) -> bool:
+static func _is_attack_action(e: EnemyInstance, _battle_turn: int) -> bool:
 	var action: Dictionary = e.get_action()
 	var action_type: String = action.get("type", "攻击")
 	return action_type == "攻击"
@@ -186,7 +184,7 @@ static func _end_turn_cleanup(controller: Node) -> void:
 ## on_hp_pulse: Callable() — HP 条脉冲回调
 static func resolve(
 	e: EnemyInstance,
-	battle_turn: int,
+	_battle_turn: int,
 	on_shake: Callable,
 	on_hp_pulse: Callable
 ) -> void:
