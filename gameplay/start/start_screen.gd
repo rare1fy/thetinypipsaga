@@ -6,6 +6,7 @@ const ModalHubRef := preload("res://common/ui/modal_hub.gd")
 const SettingsPanelRef := preload("res://common/ui/settings_panel.gd")
 const HandGuideRef := preload("res://common/ui/hand_guide.gd")
 const RelicGuideRef := preload("res://common/ui/relic_guide.gd")
+const SoulShopRef := preload("res://common/ui/soul_shop.gd")
 
 @onready var ui_root: Control = %Root
 @onready var title_label: RichTextLabel = %TitleLabel
@@ -55,6 +56,8 @@ func _spawn_topright_buttons() -> void:
 	_spawn_icon_button("📖", "牌型图鉴", Vector2(-100, 12), _on_hand_guide_pressed)
 	# 遗物图鉴按钮
 	_spawn_icon_button("🏺", "遗物图鉴", Vector2(-148, 12), _on_relic_guide_pressed)
+	# 魂晶商店按钮
+	_spawn_icon_button("💎", "魂晶商店", Vector2(-196, 12), _on_soul_shop_pressed)
 
 
 func _spawn_icon_button(text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
@@ -95,6 +98,15 @@ func _on_relic_guide_pressed() -> void:
 		RelicGuideRef.new(),
 		"遗物图鉴",
 		{"size": Vector2(560, 780), "close_on_backdrop": true}
+	)
+
+
+func _on_soul_shop_pressed() -> void:
+	SoundPlayer.play_sound("click")
+	ModalHubRef.open(
+		SoulShopRef.new(),
+		"魂晶商店",
+		{"size": Vector2(440, 520), "close_on_backdrop": true}
 	)
 
 

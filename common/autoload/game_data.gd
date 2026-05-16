@@ -337,6 +337,28 @@ func _register_relics() -> void:
 	_reg_relic(_mk_relic("life_furnace", "生命熔炉", "每出牌5次恢复15HP", GameTypes.RelicRarity.LEGENDARY,
 		GameTypes.RelicTrigger.ON_PLAY, {"heal": 15, "counter": 0, "max_counter": 5}))
 
+	# --- 魂晶商店常驻遗物（跨局持久，购买后每次开局自动携带） ---
+	_reg_relic(_mk_relic("grindstone", "磨刀石", "每次出牌+2伤害", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_PLAY, {"damage": 2}))
+	_reg_relic(_mk_relic("iron_skin_relic", "铁皮护符", "战斗开始时获得8护甲", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_BATTLE_START, {"armor": 8}))
+	_reg_relic(_mk_relic("fate_coin", "命运硬币", "每回合首次重投免费", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, {"free_rerolls": 1}))
+	_reg_relic(_mk_relic("greedy_hand", "贪婪之手", "金币获取+30%", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, {"gold_bonus": 30}))
+	_reg_relic(_mk_relic("crimson_grail", "绯红圣杯", "击杀敌人恢复8HP", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.ON_KILL, {"heal": 8}))
+	_reg_relic(_mk_relic("schrodinger_bag", "薛定谔之袋", "每回合额外抽1颗骰子", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.PASSIVE, {"draw_count_bonus": 1}))
+	_reg_relic(_mk_relic("treasure_sense_relic", "寻宝直觉", "商店折扣15%", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.PASSIVE, {"shop_discount": 15}))
+	_reg_relic(_mk_relic("warm_ember_relic", "温暖余烬", "营火恢复量+50%", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.PASSIVE, {}))
+	_reg_relic(_mk_relic("symmetry_seeker", "对称追寻者", "对子伤害+20%", GameTypes.RelicRarity.RARE,
+		GameTypes.RelicTrigger.ON_PLAY, {"multiplier": 0.2}))
+	_reg_relic(_mk_relic("iron_banner", "铁旗", "每回合开始获得3护甲", GameTypes.RelicRarity.UNCOMMON,
+		GameTypes.RelicTrigger.ON_TURN_START, {"armor": 3}))
+
 
 func _mk_relic(id: String, name: String, desc: String, rarity: GameTypes.RelicRarity,
 	trigger: GameTypes.RelicTrigger, props: Dictionary = {}) -> RelicDef:

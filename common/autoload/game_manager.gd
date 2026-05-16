@@ -61,6 +61,14 @@ func start_run(class_id: String) -> void:
 	PlayerState.statuses = []
 	PlayerState.relics = []
 	
+	# 魂晶商店常驻遗物：从 meta 存档加载已解锁的遗物
+	var meta: Dictionary = SaveManager.load_meta()
+	var unlocked_relics: Array = meta.get("unlocked_start_relics", [])
+	for relic_id: Variant in unlocked_relics:
+		var relic_def: RelicDef = GameData.get_relic_def(str(relic_id))
+		if relic_def:
+			PlayerState.relics.append({"id": str(relic_id), "source": "soul_shop"})
+	
 	# 职业专属属性
 	PlayerState.blood_reroll_count = 0
 	PlayerState.can_blood_reroll = class_def.can_blood_reroll
