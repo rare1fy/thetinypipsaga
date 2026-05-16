@@ -448,7 +448,7 @@ static func victory_burst(parent: Node, center: Vector2, count: int = 15) -> voi
 
 
 ## 五元素击中粒子（P1 新增）
-## element: "fire" / "ice" / "thunder" / "poison" / "holy" / "physical"
+## element: "fire" / "wind" / "thunder" / "poison" / "holy" / "physical"
 static func spawn_element_hit(parent: Node, center: Vector2, element: String, count: int = 10) -> void:
 	if not ANIMATIONS_ENABLED:
 		return
