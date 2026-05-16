@@ -22,6 +22,8 @@ extends Resource
 @export var is_cursed: bool = false
 @export var is_cracked: bool = false
 @export var is_rune: bool = false
+@export var copy_majority_element: bool = false  ## 共鸣骰：复制手牌中最多的元素
+@export var dual_element: bool = false           ## 棱镜骰：双元素坍缩
 
 ## 职业归属（用于UI分类和职业限制）
 @export var class_type: String = ""  # "warrior" / "mage" / "rogue" / ""
