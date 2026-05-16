@@ -190,6 +190,16 @@ static func load_dice_defs() -> Dictionary:
 		var eg: String = row.get("effect_group", "")
 		if eg != "" and eg_map.has(eg):
 			d.effects = _build_dice_effects(eg_map[eg])
+			# 从 effect_group 提取标记属性设置到 DiceDef
+			for eff in eg_map[eg]:
+				var pk: String = eff.get("param_key", "")
+				match pk:
+					"is_elemental":
+						d.is_elemental = _as_bool(eff.get("param_value", false))
+					"copy_majority_element":
+						d.copy_majority_element = _as_bool(eff.get("param_value", false))
+					"dual_element":
+						d.dual_element = _as_bool(eff.get("param_value", false))
 
 		defs[d.id] = d
 	return defs
