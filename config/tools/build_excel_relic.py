@@ -95,7 +95,7 @@ def build_relic():
         ("R0008", "magic_glove", "魔法手套", "RA2", "TR05", "每场战斗下回合+1手牌", "EG1008", 0, 0),
         ("R0009", "whetstone", "磨砺石", "RA3", "TR05", "每场战斗下回合+1出牌", "EG1009", 0, 0),
         ("R0010", "rage_fire", "怒火燎原", "RA2", "TR08", "受到伤害后下次出牌+5伤害", "EG1010", 0, 0),
-        ("R0011", "prism_focus", "棱镜聚焦", "RA3", "TR99", "锁定一个元素，同元素牌型伤害+30%", "EG1011", 0, 0),
+        ("R0011", "prism_focus", "棱镜聚焦", "RA3", "TR99", "锁定一个元素，元素坍缩伤害+30%", "EG1011", 0, 0),
         ("R0012", "limit_breaker", "突破极限", "RA4", "TR99", "小丑骰子可掷出10-12", "EG1012", 0, 0),
         ("R0013", "pair_upgrade", "对子大师", "RA3", "TR99", "对子视为三条", "EG1013", 0, 0),
         ("R0014", "straight_master", "顺子大师", "RA3", "TR99", "顺子牌型等级+1", "EG1014", 0, 0),
@@ -138,7 +138,7 @@ def build_relic():
         # EG1010 怒火燎原 damage 5
         ("EG1010", "ET01", "damage", 5, "受伤后 +5 伤害"),
         # EG1011 棱镜聚焦 multiplier 0.3
-        ("EG1011", "ET02", "multiplier", 0.3, "同元素 +30%"),
+        ("EG1011", "ET02", "multiplier", 0.3, "元素坍缩 +30%"),
         # EG1012 突破极限 max_points_unlocked
         ("EG1012", "ET12", "max_points_unlocked", 1, "小丑骰突破上限"),
         # EG1013 对子大师 pair_as_triplet

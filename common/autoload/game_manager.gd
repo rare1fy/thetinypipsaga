@@ -410,8 +410,8 @@ func upgrade_hand_type() -> void:
 	var target: String = PlayerState.last_play_hand_type
 	# 兜底升级顺序：从最常见牌型到最稀有牌型
 	const FALLBACK_ORDER: Array[String] = [
-		"对子", "连对", "三条", "顺子", "三连对", "4顺", "葫芦", "同元素",
-		"5顺", "四条", "6顺", "五条", "元素顺", "元素葫芦", "六条", "皇家元素顺"
+		"对子", "连对", "三条", "顺子", "三连对", "4顺", "葫芦",
+		"5顺", "四条", "6顺", "五条", "六条"
 	]
 	if target == "" or target == "普通攻击":
 		# 找玩家还没升过级的第一个（从简单到稀有）牌型

@@ -181,8 +181,7 @@ func _apply_damage_and_after(
 ) -> void:
 	# 1. 牌型附带效果（先于伤害应用，获取 true_damage / ignore_taunt 标记）
 	var armor_before: int = PlayerState.armor
-	var base_damage: int = HandEvaluator.calculate_base_damage(selected_dice, hand_result, PlayerState.hand_type_upgrades)
-	var hand_effect_result: EffectEngine.ExecuteResult = BattlePlayHandler.apply_hand_effects(hand_result, base_damage)
+	var hand_effect_result: EffectEngine.ExecuteResult = BattlePlayHandler.apply_hand_effects(hand_result)
 	var armor_gained: int = PlayerState.armor - armor_before
 	if armor_gained > 0:
 		var player_pos: Vector2 = controller.hp_bar.global_position + controller.hp_bar.size * 0.5

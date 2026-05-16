@@ -937,43 +937,23 @@
     },
     {
       "idx": 9,
-      "key": "SAME_ELEMENT",
-      "name_cn": "同元素"
-    },
-    {
-      "idx": 10,
       "key": "FULL_HOUSE",
       "name_cn": "葫芦"
     },
     {
-      "idx": 11,
+      "idx": 10,
       "key": "FOUR_OF_KIND",
       "name_cn": "四条"
     },
     {
-      "idx": 12,
+      "idx": 11,
       "key": "FIVE_OF_KIND",
       "name_cn": "五条"
     },
     {
-      "idx": 13,
+      "idx": 12,
       "key": "SIX_OF_KIND",
       "name_cn": "六条"
-    },
-    {
-      "idx": 14,
-      "key": "ELEMENT_STRAIGHT",
-      "name_cn": "元素顺"
-    },
-    {
-      "idx": 15,
-      "key": "ELEMENT_FULL_HOUSE",
-      "name_cn": "元素葫芦"
-    },
-    {
-      "idx": 16,
-      "key": "ROYAL_ELEMENT_STRAIGHT",
-      "name_cn": "皇家元素顺"
     }
   ]
 }

@@ -5,8 +5,8 @@ class_name HandEvaluator
 
 # 牌型优先级（从高到低）
 const HAND_PRIORITY: Array[String] = [
-	"皇家元素顺", "元素葫芦", "元素顺", "六条", "五条", "大葫芦", "四条", "葫芦",
-	"同元素", "6顺", "5顺", "4顺", "顺子", "三条", "三连对", "连对",
+	"六条", "五条", "大葫芦", "四条", "葫芦",
+	"6顺", "5顺", "4顺", "顺子", "三条", "三连对", "连对",
 	"对子", "普通攻击"
 ]
 
@@ -22,15 +22,11 @@ const HAND_MULT: Dictionary = {
 	"4顺": {"mult": 2.0},
 	"5顺": {"mult": 2.6},
 	"6顺": {"mult": 3.5},
-	"同元素": {"mult": 1.8},  # 需 ≥4 颗同非 normal 元素
 	"葫芦": {"mult": 3.8},
 	"大葫芦": {"mult": 5.8},  # v0.5 新增：3+3 或 4+2（6颗）
 	"四条": {"mult": 4.5},
 	"五条": {"mult": 6.5},
 	"六条": {"mult": 10.0},
-	"元素顺": {"mult": 2.2},
-	"元素葫芦": {"mult": 2.5},
-	"皇家元素顺": {"mult": 3.5},
 }
 
 
@@ -52,9 +48,7 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	for e in elements:
 		unique_elements[e] = true
 	
-	# 同元素: 所有骰子同一非normal元素，且≥4颗
 	var valid_dice_count: int = hand_dice.size() if hand_dice.size() > 0 else dice.size()
-	var is_same_element: bool = unique_elements.size() == 1 and valid_dice_count >= 4 and elements[0] != "normal"
 	
 	# 计数
 	var counts: Dictionary = {}
@@ -136,17 +130,6 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 		elif straight_len == 4: hands["4顺"] = true
 		elif straight_len >= 3: hands["顺子"] = true
 	
-	# === 元素牌型 ===
-	if is_same_element: hands["同元素"] = true
-	
-	# === 组合牌型 ===
-	# 元素顺：顺子 + 同元素
-	if is_straight and is_same_element: hands["元素顺"] = true
-	# 皇家元素顺：A-6 的元素顺
-	if is_straight and is_same_element and values[0] == 1 and values[values.size() - 1] == 6: hands["皇家元素顺"] = true
-	# 元素葫芦：同元素 + 葫芦
-	if is_same_element and is_full_house: hands["元素葫芦"] = true
-	
 	# 普通攻击兜底
 	if hands.is_empty():
 		if valid_dice_count == 1:
@@ -179,14 +162,6 @@ static func check_hands(dice: Array[Dictionary], straight_upgrade: int = 0) -> D
 	elif hands.has("5顺"): active_hands.append("5顺"); has_base_hand = true
 	elif hands.has("4顺"): active_hands.append("4顺"); has_base_hand = true
 	elif hands.has("顺子"): active_hands.append("顺子"); has_base_hand = true
-	
-	# === 元素可叠加 ===
-	if hands.has("同元素"): active_hands.append("同元素"); has_base_hand = true
-	
-	# === 组合牌型可叠加 ===
-	if hands.has("皇家元素顺"): active_hands.append("皇家元素顺")
-	elif hands.has("元素顺"): active_hands.append("元素顺")
-	if hands.has("元素葫芦"): active_hands.append("元素葫芦")
 	
 	# 普通攻击兜底
 	if not has_base_hand and valid_dice_count == 1:
@@ -378,18 +353,5 @@ static func find_hand_candidates(all_dice: Array[Dictionary], selected_id: int =
 			for d in available:
 				if seq_vals.has(d.value):
 					result[d.id] = true
-	
-	# 同元素检测
-	var elem_counts: Dictionary = {}
-	for d in available:
-		var elem: String = d.get("collapsedElement", d.get("element", "normal"))
-		if elem != "normal":
-			if not elem_counts.has(elem):
-				elem_counts[elem] = []
-			elem_counts[elem].append(d.id)
-	for ids in elem_counts.values():
-		if ids.size() >= 4:
-			for id in ids:
-				result[id] = true
 	
 	return result

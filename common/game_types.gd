@@ -23,14 +23,10 @@ enum HandType {
 	STRAIGHT_4,     ## 4顺
 	STRAIGHT_5,     ## 5顺
 	STRAIGHT_6,     ## 6顺
-	SAME_ELEMENT,   ## 同元素
 	FULL_HOUSE,     ## 葫芦
 	FOUR_OF_KIND,   ## 四条
 	FIVE_OF_KIND,   ## 五条
 	SIX_OF_KIND,    ## 六条
-	ELEMENT_STRAIGHT, ## 元素顺
-	ELEMENT_FULL_HOUSE, ## 元素葫芦
-	ROYAL_ELEMENT_STRAIGHT, ## 皇家元素顺
 	INVALID,
 }
 

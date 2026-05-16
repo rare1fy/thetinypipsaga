@@ -5,8 +5,6 @@
 class_name DamagePreview
 extends PanelContainer
 
-const HandTypeEffects := preload("res://data/hand_type_effects.gd")
-
 # UI 子节点
 var _hand_label: Label = null           # 当前牌型
 var _damage_label: Label = null         # 预计伤害
@@ -126,12 +124,8 @@ func refresh(selected_dice: Array[Dictionary]) -> void:
 		for h: String in raw_hands:
 			active_hands.append(h)
 	var best_effect := _get_best_effect(active_hands)
-	# §6.6 第 2 级：同元素系牌型 → baseDamage 额外转护甲
-	var elemental_armor: int = 0
-	if _has_elemental_hand(active_hands):
-		elemental_armor = HandEvaluator.calculate_base_damage(selected_dice, hand_result, PlayerState.hand_type_upgrades)
 	# 叠加骰子特效带来的护甲
-	var hand_armor: int = best_effect.armor + effect_preview.armor + elemental_armor
+	var hand_armor: int = best_effect.armor + effect_preview.armor
 	if hand_armor > 0:
 		_armor_label.text = "护甲 +%d" % hand_armor
 		_armor_label.visible = true
@@ -242,8 +236,3 @@ func _get_best_effect(active_hands: Array[String]) -> Dictionary:
 		if eff.get("status", "") != "" and best.status == "":
 			best.status = eff.status
 	return best
-
-
-## §6.6 第 2 级判定：是否含同元素系牌型
-func _has_elemental_hand(active_hands: Array[String]) -> bool:
-	return HandTypeEffects.has_elemental_hand(active_hands)

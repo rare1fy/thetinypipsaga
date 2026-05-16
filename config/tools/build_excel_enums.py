@@ -190,14 +190,10 @@ def build_enums():
         (6, "STRAIGHT_4", "顺子4"),
         (7, "STRAIGHT_5", "顺子5"),
         (8, "STRAIGHT_6", "顺子6"),
-        (9, "SAME_ELEMENT", "同元素"),
-        (10, "FULL_HOUSE", "葫芦"),
-        (11, "FOUR_OF_KIND", "四条"),
-        (12, "FIVE_OF_KIND", "五条"),
-        (13, "SIX_OF_KIND", "六条"),
-        (14, "ELEMENT_STRAIGHT", "元素顺"),
-        (15, "ELEMENT_FULL_HOUSE", "元素葫芦"),
-        (16, "ROYAL_ELEMENT_STRAIGHT", "皇家元素顺"),
+        (9, "FULL_HOUSE", "葫芦"),
+        (10, "FOUR_OF_KIND", "四条"),
+        (11, "FIVE_OF_KIND", "五条"),
+        (12, "SIX_OF_KIND", "六条"),
     ]
     for r, data in enumerate(ht_rows, start=4):
         for col, v in enumerate(data, start=1):

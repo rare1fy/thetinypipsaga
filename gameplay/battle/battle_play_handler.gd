@@ -5,8 +5,6 @@
 class_name BattlePlayHandler
 extends RefCounted
 
-const HandTypeEffects := preload("res://data/hand_type_effects.gd")
-
 
 # ============================================================
 # 出牌加成计算
@@ -66,7 +64,7 @@ static func apply_damage_to_enemies(
 	target_pierce: int = 0
 ) -> void:
 	var has_hand_aoe: bool = BattleHelpers.detect_aoe(selected_dice, hand_result)
-	var has_effect_aoe: bool = effect_result != null and effect_result.aoe > 0
+	var has_effect_aoe: bool = effect_result != null and effect_result.aoe_damage > 0
 
 	if has_hand_aoe or has_effect_aoe:
 		SoundPlayer.play_sound("player_aoe")
@@ -96,7 +94,7 @@ static func apply_damage_to_enemies(
 				VFX.spawn_damage_text(ui_root, pos, aoe_fixed, false)
 		# 骰子特效 AOE：附加固定伤害给所有非目标敌人（fire 粒子）
 		if has_effect_aoe and effect_result != null:
-			_apply_effect_aoe_damage(living_enemies, target_enemy, effect_result.aoe, ui_root)
+			_apply_effect_aoe_damage(living_enemies, target_enemy, effect_result.aoe_damage, ui_root)
 		VFX.shake(shake_target, 6.0, 0.2)
 	elif target_enemy:
 		SoundPlayer.play_sound("hit")
@@ -158,7 +156,7 @@ static func _get_view_center(view: Node) -> Vector2:
 ## 通过 HandTypeEffects 配置表获取效果列表，走 EffectEngine 执行
 ## 参数 base_damage：本次出牌的 baseDamage，用于元素系护甲转化
 ## 返回 ExecuteResult，调用方可读取 true_damage / ignore_taunt 标记
-static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) -> EffectEngine.ExecuteResult:
+static func apply_hand_effects(hand_result: Dictionary) -> EffectEngine.ExecuteResult:
 	var active: Array[String] = []
 	active.assign(hand_result.get("activeHands", []))
 	var result := EffectEngine.ExecuteResult.new()
@@ -183,10 +181,6 @@ static func apply_hand_effects(hand_result: Dictionary, base_damage: int = 0) ->
 		if not result.apply_statuses.is_empty():
 			for status: Dictionary in result.apply_statuses:
 				PlayerState.pending_hand_statuses.append(status)
-
-	# §6.6 第 2 级：同元素系牌型 → base_damage 转护甲
-	if base_damage > 0 and HandTypeEffects.has_elemental_hand(active):
-		PlayerState.gain_armor(base_damage)
 
 	return result
 
