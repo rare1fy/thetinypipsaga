@@ -498,6 +498,8 @@ func _get_class_button_variant() -> StringName:
 
 ## 动作按钮统一入口 —— 根据当前态分发到出牌 / 结束回合
 func _on_action_pressed() -> void:
+	if not ClickGuard.try_click("action"):
+		return
 	if _is_resolving or GameManager.is_enemy_turn:
 		return
 	if GameManager.phase == GameTypes.GamePhase.GAME_OVER:
@@ -536,6 +538,8 @@ func _get_reroll_hp_cost() -> int:
 
 ## 重投按钮 — 委托 RerollHandler
 func _on_reroll_pressed() -> void:
+	if not ClickGuard.try_click("reroll"):
+		return
 	if _is_resolving:
 		return
 	var ok: bool = RerollHandler.execute(

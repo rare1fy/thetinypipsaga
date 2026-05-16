@@ -161,6 +161,8 @@ func _render_shop_item(item: Dictionary) -> void:
 
 
 func _on_buy_item(item: Dictionary) -> void:
+	if not ClickGuard.try_click("buy_item"):
+		return
 	var price: int = item.get("price", 0)
 	if GameManager.gold < price:
 		SoundPlayer.play_sound("error")
