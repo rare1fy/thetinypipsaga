@@ -142,12 +142,12 @@ func take_damage(dmg: int, source: String = "enemy") -> void:
 		hit_count_last_enemy_turn += 1
 		was_hit_last_enemy_turn = true
 	
-	# v0.5 法脉紊乱：法师吟唱期间受击叠加易伤（2^N层，N=本次吟唱期间第几次受击）
+	# v0.5 法脉紊乱：法师吟唱期间受击叠加法脉紊乱（独立状态，2^N层）
 	if source == "enemy" and player_class == "mage" and charge_stacks > 0:
 		mage_disruption_hits += 1
-		var vuln_layers: int = int(pow(2, mage_disruption_hits))
-		add_status(GameTypes.StatusType.VULNERABLE, vuln_layers, 99)
-		VFX.show_toast("法脉紊乱! +%d易伤" % vuln_layers, "debuff")
+		var disruption_layers: int = int(pow(2, mage_disruption_hits))
+		add_status(GameTypes.StatusType.ARCANE_DISRUPTION, disruption_layers, 999)
+		VFX.show_toast("法脉紊乱! +%d层" % disruption_layers, "debuff")
 	
 	# §9.1 / §9.4 怒火骰：每次受攻击（不论是否真实掉血）按 w_fury 持有数累加 fury_bonus_damage，上限 +10
 	# 对齐 React 原版 enemyAI.ts L355：furyBonusDamage += furyLevel

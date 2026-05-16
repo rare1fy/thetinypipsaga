@@ -92,3 +92,26 @@ static func clear_arcane_disruption(statuses: Array[StatusEffect]) -> void:
 	for i in range(statuses.size() - 1, -1, -1):
 		if statuses[i].type == GameTypes.StatusType.ARCANE_DISRUPTION:
 			statuses.remove_at(i)
+
+
+## 法脉紊乱：降低指定层数（星界共鸣符文骰持有效果）
+## 返回实际降低的层数（用于日志/飘字）
+static func reduce_arcane_disruption(statuses: Array[StatusEffect], amount: int) -> int:
+	for s: StatusEffect in statuses:
+		if s.type == GameTypes.StatusType.ARCANE_DISRUPTION:
+			var actual: int = mini(s.value, amount)
+			s.value -= actual
+			if s.value <= 0:
+				statuses.erase(s)
+			return actual
+	return 0
+
+
+## 法脉紊乱：消耗全部层数并返回消耗的层数（星界共鸣打出效果）
+static func consume_arcane_disruption(statuses: Array[StatusEffect]) -> int:
+	for i in range(statuses.size() - 1, -1, -1):
+		if statuses[i].type == GameTypes.StatusType.ARCANE_DISRUPTION:
+			var consumed: int = statuses[i].value
+			statuses.remove_at(i)
+			return consumed
+	return 0

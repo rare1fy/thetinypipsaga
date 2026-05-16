@@ -182,6 +182,7 @@ static func load_dice_defs() -> Dictionary:
 		d.element = element_from_code(row.get("element", "EL0"))
 		d.is_cursed = _as_bool(row.get("flag_cursed", false))
 		d.is_cracked = _as_bool(row.get("flag_cracked", false))
+		d.is_rune = _as_bool(row.get("flag_rune", false))
 
 		# 构建 effects 数组（从 effect_group 映射）
 		var eg: String = row.get("effect_group", "")
@@ -345,6 +346,15 @@ static func _dice_param_to_effect(key: String, value: Variant, trigger: EffectTy
 		"is_elemental":
 			# 元素标记：由骰子 element 字段驱动，不需要额外 effect
 			return {}
+		"reduce_disruption":
+			return EffectTypes.create_effect(EffectTypes.EffectType.REDUCE_ARCANE_DISRUPTION,
+				{"value": int(value)}, EffectTypes.TriggerType.ON_HOLD)
+		"consume_disruption_aoe":
+			return EffectTypes.create_effect(EffectTypes.EffectType.CONSUME_DISRUPTION_AOE,
+				{"damage_per_stack": int(value)}, trigger)
+		"charge_bonus":
+			return EffectTypes.create_effect(EffectTypes.EffectType.BONUS_DAMAGE,
+				{"value": int(value), "condition": "charge"}, trigger)
 		_:
 			push_warning("[ConfigLoader] 未映射的骰子参数: %s = %s" % [key, str(value)])
 	return {}

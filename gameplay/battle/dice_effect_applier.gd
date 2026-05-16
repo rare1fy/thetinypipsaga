@@ -166,6 +166,21 @@ var elements := ["fire", "wind", "thunder", "poison", "holy"]
 			PlayerState.damage_shield_duration = effect_result.damage_shield_duration
 		effect_result.descriptions.append("获得 %d 伤害护盾（%d回合）" % [effect_result.damage_shield_value, effect_result.damage_shield_duration])
 
+	# 法脉紊乱转AOE伤害（星界共鸣打出效果）
+	if effect_result.consume_disruption_aoe_per_stack > 0:
+		var consumed: int = StatusService.consume_arcane_disruption(PlayerState.statuses)
+		if consumed > 0:
+			var total_aoe: int = consumed * effect_result.consume_disruption_aoe_per_stack
+			# 对全体敌人造成伤害
+			for view: Node in enemy_views:
+				if not is_instance_valid(view):
+					continue
+				var inst: EnemyInstance = get_target_enemy_instance(view)
+				if inst and inst.hp > 0:
+					inst.hp = maxi(0, inst.hp - total_aoe)
+			effect_result.descriptions.append("消耗 %d 层法脉紊乱 → 全体 %d 伤害" % [consumed, total_aoe])
+			VFX.show_toast("星界共鸣: %d层法脉紊乱 → %d AOE" % [consumed, total_aoe], "damage")
+
 	# 控制效果：通过 ControlSystem 应用
 	if not effect_result.controls.is_empty():
 		for ctrl: Dictionary in effect_result.controls:

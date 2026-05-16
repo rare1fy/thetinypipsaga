@@ -164,6 +164,8 @@ enum EffectType {
 	SWAP_WITH_UNSELECTED,      ## 与未选骰子交换点数/元素 {}
 	DAMAGE_SHIELD,             ## 伤害护盾（受伤时反弹伤害给攻击者） {value: int, duration?: int}
 	BONUS_MULT_ON_KEEP,        ## 保留时倍率+N（法师吟唱系） {value: float}
+	REDUCE_ARCANE_DISRUPTION,  ## 降低法脉紊乱层数 {value: int}
+	CONSUME_DISRUPTION_AOE,    ## 消耗全部法脉紊乱层数转AOE伤害 {damage_per_stack: int}
 }
 
 
@@ -376,6 +378,8 @@ const REQUIRED_PARAMS: Dictionary = {
 	EffectType.SWAP_WITH_UNSELECTED: [],
 	EffectType.DAMAGE_SHIELD: ["value"],
 	EffectType.BONUS_MULT_ON_KEEP: ["value"],
+	EffectType.REDUCE_ARCANE_DISRUPTION: ["value"],
+	EffectType.CONSUME_DISRUPTION_AOE: ["damage_per_stack"],
 }
 
 ## 校验效果数据的 params 是否包含所有必填字段
@@ -500,6 +504,8 @@ static func get_effect_name(type: EffectType) -> String:
 		EffectType.SWAP_WITH_UNSELECTED: return "交换骰子"
 		EffectType.DAMAGE_SHIELD: return "伤害护盾"
 		EffectType.BONUS_MULT_ON_KEEP: return "保留倍率"
+		EffectType.REDUCE_ARCANE_DISRUPTION: return "降低法脉紊乱"
+		EffectType.CONSUME_DISRUPTION_AOE: return "法脉紊乱转伤害"
 		_: return "未知效果"
 
 
@@ -766,6 +772,10 @@ static func describe_effect(effect: Dictionary) -> String:
 			return "免死（CD %d回合）" % params.get("cd_turns", 0)
 		EffectType.DAMAGE_SHIELD:
 			return "伤害护盾 %d（%d回合）" % [params.get("value", 0), params.get("duration", 0)]
+		EffectType.REDUCE_ARCANE_DISRUPTION:
+			return "降低 %d 层法脉紊乱" % params.get("value", 0)
+		EffectType.CONSUME_DISRUPTION_AOE:
+			return "消耗法脉紊乱（每层%d伤害）" % params.get("damage_per_stack", 0)
 		_:
 			return get_effect_name(type)
 

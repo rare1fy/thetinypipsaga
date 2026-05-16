@@ -482,6 +482,20 @@
       "effect_group": "EG0304",
       "flag_cursed": false,
       "flag_cracked": false
+    },
+    {
+      "id": "D0205",
+      "legacy_key": "rune_astral_echo",
+      "class": "C02",
+      "name": "星界共鸣",
+      "faces": [0],
+      "rarity": "RA4",
+      "element": "EL0",
+      "description": "符文骰·持有时每吟唱回合降低2层法脉紊乱；打出时消耗全部法脉紊乱层数，每层对全体敌人造成3点伤害，吟唱回合数视为+2",
+      "effect_group": "EG0205",
+      "flag_cursed": false,
+      "flag_cracked": false,
+      "flag_rune": true
     }
   ],
   "effects": [
@@ -692,6 +706,38 @@
       "param_value": "1",
       "param_ref": "",
       "note": "复制自身结算"
+    },
+    {
+      "effect_group": "EG0205",
+      "effect_type": "ET12",
+      "param_key": "is_rune",
+      "param_value": "1",
+      "param_ref": "",
+      "note": "符文骰标记"
+    },
+    {
+      "effect_group": "EG0205",
+      "effect_type": "ET13",
+      "param_key": "reduce_disruption",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "持有时每吟唱回合降低2层法脉紊乱"
+    },
+    {
+      "effect_group": "EG0205",
+      "effect_type": "ET14",
+      "param_key": "consume_disruption_aoe",
+      "param_value": "3",
+      "param_ref": "",
+      "note": "打出时消耗全部法脉紊乱，每层3点AOE伤害"
+    },
+    {
+      "effect_group": "EG0205",
+      "effect_type": "ET10",
+      "param_key": "charge_bonus",
+      "param_value": "2",
+      "param_ref": "",
+      "note": "打出时吟唱回合数视为+2"
     }
   ],
   "status": []

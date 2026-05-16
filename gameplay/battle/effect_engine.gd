@@ -134,6 +134,11 @@ class ExecuteResult:
 	var damage_shield_value: int = 0
 	var damage_shield_duration: int = 0
 
+	## 法脉紊乱相关
+	var reduce_disruption: int = 0  # 降低法脉紊乱层数
+	var consume_disruption_aoe_damage: int = 0  # 消耗法脉紊乱转AOE伤害（已算好的总伤害）
+	var consume_disruption_aoe_per_stack: int = 0  # 每层伤害系数（由调用方读取 PlayerState 计算）
+
 	## 日志
 	var descriptions: Array[String] = []
 
@@ -204,6 +209,10 @@ class ExecuteResult:
 		damage_shield_value += other.damage_shield_value
 		if other.damage_shield_duration > 0:
 			damage_shield_duration = other.damage_shield_duration
+		reduce_disruption += other.reduce_disruption
+		consume_disruption_aoe_damage += other.consume_disruption_aoe_damage
+		if other.consume_disruption_aoe_per_stack > 0:
+			consume_disruption_aoe_per_stack = other.consume_disruption_aoe_per_stack
 		curse_dice.append_array(other.curse_dice)
 		replace_dice.append_array(other.replace_dice)
 		steal_gold += other.steal_gold
@@ -578,6 +587,14 @@ static func _execute_single(effect: Dictionary, ctx: ExecuteContext) -> ExecuteR
 		EffectTypes.EffectType.BONUS_MULT_ON_KEEP:
 			result.bonus_mult += params.get("value", 0.0) * ctx.kept_turns
 			result.descriptions.append("保留倍率 +%.1f" % (params.get("value", 0.0) * ctx.kept_turns))
+
+		EffectTypes.EffectType.REDUCE_ARCANE_DISRUPTION:
+			result.reduce_disruption += params.get("value", 0)
+			result.descriptions.append("降低法脉紊乱 %d层" % params.get("value", 0))
+
+		EffectTypes.EffectType.CONSUME_DISRUPTION_AOE:
+			result.consume_disruption_aoe_per_stack = params.get("damage_per_stack", 0)
+			result.descriptions.append("消耗法脉紊乱转AOE伤害")
 
 		# ---- 规则改变类（由 Applier 在战斗开始/回合开始时应用） ----
 		EffectTypes.EffectType.MODIFY_DRAW_COUNT:

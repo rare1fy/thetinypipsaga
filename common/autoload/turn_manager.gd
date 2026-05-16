@@ -86,7 +86,8 @@ func after_play() -> void:
 	if PlayerState.player_class == "mage":
 		PlayerState.charge_stacks = 0
 		PlayerState.mage_overcharge_mult = 0.0
-		PlayerState.mage_disruption_hits = 0  # v0.5 法脉紊乱重置
+		PlayerState.mage_disruption_hits = 0  # v0.5 法脉紊乱受击计数重置
+		StatusService.clear_arcane_disruption(PlayerState.statuses)  # 清除法脉紊乱状态
 	
 	# [FIX-P3] 盗贼连击补牌：每连击1次，下回合抽牌+1（最多+2）
 	if PlayerState.player_class == "rogue" and PlayerState.combo_count >= 2:
@@ -198,22 +199,31 @@ func _apply_rune_hold_effects(hand: Array[Dictionary]) -> void:
 		var hold_effects: Array[Dictionary] = def.get_effects_for_trigger(EffectTypes.TriggerType.ON_HOLD)
 		if hold_effects.is_empty():
 			continue
-		# 通过 EffectEngine 执行 ON_HOLD 效果
-		var ctx: Dictionary = {
-			"source": "rune_hold",
-			"dice_id": def.id,
-			"dice_name": def.name,
-		}
+		# 构建正确的 ExecuteContext
+		var ctx := EffectEngine.ExecuteContext.new()
+		ctx.source = EffectTypes.EffectSource.DICE_PASSIVE
+		ctx.source_id = def.id
+		ctx.player_hp = PlayerState.hp
+		ctx.player_max_hp = PlayerState.max_hp
+		ctx.player_armor = PlayerState.armor
+		ctx.player_scar_stacks = PlayerState.scar_stacks
+		ctx.hand_size = hand.size()
+		ctx.kept_turns = PlayerState.charge_stacks
 		var result := EffectEngine.execute(hold_effects, ctx)
-		# 应用结果
+		# 应用通用结果
 		if result.armor > 0:
 			PlayerState.gain_armor(result.armor)
 		if result.heal > 0:
 			PlayerState.heal(result.heal)
-		if result.bonus_draw > 0:
-			PlayerState.temp_draw_count_bonus += result.bonus_draw
-		if result.bonus_reroll > 0:
-			free_rerolls_left += result.bonus_reroll
-		if result.bonus_damage > 0:
-			PlayerState.next_play_bonus_mult += float(result.bonus_damage) / 100.0
+		if result.extra_draws > 0:
+			PlayerState.temp_draw_count_bonus += result.extra_draws
+		if result.extra_rerolls > 0:
+			free_rerolls_left += result.extra_rerolls
+		# 法脉紊乱降低（星界共鸣持有效果）
+		if result.reduce_disruption > 0:
+			var reduced: int = StatusService.reduce_arcane_disruption(
+				PlayerState.statuses, result.reduce_disruption
+			)
+			if reduced > 0:
+				VFX.show_toast("星界共鸣: 法脉紊乱 -%d" % reduced, "buff")
 		VFX.show_toast("符文: %s" % def.name, "buff")
