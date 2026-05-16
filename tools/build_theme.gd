@@ -54,6 +54,10 @@ const BTN_GHOST := {
 	"bg": Color("#1a1a2e"), "border": Color("#2a2a40"), "text": Color("#8090a0"),
 	"hover": Color("#282840"), "pressed": Color("#0e0e1a"),
 }
+const BTN_TEAL := {
+	"bg": Color("#185858"), "border": Color("#0a2020"), "text": Color("#c0fff0"),
+	"hover": Color("#208080"), "pressed": Color("#0c3030"),
+}
 
 # ======== 血条/护甲条配色 ========
 const HP_FILL := Color("#3ec060")
@@ -107,6 +111,7 @@ static func build() -> Theme:
 	_reg_btn(theme, &"GoldButton", BTN_GOLD)
 	_reg_btn(theme, &"PurpleButton", BTN_PURPLE)
 	_reg_btn(theme, &"GhostButton", BTN_GHOST)
+	_reg_btn(theme, &"TealButton", BTN_TEAL)
 
 	# 面板变体
 	_reg_panel(theme, &"PixelPanel", C_PANEL, C_PANEL_BORDER, 3)

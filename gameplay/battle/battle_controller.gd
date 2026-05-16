@@ -463,8 +463,7 @@ func _get_class_button_variant() -> StringName:
 		"mage":
 			return &"PurpleButton"
 		"rogue":
-			# TODO: Theme 里补一个 TealButton 变体后替换
-			return &"GhostButton"
+			return &"TealButton"
 		_:
 			return &"GoldButton"
 

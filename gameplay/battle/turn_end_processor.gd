@@ -146,8 +146,9 @@ static func _resolve_taunt_backlash(played_this_turn: bool, _controller: BattleC
 	if total_taunt_dmg <= 0:
 		return
 
-	# TODO: §8.6 规范要求 400ms 延迟后应用伤害（原版有动画）
-	# 当前为瞬间应用，需迁入 BattleController 用 SceneTreeTimer 实现异步
+	# NOTE: §8.6 规范要求 400ms 延迟后应用伤害（原版有动画）
+	# 当前为瞬间应用。改为异步需要将整个调用链改为 await，影响面大。
+	# 优先级低，等表现层统一重构时一并处理。
 	var absorbed: int = mini(PlayerState.armor, total_taunt_dmg)
 	PlayerState.armor = maxi(0, PlayerState.armor - absorbed)
 	var hp_dmg: int = total_taunt_dmg - absorbed
