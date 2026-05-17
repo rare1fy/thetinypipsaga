@@ -675,14 +675,20 @@ func _show_wave_announcement(wave_num: int) -> void:
 
 ## ── 敌人点击检测 ──────────────────────────────────────────
 ## Area2D.input_event 被 UILayer(CanvasLayer layer=10) 拦截，
-## 改用 _unhandled_input + 手动碰撞检测，确保点击穿透 UI 空白区到达敌人
-func _unhandled_input(event: InputEvent) -> void:
+## 改用 _input + 手动碰撞检测 + UI 区域排除
+func _input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton
 	if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
 		return
-	# 将屏幕坐标转换为世界坐标（考虑 Camera2D / CanvasTransform）
+	# 排除 UI 区域（TopBar 和 PlayerHUD 占据的屏幕顶部/底部）
+	var screen_pos: Vector2 = mb.position
+	var vp_size: Vector2 = get_viewport().get_visible_rect().size
+	# TopBar 高度约 48px，PlayerHUD + DamagePreview 约 134px
+	if screen_pos.y < 48.0 or screen_pos.y > vp_size.y - 134.0:
+		return
+	# 将屏幕坐标转换为世界坐标
 	var world_pos: Vector2 = get_global_mouse_position()
 	# 遍历所有存活的敌人视图，检查点击是否命中其 ClickArea
 	var hit_view: EnemyView = _find_clicked_enemy(world_pos)
@@ -701,17 +707,18 @@ func _find_clicked_enemy(world_pos: Vector2) -> EnemyView:
 		var click_area: Area2D = view.get_click_area()
 		if click_area == null:
 			continue
-		# 获取碰撞形状的世界矩形
 		var shape_node: CollisionShape2D = click_area.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if shape_node == null or shape_node.shape == null:
 			continue
 		var rect_shape := shape_node.shape as RectangleShape2D
 		if rect_shape == null:
 			continue
-		var shape_global_pos: Vector2 = shape_node.global_position
-		var half_size: Vector2 = rect_shape.size * view.scale * 0.5
-		var rect := Rect2(shape_global_pos - half_size, half_size * 2.0)
-		if rect.has_point(world_pos):
+		# 用 global_transform 正确计算碰撞矩形（包含所有父节点的缩放/旋转/位移）
+		var gt: Transform2D = shape_node.global_transform
+		var half_size: Vector2 = rect_shape.size * 0.5
+		# 将世界坐标转换到 shape 的局部坐标系
+		var local_pos: Vector2 = gt.affine_inverse() * world_pos
+		if absf(local_pos.x) <= half_size.x and absf(local_pos.y) <= half_size.y:
 			if view.z_index > best_z:
 				best_z = view.z_index
 				best_view = view

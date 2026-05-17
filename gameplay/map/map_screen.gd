@@ -13,6 +13,8 @@ extends Node2D
 @onready var _scroll: ScrollContainer = _graph.get_parent() as ScrollContainer
 
 var _map_nodes: Array[MapGenerator.MapNode] = []
+## 防止场景切换动画期间重复点击
+var _navigating: bool = false
 
 
 func _ready() -> void:
@@ -93,6 +95,9 @@ func _scroll_to_current_node() -> void:
 func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
 	if not map_node.available:
 		return
+	if _navigating:
+		return
+	_navigating = true
 
 	SoundPlayer.play_sound("click")
 	MapGenerator.visit_node(_map_nodes, map_node.id)
@@ -101,8 +106,7 @@ func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
 	# 解锁下一层
 	MapGenerator.get_next_available(_map_nodes, map_node.id)
 
-	_graph.refresh_states()
-
+	# 先切换场景，再刷新状态（避免玩家看到下一层亮起但还没切走）
 	# 路由到对应场景
 	match map_node.type:
 		GameTypes.NodeType.ENEMY, GameTypes.NodeType.ELITE, GameTypes.NodeType.BOSS:

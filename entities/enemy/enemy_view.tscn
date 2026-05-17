@@ -151,7 +151,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.85)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 
 [node name="BottomRow" type="HBoxContainer" parent="VisualRoot/HeadUI/UIVBox"]
 layout_mode = 2
@@ -177,7 +177,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.6, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 
 [node name="StatsRow" type="HBoxContainer" parent="VisualRoot/HeadUI/UIVBox/BottomRow"]
 unique_name_in_owner = true
@@ -203,7 +203,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.533333, 0.733333, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 
 [node name="StatusContainer" type="HBoxContainer" parent="VisualRoot/HeadUI/UIVBox/BottomRow/StatsRow"]
 unique_name_in_owner = true
@@ -222,14 +222,14 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.878431, 0.470588, 0.188235, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 
 [node name="CombatTypeLabel" type="Label" parent="VisualRoot/HeadUI/UIVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 11
 horizontal_alignment = 1
 
 [node name="QuoteBubble" type="Label" parent="VisualRoot/HeadUI"]
@@ -244,7 +244,7 @@ offset_bottom = -50.0
 theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 autowrap_mode = 2
 
