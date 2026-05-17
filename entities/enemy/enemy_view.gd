@@ -242,6 +242,10 @@ func get_enemy_uid() -> String:
 	return _enemy.uid if _enemy else ""
 
 
+func get_click_area() -> Area2D:
+	return _click_area
+
+
 func get_enemy_instance() -> EnemyInstance:
 	return _enemy
 

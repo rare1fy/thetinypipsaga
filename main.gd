@@ -82,12 +82,22 @@ func _on_fade_in_request() -> void:
 		get_tree().create_timer(0.3).timeout.connect(func(): _overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE)
 
 
-## 即时场景切换（动画已全局关闭，保留函数名以兼容信号）
+## 带淡出→淡入过渡的场景切换
 func _switch_to_with_transition(phase: GameTypes.GamePhase) -> void:
 	_transitioning = true
-	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 淡出：遮罩从透明变为不透明
+	_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	_overlay.modulate.a = 0.0
+	var tw_out := create_tween()
+	tw_out.tween_property(_overlay, "modulate:a", 1.0, 0.25).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	await tw_out.finished
+	# 切换场景（此时屏幕全黑）
 	_instantiate_scene(phase)
+	# 淡入：遮罩从不透明变为透明
+	var tw_in := create_tween()
+	tw_in.tween_property(_overlay, "modulate:a", 0.0, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	await tw_in.finished
+	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_transitioning = false
 
 

@@ -70,6 +70,7 @@ func _refresh_header() -> void:
 
 
 ## 自动滚动到当前可用节点（最低的 available 节点居中显示）
+## 直接定位，不播放过渡动画
 func _scroll_to_current_node() -> void:
 	if _scroll == null or _map_nodes.is_empty():
 		return
@@ -83,12 +84,10 @@ func _scroll_to_current_node() -> void:
 		return
 	# 计算节点在 MapGraphView 中的 y 坐标
 	var node_y: float = _graph._node_screen_pos(target_node).y
-	# 滚动使节点居中
+	# 滚动使节点居中（直接设置，无动画）
 	var scroll_target: float = node_y - _scroll.size.y * 0.5
 	scroll_target = clampf(scroll_target, 0.0, _graph.custom_minimum_size.y - _scroll.size.y)
-	# 平滑滚动
-	var tw: Tween = create_tween()
-	tw.tween_property(_scroll, "scroll_vertical", int(scroll_target), 0.4).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_scroll.scroll_vertical = int(scroll_target)
 
 
 func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:

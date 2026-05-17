@@ -671,3 +671,48 @@ func _show_wave_announcement(wave_num: int) -> void:
 	tw.tween_interval(1.0)
 	tw.tween_property(label, "modulate", Color(1, 1, 1, 0), 0.4)
 	tw.tween_callback(canvas.queue_free)
+
+
+## ── 敌人点击检测 ──────────────────────────────────────────
+## Area2D.input_event 被 UILayer(CanvasLayer layer=10) 拦截，
+## 改用 _unhandled_input + 手动碰撞检测，确保点击穿透 UI 空白区到达敌人
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mb := event as InputEventMouseButton
+	if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
+		return
+	# 将屏幕坐标转换为世界坐标（考虑 Camera2D / CanvasTransform）
+	var world_pos: Vector2 = get_global_mouse_position()
+	# 遍历所有存活的敌人视图，检查点击是否命中其 ClickArea
+	var hit_view: EnemyView = _find_clicked_enemy(world_pos)
+	if hit_view:
+		controller._on_enemy_clicked(hit_view.get_enemy_uid())
+		get_viewport().set_input_as_handled()
+
+
+## 查找被点击的敌人视图（按渲染层级从高到低，优先选中前景敌人）
+func _find_clicked_enemy(world_pos: Vector2) -> EnemyView:
+	var best_view: EnemyView = null
+	var best_z: int = -9999
+	for view: EnemyView in controller.enemy_views:
+		if not is_instance_valid(view) or not view.is_inside_tree():
+			continue
+		var click_area: Area2D = view.get_click_area()
+		if click_area == null:
+			continue
+		# 获取碰撞形状的世界矩形
+		var shape_node: CollisionShape2D = click_area.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if shape_node == null or shape_node.shape == null:
+			continue
+		var rect_shape := shape_node.shape as RectangleShape2D
+		if rect_shape == null:
+			continue
+		var shape_global_pos: Vector2 = shape_node.global_position
+		var half_size: Vector2 = rect_shape.size * view.scale * 0.5
+		var rect := Rect2(shape_global_pos - half_size, half_size * 2.0)
+		if rect.has_point(world_pos):
+			if view.z_index > best_z:
+				best_z = view.z_index
+				best_view = view
+	return best_view
