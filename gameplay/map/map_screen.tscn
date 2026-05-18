@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://ui/map_screen/map_screen.gd" id="1"]
+[ext_resource type="Script" path="res://gameplay/map/map_screen.gd" id="1"]
 
 [node name="MapScreen" type="Control"]
 layout_mode = 3

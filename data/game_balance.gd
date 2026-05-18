@@ -143,3 +143,24 @@ const ANIMATION_TIMING := {
 # ============================================================
 
 const DICE_REWARD_REFRESH := {"basePrice": 5, "priceMultiplier": 2, "firstFree": true}
+
+# ============================================================
+# v0.5 伤害公式系数
+# ============================================================
+
+## amplify 骰子的自身点数倍率（_sum_dice_points 中使用）
+const AMPLIFY_SELF_MULT: float = 1.2
+
+## 易伤层数 → 伤害系数：每层 +0.5，最多 5 层（封顶 ×3.5）
+static func get_vulnerable_mult(layers: int) -> float:
+	var clamped: int = clampi(layers, 0, 5)
+	return 1.0 + 0.5 * float(clamped)
+
+## 过充倍率：当前手牌数超过基线 drawCount 时，每多 1 颗 +0.1，最多 +0.3
+## 返回 0 表示没有过充加成（调用方会用 1.0 + overcharge 累乘）
+static func get_overcharge_mult(current_hand_size: int, baseline_draw_count: int) -> float:
+	var extra: int = current_hand_size - baseline_draw_count
+	if extra <= 0:
+		return 0.0
+	return minf(0.1 * float(extra), 0.3)
+
