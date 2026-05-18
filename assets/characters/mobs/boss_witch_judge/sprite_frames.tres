@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://au8o5q09z3l09"]
+
+[ext_resource type="Texture2D" uid="uid://d8foyo1rhuf0a" path="res://assets/characters/mobs/boss_witch_judge/idle.png" id="1_idle"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

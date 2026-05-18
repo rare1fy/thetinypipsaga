@@ -852,6 +852,9 @@ static func load_enemy_configs() -> Dictionary:
 			_: c.boss_rank = EnemyConfig.BossRank.NONE
 
 		defs[c.id] = c
+
+	# 将 JSON 加载的数据注入到 EnemyConfig 静态注册表，取代硬编码
+	EnemyConfig._all_configs = defs
 	return defs
 
 static func _action_type_from_string(s: String) -> int:

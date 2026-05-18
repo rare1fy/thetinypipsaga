@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://st1o4ui38f46"
-path="res://.godot/imported/sprite_enemies_chapter1_spider.png-467fb6064a1a55a5220a1fec6538d44e.ctex"
+uid="uid://rufcw6tiuj0a"
+path="res://.godot/imported/spritesheet_enemies_ch1.png-4c650927972c1e1fbb6945ea80ae2700.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/enemies/chapter1/sprite_enemies_chapter1_spider.png"
-dest_files=["res://.godot/imported/sprite_enemies_chapter1_spider.png-467fb6064a1a55a5220a1fec6538d44e.ctex"]
+source_file="res://assets/characters/enemies/spritesheet_enemies_ch1.png"
+dest_files=["res://.godot/imported/spritesheet_enemies_ch1.png-4c650927972c1e1fbb6945ea80ae2700.ctex"]
 
 [params]
 

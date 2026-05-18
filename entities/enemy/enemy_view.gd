@@ -123,8 +123,10 @@ func _try_load_art() -> void:
 		_has_art = false
 		return
 	_art_sprite.sprite_frames = frames
-	# scale / flip_h / position 全部交给各敌人自己的 tscn（mobs/m*.tscn）在编辑器里调，
-	# 代码不再强制覆盖——这是"一 prefab 管一敌人视觉"架构的契约
+	# scale / flip_h 全部交给各敌人自己的 tscn（mobs/m*.tscn）在编辑器里调
+	# 但 position 走"自动脚部对齐"——按 idle 第一帧高度把 sprite 中心抬到 (0, -h/2)
+	# 这样 64x64 的图脚踩在锚点 y=0，64x128 的 BOSS 同理；prefab 仍可在场景里覆盖
+	_auto_align_sprite_foot(frames)
 	_art_sprite.visible = true
 	if frames.has_animation(EnemyArtMapping.IDLE_ANIM):
 		_art_sprite.play(EnemyArtMapping.IDLE_ANIM)
@@ -134,6 +136,23 @@ func _try_load_art() -> void:
 	_avatar_eyes.visible = false
 	_has_art = true
 	_death_played = false
+
+
+## 按 idle 帧高度，自动让 sprite 中心抬到 (0, -h/2)，使脚部踩在锚点 y=0
+## 仅在 prefab 没有显式覆盖 ArtSprite.position 时生效（约定：默认 y=-40 视为未覆盖）
+func _auto_align_sprite_foot(frames: SpriteFrames) -> void:
+	if _art_sprite == null or frames == null:
+		return
+	if not frames.has_animation(EnemyArtMapping.IDLE_ANIM):
+		return
+	if frames.get_frame_count(EnemyArtMapping.IDLE_ANIM) <= 0:
+		return
+	var tex: Texture2D = frames.get_frame_texture(EnemyArtMapping.IDLE_ANIM, 0)
+	if tex == null:
+		return
+	var h: float = float(tex.get_height())
+	# centered=true 时贴图中心在 sprite.position；想让脚在 y=0 → position.y = -h/2
+	_art_sprite.position = Vector2(0.0, -h * 0.5)
 
 ## 复位到"占位方块"状态：隐藏 ArtSprite、显示 ColorRect/Panel/Label
 func _restore_placeholder_visuals() -> void:

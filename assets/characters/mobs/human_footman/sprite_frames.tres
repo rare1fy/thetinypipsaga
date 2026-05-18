@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://3pnekm3rhr6er"]
+
+[ext_resource type="Texture2D" uid="uid://p5itk5eidvvmp" path="res://assets/characters/mobs/human_footman/idle.png" id="1_idle"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

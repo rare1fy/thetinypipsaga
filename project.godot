@@ -27,11 +27,10 @@ GameData="*res://common/autoload/game_data.gd"
 
 window/size/viewport_width=360
 window/size/viewport_height=640
+window/size/mode=2
 window/size/window_width_override=1080
 window/size/window_height_override=1920
-window/size/mode=2
 window/stretch/mode="viewport"
-window/stretch/aspect="keep"
 window/stretch/scale_mode="integer"
 window/handheld/orientation=1
 
@@ -49,6 +48,6 @@ pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
-textures/canvas_textures/default_texture_filter=0

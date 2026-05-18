@@ -17,9 +17,13 @@ func _ready() -> void:
 		push_error("[GameData] dice.json 加载失败，骰子定义为空！")
 	if _relic_defs.is_empty():
 		push_error("[GameData] relic.json 加载失败，遗物定义为空！")
+	# 敌人配置（从 enemy.json 加载并注入 EnemyConfig._all_configs）
+	var enemy_defs := ConfigLoader.load_enemy_configs()
+	if enemy_defs.is_empty():
+		push_error("[GameData] enemy.json 加载失败，敌人定义为空！")
 	# 魂晶商店遗物（独立于 JSON，硬编码注册）
 	_register_soul_shop_relics()
-	print("[GameData] dice=%d relics=%d" % [_dice_defs.size(), _relic_defs.size()])
+	print("[GameData] dice=%d relics=%d enemies=%d" % [_dice_defs.size(), _relic_defs.size(), enemy_defs.size()])
 
 
 # ============================================================
