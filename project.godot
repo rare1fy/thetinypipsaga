@@ -10,60 +10,38 @@ config_version=5
 
 [application]
 
-config/name="The Tiny-Pip Saga"
-config/description="竖屏 Roguelike 骰子构筑游戏"
+config/name="Dice Hero"
+config/description="竖屏 Roguelike 骰子构筑游戏 - Godot 版"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
-boot_splash/show_image=false
-config/icon="res://dice_icon.png"
+config/features=PackedStringArray("4.5", "Mobile")
+config/icon="res://icon.svg"
 
 [autoload]
 
-PlayerState="*res://common/autoload/player_state.gd"
-DiceBag="*res://common/autoload/dice_bag.gd"
-TurnManager="*res://common/autoload/turn_manager.gd"
-StatsTracker="*res://common/autoload/stats_tracker.gd"
 GameManager="*res://common/autoload/game_manager.gd"
 EventBus="*res://common/autoload/event_bus.gd"
 SoundPlayer="*res://common/autoload/sound_player.gd"
 GameData="*res://common/autoload/game_data.gd"
-ToastManager="*res://common/autoload/toast_manager.gd"
-SaveManager="*res://common/autoload/save_manager.gd"
-MCPScreenshot="*res://addons/godot_mcp/mcp_screenshot_service.gd"
-MCPInputService="*res://addons/godot_mcp/mcp_input_service.gd"
-MCPGameInspector="*res://addons/godot_mcp/mcp_game_inspector_service.gd"
-XpSystem="*res://common/autoload/xp_system.gd"
-
-[debug]
-
-file_logging/enable_file_logging=true
-gdscript/warnings/unused_signal=0
-gdscript/warnings/shadowed_variable=0
-gdscript/warnings/shadowed_variable_base_class=0
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=360
+window/size/viewport_height=640
+window/size/window_width_override=1080
+window/size/window_height_override=1920
+window/size/mode=2
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
+window/stretch/scale_mode="integer"
 window/handheld/orientation=1
 
 [dotnet]
 
-project/assembly_name="The Tiny-Pip Saga"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+project/assembly_name="Dice Hero"
 
 [global]
 
 class_name_hash={}
-
-[gui]
-
-theme/custom="res://data/pixel_theme.tres"
 
 [input_devices]
 
@@ -71,7 +49,6 @@ pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+textures/canvas_textures/default_texture_filter=0

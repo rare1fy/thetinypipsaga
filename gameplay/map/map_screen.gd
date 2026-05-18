@@ -1,116 +1,176 @@
-## 地图界面 v2 — 复刻原版 Slay-the-Spire 式节点图
-##
-## 变化：
-##   - 使用 MapGraphView 替换旧 VBox 直堆
-##   - 节点按 x 坐标布局，路径画贝塞尔连线
-##   - 顶部条显示金币 / 章节名 / HP
-extends Node2D
+## 地图界面 — 杀戮尖塔风格随机排布地图
+## 照搬原版 dicehero2 的 MapScreen + useMapLayout 逻辑
 
-@onready var _graph: MapGraphView = %MapGraphView
-@onready var _chapter_label: Label = %ChapterLabel
-@onready var _gold_label: Label = %GoldLabel
-@onready var _hp_label: Label = %HpLabel
-@onready var _scroll: ScrollContainer = _graph.get_parent() as ScrollContainer
+extends Control
 
-var _map_nodes: Array[MapGenerator.MapNode] = []
-## 防止场景切换动画期间重复点击
+@onready var chapter_label: Label = %ChapterLabel
+@onready var scroll_container: ScrollContainer = %ScrollContainer
+@onready var map_canvas: Control = %MapCanvas
+
+## 布局常量
+const LAYER_HEIGHT: float = 140.0   ## 每层间距（像素）
+const CANVAS_WIDTH: float = 352.0   ## 画布宽度（= viewport 宽度）
+const NODE_SIZE: Vector2 = Vector2(28, 28)
+const MARGIN_TOP: float = 60.0
+const MARGIN_BOTTOM: float = 40.0
+
+## 节点图标映射
+const NODE_ICONS: Dictionary = {
+	GameTypes.NodeType.ENEMY: "⚔",
+	GameTypes.NodeType.ELITE: "💀",
+	GameTypes.NodeType.BOSS: "👑",
+	GameTypes.NodeType.CAMPFIRE: "🔥",
+	GameTypes.NodeType.MERCHANT: "🛒",
+	GameTypes.NodeType.EVENT: "❓",
+	GameTypes.NodeType.TREASURE: "💎",
+}
+
+## 节点颜色映射
+const NODE_COLORS: Dictionary = {
+	GameTypes.NodeType.ENEMY: Color(0.85, 0.35, 0.35),
+	GameTypes.NodeType.ELITE: Color(1.0, 0.2, 0.5),
+	GameTypes.NodeType.BOSS: Color(1.0, 0.15, 0.15),
+	GameTypes.NodeType.CAMPFIRE: Color(1.0, 0.75, 0.2),
+	GameTypes.NodeType.MERCHANT: Color(0.3, 0.8, 1.0),
+	GameTypes.NodeType.EVENT: Color(0.5, 1.0, 0.5),
+	GameTypes.NodeType.TREASURE: Color(1.0, 1.0, 0.3),
+}
+
+var _map_nodes: Array = []
+var _node_positions: Dictionary = {}  ## id -> Vector2 (canvas坐标)
+var _node_buttons: Dictionary = {}    ## id -> Button
 var _navigating: bool = false
 
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
-	GameManager.gold_changed.connect(_on_gold_changed)
-	GameManager.hp_changed.connect(_on_hp_changed)
-	SoundPlayer.play_music("explore")
-
-	_graph.node_clicked.connect(_on_node_clicked)
-
-	# 兜底：Godot 版 main.gd 采用"切场景 free+instantiate"模式
-	if GameManager.phase == GameTypes.GamePhase.MAP:
-		if GameManager.map_nodes.is_empty():
-			_generate_map()
-		else:
-			_map_nodes = GameManager.map_nodes
-			_refresh_header()
-			_graph.set_map_nodes(_map_nodes)
-		SaveManager.save_run()
-		# 延迟一帧后自动滚动到当前可用节点
-		await get_tree().process_frame
-		_scroll_to_current_node()
-
-	_refresh_header()
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
-	if new_phase == GameTypes.GamePhase.MAP and _map_nodes.is_empty():
-		_generate_map()
-
-
-func _on_gold_changed(_amount: int) -> void:
-	_refresh_header()
-
-
-func _on_hp_changed(_hp: int, _max: int) -> void:
-	_refresh_header()
+	visible = new_phase == GameTypes.GamePhase.MAP
+	if visible:
+		if _map_nodes.is_empty():
+			_generate_map()
+		else:
+			_refresh_map_ui()
+		_navigating = false
 
 
 func _generate_map() -> void:
 	_map_nodes = MapGenerator.generate_chapter(GameManager.chapter)
-	GameManager.map_nodes = _map_nodes
-	_refresh_header()
-	_graph.set_map_nodes(_map_nodes)
-	# 延迟一帧后自动滚动到当前可用节点
-	await get_tree().process_frame
-	_scroll_to_current_node()
+	var chapter_names: Array = ["飓风城外围", "碎牙堡荒原", "暗渊城", "月影城与灰谷", "龙眠圣殿"]
+	var ch_idx: int = clampi(GameManager.chapter - 1, 0, chapter_names.size() - 1)
+	chapter_label.text = "第%d章 · %s" % [GameManager.chapter, chapter_names[ch_idx]]
+	_calculate_positions()
+	_refresh_map_ui()
+	# 立即定位到当前可用节点
+	_scroll_to_current()
 
 
-func _refresh_header() -> void:
-	var chapter_idx: int = clampi(GameManager.chapter - 1, 0, GameBalance.CHAPTER_CONFIG.chapterNames.size() - 1)
-	_chapter_label.text = GameBalance.CHAPTER_CONFIG.chapterNames[chapter_idx]
-	_gold_label.text = "金币: %d" % GameManager.gold
-	_hp_label.text = "HP %d/%d" % [GameManager.hp, GameManager.max_hp]
+func _calculate_positions() -> void:
+	_node_positions.clear()
+	var max_depth: int = 0
+	for node in _map_nodes:
+		if node.depth > max_depth:
+			max_depth = node.depth
+
+	# 画布高度 = 层数 × 层高 + 上下边距
+	var canvas_height: float = float(max_depth + 1) * LAYER_HEIGHT + MARGIN_TOP + MARGIN_BOTTOM
+	map_canvas.custom_minimum_size = Vector2(CANVAS_WIDTH, canvas_height)
+
+	# 计算每个节点的画布坐标
+	# 注意：地图从下往上显示（depth=0 在底部，depth=max 在顶部）
+	for node in _map_nodes:
+		var y: float = canvas_height - MARGIN_BOTTOM - float(node.depth) * LAYER_HEIGHT
+		var x: float = node.x / 100.0 * (CANVAS_WIDTH - 40.0) + 20.0
+		_node_positions[node.id] = Vector2(x, y)
 
 
-## 自动滚动到当前可用节点（最低的 available 节点居中显示）
-## 直接定位，不播放过渡动画
-func _scroll_to_current_node() -> void:
-	if _scroll == null or _map_nodes.is_empty():
-		return
-	# 找到第一个 available 节点
-	var target_node: MapGenerator.MapNode = null
-	for n: MapGenerator.MapNode in _map_nodes:
-		if n.available:
-			if target_node == null or n.depth < target_node.depth:
-				target_node = n
-	if target_node == null:
-		return
-	# 计算节点在 MapGraphView 中的 y 坐标
-	var node_y: float = _graph._node_screen_pos(target_node).y
-	# 滚动使节点居中（直接设置，无动画）
-	var scroll_target: float = node_y - _scroll.size.y * 0.5
-	scroll_target = clampf(scroll_target, 0.0, _graph.custom_minimum_size.y - _scroll.size.y)
-	_scroll.scroll_vertical = int(scroll_target)
+func _refresh_map_ui() -> void:
+	# 清除旧内容
+	for child in map_canvas.get_children():
+		child.queue_free()
+	_node_buttons.clear()
+
+	# 先画连线（用 Line2D）
+	_draw_connections()
+
+	# 再画节点
+	for node in _map_nodes:
+		var pos: Vector2 = _node_positions.get(node.id, Vector2.ZERO)
+		var btn := Button.new()
+		btn.custom_minimum_size = NODE_SIZE
+		btn.size = NODE_SIZE
+		btn.position = pos - NODE_SIZE * 0.5
+		btn.text = NODE_ICONS.get(node.type, "?")
+		btn.add_theme_font_size_override("font_size", 12)
+
+		# 样式
+		var color: Color = NODE_COLORS.get(node.type, Color.WHITE)
+		if node.visited:
+			btn.modulate = Color(0.3, 0.3, 0.3, 0.6)
+			btn.disabled = true
+		elif node.available:
+			btn.modulate = color
+			# 可用节点脉冲动画
+			var tween := create_tween()
+			tween.set_loops()
+			tween.tween_property(btn, "modulate:a", 0.6, 0.8).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(btn, "modulate:a", 1.0, 0.8).set_trans(Tween.TRANS_SINE)
+		else:
+			btn.modulate = Color(0.4, 0.4, 0.4, 0.5)
+			btn.disabled = true
+
+		btn.pressed.connect(_on_node_clicked.bind(node))
+		map_canvas.add_child(btn)
+		_node_buttons[node.id] = btn
 
 
-func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
-	if not map_node.available:
-		return
+func _draw_connections() -> void:
+	for node in _map_nodes:
+		if node.connections.is_empty():
+			continue
+		var from_pos: Vector2 = _node_positions.get(node.id, Vector2.ZERO)
+		for conn_id in node.connections:
+			var to_pos: Vector2 = _node_positions.get(conn_id, Vector2.ZERO)
+			if to_pos == Vector2.ZERO:
+				continue
+			var line := Line2D.new()
+			line.add_point(from_pos)
+			line.add_point(to_pos)
+			line.width = 1.5
+
+			# 连线颜色：已走过的路径亮，未走过的暗
+			var from_node := MapGenerator.find_node(_map_nodes, node.id)
+			var to_node := MapGenerator.find_node(_map_nodes, conn_id)
+			if from_node and from_node.visited:
+				line.default_color = Color(0.6, 0.6, 0.6, 0.7)
+			elif to_node and to_node.available:
+				line.default_color = Color(0.8, 0.8, 0.5, 0.5)
+			else:
+				line.default_color = Color(0.3, 0.3, 0.3, 0.3)
+
+			map_canvas.add_child(line)
+
+
+func _on_node_clicked(node) -> void:
 	if _navigating:
+		return
+	if not node.available:
 		return
 	_navigating = true
 
 	SoundPlayer.play_sound("click")
-	MapGenerator.visit_node(_map_nodes, map_node.id)
-	GameManager.current_node = map_node.depth
+	MapGenerator.visit_node(_map_nodes, node.id)
+	GameManager.current_node = node.depth
 
 	# 解锁下一层
-	MapGenerator.get_next_available(_map_nodes, map_node.id)
+	MapGenerator.get_next_available(_map_nodes, node.id)
 
-	# 先切换场景，再刷新状态（避免玩家看到下一层亮起但还没切走）
-	# 路由到对应场景
-	match map_node.type:
+	# 进入对应场景
+	match node.type:
 		GameTypes.NodeType.ENEMY, GameTypes.NodeType.ELITE, GameTypes.NodeType.BOSS:
-			_spawn_battle(map_node.type)
+			_spawn_battle(node.type)
 		GameTypes.NodeType.CAMPFIRE:
 			GameManager.set_phase(GameTypes.GamePhase.CAMPFIRE)
 		GameTypes.NodeType.MERCHANT:
@@ -119,77 +179,40 @@ func _on_node_clicked(map_node: MapGenerator.MapNode) -> void:
 			GameManager.set_phase(GameTypes.GamePhase.EVENT)
 		GameTypes.NodeType.TREASURE:
 			GameManager.set_phase(GameTypes.GamePhase.TREASURE)
-		_:
-			push_warning("[MAP] 未识别的 NodeType=%s，fallback 到 EVENT" % str(map_node.type))
-			GameManager.set_phase(GameTypes.GamePhase.EVENT)
 
 
 func _spawn_battle(node_type: GameTypes.NodeType) -> void:
-	var battle_type: String = MapGenerator.get_battle_type(node_type)
-	var depth: int = GameManager.current_node
-	var chapter: int = GameManager.chapter
+	var battle_type := MapGenerator.get_battle_type(node_type)
 	var wave_ids: Array[String] = []
 
 	match battle_type:
 		"enemy":
-			wave_ids = _roll_normal_wave(chapter, depth)
+			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
+			if normals.size() > 0:
+				var picked := normals[randi() % normals.size()]
+				wave_ids.append(picked.id)
 		"elite":
-			wave_ids = _roll_elite_wave(chapter, depth)
+			var elites := EnemyConfig.get_elites_for_chapter(GameManager.chapter)
+			if elites.size() > 0:
+				wave_ids.append(elites[randi() % elites.size()].id)
 		"boss":
-			wave_ids = _roll_boss_wave(chapter)
+			var bosses := EnemyConfig.get_bosses_for_chapter(GameManager.chapter)
+			if bosses.size() > 0:
+				wave_ids.append(bosses[randi() % bosses.size()].id)
 
-	GameManager.pending_wave = wave_ids
-	if wave_ids.is_empty():
-		push_warning(
-			"[MAP] wave_ids 为空，EnemyConfig 未返回数据，章节 %d 类型 %s"
-			% [chapter, battle_type]
-		)
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
 
 
-## 普通战：按深度随机 1~3 个敌人（对齐原版 enemies.ts 概率曲线，但上限卡 3，
-## 因为当前 BattleScene 的透视槽位只有 中/左/右 3 个，超过会重叠堆到"右"）
-##   depth 0 → 固定 1 个
-##   depth 1 → 40% 1 个 / 60% 2 个
-##   depth 2-4 → 50% 2 / 50% 3
-##   depth 5-9 → 70% 3 / 30% 2
-##   depth ≥10 → 固定 3（原版是 3~4，等透视系统扩 4 槽位后恢复）
-static func _roll_normal_wave(chapter: int, depth: int) -> Array[String]:
-	var pool: Array[EnemyConfig] = EnemyConfig.get_normals_for_chapter(chapter)
-	if pool.is_empty():
-		return []
-	var count: int = _roll_normal_count(depth)
-	var result: Array[String] = []
-	for i: int in count:
-		result.append(pool[randi() % pool.size()].id)
-	return result
+func _scroll_to_current() -> void:
+	# 找到当前可用节点中最低的（depth 最小），直接定位
+	var target_y: float = 0.0
+	for node in _map_nodes:
+		if node.available:
+			var pos: Vector2 = _node_positions.get(node.id, Vector2.ZERO)
+			target_y = maxf(target_y, pos.y)
 
-
-static func _roll_normal_count(depth: int) -> int:
-	if depth <= 0:
-		return 1
-	if depth == 1:
-		return 1 if randf() < 0.4 else 2
-	if depth <= 4:
-		return 2 if randf() < 0.5 else 3
-	return 2 if randf() < 0.3 else 3
-
-
-## 精英战：1 个精英 + 1 个陪跑小兵（对齐原版 line 144）
-static func _roll_elite_wave(chapter: int, _depth: int) -> Array[String]:
-	var elites: Array[EnemyConfig] = EnemyConfig.get_elites_for_chapter(chapter)
-	if elites.is_empty():
-		return []
-	var result: Array[String] = [elites[randi() % elites.size()].id]
-	var normals: Array[EnemyConfig] = EnemyConfig.get_normals_for_chapter(chapter)
-	if not normals.is_empty():
-		result.append(normals[randi() % normals.size()].id)
-	return result
-
-
-## Boss 战：单体
-static func _roll_boss_wave(chapter: int) -> Array[String]:
-	var bosses: Array[EnemyConfig] = EnemyConfig.get_bosses_for_chapter(chapter)
-	if bosses.is_empty():
-		return []
-	return [bosses[randi() % bosses.size()].id]
+	# 滚动到目标位置（居中显示）
+	var viewport_h: float = scroll_container.size.y
+	var scroll_target: float = target_y - viewport_h * 0.5
+	scroll_target = clampf(scroll_target, 0.0, map_canvas.custom_minimum_size.y - viewport_h)
+	scroll_container.scroll_vertical = int(scroll_target)

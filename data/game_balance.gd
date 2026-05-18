@@ -49,62 +49,6 @@ static func get_depth_scaling(depth: int) -> Dictionary:
 const STATUS_EFFECT_MULT := {"weak": 0.75, "vulnerable": 1.5}
 
 # ============================================================
-# v0.5 易伤层数化
-# ============================================================
-
-const VULNERABLE_CONFIG := {
-	"damage_per_layer": 0.5,   # 每层 +50% 受伤
-	"decay_per_enemy_turn": 1, # 每敌方回合结束 -1 层
-}
-
-## 法脉紊乱配置（法师专属，不可净化，独立于易伤）
-const ARCANE_DISRUPTION_CONFIG := {
-	"damage_per_layer": 0.5,       # 每层 +50% 受伤（与易伤相同公式）
-	"overflow_threshold": 6,       # 满 6 层后触发溢出惩罚
-	"overflow_bonus_per_turn": 0.1, # 溢出后每吟唱回合额外 +10% 受伤
-}
-
-## 计算易伤系数：1 + 0.5 × layers（无上限）
-static func get_vulnerable_mult(layers: int) -> float:
-	if layers <= 0:
-		return 1.0
-	return 1.0 + VULNERABLE_CONFIG.damage_per_layer * layers
-
-## 计算法脉紊乱系数：1 + 0.5 × layers（无上限，与易伤独立计算后相乘）
-static func get_arcane_disruption_mult(layers: int) -> float:
-	if layers <= 0:
-		return 1.0
-	return 1.0 + ARCANE_DISRUPTION_CONFIG.damage_per_layer * layers
-
-# ============================================================
-# v0.5 过充系统（超基线手牌 → 增幅倍率）
-# ============================================================
-
-const OVERCHARGE_CONFIG := {
-	"thresholds": [1, 2, 3],       # 超出基线 1/2/3 颗
-	"bonus_mult": [0.10, 0.20, 0.30], # 对应 +10%/+20%/+30%
-}
-
-## 计算过充增幅倍率
-## hand_count: 当前可打出的普通骰子数（不含符文骰子）
-## base_hand_limit: 基线手牌上限
-static func get_overcharge_mult(hand_count: int, base_hand_limit: int) -> float:
-	var excess: int = hand_count - base_hand_limit
-	if excess <= 0:
-		return 0.0
-	var mult: float = 0.0
-	for i: int in OVERCHARGE_CONFIG.thresholds.size():
-		if excess >= OVERCHARGE_CONFIG.thresholds[i]:
-			mult = OVERCHARGE_CONFIG.bonus_mult[i]
-	return mult
-
-# ============================================================
-# v0.5 amplify 机制（仅放大自身点数）
-# ============================================================
-
-const AMPLIFY_SELF_MULT: float = 1.2  # 自身点数 ×1.2 向上取整
-
-# ============================================================
 # 战士血怒
 # ============================================================
 
@@ -158,7 +102,7 @@ const MAP_CONFIG := {
 
 const CHAPTER_CONFIG := {
 	"totalChapters": 5,
-	"chapterNames": ["幽暗森林", "冰封山脉", "熔岩深渊", "暗影要塞", "永恒之巅"],
+"chapterNames": ["飓风城外围", "碎牙堡荒原", "暗渊城", "月影城与灰谷", "龙眠圣殿"],
 	"chapterScaling": [
 		{"hpMult": 1.0, "dmgMult": 1.0},
 		{"hpMult": 1.25, "dmgMult": 1.15},
