@@ -171,14 +171,20 @@ func _apply_static_background() -> void:
 		mid.visible = false
 	if ground != null:
 		ground.texture = tex
-		# 场景图 180×320，视口 360×640 → scale 2.0 铺满
-		ground.scale = Vector2(2.0, 2.0)
-		ground.position = Vector2(180, 320)  # 视口中心
+		# 根据实际视口大小动态计算 scale，确保背景铺满整个视口
+		var vp_size: Vector2 = get_viewport_rect().size
+		var tex_size: Vector2 = Vector2(tex.get_width(), tex.get_height())
+		# 取较大的缩放比例确保完全覆盖（cover 模式）
+		var scale_x: float = vp_size.x / tex_size.x
+		var scale_y: float = vp_size.y / tex_size.y
+		var final_scale: float = maxf(scale_x, scale_y)
+		ground.scale = Vector2(final_scale, final_scale)
+		ground.position = Vector2(vp_size.x * 0.5, vp_size.y * 0.5)  # 视口中心
 		ground.z_index = -40
 		# 同步更新 BgParallax 的基准 Y（它在子节点 _ready 时已快照旧值）
 		var bg_script: BgParallax = bg_node as BgParallax
 		if bg_script != null:
-			bg_script._base_y_ground = ground.position.y
+			bg_script._base_y_ground = vp_size.y * 0.5
 
 
 ## 玩家双手系统 — 接入受击 / 死亡 动画
