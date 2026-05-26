@@ -15,85 +15,68 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 ## ========================================================
 ## 敌人透视参数 — Inspector 直接配置，所见即所得
-## 3 个 Slot × 4 档距离 × (坐标 + 缩放 + Y偏移 + 亮度 + 渲染层级) = 60 个参数
+## 3 个 Slot × 3 档距离 × (坐标 + 缩放 + Y偏移 + 亮度 + 渲染层级) = 45 个参数
 ## 命名 = enemy.distance 的值，敌人头上显示"距N"就对应"距离N"这组参数
+## 距离范围 1~3，1=贴脸（近战攻击距离），3=最远
 ## 坐标为 EnemyContainer 局部坐标
 ## ========================================================
 
 @export_group("敌人透视·Slot0(中)")
-@export var 中_距离0坐标: Vector2 = Vector2(0, 300)
-@export var 中_距离0缩放: float = 1.25
-@export var 中_距离0纵深Y偏移: float = 30.0
-@export var 中_距离0亮度: float = 1.0
-@export var 中_距离0渲染层级: int = 7
-
 @export var 中_距离1坐标: Vector2 = Vector2(0, 150)
 @export var 中_距离1缩放: float = 0.95
 @export var 中_距离1纵深Y偏移: float = -5.0
-@export var 中_距离1亮度: float = 0.95
-@export var 中_距离1渲染层级: int = 5
+@export var 中_距离1亮度: float = 1.0
+@export var 中_距离1渲染层级: int = 7
 
 @export var 中_距离2坐标: Vector2 = Vector2(0, 40)
 @export var 中_距离2缩放: float = 0.75
 @export var 中_距离2纵深Y偏移: float = -25.0
 @export var 中_距离2亮度: float = 0.9
-@export var 中_距离2渲染层级: int = 3
+@export var 中_距离2渲染层级: int = 5
 
 @export var 中_距离3坐标: Vector2 = Vector2(0, -66)
 @export var 中_距离3缩放: float = 0.6
 @export var 中_距离3纵深Y偏移: float = -50.0
 @export var 中_距离3亮度: float = 0.82
-@export var 中_距离3渲染层级: int = 1
+@export var 中_距离3渲染层级: int = 3
 
 @export_group("敌人透视·Slot1(左)")
-@export var 左_距离0坐标: Vector2 = Vector2(-230, 57)
-@export var 左_距离0缩放: float = 1.25
-@export var 左_距离0纵深Y偏移: float = 30.0
-@export var 左_距离0亮度: float = 1.0
-@export var 左_距离0渲染层级: int = 7
-
 @export var 左_距离1坐标: Vector2 = Vector2(-192, 13)
 @export var 左_距离1缩放: float = 0.95
 @export var 左_距离1纵深Y偏移: float = -5.0
-@export var 左_距离1亮度: float = 0.95
-@export var 左_距离1渲染层级: int = 5
+@export var 左_距离1亮度: float = 1.0
+@export var 左_距离1渲染层级: int = 7
 
 @export var 左_距离2坐标: Vector2 = Vector2(-154, -1)
 @export var 左_距离2缩放: float = 0.75
 @export var 左_距离2纵深Y偏移: float = -25.0
 @export var 左_距离2亮度: float = 0.9
-@export var 左_距离2渲染层级: int = 3
+@export var 左_距离2渲染层级: int = 5
 
 @export var 左_距离3坐标: Vector2 = Vector2(-131, -9)
 @export var 左_距离3缩放: float = 0.6
 @export var 左_距离3纵深Y偏移: float = -50.0
 @export var 左_距离3亮度: float = 0.82
-@export var 左_距离3渲染层级: int = 1
+@export var 左_距离3渲染层级: int = 3
 
 @export_group("敌人透视·Slot2(右)")
-@export var 右_距离0坐标: Vector2 = Vector2(230, 60)
-@export var 右_距离0缩放: float = 1.25
-@export var 右_距离0纵深Y偏移: float = 30.0
-@export var 右_距离0亮度: float = 1.0
-@export var 右_距离0渲染层级: int = 7
-
 @export var 右_距离1坐标: Vector2 = Vector2(192, 15)
 @export var 右_距离1缩放: float = 0.95
 @export var 右_距离1纵深Y偏移: float = -5.0
-@export var 右_距离1亮度: float = 0.95
-@export var 右_距离1渲染层级: int = 5
+@export var 右_距离1亮度: float = 1.0
+@export var 右_距离1渲染层级: int = 7
 
 @export var 右_距离2坐标: Vector2 = Vector2(154, 0)
 @export var 右_距离2缩放: float = 0.75
 @export var 右_距离2纵深Y偏移: float = -25.0
 @export var 右_距离2亮度: float = 0.9
-@export var 右_距离2渲染层级: int = 3
+@export var 右_距离2渲染层级: int = 5
 
 @export var 右_距离3坐标: Vector2 = Vector2(131, -9)
 @export var 右_距离3缩放: float = 0.6
 @export var 右_距离3纵深Y偏移: float = -50.0
 @export var 右_距离3亮度: float = 0.82
-@export var 右_距离3渲染层级: int = 1
+@export var 右_距离3渲染层级: int = 3
 
 
 ## 查表接口：根据 slot_index 和 distance 返回该档位的全部透视参数
@@ -101,7 +84,7 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 ## distance: 就是 enemy.distance 的值，敌人头上显示"距N"就传 N
 ## 返回: { position, depth_scale, depth_y, depth_brightness, depth_z }
 func get_slot_visuals(slot_index: int, distance: int) -> Dictionary:
-	var d: int = clampi(distance, 0, 3)
+	var d: int = clampi(distance, 1, 3)
 	var prefix: String = ["中", "左", "右"][clampi(slot_index, 0, 2)]
 	var d_suffix: String = "距离%d" % d
 	var pos: Vector2 = _get_export_vec2(prefix, d_suffix, "坐标")
@@ -156,9 +139,46 @@ func _ready() -> void:
 	_spawn_tooltip()
 	_spawn_relic_panel()
 	_connect_player_hands()
+	_apply_static_background()
 	# 地图/事件切换到 BATTLE 场景时不会发射 battle_started 信号，
 	# 而是通过 GameManager.pending_wave 交付波次数据，因此这里直接启动战斗。
 	_bootstrap_from_pending_wave()
+
+
+## 根据当前节点索引加载对应的静态战斗背景（CH1 有 6 张场景图循环使用）
+## 暂时用单张图铺满替代 4 层视差，保留 BgParallax 呼吸效果（只驱动 GroundBase）
+func _apply_static_background() -> void:
+	var bg_node: Node2D = get_node_or_null("%SceneBG")
+	if bg_node == null:
+		return
+	# 根据 nodes_visited 决定使用哪张背景（1-6 循环）
+	var scene_index: int = (GameManager.nodes_visited % 6) + 1
+	var bg_path: String = "res://assets/scene/scene_ch1_%02d.png" % scene_index
+	var tex: Texture2D = load(bg_path) as Texture2D
+	if tex == null:
+		push_warning("[BattleScene] 背景加载失败: %s" % bg_path)
+		return
+	# 隐藏 Sky / FarView / MidView，只用 GroundBase 铺满整个视口
+	var sky: Sprite2D = bg_node.get_node_or_null("Sky") as Sprite2D
+	var far: Sprite2D = bg_node.get_node_or_null("FarView") as Sprite2D
+	var mid: Sprite2D = bg_node.get_node_or_null("MidView") as Sprite2D
+	var ground: Sprite2D = bg_node.get_node_or_null("GroundBase") as Sprite2D
+	if sky != null:
+		sky.visible = false
+	if far != null:
+		far.visible = false
+	if mid != null:
+		mid.visible = false
+	if ground != null:
+		ground.texture = tex
+		# 场景图 180×320，视口 360×640 → scale 2.0 铺满
+		ground.scale = Vector2(2.0, 2.0)
+		ground.position = Vector2(180, 320)  # 视口中心
+		ground.z_index = -40
+		# 同步更新 BgParallax 的基准 Y（它在子节点 _ready 时已快照旧值）
+		var bg_script: BgParallax = bg_node as BgParallax
+		if bg_script != null:
+			bg_script._base_y_ground = ground.position.y
 
 
 ## 玩家双手系统 — 接入受击 / 死亡 动画
@@ -488,11 +508,11 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 		controller.enemy_container.add_child(view)
 		view.set_slot_index(i)           # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
 		view.init(enemy_id)
-		# 设初始位置：用 enemy 真实 distance 查表（不再硬编码 distance=0）
+		# 设初始位置：用 enemy 真实 distance 查表
 		var battle_scene_ref := owner as BattleScene
 		if battle_scene_ref != null:
 			var e_inst: EnemyInstance = view.get_enemy_instance()
-			var real_dist: int = e_inst.distance if e_inst else 0
+			var real_dist: int = e_inst.distance if e_inst else 1
 			var init_vis: Dictionary = battle_scene_ref.get_slot_visuals(i, real_dist)
 			view.position = init_vis.position
 		view.enemy_clicked.connect(controller._on_enemy_clicked)

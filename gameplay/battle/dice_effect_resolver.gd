@@ -142,8 +142,12 @@ static func _build_context(
 	# 狂暴状态
 	if PlayerState and "berserk_turns" in PlayerState:
 		ctx.player_berserk_turns = PlayerState.berserk_turns
-	# 上回合是否被打
-	if PlayerState and "was_hit_last_turn" in PlayerState:
+	# 上回合是否被打 + 被打次数
+	if PlayerState and "was_hit_last_enemy_turn" in PlayerState:
+		ctx.was_hit_last_turn = PlayerState.was_hit_last_enemy_turn
+	elif PlayerState and "was_hit_last_turn" in PlayerState:
 		ctx.was_hit_last_turn = PlayerState.was_hit_last_turn
+	if PlayerState and "hit_count_last_enemy_turn" in PlayerState:
+		ctx.hit_count_last_turn = PlayerState.hit_count_last_enemy_turn
 
 	return ctx

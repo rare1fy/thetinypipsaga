@@ -1,12 +1,12 @@
-[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://d9rj3ut9t0bdi"]
+[gd_resource type="SpriteFrames" load_steps=2 format=3]
 
-[ext_resource type="Texture2D" uid="uid://3p9hr1z5te4wn" path="res://assets/characters/mobs/berserker_footman/idle.png" id="1_idle"]
+[ext_resource type="Texture2D" path="res://assets/characters/mobs/berserker_footman/idle_0.png" id="1"]
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_idle")
+"texture": ExtResource("1")
 }],
 "loop": true,
 "name": &"idle",

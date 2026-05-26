@@ -11,6 +11,9 @@ class_name RelicEngine
 
 ## 战斗开始触发
 static func on_battle_start(relics: Array[Dictionary], game: Node) -> void:
+	# 重置每场战斗的CD计数器
+	for r: Dictionary in relics:
+		r["_battle_uses"] = 0
 	_trigger_relics(relics, EffectTypes.TriggerType.ON_BATTLE_START, game)
 
 
@@ -242,14 +245,54 @@ static func _build_context(_game: Node) -> EffectEngine.ExecuteContext:
 
 ## 冷却检查（返回 true = 可触发）
 static func _check_cooldown(def: RelicDef, relic_data: Dictionary) -> bool:
-	if def.cooldown <= 0:
-		return true
-	var last_trigger_turn: int = relic_data.get("_last_trigger_turn", -999)
-	var current_turn: int = TurnManager.battle_turn
-	if current_turn - last_trigger_turn < def.cooldown:
-		return false
-	relic_data["_last_trigger_turn"] = current_turn
-	return true
+	match def.cd_type:
+		RelicDef.CdType.PERMANENT, RelicDef.CdType.PER_TRIGGER:
+			# 永久生效 / 每次触发条件满足即触发 — 无CD限制
+			return true
+
+		RelicDef.CdType.TURN_CD:
+			# 每N回合可触发一次
+			var last_turn: int = relic_data.get("_last_trigger_turn", -999)
+			var current_turn: int = TurnManager.battle_turn
+			if current_turn - last_turn < def.cooldown:
+				return false
+			relic_data["_last_trigger_turn"] = current_turn
+			return true
+
+		RelicDef.CdType.BATTLE_CD:
+			# 每场战斗可触发N次
+			var uses_this_battle: int = relic_data.get("_battle_uses", 0)
+			if uses_this_battle >= def.cooldown:
+				return false
+			relic_data["_battle_uses"] = uses_this_battle + 1
+			return true
+
+		RelicDef.CdType.NODE_CD:
+			# 每N个地图节点可触发一次
+			var last_node: int = relic_data.get("_last_trigger_node", -999)
+			var current_node: int = GameManager.nodes_visited if "nodes_visited" in GameManager else 0
+			if current_node - last_node < def.cooldown:
+				return false
+			relic_data["_last_trigger_node"] = current_node
+			return true
+
+		RelicDef.CdType.CONSUME:
+			# 一次性消耗 — 检查是否已消耗
+			if relic_data.get("_consumed", false):
+				return false
+			relic_data["_consumed"] = true
+			return true
+
+		_:
+			# 兼容旧逻辑：用 cooldown 做回合差值
+			if def.cooldown <= 0:
+				return true
+			var last_trigger_turn: int = relic_data.get("_last_trigger_turn", -999)
+			var current_turn: int = TurnManager.battle_turn
+			if current_turn - last_trigger_turn < def.cooldown:
+				return false
+			relic_data["_last_trigger_turn"] = current_turn
+			return true
 
 
 ## 计数器检查（返回 true = 达到触发条件）

@@ -55,11 +55,20 @@ func _get_relics_by_rarity(rarity: GameTypes.RelicRarity) -> Array[RelicDef]:
 	for r: Dictionary in GameManager.relics:
 		owned_ids.append(r.get("id", ""))
 	
+	# 获取当前职业代码（用于过滤职业专属遗物）
+	var player_class: String = PlayerState.class_type if "class_type" in PlayerState else ""
+	
 	var all_relics: Array[RelicDef] = []
 	all_relics.assign(GameData._relic_defs.values())
 	for relic: RelicDef in all_relics:
-		if relic.rarity == rarity and not relic.id in owned_ids:
-			result.append(relic)
+		if relic.rarity != rarity:
+			continue
+		if relic.id in owned_ids:
+			continue
+		# 职业过滤：通用遗物或当前职业的专属遗物
+		if relic.class_type != "" and relic.class_type != player_class:
+			continue
+		result.append(relic)
 	return result
 
 

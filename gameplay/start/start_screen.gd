@@ -51,20 +51,19 @@ func _ready() -> void:
 # ============================================================
 func _spawn_topright_buttons() -> void:
 	# 设置按钮（最右）
-	_spawn_icon_button("⚙", "设置", Vector2(-52, 12), _on_settings_pressed)
+	_spawn_icon_button("⚙", "设置", Vector2(-26, 6), _on_settings_pressed)
 	# 牌型图鉴按钮
-	_spawn_icon_button("📖", "牌型图鉴", Vector2(-100, 12), _on_hand_guide_pressed)
+	_spawn_icon_button("📖", "牌型图鉴", Vector2(-50, 6), _on_hand_guide_pressed)
 	# 遗物图鉴按钮
-	_spawn_icon_button("🏺", "遗物图鉴", Vector2(-148, 12), _on_relic_guide_pressed)
+	_spawn_icon_button("🏺", "遗物图鉴", Vector2(-74, 6), _on_relic_guide_pressed)
 	# 魂晶商店按钮
-	_spawn_icon_button("💎", "魂晶商店", Vector2(-196, 12), _on_soul_shop_pressed)
-
+	_spawn_icon_button("💎", "魂晶商店", Vector2(-98, 6), _on_soul_shop_pressed)
 
 func _spawn_icon_button(text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
 	var btn := Button.new()
 	btn.text = text
-	btn.add_theme_font_size_override("font_size", 20)
-	btn.custom_minimum_size = Vector2(40, 40)
+	btn.add_theme_font_size_override("font_size", 10)
+	btn.custom_minimum_size = Vector2(20, 20)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.tooltip_text = tooltip

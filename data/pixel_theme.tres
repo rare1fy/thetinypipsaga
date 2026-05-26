@@ -5,7 +5,7 @@
 
 [resource]
 default_font = ExtResource("1_body_font")
-default_font_size = 24
+default_font_size = 12
 TitleLabel/base_type = &"Label"
 TitleLabel/fonts/font = ExtResource("2_title_font")
-TitleLabel/font_sizes/font_size = 40
+TitleLabel/font_sizes/font_size = 20

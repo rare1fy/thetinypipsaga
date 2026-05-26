@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://c0dbvt22nqy7s"]
 
-[ext_resource type="Script" path="res://gameplay/map/map_screen.gd" id="1"]
+[ext_resource type="Script" uid="uid://5mtueue5u2it" path="res://gameplay/map/map_screen.gd" id="1"]
 
 [node name="MapScreen" type="Control"]
 layout_mode = 3
@@ -16,6 +16,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.04, 0.04, 0.08, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
@@ -27,12 +29,14 @@ offset_left = 4.0
 offset_top = 4.0
 offset_right = -4.0
 offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ChapterLabel" type="Label" parent="VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 16
 text = "第一章"
 horizontal_alignment = 1
 
@@ -42,7 +46,7 @@ layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="MapCanvas" type="Control" parent="ScrollContainer"]
+[node name="MapCanvas" type="Control" parent="VBox/ScrollContainer"]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(352, 2400)
+layout_mode = 2

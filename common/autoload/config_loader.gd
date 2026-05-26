@@ -183,22 +183,35 @@ static func load_dice_defs() -> Dictionary:
 		d.is_cracked = _as_bool(row.get("flag_cracked", false))
 		d.is_rune = _as_bool(row.get("flag_rune", false))
 
-		# 构建 effects 数组（从 effect_group 映射）
-		var eg: String = row.get("effect_group", "")
-		if eg != "" and eg_map.has(eg):
-			d.effects = _build_dice_effects(eg_map[eg])
-			# 从 effect_group 提取标记属性设置到 DiceDef
-			for eff in eg_map[eg]:
-				var pk: String = eff.get("param_key", "")
-				match pk:
-					"is_elemental":
-						d.is_elemental = _as_bool(eff.get("param_value", false))
-					"copy_majority_element":
-						d.copy_majority_element = _as_bool(eff.get("param_value", false))
-					"dual_element":
-						d.dual_element = _as_bool(eff.get("param_value", false))
-					"is_rune":
-						d.is_rune = _as_bool(eff.get("param_value", false))
+		# 职业归属
+		d.class_type = row.get("class_type", "")
+
+		# 构建 effects 数组
+		# 优先使用 base 中直接配置的 effects 数组（v0.5 新格式）
+		var direct_effects: Array = row.get("effects", [])
+		if not direct_effects.is_empty():
+			var typed_effects: Array[Dictionary] = []
+			for fx in direct_effects:
+				if fx is Dictionary:
+					typed_effects.append(fx)
+			d.effects = typed_effects
+		else:
+			# 回退到旧格式：从 effect_group 映射
+			var eg: String = row.get("effect_group", "")
+			if eg != "" and eg_map.has(eg):
+				d.effects = _build_dice_effects(eg_map[eg])
+				# 从 effect_group 提取标记属性设置到 DiceDef
+				for eff in eg_map[eg]:
+					var pk: String = eff.get("param_key", "")
+					match pk:
+						"is_elemental":
+							d.is_elemental = _as_bool(eff.get("param_value", false))
+						"copy_majority_element":
+							d.copy_majority_element = _as_bool(eff.get("param_value", false))
+						"dual_element":
+							d.dual_element = _as_bool(eff.get("param_value", false))
+						"is_rune":
+							d.is_rune = _as_bool(eff.get("param_value", false))
 
 		defs[d.id] = d
 	return defs
@@ -463,21 +476,58 @@ static func load_relic_defs() -> Dictionary:
 		r.description = row.get("description", "")
 		r.rarity = rarity_from_code(row.get("rarity", "RA1"), true)
 		r.trigger = trigger_from_code(row.get("trigger", "TR99"))
+		r.class_type = row.get("class", "")
 
 		# 计数/冷却字段
 		r.counter = int(row.get("counter", 0))
 		r.max_counter = int(row.get("max_counter", 0))
 		r.counter_label = row.get("counter_label", "")
-		r.cooldown = int(row.get("cooldown", 0))
-		r.consumable = _as_bool(row.get("consumable", false))
+		r.consumable = _as_bool(row.get("flag_consume", row.get("consumable", false)))
 
-		# 构建 effects 数组（从 effect_group 映射）
-		var eg: String = row.get("effect_group", "")
-		if eg != "" and eg_map.has(eg):
-			r.effects = _build_relic_effects(eg_map[eg], r.trigger)
+		# 解析 cd_type 字符串 → CdType 枚举 + cooldown 数值
+		var cd_str: String = row.get("cd_type", "permanent")
+		var parsed_cd := _parse_cd_type(cd_str)
+		r.cd_type = parsed_cd.type
+		r.cooldown = parsed_cd.value
+
+		# 构建 effects 数组
+		var raw_effects: Array = row.get("effects", [])
+		if not raw_effects.is_empty():
+			# 新格式：直接使用 effects 数组
+			var typed_effects: Array[Dictionary] = []
+			for eff in raw_effects:
+				typed_effects.append(eff)
+			r.effects = typed_effects
+		else:
+			# 旧格式：从 effect_group 映射
+			var eg: String = row.get("effect_group", "")
+			if eg != "" and eg_map.has(eg):
+				r.effects = _build_relic_effects(eg_map[eg], r.trigger)
 
 		defs[r.id] = r
 	return defs
+
+
+## 解析 cd_type 字符串 → {type: RelicDef.CdType, value: int}
+static func _parse_cd_type(cd_str: String) -> Dictionary:
+	if cd_str == "permanent":
+		return {"type": RelicDef.CdType.PERMANENT, "value": 0}
+	elif cd_str == "per_trigger":
+		return {"type": RelicDef.CdType.PER_TRIGGER, "value": 0}
+	elif cd_str.begins_with("turn_cd_"):
+		var val: int = int(cd_str.substr(8))
+		return {"type": RelicDef.CdType.TURN_CD, "value": val}
+	elif cd_str.begins_with("battle_cd_"):
+		var val: int = int(cd_str.substr(10))
+		return {"type": RelicDef.CdType.BATTLE_CD, "value": val}
+	elif cd_str.begins_with("node_cd_"):
+		var val: int = int(cd_str.substr(8))
+		return {"type": RelicDef.CdType.NODE_CD, "value": val}
+	elif cd_str == "consume":
+		return {"type": RelicDef.CdType.CONSUME, "value": 1}
+	else:
+		push_warning("ConfigLoader: 未知 cd_type '%s'，默认 permanent" % cd_str)
+		return {"type": RelicDef.CdType.PERMANENT, "value": 0}
 
 
 ## 将旧格式的 param_key/param_value 转换为新的 effects 数组

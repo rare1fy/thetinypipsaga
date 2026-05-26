@@ -7,6 +7,20 @@ extends Resource
 
 
 # ============================================================
+# CD 类型枚举
+# ============================================================
+
+enum CdType {
+	PERMANENT = 0,   ## 永久生效（无CD）
+	PER_TRIGGER = 1, ## 每次触发条件满足即触发
+	TURN_CD = 2,     ## 每N回合可触发一次
+	BATTLE_CD = 3,   ## 每场战斗可触发N次
+	NODE_CD = 4,     ## 每N个地图节点可触发一次
+	CONSUME = 5,     ## 一次性消耗（触发后移除遗物）
+}
+
+
+# ============================================================
 # 基础属性
 # ============================================================
 
@@ -16,6 +30,9 @@ extends Resource
 @export var icon: String = ""
 @export var rarity: GameTypes.RelicRarity = GameTypes.RelicRarity.COMMON
 
+## 职业归属（空字符串=通用，"C01"=战士，"C02"=法师，"C03"=盗贼）
+@export var class_type: String = ""
+
 ## 触发时机（决定 EffectEngine 何时执行此遗物的效果）
 @export var trigger: GameTypes.RelicTrigger = GameTypes.RelicTrigger.PASSIVE
 
@@ -24,10 +41,11 @@ extends Resource
 @export var max_counter: int = 0
 @export var counter_label: String = ""
 
-## 冷却（如"每N回合触发一次"）
-@export var cooldown: int = 0
+## CD 类型 + 冷却值
+@export var cd_type: CdType = CdType.PERMANENT
+@export var cooldown: int = 0  ## 含义取决于 cd_type：回合数 / 战斗次数 / 节点数
 
-## 是否一次性（触发后消耗）
+## 是否一次性（触发后消耗）— 兼容旧字段，新数据用 cd_type = CONSUME
 @export var consumable: bool = false
 
 

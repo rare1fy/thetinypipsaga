@@ -151,10 +151,28 @@ const DICE_REWARD_REFRESH := {"basePrice": 5, "priceMultiplier": 2, "firstFree":
 ## amplify 骰子的自身点数倍率（_sum_dice_points 中使用）
 const AMPLIFY_SELF_MULT: float = 1.2
 
+## 易伤配置
+const VULNERABLE_CONFIG := {
+	"decay_per_enemy_turn": 1,  # 每敌方回合结束衰减层数
+	"mult_per_layer": 0.5,      # 每层增伤倍率
+	"max_layers": 5,            # 最大层数
+}
+
+## 法脉紊乱配置
+const ARCANE_DISRUPTION_CONFIG := {
+	"mult_per_layer": 0.15,  # 每层增伤倍率
+	"max_layers": 10,        # 最大层数
+}
+
 ## 易伤层数 → 伤害系数：每层 +0.5，最多 5 层（封顶 ×3.5）
 static func get_vulnerable_mult(layers: int) -> float:
-	var clamped: int = clampi(layers, 0, 5)
-	return 1.0 + 0.5 * float(clamped)
+	var clamped: int = clampi(layers, 0, VULNERABLE_CONFIG.max_layers)
+	return 1.0 + VULNERABLE_CONFIG.mult_per_layer * float(clamped)
+
+## 法脉紊乱层数 → 伤害系数：每层 +0.15，最多 10 层（封顶 ×2.5）
+static func get_arcane_disruption_mult(layers: int) -> float:
+	var clamped: int = clampi(layers, 0, ARCANE_DISRUPTION_CONFIG.max_layers)
+	return 1.0 + ARCANE_DISRUPTION_CONFIG.mult_per_layer * float(clamped)
 
 ## 过充倍率：当前手牌数超过基线 drawCount 时，每多 1 颗 +0.1，最多 +0.3
 ## 返回 0 表示没有过充加成（调用方会用 1.0 + overcharge 累乘）

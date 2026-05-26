@@ -53,6 +53,20 @@ static func check_condition(effect: Dictionary, ctx: EffectEngine.ExecuteContext
 			return ctx.player_combo >= 3
 		"hit":
 			return ctx.was_hit_last_turn
+		"hit_gte_3":
+			return ctx.hit_count_last_turn >= 3
+		"normal_attack":
+			return ctx.hand_type == "普通攻击" or ctx.hand_type == ""
+		"hand_type_gte_triple":
+			# 三条/葫芦/大葫芦/三连对/四条/五条/六条
+			var gte_triple: Array[String] = ["三条", "葫芦", "大葫芦", "三连对", "四条", "五条", "六条"]
+			return ctx.hand_type in gte_triple
+		"has_scar_gte_3":
+			return ctx.player_scar_stacks >= 3
+		"full_hp":
+			return ctx.player_hp >= ctx.player_max_hp
+		"not_full_hp":
+			return ctx.player_hp < ctx.player_max_hp
 		"solo":
 			# 单挑：场上存活敌人仅剩 1 个
 			var alive_count: int = 0

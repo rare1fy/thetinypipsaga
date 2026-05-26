@@ -246,6 +246,9 @@ var pending_wave: Array[String]:
 var relics: Array[Dictionary]:
 	get: return PlayerState.relics
 
+## 已访问地图节点总数（跨章累计，用于遗物 node_cd 冷却）
+var nodes_visited: int = 0
+
 ## 统计
 var stats: Dictionary:
 	get: return StatsTracker.stats

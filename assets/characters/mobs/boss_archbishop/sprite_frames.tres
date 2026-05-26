@@ -1,12 +1,12 @@
-[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://t809biktzw91j"]
+[gd_resource type="SpriteFrames" load_steps=2 format=3]
 
-[ext_resource type="Texture2D" uid="uid://j4zjb1x2g6gwi" path="res://assets/characters/mobs/boss_archbishop/idle.png" id="1_idle"]
+[ext_resource type="Texture2D" path="res://assets/characters/mobs/boss_archbishop/idle_0.png" id="1"]
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_idle")
+"texture": ExtResource("1")
 }],
 "loop": true,
 "name": &"idle",

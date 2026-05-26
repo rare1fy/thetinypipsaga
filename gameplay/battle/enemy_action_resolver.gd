@@ -87,8 +87,8 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 		e.combat_type == GameTypes.EnemyCombatType.WARRIOR
 		or e.combat_type == GameTypes.EnemyCombatType.GUARDIAN
 	)
-	if is_melee and e.distance > 0:
-		e.distance = maxi(0, e.distance - 1)
+	if is_melee and e.distance > 1:
+		e.distance = maxi(1, e.distance - 1)
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
 		controller.get_tree().create_timer(0.3).timeout.connect(
 			func() -> void:

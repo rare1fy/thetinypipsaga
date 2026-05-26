@@ -103,13 +103,25 @@ static func get_config(id: String) -> EnemyConfig:
 	return _all_configs.values()[0] if _all_configs.size() > 0 else null
 
 static func get_normals_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.NORMAL and c.chapter == chapter)
+	var result: Array[EnemyConfig] = []
+	for c: EnemyConfig in _all_configs.values():
+		if c.category == EnemyCategory.NORMAL and c.chapter == chapter:
+			result.append(c)
+	return result
 
 static func get_elites_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.ELITE and c.chapter == chapter)
+	var result: Array[EnemyConfig] = []
+	for c: EnemyConfig in _all_configs.values():
+		if c.category == EnemyCategory.ELITE and c.chapter == chapter:
+			result.append(c)
+	return result
 
 static func get_bosses_for_chapter(chapter: int) -> Array[EnemyConfig]:
-	return _all_configs.values().filter(func(c): return c.category == EnemyCategory.BOSS and c.chapter == chapter)
+	var result: Array[EnemyConfig] = []
+	for c: EnemyConfig in _all_configs.values():
+		if c.category == EnemyCategory.BOSS and c.chapter == chapter:
+			result.append(c)
+	return result
 
 static func get_all() -> Dictionary:
 	return _all_configs

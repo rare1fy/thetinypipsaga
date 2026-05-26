@@ -36,14 +36,27 @@ const NODE_COLORS: Dictionary = {
 	GameTypes.NodeType.TREASURE: Color(1.0, 1.0, 0.3),
 }
 
-var _map_nodes: Array = []
 var _node_positions: Dictionary = {}  ## id -> Vector2 (canvas坐标)
 var _node_buttons: Dictionary = {}    ## id -> Button
 var _navigating: bool = false
 
+## 地图数据统一存储在 GameManager.map_nodes（Autoload 持久化）
+## 本地只做引用，避免场景销毁后数据丢失
+var _map_nodes: Array[MapGenerator.MapNode]:
+	get: return GameManager.map_nodes
+	set(v): GameManager.map_nodes = v
+
 
 func _ready() -> void:
 	GameManager.phase_changed.connect(_on_phase_changed)
+	# 场景被 main.gd 实例化时，phase_changed(MAP) 已经发射过了
+	# 需要主动检查当前 phase 并初始化
+	if GameManager.phase == GameTypes.GamePhase.MAP:
+		visible = true
+		if _map_nodes.is_empty():
+			_generate_map()
+		else:
+			_restore_map()
 
 
 func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
@@ -52,8 +65,18 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 		if _map_nodes.is_empty():
 			_generate_map()
 		else:
-			_refresh_map_ui()
+			_restore_map()
 		_navigating = false
+
+
+## 从 GameManager 恢复已有地图数据（场景重建后调用）
+func _restore_map() -> void:
+	var chapter_names: Array = ["飓风城外围", "碎牙堡荒原", "暗渊城", "月影城与灰谷", "龙眠圣殿"]
+	var ch_idx: int = clampi(GameManager.chapter - 1, 0, chapter_names.size() - 1)
+	chapter_label.text = "第%d章 · %s" % [GameManager.chapter, chapter_names[ch_idx]]
+	_calculate_positions()
+	_refresh_map_ui()
+	_scroll_to_current()
 
 
 func _generate_map() -> void:
@@ -163,6 +186,14 @@ func _on_node_clicked(node) -> void:
 	SoundPlayer.play_sound("click")
 	MapGenerator.visit_node(_map_nodes, node.id)
 	GameManager.current_node = node.depth
+	GameManager.nodes_visited += 1
+
+	# Boss 嘲讽预告：进入 Boss 前一层时触发
+	if BossTauntBanner.should_show_taunt(node.depth, GameManager.chapter):
+		var bosses := EnemyConfig.get_bosses_for_chapter(GameManager.chapter)
+		if bosses.size() > 0:
+			var boss_name: String = bosses[0].name
+			BossTauntBanner.show_taunt(self, boss_name, GameManager.chapter)
 
 	# 解锁下一层
 	MapGenerator.get_next_available(_map_nodes, node.id)
@@ -189,7 +220,7 @@ func _spawn_battle(node_type: GameTypes.NodeType) -> void:
 		"enemy":
 			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
 			if normals.size() > 0:
-				var picked := normals[randi() % normals.size()]
+				var picked := _pick_weighted_enemy(normals)
 				wave_ids.append(picked.id)
 		"elite":
 			var elites := EnemyConfig.get_elites_for_chapter(GameManager.chapter)
@@ -200,7 +231,31 @@ func _spawn_battle(node_type: GameTypes.NodeType) -> void:
 			if bosses.size() > 0:
 				wave_ids.append(bosses[randi() % bosses.size()].id)
 
+	GameManager.pending_wave = wave_ids
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
+
+
+## 带权重的敌人选择 — 前期近战权重高，避免全是远程兵
+func _pick_weighted_enemy(pool: Array[EnemyConfig]) -> EnemyConfig:
+	var depth: int = GameManager.current_node
+	# 前3层近战权重3倍，之后逐渐均匀
+	var melee_weight: float = 3.0 if depth < 3 else 1.5 if depth < 6 else 1.0
+	var weights: Array[float] = []
+	var total: float = 0.0
+	for cfg: EnemyConfig in pool:
+		var w: float = 1.0
+		if cfg.combat_type == GameTypes.EnemyCombatType.WARRIOR or cfg.combat_type == GameTypes.EnemyCombatType.GUARDIAN:
+			w = melee_weight
+		weights.append(w)
+		total += w
+	# 加权随机
+	var roll: float = randf() * total
+	var acc: float = 0.0
+	for i: int in pool.size():
+		acc += weights[i]
+		if roll <= acc:
+			return pool[i]
+	return pool[pool.size() - 1]
 
 
 func _scroll_to_current() -> void:

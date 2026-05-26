@@ -222,11 +222,11 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		enemy_container.add_child(view)  # 先加入树触发 _ready() 构建 UI
 		view.set_slot_index(i)           # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
 		view.init(enemy_id)             # 再绑定数据
-		# 设初始位置：用 enemy 真实 distance 查表（不再硬编码 distance=0）
+		# 设初始位置：用 enemy 真实 distance 查表
 		var battle_scene := owner as BattleScene
 		if battle_scene != null:
 			var e_inst: EnemyInstance = view.get_enemy_instance()
-			var real_dist: int = e_inst.distance if e_inst else 0
+			var real_dist: int = e_inst.distance if e_inst else 1
 			var init_visuals: Dictionary = battle_scene.get_slot_visuals(i, real_dist)
 			view.position = init_visuals.position
 		view.enemy_clicked.connect(_on_enemy_clicked)

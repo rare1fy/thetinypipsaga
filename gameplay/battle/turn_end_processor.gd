@@ -142,14 +142,14 @@ static func _resolve_taunt_backlash(played_this_turn: bool, _controller: BattleC
 			if inst and inst.hp > 0:
 				total_taunt_dmg += inst.attack_dmg
 
-	# 嘲讽拉近：所有存活敌人 distance = 0
+	# 嘲讽拉近：所有存活敌人 distance = 1（贴脸）
 	for view: Node in _controller.enemy_views:
 		if not is_instance_valid(view):
 			continue
 		if view.has_method("get_enemy_instance"):
 			var inst: EnemyInstance = view.get_enemy_instance()
 			if inst:
-				inst.distance = 0
+				inst.distance = 1
 
 	if total_taunt_dmg <= 0:
 		return

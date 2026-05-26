@@ -45,6 +45,7 @@ class ExecuteContext:
 
 	## 战斗状态
 	var was_hit_last_turn: bool = false  # 上回合是否被打
+	var hit_count_last_turn: int = 0  # 上回合被打次数（怒火骰子用）
 	var kills_this_play: int = 0  # 本次出牌击杀数
 
 
@@ -646,6 +647,8 @@ static func _calc_scaled_damage(params: Dictionary, ctx: ExecuteContext) -> int:
 			base_value = ctx.player_max_hp - ctx.player_hp
 		"scar":
 			base_value = ctx.player_scar_stacks
+		"hit_count":
+			base_value = ctx.hit_count_last_turn
 		"poison":
 			if ctx.target_enemy:
 				base_value = ctx.target_enemy.get_status_stacks("poison")

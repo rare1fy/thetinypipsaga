@@ -2,300 +2,1867 @@
   "base": [
     {
       "id": "R0001",
-      "legacy_key": "iron_heart",
-      "name": "铁之心",
-      "rarity": "RA1",
-      "trigger": "TR06",
-      "description": "获得5点护甲",
-      "effect_group": "EG1001",
+      "legacy_key": "relic_greedy_hand",
+      "name": "贪婪之手",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "每回合多抽1颗骰子，但手牌上限-1。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "draw_delta": 1,
+            "hand_limit_delta": -1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0002",
-      "legacy_key": "healing_herb",
-      "name": "治愈草药",
-      "rarity": "RA1",
-      "trigger": "TR06",
-      "description": "战斗开始时恢复10HP",
-      "effect_group": "EG1002",
+      "legacy_key": "relic_slowpoke",
+      "name": "慢性子",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "每回合少抽1颗骰子，但所有骰子点数+1（上限仍为6）。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "draw_delta": -1,
+            "points_delta": 1,
+            "points_cap": 6
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0003",
-      "legacy_key": "sharp_blade",
-      "name": "锋利之刃",
-      "rarity": "RA1",
-      "trigger": "TR01",
-      "description": "每次出牌+3伤害",
-      "effect_group": "EG1003",
+      "legacy_key": "relic_boomerang",
+      "name": "回旋镖",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR05",
+      "description": "每回合弃牌阶段，弃掉的骰子中点数最高的1颗不进弃骰库，直接回到手牌。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 5,
+          "scope": 2,
+          "params": {
+            "target": "highest_discard",
+            "count": 1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0004",
-      "legacy_key": "lucky_coin",
-      "name": "幸运金币",
-      "rarity": "RA1",
+      "legacy_key": "relic_fate_gear",
+      "name": "命运齿轮",
+      "class": "",
+      "rarity": "RA4",
       "trigger": "TR99",
-      "description": "金币获取+20%",
-      "effect_group": "EG1004",
+      "description": "每回合抽牌后，可选择将手牌中1颗骰子放回骰子库顶部。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "action": "return_to_top",
+            "count": 1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0005",
-      "legacy_key": "hourglass",
-      "name": "时光沙漏",
-      "rarity": "RA3",
-      "trigger": "TR09",
-      "description": "致命伤害时免死一次，消耗此遗物",
-      "effect_group": "EG1005",
-      "flag_consume": true,
-      "flag_unique": true
+      "legacy_key": "relic_gambler_creed",
+      "name": "赌徒信条",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "每回合获得1次免费重投。重投后如果点数比原来低，该骰子本回合锁定。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 33,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "penalty": "lock_if_lower"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
       "id": "R0006",
-      "legacy_key": "fortune_wheel_relic",
-      "name": "命运之轮",
-      "rarity": "RA2",
-      "trigger": "TR99",
-      "description": "首次出牌后保留手牌一次",
-      "effect_group": "EG1006",
+      "legacy_key": "relic_mirror_bag",
+      "name": "镜像骰袋",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "出牌时只打出1颗骰子，从骰子库中随机抽1颗相同点数的骰子加入手牌。",
+      "cd_type": "turn_cd_2",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "single_die_play",
+            "match": "same_points"
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0007",
-      "legacy_key": "blood_pact",
-      "name": "血之契约",
-      "rarity": "RA3",
-      "trigger": "TR05",
-      "description": "回合结束保留1颗最高点骰子",
-      "effect_group": "EG1007",
+      "legacy_key": "relic_minimalist",
+      "name": "极简主义",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR01",
+      "description": "只选1颗骰子出牌时，本次伤害×2。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 0,
+          "params": {
+            "value": 1.0,
+            "condition": "single_die_play"
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0008",
-      "legacy_key": "magic_glove",
-      "name": "魔法手套",
-      "rarity": "RA2",
-      "trigger": "TR05",
-      "description": "每场战斗下回合+1手牌",
-      "effect_group": "EG1008",
+      "legacy_key": "relic_perfectionist",
+      "name": "完美主义",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR01",
+      "description": "打出葫芦/四条/五条/六条时，若所有骰子均为同一种骰子（相同ID），伤害×3。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 0,
+          "params": {
+            "value": 2.0,
+            "condition": "all_same_id_high_hand"
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0009",
-      "legacy_key": "whetstone",
-      "name": "磨砺石",
+      "legacy_key": "relic_shotgun",
+      "name": "散弹枪",
+      "class": "",
       "rarity": "RA3",
-      "trigger": "TR05",
-      "description": "每场战斗下回合+1出牌",
-      "effect_group": "EG1009",
+      "trigger": "TR99",
+      "description": "普通攻击改为对全体敌人造成伤害，但伤害-40%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 5,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "normal_attack",
+            "target": "all",
+            "damage_mult": 0.6
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0010",
-      "legacy_key": "rage_fire",
-      "name": "怒火燎原",
-      "rarity": "RA2",
-      "trigger": "TR08",
-      "description": "受到伤害后下次出牌+5伤害",
-      "effect_group": "EG1010",
+      "legacy_key": "relic_all_in",
+      "name": "赌上一切",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "每回合只能出牌1次，但可选择全部手牌一起打出，牌型判定取最优组合。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 32,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "play_limit": 1,
+            "all_hand_play": true
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0011",
-      "legacy_key": "prism_focus",
-      "name": "棱镜聚焦",
-      "rarity": "RA3",
-      "trigger": "TR99",
-      "description": "锁定一个元素，同元素牌型伤害+30%",
-      "effect_group": "EG1011",
+      "legacy_key": "relic_chain_reaction",
+      "name": "连锁反应",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR02",
+      "description": "击杀敌人时，本回合获得1次额外出牌机会（每回合最多1次）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 32,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "per_turn_limit": 1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0012",
-      "legacy_key": "limit_breaker",
-      "name": "突破极限",
-      "rarity": "RA4",
-      "trigger": "TR99",
-      "description": "小丑骰子可掷出10-12",
-      "effect_group": "EG1012",
+      "legacy_key": "relic_echo",
+      "name": "回声",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR01",
+      "description": "出牌后，下一次出牌自动重复上一次的牌型。",
+      "cd_type": "turn_cd_3",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "repeat_last_hand": true
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0013",
-      "legacy_key": "pair_upgrade",
-      "name": "对子大师",
-      "rarity": "RA3",
+      "legacy_key": "relic_dimension_break",
+      "name": "降维打击",
+      "class": "",
+      "rarity": "RA4",
       "trigger": "TR99",
-      "description": "对子视为三条",
-      "effect_group": "EG1013",
+      "description": "顺子判定时，允许1颗骰子的点数偏差±1。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "straight_tolerance": 1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0014",
-      "legacy_key": "straight_master",
-      "name": "顺子大师",
+      "legacy_key": "relic_chaos_face",
+      "name": "混沌骰面",
+      "class": "",
       "rarity": "RA3",
       "trigger": "TR99",
-      "description": "顺子牌型等级+1",
-      "effect_group": "EG1014",
+      "description": "对子/三条/四条判定时，点数差1也算相同。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "same_tolerance": 1
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0015",
-      "legacy_key": "soul_crystal",
-      "name": "魂晶之心",
-      "rarity": "RA4",
-      "trigger": "TR02",
-      "description": "溢出伤害×倍率×15%转化为魂晶",
-      "effect_group": "EG1015",
+      "legacy_key": "relic_pure_heart",
+      "name": "纯净之心",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "骰子库中骰子种类≤5种时，所有牌型倍率+0.5。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.5,
+            "condition": "dice_types_lte_5"
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
     },
     {
       "id": "R0016",
-      "legacy_key": "life_furnace",
-      "name": "生命熔炉",
-      "rarity": "RA4",
-      "trigger": "TR01",
-      "description": "每出牌5次恢复15HP",
-      "effect_group": "EG1016",
+      "legacy_key": "relic_straight_master",
+      "name": "顺子大师",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "打出顺子系牌型时，AOE伤害不再等额分配，对每个敌人独立结算全额伤害。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 5,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "straight_hand",
+            "full_aoe": true
+          }
+        }
+      ],
       "flag_consume": false,
       "flag_unique": false
-    }
-  ],
-  "effects": [
-    {
-      "effect_group": "EG1001",
-      "effect_type": "ET03",
-      "param_key": "armor",
-      "param_value": "5",
-      "note": "铁之心 +5 护甲"
     },
     {
-      "effect_group": "EG1002",
-      "effect_type": "ET04",
-      "param_key": "heal",
-      "param_value": "10",
-      "note": "草药 回 10 HP"
+      "id": "R0017",
+      "legacy_key": "relic_fullhouse_collector",
+      "name": "葫芦收藏家",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR01",
+      "description": "打出葫芦/大葫芦时，对子部分的骰子直接回到手牌。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "fullhouse",
+            "target": "pair_part"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1003",
-      "effect_type": "ET01",
-      "param_key": "damage",
-      "param_value": "3",
-      "note": "锋利 +3 伤害"
+      "id": "R0018",
+      "legacy_key": "relic_sync_resonance",
+      "name": "同调共振",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "打出对子时，手牌中相同点数的骰子点数+2（本回合）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 44,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "pair_played",
+            "target": "same_points_in_hand",
+            "delta": 2
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1004",
-      "effect_type": "ET20",
-      "param_key": "gold_bonus",
-      "param_value": "20",
-      "note": "+20% 金币"
+      "id": "R0019",
+      "legacy_key": "relic_lucky_face",
+      "name": "幸运骰面",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "重投时，如果新点数=6，额外获得1次免费重投。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 33,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "reroll_result_6",
+            "bonus_reroll": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1005",
-      "effect_type": "ET12",
-      "param_key": "prevent_death",
-      "param_value": "1",
-      "note": "免死一次"
+      "id": "R0020",
+      "legacy_key": "relic_stabilizer",
+      "name": "稳定器",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "重投时，新点数不会低于原点数。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 33,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "no_decrease": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1006",
-      "effect_type": "ET12",
-      "param_key": "keep_unplayed_once",
-      "param_value": "1",
-      "note": "保留未出牌一次"
+      "id": "R0021",
+      "legacy_key": "relic_chaos_engine",
+      "name": "混沌引擎",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR04",
+      "description": "每回合开始时，所有手牌骰子自动重投1次。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 33,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "auto_reroll_all": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1007",
-      "effect_type": "ET12",
-      "param_key": "keep_highest_die",
-      "param_value": "1",
-      "note": "保留最高点 1 颗"
+      "id": "R0022",
+      "legacy_key": "relic_fixed_fate",
+      "name": "定数之骰",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "骰子不再随机roll点，点数固定为6面的中位数（向上取整）。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "fixed_median": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1008",
-      "effect_type": "ET12",
-      "param_key": "temp_draw_bonus",
-      "param_value": "1",
-      "note": "+1 手牌（下回合）"
+      "id": "R0023",
+      "legacy_key": "relic_equivalent_exchange",
+      "name": "等价交换",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "打出顺子时，不造成伤害，改为获得等于原伤害值的金币。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "straight_hand",
+            "damage_to_gold": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1009",
-      "effect_type": "ET12",
-      "param_key": "grant_extra_play",
-      "param_value": "1",
-      "note": "+1 出牌（下回合）"
+      "id": "R0024",
+      "legacy_key": "relic_haggler",
+      "name": "讨价还价",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "商店所有物品价格-25%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "shop_discount": 0.25
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1010",
-      "effect_type": "ET01",
-      "param_key": "damage",
-      "param_value": "5",
-      "note": "受伤后 +5 伤害"
+      "id": "R0025",
+      "legacy_key": "relic_treasure_sense",
+      "name": "藏宝嗅觉",
+      "class": "",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "地图上宝箱节点的奖励选项+1个。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "chest_extra_choice": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1011",
-      "effect_type": "ET02",
-      "param_key": "multiplier",
-      "param_value": "0.3",
-      "note": "同元素 +30%"
+      "id": "R0026",
+      "legacy_key": "relic_merchant_eye",
+      "name": "商人之眼",
+      "class": "",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "商店刷新时额外多1个骰子选项。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "shop_extra_dice": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1012",
-      "effect_type": "ET12",
-      "param_key": "max_points_unlocked",
-      "param_value": "1",
-      "note": "小丑骰突破上限"
+      "id": "R0027",
+      "legacy_key": "relic_emergency_hourglass",
+      "name": "急救沙漏",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR09",
+      "description": "受到致命伤害时，免疫该伤害并回复至1HP。",
+      "cd_type": "node_cd_15",
+      "effects": [
+        {
+          "type": 12,
+          "trigger": 9,
+          "scope": 2,
+          "params": {
+            "prevent_death": true,
+            "heal_to": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1013",
-      "effect_type": "ET12",
-      "param_key": "pair_as_triplet",
-      "param_value": "1",
-      "note": "对子视为三条"
+      "id": "R0028",
+      "legacy_key": "relic_thorn_crown",
+      "name": "荆棘之冠",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR04",
+      "description": "每回合开始时获得5点护甲，但每回合结束时失去当前HP的5%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 16,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "value": 5
+          }
+        },
+        {
+          "type": 38,
+          "trigger": 5,
+          "scope": 2,
+          "params": {
+            "percent": 0.05
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1014",
-      "effect_type": "ET12",
-      "param_key": "straight_upgrade",
-      "param_value": "1",
-      "note": "顺子等级+1"
+      "id": "R0029",
+      "legacy_key": "relic_vampire_fangs",
+      "name": "吸血鬼假牙",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR02",
+      "description": "击杀敌人时，回复该敌人最大HP的10%（上限20HP）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 13,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "source": "enemy_max_hp",
+            "ratio": 0.1,
+            "cap": 20
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1015",
-      "effect_type": "ET02",
-      "param_key": "multiplier",
-      "param_value": "0.15",
-      "note": "溢伤 ×15% 转魂晶"
+      "id": "R0030",
+      "legacy_key": "relic_glass_cannon",
+      "name": "玻璃大炮",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "最大HP减半。所有出牌伤害×1.5。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "max_hp_mult": 0.5
+          }
+        },
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1016",
-      "effect_type": "ET04",
-      "param_key": "heal",
-      "param_value": "15",
-      "note": "每 5 出牌回 15 HP"
+      "id": "R0031",
+      "legacy_key": "relic_first_strike",
+      "name": "先手优势",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "每场战斗第1回合出牌伤害+30%。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.3,
+            "condition": "first_turn"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     },
     {
-      "effect_group": "EG1016",
-      "effect_type": "ET12",
-      "param_key": "max_counter",
-      "param_value": "5",
-      "note": "计数上限"
+      "id": "R0032",
+      "legacy_key": "relic_endurance",
+      "name": "持久战",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "战斗每经过3个玩家回合，出牌伤害永久+10%（本场战斗，上限+50%）。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "value": 0.1,
+            "per_turns": 3,
+            "cap": 0.5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0033",
+      "legacy_key": "relic_last_stand",
+      "name": "背水一战",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "HP≤25%时，出牌次数+1。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 32,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "condition": "hp_lte_25"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0034",
+      "legacy_key": "relic_rhythm_master",
+      "name": "节奏大师",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "连续3回合都出牌时，第3回合获得1次免费重投。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 33,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "condition": "consecutive_play_3"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0035",
+      "legacy_key": "relic_quick_finish",
+      "name": "速战速决",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "战斗前3回合出牌伤害+50%。第4回合起出牌伤害-20%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.5,
+            "condition": "turn_lte_3"
+          }
+        },
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": -0.2,
+            "condition": "turn_gte_4"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0036",
+      "legacy_key": "relic_lean_philosophy",
+      "name": "精简哲学",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "骰子库总数≤12时，每回合多抽1颗骰子。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "draw_delta": 1,
+            "condition": "deck_lte_12"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0037",
+      "legacy_key": "relic_dice_forge",
+      "name": "骰子熔炉",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "每经过5个地图节点，可选择销毁1颗骰子获得金币。",
+      "cd_type": "node_cd_5",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "destroy_dice": true,
+            "gold_by_rarity": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0038",
+      "legacy_key": "relic_duplicate",
+      "name": "复制术",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "每经过10个地图节点，可选择复制1颗已拥有的骰子。",
+      "cd_type": "node_cd_10",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "duplicate_dice": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0039",
+      "legacy_key": "relic_discard_recycle",
+      "name": "弃骰回收",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR05",
+      "description": "每回合弃牌阶段，弃掉的骰子中有1颗不进弃骰库，直接回到骰子库底部。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 5,
+          "scope": 2,
+          "params": {
+            "target": "one_discard",
+            "to": "deck_bottom"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0040",
+      "legacy_key": "relic_chaos_bag",
+      "name": "混沌骰袋",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR04",
+      "description": "每回合抽牌时，20%概率额外抽1颗（该骰子不可重投）。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 4,
+          "scope": 2,
+          "params": {
+            "chance": 0.2,
+            "draw_delta": 1,
+            "no_reroll": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0041",
+      "legacy_key": "relic_all_or_nothing",
+      "name": "孤注一掷",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR01",
+      "description": "出牌时如果用光了所有手牌，本次伤害×2。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 0,
+          "params": {
+            "value": 1.0,
+            "condition": "hand_empty_after"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0042",
+      "legacy_key": "relic_full_hp_bonus",
+      "name": "满血战意",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "HP=maxHP时，出牌伤害+25%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.25,
+            "condition": "full_hp"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0043",
+      "legacy_key": "relic_adversity_burst",
+      "name": "逆境爆发",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR08",
+      "description": "本回合受到伤害后，下一次出牌伤害+该伤害值的50%（上限+30）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 1,
+          "trigger": 8,
+          "scope": 2,
+          "params": {
+            "source": "damage_taken",
+            "ratio": 0.5,
+            "cap": 30
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0044",
+      "legacy_key": "relic_win_streak",
+      "name": "连胜奖励",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR02",
+      "description": "连续击杀敌人时，每连杀1个，下一次出牌伤害+15%（上限+45%）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "value": 0.15,
+            "cap": 0.45,
+            "reset_on_turn_end": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0045",
+      "legacy_key": "relic_empty_handed",
+      "name": "空手套白狼",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "不持有任何其他遗物时，所有出牌伤害×2.5。获得新遗物后永久失效。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 1.5,
+            "condition": "no_other_relics"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0046",
+      "legacy_key": "relic_time_rewind",
+      "name": "时间回溯",
+      "class": "",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "每场战斗可使用1次回溯：撤销上一次出牌。",
+      "cd_type": "battle_cd_1",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "undo_last_play": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0047",
+      "legacy_key": "relic_spy_glass",
+      "name": "偷窥镜",
+      "class": "",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "可以看到骰子库顶部接下来要抽到的2颗骰子。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "peek_deck": 2
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0048",
+      "legacy_key": "relic_bounty_hunter",
+      "name": "赏金猎人",
+      "class": "",
+      "rarity": "RA3",
+      "trigger": "TR02",
+      "description": "击杀精英/Boss时，额外获得1次遗物选择机会。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "condition": "kill_elite_or_boss",
+            "extra_relic_choice": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0049",
+      "legacy_key": "relic_curse_collector",
+      "name": "诅咒收集者",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "骰子库中每有1颗诅咒/碎裂骰子，所有出牌伤害+8%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "source": "cursed_count",
+            "ratio": 0.08
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0050",
+      "legacy_key": "relic_mirror_enemy",
+      "name": "镜像对手",
+      "class": "",
+      "rarity": "RA4",
+      "trigger": "TR06",
+      "description": "每场战斗开始时，复制当前目标敌人的1个属性作为临时增益。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 6,
+          "scope": 2,
+          "params": {
+            "copy_enemy_stat": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0051",
+      "legacy_key": "relic_warrior_starter",
+      "name": "血契之印",
+      "class": "C01",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "搏命重投HP代价减半，每场战斗首次搏命不消耗HP。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "gamble_cost_half": true,
+            "first_free": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0052",
+      "legacy_key": "relic_wound_collector",
+      "name": "伤痕收集者",
+      "class": "C01",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "伤痕衰减速度减半（每敌方回合-1层，而非-2层）。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "scar_decay_half": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0053",
+      "legacy_key": "relic_chain_extender",
+      "name": "锁链延伸",
+      "class": "C01",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "血锁链持续时间+1个敌方回合。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "blood_chain_duration_bonus": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0054",
+      "legacy_key": "relic_chain_amplifier",
+      "name": "锁链放大器",
+      "class": "C01",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "血锁链传递的伤害变为150%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "blood_chain_ratio": 1.5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0055",
+      "legacy_key": "relic_undying_spirit",
+      "name": "不灭斗志",
+      "class": "C01",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "HP≤30%时，搏命重投不消耗HP。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "gamble_free_below_30": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0056",
+      "legacy_key": "relic_scatter_bracer",
+      "name": "散打护腕",
+      "class": "C01",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "散打时，每颗骰子独立判定暴击（20%概率×2伤害）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "scatter_crit_chance": 0.2,
+            "scatter_crit_mult": 2.0
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0057",
+      "legacy_key": "relic_warlord_emblem",
+      "name": "战神纹章",
+      "class": "C01",
+      "rarity": "RA4",
+      "trigger": "TR02",
+      "description": "击杀敌人时，下回合多抽1颗骰子。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "draw_delta": 1,
+            "duration": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0058",
+      "legacy_key": "relic_berserker_mask",
+      "name": "狂暴面具",
+      "class": "C01",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "狂暴状态期间出牌次数+1。狂暴结束时失去当前HP的15%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 32,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "condition": "berserk"
+          }
+        },
+        {
+          "type": 38,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "percent": 0.15,
+            "condition": "berserk_end"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0059",
+      "legacy_key": "relic_iron_heart",
+      "name": "铁壁之心",
+      "class": "C01",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "获得护甲时，如果当前护甲已≥20，额外获得50%护甲。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 16,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "bonus_ratio": 0.5,
+            "condition": "armor_gte_20"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0060",
+      "legacy_key": "relic_blood_drum",
+      "name": "血怒战鼓",
+      "class": "C01",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "每次搏命重投后，本回合下一次出牌的所有骰子基础伤害+2。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 1,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 2,
+            "condition": "after_gamble"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0061",
+      "legacy_key": "relic_mage_starter",
+      "name": "星界棱镜",
+      "class": "C02",
+      "rarity": "RA1",
+      "trigger": "TR99",
+      "description": "吟唱第1回合的保留上限从3提升至4。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "chant_keep_limit_bonus": 1,
+            "turn": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0062",
+      "legacy_key": "relic_time_dilation",
+      "name": "时间膨胀",
+      "class": "C02",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "吟唱回合的保留上限递增速度翻倍。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "chant_limit_speed_double": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0063",
+      "legacy_key": "relic_element_loop",
+      "name": "元素轮回",
+      "class": "C02",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "元素骰子随机元素时，本场战斗未出现过的元素概率×3。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "unseen_element_weight": 3
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0064",
+      "legacy_key": "relic_mana_vein",
+      "name": "法脉强化",
+      "class": "C02",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "法脉紊乱的易伤层数上限从6降为4。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "mana_disruption_cap": 4
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0065",
+      "legacy_key": "relic_collapse_accelerator",
+      "name": "坍缩加速器",
+      "class": "C02",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "元素坍缩加成从×1.5提升至×2.0。非坍缩元素效果减半。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "collapse_mult": 2.0,
+            "non_collapse_mult": 0.5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0066",
+      "legacy_key": "relic_chant_echo",
+      "name": "吟唱回响",
+      "class": "C02",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "连续吟唱≥3回合后出牌，所有骰子不进弃骰库。",
+      "cd_type": "battle_cd_1",
+      "effects": [
+        {
+          "type": 31,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "chant_gte_3",
+            "target": "all_played",
+            "to": "deck_top"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0067",
+      "legacy_key": "relic_barrier_convert",
+      "name": "屏障转化",
+      "class": "C02",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "出牌时，消耗当前所有屏障，每点屏障转化为0.5点基础伤害。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 1,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "source": "barrier",
+            "ratio": 0.5,
+            "consume": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0068",
+      "legacy_key": "relic_forbidden_tome",
+      "name": "禁咒之书",
+      "class": "C02",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "禁咒陨星吟唱要求从2回合降为1回合。每次释放后下场战斗maxHP永久-5。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "meteor_chant_reduce": 1,
+            "meteor_penalty_max_hp": -5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0069",
+      "legacy_key": "relic_element_affinity",
+      "name": "元素亲和",
+      "class": "C02",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "棱镜聚焦锁定元素时，锁定持续2回合。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "prism_lock_duration": 2
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0070",
+      "legacy_key": "relic_mana_tide",
+      "name": "法力潮汐",
+      "class": "C02",
+      "rarity": "RA1",
+      "trigger": "TR01",
+      "description": "连续吟唱≥2回合后出牌时，所有元素骰子的元素效果触发两次。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 56,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "chant_gte_2",
+            "element_double": true
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0071",
+      "legacy_key": "relic_rogue_starter",
+      "name": "暗影匕首",
+      "class": "C03",
+      "rarity": "RA1",
+      "trigger": "TR06",
+      "description": "每场战斗第1回合获得1次额外出牌机会。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 32,
+          "trigger": 6,
+          "scope": 2,
+          "params": {
+            "count": 1,
+            "condition": "first_turn"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0072",
+      "legacy_key": "relic_combo_master",
+      "name": "连击大师",
+      "class": "C03",
+      "rarity": "RA4",
+      "trigger": "TR01",
+      "description": "第3次出牌伤害+50%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.5,
+            "condition": "play_count_gte_3"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0073",
+      "legacy_key": "relic_venom_crystal",
+      "name": "毒爆晶石",
+      "class": "C03",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "所有引爆毒层效果的引爆比例+25%。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "detonate_ratio_bonus": 0.25
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0074",
+      "legacy_key": "relic_shadow_recycle",
+      "name": "残骰回收",
+      "class": "C03",
+      "rarity": "RA3",
+      "trigger": "TR99",
+      "description": "每场战斗结束时，手牌中每有1颗暗影残骰，下场战斗开局多抽1颗（最多+2）。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 14,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "source": "shadow_count",
+            "draw_delta": 1,
+            "cap": 2
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0075",
+      "legacy_key": "relic_shadow_dancer",
+      "name": "影舞者",
+      "class": "C03",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "消耗暗影残骰时，50%概率不实际消耗。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "shadow_consume_save_chance": 0.5
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0076",
+      "legacy_key": "relic_lethal_rhythm",
+      "name": "致命节奏",
+      "class": "C03",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "连续2次出牌使用相同牌型时，第2次额外+30%伤害。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 2,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 0.3,
+            "condition": "same_hand_consecutive"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0077",
+      "legacy_key": "relic_shadow_leech",
+      "name": "暗影吸取",
+      "class": "C03",
+      "rarity": "RA3",
+      "trigger": "TR01",
+      "description": "第2次出牌为非普攻时，回复6HP。",
+      "cd_type": "per_trigger",
+      "effects": [
+        {
+          "type": 13,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "value": 6,
+            "condition": "second_play_non_basic"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0078",
+      "legacy_key": "relic_chain_venom",
+      "name": "连锁毒刃",
+      "class": "C03",
+      "rarity": "RA4",
+      "trigger": "TR99",
+      "description": "对已中毒敌人造成伤害时，25%伤害以毒层形式施加给相邻敌人。",
+      "cd_type": "permanent",
+      "effects": [
+        {
+          "type": 19,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "source": "damage",
+            "ratio": 0.25,
+            "target": "adjacent",
+            "condition": "target_poisoned"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0079",
+      "legacy_key": "relic_phantom_cloak",
+      "name": "幻影斗篷",
+      "class": "C03",
+      "rarity": "RA5",
+      "trigger": "TR99",
+      "description": "本回合出牌≥3次时，下个敌方回合闪避第1次攻击。",
+      "cd_type": "turn_cd_2",
+      "effects": [
+        {
+          "type": 55,
+          "trigger": 0,
+          "scope": 2,
+          "params": {
+            "condition": "play_count_gte_3",
+            "dodge_next": 1
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
+    },
+    {
+      "id": "R0080",
+      "legacy_key": "relic_smoke_bomb",
+      "name": "毒雾弹",
+      "class": "C03",
+      "rarity": "RA1",
+      "trigger": "TR02",
+      "description": "每场战斗首次击杀敌人时，对所有存活敌人施加3层毒。",
+      "cd_type": "battle_cd_1",
+      "effects": [
+        {
+          "type": 19,
+          "trigger": 2,
+          "scope": 2,
+          "params": {
+            "status": "poison",
+            "value": 3,
+            "target": "all",
+            "condition": "first_kill"
+          }
+        }
+      ],
+      "flag_consume": false,
+      "flag_unique": false
     }
   ]
 }

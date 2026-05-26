@@ -13,10 +13,10 @@ region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xhprd"]
 texture = SubResource("AtlasTexture_ttaa0")
-texture_margin_left = 20.0
-texture_margin_top = 20.0
-texture_margin_right = 20.0
-texture_margin_bottom = 20.0
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1")
@@ -40,7 +40,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(360, 640)
+pivot_offset = Vector2(180, 320)
 texture = ExtResource("2_himit")
 stretch_mode = 6
 
@@ -51,85 +51,86 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = -338.0
-offset_right = 63.0
-offset_bottom = -210.0
+offset_left = -32.0
+offset_top = -169.0
+offset_right = 32.0
+offset_bottom = -105.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(64, 64)
+pivot_offset = Vector2(32, 32)
 texture = ExtResource("3_qg5f4")
+stretch_mode = 5
 
 [node name="TitleLabel" type="RichTextLabel" parent="UILayer/Root"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 438.0
-offset_right = 700.0
-offset_bottom = 538.0
+offset_left = 10.0
+offset_top = 219.0
+offset_right = 350.0
+offset_bottom = 269.0
 theme_type_variation = &"TitleLabel"
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_outline_size = 10
-theme_override_constants/shadow_offset_y = 6
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/normal_font_size = 55
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 28
 bbcode_enabled = true
-text = "[b][center][outline_size=20][outline_color=black][font_size=56][color=#ffffff]一点点[/color][/font_size][font_size=56][color=#ffdd64][wave amp=30.0 freq=2.0 connected=1]史诗[/wave][/color][/font_size][/outline_color][/outline_size][/center][/b]"
+text = "[b][center][outline_size=10][outline_color=black][font_size=28][color=#ffffff]一点点[/color][/font_size][font_size=28][color=#ffdd64][wave amp=15.0 freq=2.0 connected=1]史诗[/wave][/color][/font_size][/outline_color][/outline_size][/center][/b]"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Subtitle" type="Label" parent="UILayer/Root"]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 536.0
-offset_right = 700.0
-offset_bottom = 572.0
+offset_left = 10.0
+offset_top = 268.0
+offset_right = 350.0
+offset_bottom = 286.0
 theme_type_variation = &"TitleLabel"
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 10
-theme_override_constants/shadow_outline_size = 10
-theme_override_font_sizes/font_size = 29
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 14
 text = "- The Tiny-Pip Saga -"
 horizontal_alignment = 1
 
 [node name="StartBtn" type="Button" parent="UILayer/Root"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(150, 40)
 layout_mode = 0
-offset_left = 210.0
-offset_top = 914.0
-offset_right = 510.0
-offset_bottom = 994.0
+offset_left = 105.0
+offset_top = 457.0
+offset_right = 255.0
+offset_bottom = 497.0
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "新的冒险"
 
 [node name="NewRunBtn" type="Button" parent="UILayer/Root"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(150, 40)
 layout_mode = 0
-offset_left = 207.0
-offset_top = 807.0
-offset_right = 507.0
-offset_bottom = 887.0
+offset_left = 105.0
+offset_top = 403.0
+offset_right = 255.0
+offset_bottom = 443.0
 size_flags_horizontal = 4
 theme = SubResource("Theme_mks2d")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxTexture_xhprd")
 text = "新的冒险"
 
 [node name="VersionLabel" type="Label" parent="UILayer/Root"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 1189.0
-offset_right = 700.0
-offset_bottom = 1200.0
+offset_left = 10.0
+offset_top = 594.0
+offset_right = 350.0
+offset_bottom = 606.0
 theme_override_colors/font_color = Color(0.4, 0.4, 0.5, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 8
 text = "Godot v0.1"
 horizontal_alignment = 1
