@@ -8,7 +8,7 @@
 ##   - HeadUI (Control)：挂在 VisualRoot 下，随纵深缩放；无底板漂浮血条
 ##
 ## 美术替换指引：
-##   - AvatarShape (ColorRect) / AvatarStyle (Panel)：换成 Sprite2D / AnimatedSprite2D
+##   - AvatarShape (ColorRect) / AvatarStyle (Panel)：已被 Sprite2D + 程序动画替代
 ##   - AvatarEyes (Label emoji)：表情动画出来后删除或替换
 ##   - ClickArea 碰撞体大小：美术尺寸确定后在 tscn 中调 RectangleShape2D.size
 
@@ -34,7 +34,7 @@ var _enemy: EnemyInstance = null
 
 # tscn 中的节点引用（%UniqueName 访问）
 @onready var _visual_root: Node2D = %VisualRoot
-@onready var _art_sprite: AnimatedSprite2D = %ArtSprite
+@onready var _art_sprite: Sprite2D = %ArtSprite
 @onready var _avatar_shape: ColorRect = %AvatarShape
 @onready var _avatar_style: Panel = %AvatarStyle
 @onready var _avatar_eyes: Label = %AvatarEyes
@@ -73,6 +73,9 @@ var _has_art: bool = false
 var _death_played: bool = false
 var _boss_phase_switched: bool = false  ## Boss阶段切换标记（只触发一次）
 
+# 程序动画 Tween（口袋妖怪风格呼吸弹跳）
+var _idle_tween: Tween = null
+
 # 变更检测：避免无谓重算（W1 优化）
 var _last_distance: int = -1
 var _last_hp: int = -1
@@ -107,57 +110,36 @@ func _set_mouse_filter_ignore(node: Node) -> void:
 	for child: Node in node.get_children():
 		_set_mouse_filter_ignore(child)
 
-## 尝试加载美术 SpriteFrames。成功则隐藏占位三件套、显示 AnimatedSprite2D
+## 尝试加载美术纹理（AtlasTexture from spritesheet）。成功则隐藏占位三件套、显示 Sprite2D
 func _try_load_art() -> void:
 	if _enemy == null or _art_sprite == null:
 		return
-	# 先复位到"占位模式"——即使下面加载成功也会被覆盖；失败时这就是最终状态
 	_restore_placeholder_visuals()
 	var art_id := EnemyArtMapping.get_art_id(_enemy.config_id)
 	if art_id == "":
 		_has_art = false
 		return
-	var frames := EnemyArtMapping.load_sprite_frames(art_id)
-	if frames == null:
+	var tex: Texture2D = EnemyArtMapping.load_texture(art_id)
+	if tex == null:
 		push_warning("[EnemyView] 美术资源加载失败 art_id=%s" % art_id)
 		_has_art = false
 		return
-	_art_sprite.sprite_frames = frames
-	# scale / flip_h 全部交给各敌人自己的 tscn（mobs/m*.tscn）在编辑器里调
-	# 但 position 走"自动脚部对齐"——按 idle 第一帧高度把 sprite 中心抬到 (0, -h/2)
-	# 这样 64x64 的图脚踩在锚点 y=0，64x128 的 BOSS 同理；prefab 仍可在场景里覆盖
-	_auto_align_sprite_foot(frames)
+	_art_sprite.texture = tex
 	_art_sprite.visible = true
-	if frames.has_animation(EnemyArtMapping.IDLE_ANIM):
-		_art_sprite.play(EnemyArtMapping.IDLE_ANIM)
 	# 隐藏占位三件套
 	_avatar_shape.visible = false
 	_avatar_style.visible = false
 	_avatar_eyes.visible = false
 	_has_art = true
 	_death_played = false
+	# 启动程序待机动画（口袋妖怪风格呼吸弹跳）
+	_start_idle_anim()
 
-
-## 按 idle 帧高度，自动让 sprite 中心抬到 (0, -h/2)，使脚部踩在锚点 y=0
-## 仅在 prefab 没有显式覆盖 ArtSprite.position 时生效（约定：默认 y=-40 视为未覆盖）
-func _auto_align_sprite_foot(frames: SpriteFrames) -> void:
-	if _art_sprite == null or frames == null:
-		return
-	if not frames.has_animation(EnemyArtMapping.IDLE_ANIM):
-		return
-	if frames.get_frame_count(EnemyArtMapping.IDLE_ANIM) <= 0:
-		return
-	var tex: Texture2D = frames.get_frame_texture(EnemyArtMapping.IDLE_ANIM, 0)
-	if tex == null:
-		return
-	var h: float = float(tex.get_height())
-	# centered=true 时贴图中心在 sprite.position；想让脚在 y=0 → position.y = -h/2
-	_art_sprite.position = Vector2(0.0, -h * 0.5)
 
 ## 复位到"占位方块"状态：隐藏 ArtSprite、显示 ColorRect/Panel/Label
 func _restore_placeholder_visuals() -> void:
+	_stop_idle_anim()
 	if _art_sprite:
-		_art_sprite.stop()
 		_art_sprite.visible = false
 	if _avatar_shape:
 		_avatar_shape.visible = true
@@ -166,37 +148,74 @@ func _restore_placeholder_visuals() -> void:
 	if _avatar_eyes:
 		_avatar_eyes.visible = true
 
-## 播放攻击动画（外部调用，比如 EnemyActionResolver 触发敌人行动时）
+
+## ── 程序动画（口袋妖怪风格）──
+
+## 启动待机呼吸弹跳动画：Y轴微弹 + 轻微缩放
+func _start_idle_anim() -> void:
+	_stop_idle_anim()
+	if _art_sprite == null or not _has_art:
+		return
+	# 确保 scale 和 modulate 复位
+	_art_sprite.scale = Vector2(1.0, 1.0)
+	_art_sprite.modulate = Color(1, 1, 1, 1)
+	_idle_tween = create_tween()
+	_idle_tween.set_loops()
+	_idle_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var base_y: float = _art_sprite.position.y
+	# 上弹
+	_idle_tween.tween_property(_art_sprite, "position:y", base_y - 2.0, 0.5)
+	_idle_tween.parallel().tween_property(_art_sprite, "scale", Vector2(1.02, 0.98), 0.5)
+	# 下落
+	_idle_tween.tween_property(_art_sprite, "position:y", base_y, 0.5)
+	_idle_tween.parallel().tween_property(_art_sprite, "scale", Vector2(0.98, 1.02), 0.5)
+
+
+## 停止待机动画
+func _stop_idle_anim() -> void:
+	if _idle_tween != null and _idle_tween.is_valid():
+		_idle_tween.kill()
+	_idle_tween = null
+	# 复位 sprite transform
+	if _art_sprite != null:
+		_art_sprite.scale = Vector2(1.0, 1.0)
+
+
+## 播放攻击动画（程序动画：前冲 + 回弹）
 func play_attack_anim() -> void:
-	if not _has_art or _art_sprite == null or _art_sprite.sprite_frames == null:
+	if not _has_art or _art_sprite == null:
 		return
-	if not _art_sprite.sprite_frames.has_animation(EnemyArtMapping.ATTACK_ANIM):
-		return
-	_art_sprite.play(EnemyArtMapping.ATTACK_ANIM)
-	# 动画结束回到 idle
-	if not _art_sprite.animation_finished.is_connected(_on_attack_finished):
-		_art_sprite.animation_finished.connect(_on_attack_finished)
+	_stop_idle_anim()
+	var origin_pos: Vector2 = _art_sprite.position
+	var tw := create_tween()
+	# 前冲
+	tw.tween_property(_art_sprite, "position:y", origin_pos.y + 8.0, 0.08).set_ease(Tween.EASE_OUT)
+	# 挤压
+	tw.parallel().tween_property(_art_sprite, "scale", Vector2(1.15, 0.85), 0.08)
+	# 回弹
+	tw.tween_property(_art_sprite, "position:y", origin_pos.y - 4.0, 0.1).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(_art_sprite, "scale", Vector2(0.9, 1.1), 0.1)
+	# 归位
+	tw.tween_property(_art_sprite, "position:y", origin_pos.y, 0.12).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(_art_sprite, "scale", Vector2(1.0, 1.0), 0.12)
+	# 攻击结束恢复呼吸动画
+	tw.tween_callback(_start_idle_anim)
 
-func _on_attack_finished() -> void:
-	if _art_sprite == null or _art_sprite.sprite_frames == null:
-		return
-	# 只处理 attack01 结束回到 idle；death 不回调
-	if _art_sprite.animation == EnemyArtMapping.ATTACK_ANIM:
-		if _art_sprite.sprite_frames.has_animation(EnemyArtMapping.IDLE_ANIM):
-			_art_sprite.play(EnemyArtMapping.IDLE_ANIM)
 
-## 播放死亡动画（_refresh_visual 里 HP=0 时自动触发，只播一次）
+## 播放死亡动画（程序动画：缩小 + 淡出 + 下沉）
 func _play_death_anim() -> void:
-	if _art_sprite == null or _art_sprite.sprite_frames == null:
-		return
-	if not _art_sprite.sprite_frames.has_animation(EnemyArtMapping.DEATH_ANIM):
+	if _art_sprite == null:
 		return
 	_death_played = true
-	_art_sprite.play(EnemyArtMapping.DEATH_ANIM)
+	_stop_idle_anim()
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(_art_sprite, "scale", Vector2(0.3, 0.3), 0.4).set_ease(Tween.EASE_IN)
+	tw.tween_property(_art_sprite, "modulate:a", 0.0, 0.4)
+	tw.tween_property(_art_sprite, "position:y", _art_sprite.position.y + 16.0, 0.4)
 
 
-## 受击动画：闪白 + 位移抖动（外部调用，玩家出牌命中时触发）
-## 优先播放序列帧 hurt 动画（如果美术提供了），否则走代码驱动的闪白+抖动
+## 受击动画：闪白 + 位移抖动（程序动画）
 func play_hurt() -> void:
 	# 20% 概率播放受伤台词
 	if randf() < 0.2:
@@ -205,14 +224,7 @@ func play_hurt() -> void:
 	if _enemy and _enemy.hp > 0 and float(_enemy.hp) / float(_enemy.max_hp) < 0.3:
 		if randf() < 0.4:
 			play_random_quote("low_hp")
-	# 尝试序列帧 hurt 动画（美术后续可补 hurt 帧，不补也走下面的代码兜底）
-	if _has_art and _art_sprite != null and _art_sprite.sprite_frames != null:
-		if _art_sprite.sprite_frames.has_animation(EnemyArtMapping.HURT_ANIM):
-			_art_sprite.play(EnemyArtMapping.HURT_ANIM)
-			if not _art_sprite.animation_finished.is_connected(_on_hurt_finished):
-				_art_sprite.animation_finished.connect(_on_hurt_finished)
-			return
-	# 代码驱动兜底：闪白 + X轴抖动
+	# 代码驱动：闪白 + X轴抖动
 	if _visual_root == null:
 		return
 	# 记住原始 X，防止多次抖动累积偏移
@@ -231,14 +243,6 @@ func play_hurt() -> void:
 	# 阶段3：微颤归位
 	tw.set_parallel(false)
 	tw.tween_property(_visual_root, "position:x", origin_x, 0.06)
-
-
-func _on_hurt_finished() -> void:
-	if _art_sprite == null or _art_sprite.sprite_frames == null:
-		return
-	if _art_sprite.animation == EnemyArtMapping.HURT_ANIM:
-		if _art_sprite.sprite_frames.has_animation(EnemyArtMapping.IDLE_ANIM):
-			_art_sprite.play(EnemyArtMapping.IDLE_ANIM)
 
 
 ## 外部接口：绑定敌人实例并刷新视觉

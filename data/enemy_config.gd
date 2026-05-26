@@ -23,7 +23,7 @@ enum BossRank { NONE, MID, FINAL }
 @export var boss_rank: BossRank = BossRank.NONE
 @export var summons: EnemySummon = null
 @export var revive: EnemyRevive = null
-## 美术资源 id，对应 res://assets/characters/mobs/<art_id>/sprite_frames.tres
+## 美术资源 id，对应 spritesheet 中的格子位置（由 EnemyArtMapping 映射）
 ## 留空则用占位方块。详见 EnemyArtMapping.gd
 @export var art_id: String = ""
 

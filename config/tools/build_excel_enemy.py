@@ -350,7 +350,7 @@ def build_enemy():
     write_header(ws, [
         ("id", "string", "敌人编号 E+4位。章节段号：1章0001-/2章0101-/3章0201-/4章0301-/5章0401-；精英E9001-；Boss E9101-"),
         ("legacy_key", "string", "代码旧 key（forest_ghoul 等）"),
-        ("art_id", "string", "美术资源 ID（res://assets/characters/mobs/{art_id}/sprite_frames.tres），空=占位方块"),
+        ("art_id", "string", "美术资源 ID（spritesheet 格子映射），空=占位方块"),
         ("name", "string", "中文名"),
         ("chapter", "int", "所属章节 1-5"),
         ("category", "string", "类型：NORMAL/ELITE/BOSS"),

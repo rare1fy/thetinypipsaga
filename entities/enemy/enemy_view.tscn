@@ -42,10 +42,10 @@ script = ExtResource("1_script")
 [node name="VisualRoot" type="Node2D" parent="."]
 unique_name_in_owner = true
 
-[node name="ArtSprite" type="AnimatedSprite2D" parent="VisualRoot"]
+[node name="ArtSprite" type="Sprite2D" parent="VisualRoot"]
 unique_name_in_owner = true
 visible = false
-position = Vector2(0, -40)
+position = Vector2(0, -32)
 
 [node name="AvatarShape" type="ColorRect" parent="VisualRoot"]
 unique_name_in_owner = true
