@@ -238,6 +238,11 @@ function stepDeploy() {
     log('DEPLOY', '强制推送中（首次会较慢）...', 'cyan');
     execSync(`git push -f origin ${DEPLOY_BRANCH}`, { cwd: tmpDir, stdio: 'inherit' });
 
+    // force push 有时不触发 GitHub Pages 部署，追加一个空 commit 正常 push 确保触发
+    log('DEPLOY', '追加空提交确保触发 Pages 部署...', 'cyan');
+    gitInTmp(`commit -q --allow-empty -m "trigger: pages rebuild"`);
+    execSync(`git push origin ${DEPLOY_BRANCH}`, { cwd: tmpDir, stdio: 'inherit' });
+
     log('DEPLOY', '推送完成', 'green');
   } finally {
     // 清理临时目录
