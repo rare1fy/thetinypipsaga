@@ -23,6 +23,9 @@ const CELL_SIZE := 64
 ## art_id → (row, col) 在 spritesheet 中的位置
 ## 顺序与精灵图表中实际排列一致
 const _ART_GRID_MAP: Dictionary = {
+	# 数值 ID 映射（JSON 配置表使用）
+	"m10001":            Vector2i(0, 0),
+	# 语义 ID 映射（兼容旧代码）
 	"human_footman":     Vector2i(0, 0),
 	"dwarf_musketeer":   Vector2i(1, 0),
 	"heavy_knight":      Vector2i(1, 1),

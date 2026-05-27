@@ -6,16 +6,24 @@
 [ext_resource type="FontFile" uid="uid://daka4vfi861an" path="res://fonts/fusion-pixel-12px-monospaced-latin.woff2" id="3_t4vxl"]
 [ext_resource type="Script" uid="uid://cokr3bsquuylm" path="res://gameplay/battle/settlement/settlement_player.gd" id="4_settle"]
 [ext_resource type="PackedScene" uid="uid://cbpdyue7ujvi7" path="res://entities/player_hands/player_hands.tscn" id="5_hands"]
-[ext_resource type="Texture2D" uid="uid://cyv1b1gdqsm23" path="res://assets/scene/test/img_scene_sky.png" id="6_bg_sky"]
-[ext_resource type="Texture2D" uid="uid://dk7kv11o78h2t" path="res://assets/scene/test/img_scene_far_view.png" id="7_bg_far"]
-[ext_resource type="Texture2D" uid="uid://dt1e40t8dnmyq" path="res://assets/scene/test/img_scene_mid_view.png" id="8_bg_mid"]
-[ext_resource type="Texture2D" uid="uid://boo23rwtwtnvk" path="res://assets/scene/test/img_scene_ground.png" id="9_bg_ground"]
 [ext_resource type="Script" uid="uid://ic2i4bv6goal" path="res://gameplay/battle/bg_parallax.gd" id="10_bgpar"]
 [ext_resource type="Theme" uid="uid://bv80qovuttmwt" path="res://data/dungeon_theme.tres" id="11_theme"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y8pa6"]
+load_path = "res://.godot/imported/img_scene_sky.png-cc0c3a88ba720f4b42fc3c5372e11f2c.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oiajq"]
+load_path = "res://.godot/imported/img_scene_far_view.png-eaa1255eadc500243889388d36074858.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ahca1"]
+load_path = "res://.godot/imported/img_scene_mid_view.png-2f29a645592eaaf6154f71aafebdc3e8.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kncta"]
+load_path = "res://.godot/imported/img_scene_ground.png-363d4c333284dd59d272f388ee343d25.ctex"
+
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1")
-"中_距离1坐标" = Vector2(0, 70)
+"中_距离1坐标" = Vector2(0, 50)
 "中_距离1缩放" = 3.0
 "中_距离1纵深Y偏移" = 0.0
 "中_距离2坐标" = Vector2(0, 30)
@@ -26,25 +34,25 @@ script = ExtResource("1")
 "中_距离3缩放" = 1.0
 "中_距离3纵深Y偏移" = 0.0
 "中_距离3亮度" = 0.8
-"左_距离1坐标" = Vector2(-80, 60)
+"左_距离1坐标" = Vector2(-100, 55)
 "左_距离1缩放" = 3.0
 "左_距离1纵深Y偏移" = 0.0
-"左_距离2坐标" = Vector2(-70, 20)
+"左_距离2坐标" = Vector2(-80, 10)
 "左_距离2缩放" = 2.0
 "左_距离2纵深Y偏移" = 0.0
 "左_距离2亮度" = 0.88
-"左_距离3坐标" = Vector2(-60, -15)
+"左_距离3坐标" = Vector2(-65, -30)
 "左_距离3缩放" = 1.0
 "左_距离3纵深Y偏移" = 0.0
 "左_距离3亮度" = 0.8
-"右_距离1坐标" = Vector2(80, 60)
+"右_距离1坐标" = Vector2(100, 55)
 "右_距离1缩放" = 3.0
 "右_距离1纵深Y偏移" = 0.0
-"右_距离2坐标" = Vector2(70, 20)
+"右_距离2坐标" = Vector2(80, 10)
 "右_距离2缩放" = 2.0
 "右_距离2纵深Y偏移" = 0.0
 "右_距离2亮度" = 0.88
-"右_距离3坐标" = Vector2(60, -15)
+"右_距离3坐标" = Vector2(65, -30)
 "右_距离3缩放" = 1.0
 "右_距离3纵深Y偏移" = 0.0
 "右_距离3亮度" = 0.8
@@ -301,32 +309,32 @@ z_index = -40
 z_as_relative = false
 position = Vector2(180, 364)
 scale = Vector2(0.276, 0.276)
-texture = ExtResource("6_bg_sky")
+texture = SubResource("CompressedTexture2D_y8pa6")
 
 [node name="FarView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -30
 z_as_relative = false
 position = Vector2(180, 363)
 scale = Vector2(0.276, 0.276)
-texture = ExtResource("7_bg_far")
+texture = SubResource("CompressedTexture2D_oiajq")
 
 [node name="MidView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -20
 z_as_relative = false
 position = Vector2(180, 338.415)
 scale = Vector2(0.276, 0.276)
-texture = ExtResource("8_bg_mid")
+texture = SubResource("CompressedTexture2D_ahca1")
 
 [node name="GroundBase" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -10
 z_as_relative = false
 position = Vector2(181, 334)
 scale = Vector2(0.276, 0.276)
-texture = ExtResource("9_bg_ground")
+texture = SubResource("CompressedTexture2D_kncta")
 
 [node name="EnemyContainer" type="Node2D" parent="WorldLayer"]
 unique_name_in_owner = true
-position = Vector2(180, 180)
+position = Vector2(180, 360)
 
 [node name="SettlementPlayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
