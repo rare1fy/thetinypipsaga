@@ -145,14 +145,18 @@ func _ready() -> void:
 	_bootstrap_from_pending_wave()
 
 
-## 根据当前节点索引加载对应的静态战斗背景（CH1 有 6 张场景图循环使用）
-## 暂时用单张图铺满替代 4 层视差，保留 BgParallax 呼吸效果（只驱动 GroundBase）
+## 根据当前关卡深度加载对应的静态战斗背景（CH1 有 6 张场景图按进度固定分配）
+## 场景分配规则：
+##   depth 0~6  普通/精英战 → scene_01（艾林森林）/ scene_02（荒野农场）交替
+##   depth 7    中层Boss   → scene_03（飓风城外城门）
+##   depth 8~13 普通/精英战 → scene_04（飓风城街道）/ scene_05（飓风城监狱）交替
+##   depth 14   终极Boss   → scene_06（飓风城王座大厅）
 func _apply_static_background() -> void:
 	var bg_node: Node2D = get_node_or_null("%SceneBG")
 	if bg_node == null:
 		return
-	# 根据 nodes_visited 决定使用哪张背景（1-6 循环）
-	var scene_index: int = (GameManager.nodes_visited % 6) + 1
+	var depth: int = GameManager.current_node
+	var scene_index: int = _get_scene_index_for_depth(depth)
 	var bg_path: String = "res://assets/scene/scene_ch1_%02d.png" % scene_index
 	var tex: Texture2D = load(bg_path) as Texture2D
 	if tex == null:
@@ -185,6 +189,22 @@ func _apply_static_background() -> void:
 		var bg_script: BgParallax = bg_node as BgParallax
 		if bg_script != null:
 			bg_script._base_y_ground = vp_size.y * 0.5
+
+
+## 根据 depth 决定使用哪张场景背景（返回 1~6）
+func _get_scene_index_for_depth(depth: int) -> int:
+	if depth <= 6:
+		# 中Boss前：普通战A/B交替（scene_01 艾林森林 / scene_02 荒野农场）
+		return 1 if GameManager.nodes_visited % 2 == 0 else 2
+	elif depth == 7:
+		# 中层Boss（scene_03 飓风城外城门）
+		return 3
+	elif depth <= 13:
+		# 中Boss后：普通战C/D交替（scene_04 飓风城街道 / scene_05 飓风城监狱）
+		return 4 if GameManager.nodes_visited % 2 == 0 else 5
+	else:
+		# 终极Boss depth=14（scene_06 飓风城王座大厅）
+		return 6
 
 
 ## 玩家双手系统 — 接入受击 / 死亡 动画
