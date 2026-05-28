@@ -34,7 +34,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
-size = Vector2(64, 100)
+size = Vector2(64, 64)
 
 [node name="EnemyView" type="Node2D"]
 script = ExtResource("1_script")
@@ -50,46 +50,46 @@ position = Vector2(0, -32)
 [node name="AvatarShape" type="ColorRect" parent="VisualRoot"]
 unique_name_in_owner = true
 visible = false
-offset_left = -40.0
-offset_top = -50.0
-offset_right = 40.0
-offset_bottom = 10.0
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 5.0
 color = Color(0.5, 0.3, 0.3, 1)
 
 [node name="AvatarStyle" type="Panel" parent="VisualRoot"]
 unique_name_in_owner = true
 visible = false
-offset_left = -40.0
-offset_top = -50.0
-offset_right = 40.0
-offset_bottom = 10.0
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 5.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_avatar")
 
 [node name="AvatarEyes" type="Label" parent="VisualRoot"]
 unique_name_in_owner = true
 visible = false
-offset_left = -40.0
-offset_top = -30.0
-offset_right = 40.0
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "◉ ◉"
+theme_override_font_sizes/font_size = 9
+text = "O O"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TargetIndicator" type="Label" parent="VisualRoot"]
 unique_name_in_owner = true
 visible = false
-offset_left = -10.0
-offset_top = -78.0
-offset_right = 10.0
-offset_bottom = -68.0
+offset_left = -5.0
+offset_top = -39.0
+offset_right = 5.0
+offset_bottom = -34.0
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0.05, 0.03, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 10
-text = "▼"
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 5
+text = "v"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -97,10 +97,10 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 0
-offset_left = -50.0
-offset_top = -90.0
-offset_right = 50.0
-offset_bottom = -50.0
+offset_left = -25.0
+offset_top = -45.0
+offset_right = 25.0
+offset_bottom = -25.0
 mouse_filter = 2
 
 [node name="UIVBox" type="VBoxContainer" parent="HeadUI"]
@@ -118,8 +118,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -132,13 +132,13 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.2, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 7
-text = "♥"
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
+text = "[H]"
 
 [node name="HpBar" type="ProgressBar" parent="HeadUI/UIVBox/HpRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 4)
+custom_minimum_size = Vector2(20, 2)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
@@ -150,8 +150,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.85)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 
 [node name="BottomRow" type="HBoxContainer" parent="HeadUI/UIVBox"]
 layout_mode = 2
@@ -167,7 +167,7 @@ alignment = 1
 
 [node name="IntentIcon" type="Panel" parent="HeadUI/UIVBox/BottomRow/IntentRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(7, 7)
+custom_minimum_size = Vector2(4, 4)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_intent_icon")
 
@@ -176,8 +176,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.6, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 
 [node name="StatsRow" type="HBoxContainer" parent="HeadUI/UIVBox/BottomRow"]
 unique_name_in_owner = true
@@ -193,17 +193,17 @@ theme_override_constants/separation = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 7
-text = "🛡"
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
+text = "[A]"
 
 [node name="ArmorLabel" type="Label" parent="HeadUI/UIVBox/BottomRow/StatsRow/ArmorRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.533333, 0.733333, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 
 [node name="StatusContainer" type="HBoxContainer" parent="HeadUI/UIVBox/BottomRow/StatsRow"]
 unique_name_in_owner = true
@@ -221,30 +221,30 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878431, 0.470588, 0.188235, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 
 [node name="CombatTypeLabel" type="Label" parent="HeadUI/UIVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 horizontal_alignment = 1
 
 [node name="QuoteBubble" type="Label" parent="HeadUI"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 0
-offset_left = -40.0
-offset_top = -30.0
-offset_right = -40.0
-offset_bottom = -30.0
+offset_left = -20.0
+offset_top = -15.0
+offset_right = -20.0
+offset_bottom = -15.0
 theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 4
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -252,7 +252,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
-position = Vector2(0, -20)
+position = Vector2(0, -32)
 shape = SubResource("RectangleShape2D_click")
 
 [node name="InfoPanel" type="Control" parent="."]

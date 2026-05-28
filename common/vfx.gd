@@ -320,7 +320,7 @@ static func spawn_armor_text(parent: Node, pos: Vector2, amount: int) -> void:
 		return
 	if amount <= 0:
 		return
-	var label := _create_floating_label(parent, pos, "🛡+%d" % amount, 14)
+	var label := _create_floating_label(parent, pos, "[A]+%d" % amount, 14)
 	armor_pop(label)
 
 

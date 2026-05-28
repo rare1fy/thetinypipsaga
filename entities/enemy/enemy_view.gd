@@ -375,8 +375,8 @@ func _refresh_visual() -> void:
 
 
 ## 选中指示器 —— 头顶倒三角 + 敌人本体循环呼吸高亮
-## 选中时：▼ 出现并上下浮动，VisualRoot 的 modulate 在 1.0 ↔ 1.35 亮度之间循环呼吸
-## 未选中时：▼ 隐藏，modulate 还原为 Color.WHITE
+## 选中时：v 出现并上下浮动，VisualRoot 的 modulate 在 1.0 ↔ 1.35 亮度之间循环呼吸
+## 未选中时：v 隐藏，modulate 还原为 Color.WHITE
 func _update_target_indicator() -> void:
 	if _enemy == null or _target_indicator == null or _visual_root == null:
 		return
@@ -440,9 +440,9 @@ func _update_avatar_visuals() -> void:
 	var hp_ratio := float(_enemy.hp) / float(_enemy.max_hp)
 	if not _has_art:
 		if hp_ratio > 0.6:
-			_avatar_eyes.text = "◉ ◉"
+			_avatar_eyes.text = "O O"
 		elif hp_ratio > 0.3:
-			_avatar_eyes.text = "◉ ◔"
+			_avatar_eyes.text = "O o"
 		else:
 			_avatar_eyes.text = "× ×"
 	# 序列帧模式下：死亡触发一次 death 动画
@@ -571,7 +571,7 @@ func _update_intent() -> void:
 			intent_text = "⚔ %d" % value if desc == "" else "⚔ %s %d" % [desc, value]
 			intent_color = Color("#e04040")
 		"防御":
-			intent_text = "🛡 %d" % value if desc == "" else "🛡 %s %d" % [desc, value]
+			intent_text = "[A] %d" % value if desc == "" else "[A] %s %d" % [desc, value]
 			intent_color = Color("#4080e0")
 		"技能":
 			intent_text = "✦ %s" % desc if desc != "" else "✦ 施法"

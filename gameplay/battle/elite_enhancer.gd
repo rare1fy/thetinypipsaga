@@ -92,7 +92,7 @@ static func process_elite_armor(e: EnemyInstance, battle_turn: int) -> int:
 	if is_elite(e) and battle_turn % ELITE_ARMOR_CYCLE == 0:
 		var armor_val: int = int(float(e.attack_dmg) * ARMOR_MULT_ELITE)
 		e.armor += armor_val
-		BattleLog.log_enemy("🛡 %s 凝聚了护甲（+%d）！" % [e.name, armor_val])
+		BattleLog.log_enemy("[A] %s 凝聚了护甲（+%d）！" % [e.name, armor_val])
 		SoundPlayer.play_sound("enemy_skill")
 		return armor_val
 
@@ -100,7 +100,7 @@ static func process_elite_armor(e: EnemyInstance, battle_turn: int) -> int:
 	if is_boss(e) and battle_turn % BOSS_ARMOR_CYCLE == 0:
 		var armor_val: int = int(float(e.attack_dmg) * ARMOR_MULT_BOSS)
 		e.armor += armor_val
-		BattleLog.log_enemy("🛡 %s 释放了护盾（+%d 护甲）！" % [e.name, armor_val])
+		BattleLog.log_enemy("[A] %s 释放了护盾（+%d 护甲）！" % [e.name, armor_val])
 		SoundPlayer.play_sound("enemy_skill")
 		return armor_val
 

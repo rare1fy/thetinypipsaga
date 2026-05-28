@@ -175,12 +175,12 @@ func _refresh() -> void:
 	var dice_list: Array[String] = []
 	if _mode == PanelMode.DRAW_PILE:
 		dice_list.assign(DiceBag.dice_bag)
-		_title_label.text = "🎲 骰子库"
+		_title_label.text = "[D] 骰子库"
 		_count_label.text = "共 %d 颗" % dice_list.size()
 		_panel.add_theme_stylebox_override("panel", _panel_style_draw)
 	else:
 		dice_list.assign(DiceBag.discard_pile)
-		_title_label.text = "♻ 弃骰库"
+		_title_label.text = "[R] 弃骰库"
 		_count_label.text = "共 %d 颗" % dice_list.size()
 		_panel.add_theme_stylebox_override("panel", _panel_style_discard)
 

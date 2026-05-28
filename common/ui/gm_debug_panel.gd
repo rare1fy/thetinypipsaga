@@ -73,7 +73,7 @@ func _build_quick_actions() -> void:
 		PlayerState.souls += 100
 		VFX.show_toast("GM: +100魂晶", "buff")
 	))
-	grid.add_child(_make_btn("♥ +50血上限", Color("#e04040"), func():
+	grid.add_child(_make_btn("[H] +50血上限", Color("#e04040"), func():
 		PlayerState.modify_max_hp(50)
 		VFX.show_toast("GM: +50最大HP", "buff")
 	))
@@ -147,7 +147,7 @@ func _build_battle_actions() -> void:
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
 	
-	grid.add_child(_make_btn("🎲 99出牌", Color("#60c0e0"), func():
+	grid.add_child(_make_btn("[D] 99出牌", Color("#60c0e0"), func():
 		TurnManager.plays_left = 99
 		TurnManager.max_plays = 99
 		VFX.show_toast("GM: 99次出牌", "buff")

@@ -22,40 +22,40 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 ## ========================================================
 
 @export_group("敌人透视·Slot0(中)")
-@export var 中_距离1坐标: Vector2 = Vector2(0, 60)
-@export var 中_距离1缩放: float = 1.2
+@export var 中_距离1坐标: Vector2 = Vector2(0, 40)
+@export var 中_距离1缩放: float = 1.5
 @export var 中_距离1纵深Y偏移: float = 0.0
 @export var 中_距离1亮度: float = 1.0
 @export var 中_距离1渲染层级: int = 7
 
-@export var 中_距离2坐标: Vector2 = Vector2(0, 20)
-@export var 中_距离2缩放: float = 0.9
+@export var 中_距离2坐标: Vector2 = Vector2(0, 10)
+@export var 中_距离2缩放: float = 1.0
 @export var 中_距离2纵深Y偏移: float = 0.0
 @export var 中_距离2亮度: float = 0.88
 @export var 中_距离2渲染层级: int = 5
 
 @export_group("敌人透视·Slot1(左)")
-@export var 左_距离1坐标: Vector2 = Vector2(-80, 60)
-@export var 左_距离1缩放: float = 1.2
+@export var 左_距离1坐标: Vector2 = Vector2(-35, 40)
+@export var 左_距离1缩放: float = 1.5
 @export var 左_距离1纵深Y偏移: float = 0.0
 @export var 左_距离1亮度: float = 1.0
 @export var 左_距离1渲染层级: int = 7
 
-@export var 左_距离2坐标: Vector2 = Vector2(-60, 20)
-@export var 左_距离2缩放: float = 0.9
+@export var 左_距离2坐标: Vector2 = Vector2(-28, 10)
+@export var 左_距离2缩放: float = 1.0
 @export var 左_距离2纵深Y偏移: float = 0.0
 @export var 左_距离2亮度: float = 0.88
 @export var 左_距离2渲染层级: int = 5
 
 @export_group("敌人透视·Slot2(右)")
-@export var 右_距离1坐标: Vector2 = Vector2(80, 60)
-@export var 右_距离1缩放: float = 1.2
+@export var 右_距离1坐标: Vector2 = Vector2(35, 40)
+@export var 右_距离1缩放: float = 1.5
 @export var 右_距离1纵深Y偏移: float = 0.0
 @export var 右_距离1亮度: float = 1.0
 @export var 右_距离1渲染层级: int = 7
 
-@export var 右_距离2坐标: Vector2 = Vector2(60, 20)
-@export var 右_距离2缩放: float = 0.9
+@export var 右_距离2坐标: Vector2 = Vector2(28, 10)
+@export var 右_距离2缩放: float = 1.0
 @export var 右_距离2纵深Y偏移: float = 0.0
 @export var 右_距离2亮度: float = 0.88
 @export var 右_距离2渲染层级: int = 5
@@ -346,7 +346,7 @@ func _spawn_topleft_buttons() -> void:
 	_spawn_guide_button(root, "⚙", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
 	# 骰子库/弃骰库按钮（右上角）
 	var draw_btn := Button.new()
-	draw_btn.text = "🎲"
+	draw_btn.text = "[D]"
 	draw_btn.tooltip_text = "骰子库"
 	draw_btn.add_theme_font_size_override("font_size", 16)
 	draw_btn.custom_minimum_size = Vector2(32, 32)
@@ -358,7 +358,7 @@ func _spawn_topleft_buttons() -> void:
 	root.add_child(draw_btn)
 
 	var discard_btn := Button.new()
-	discard_btn.text = "♻"
+	discard_btn.text = "[R]"
 	discard_btn.tooltip_text = "弃骰库"
 	discard_btn.add_theme_font_size_override("font_size", 16)
 	discard_btn.custom_minimum_size = Vector2(32, 32)
@@ -628,7 +628,7 @@ func _handle_victory() -> void:
 	# 6b. 终焉Boss奖励：+1抽牌上限（原版 lootHandler.ts isFinalBoss → diceCount+1）
 	if is_chapter_boss:
 		GameManager.draw_count += 1
-		BattleLog.log_write("🎲 击败Boss！抽牌上限 +1（当前 %d）" % GameManager.draw_count)
+		BattleLog.log_write("[D] 击败Boss！抽牌上限 +1（当前 %d）" % GameManager.draw_count)
 
 	# 6c. 精英额外奖励：额外金币（原版 LOOT_CONFIG.eliteRewards）
 	if node_type_str == "elite":

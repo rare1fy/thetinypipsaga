@@ -18,7 +18,7 @@ const ModalHubRef := preload("res://common/ui/modal_hub.gd")
 # 常量：牌型分组（决定 UI 分组呈现顺序）
 # ============================================================
 const GROUPS: Array[Dictionary] = [
-	{"title": "🎲 基础牌型", "color": "#a8c0ff", "hands": [
+	{"title": "[D] 基础牌型", "color": "#a8c0ff", "hands": [
 		"对子", "连对", "三连对", "三条", "四条", "五条", "六条", "葫芦",
 	]},
 	{"title": "📏 顺子牌型", "color": "#a0e8b0", "hands": [
@@ -174,7 +174,7 @@ func _format_effect(effect: Dictionary) -> String:
 	var armor: int = int(effect.get("armor", 0))
 	var status: String = str(effect.get("status", ""))
 	if armor > 0:
-		parts.append("🛡 护甲 +%d" % armor)
+		parts.append("[A] 护甲 +%d" % armor)
 	if status != "":
 		parts.append("💫 " + status)
 	return "  ·  ".join(parts)

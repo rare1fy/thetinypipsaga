@@ -229,9 +229,9 @@ func _show_enemy_detail(enemy: Dictionary) -> void:
 			if multi_phase:
 				var threshold: float = float(phase.get("hpThreshold", 0.0))
 				if threshold > 0:
-					lines.append("◆ 阶段 %d（HP ≥ %d%%）" % [i + 1, int(threshold * 100)])
+					lines.append("* 阶段 %d（HP ≥ %d%%）" % [i + 1, int(threshold * 100)])
 				else:
-					lines.append("◆ 阶段 %d" % (i + 1))
+					lines.append("* 阶段 %d" % (i + 1))
 			var actions: Array = phase.get("actions", [])
 			var action_strs: Array[String] = []
 			for a: Dictionary in actions:

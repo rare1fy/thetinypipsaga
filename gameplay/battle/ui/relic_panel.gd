@@ -1,7 +1,7 @@
 ## RelicBar — 战斗内底部遗物折叠条
 ##
 ## 交互规则（对齐原版 RelicPanelView.tsx）：
-##   - 默认折叠：显示一条 "▲ 遗物库 - N件 -" 按钮（贴在 HandPanel 顶部）
+##   - 默认折叠：显示一条 "^ 遗物库 - N件 -" 按钮（贴在 HandPanel 顶部）
 ##   - 点击按钮 → 发信号 expand_requested，由 BattleScene 负责实例化 RelicOverlay 展开
 ##   - 伤害结算时：外部可调 request_expand() 强制展开（用于"结算时自动弹遗物栏"）
 ##   - 遗物触发闪光：外部可调 flash_relic(relic_id) 让对应格子闪烁
@@ -97,7 +97,7 @@ func _build_layout() -> void:
 	_toggle_btn.pressed.connect(_on_toggle_pressed)
 	add_child(_toggle_btn)
 
-	# 按钮内容：垂直堆叠"▲ / 遗物库 / - N 件 -"
+	# 按钮内容：垂直堆叠"^ / 遗物库 / - N 件 -"
 	var inner := VBoxContainer.new()
 	inner.add_theme_constant_override("separation", 0)
 	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -106,7 +106,7 @@ func _build_layout() -> void:
 	_toggle_btn.add_child(inner)
 
 	var arrow := Label.new()
-	arrow.text = "▲"
+	arrow.text = "^"
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.add_theme_color_override("font_color", COLOR_GOLD)
 	arrow.add_theme_font_size_override("font_size", 10)
@@ -147,7 +147,7 @@ func _update_toggle_arrow() -> void:
 		if inner and inner.get_child_count() > 0:
 			arrow = inner.get_child(0) as Label
 	if arrow:
-		arrow.text = "▼" if _is_expanded else "▲"
+		arrow.text = "v" if _is_expanded else "^"
 
 
 # ── 交互 ─────────────────────────────────────────

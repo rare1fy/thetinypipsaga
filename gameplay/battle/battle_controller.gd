@@ -721,7 +721,7 @@ func _on_phase_changed(new_phase: GameTypes.GamePhase) -> void:
 
 func _refresh_status_bar() -> void:
 	_on_hp_changed(PlayerState.hp, PlayerState.max_hp)
-	armor_label.text = "🛡%d" % PlayerState.armor if PlayerState.armor > 0 else ""
+	armor_label.text = "[A]%d" % PlayerState.armor if PlayerState.armor > 0 else ""
 	armor_label.visible = PlayerState.armor > 0
 	gold_label.text = "金币: %d" % PlayerState.gold
 	turn_label.text = "回合 %d" % GameManager.battle_turn
@@ -735,9 +735,9 @@ func _refresh_status_bar() -> void:
 			stage_label.text = "%s | Lv.%d (%d/%d)" % [floor_text, XpSystem.level, XpSystem.xp, XpSystem.xp_to_next]
 	# 骰子队列信息
 	if draw_pile_label:
-		draw_pile_label.text = "🎲 抽牌堆: %d" % DiceBag.dice_bag.size()
+		draw_pile_label.text = "抽牌堆: %d" % DiceBag.dice_bag.size()
 	if discard_pile_label:
-		discard_pile_label.text = "♻ 弃牌堆: %d" % DiceBag.discard_pile.size()
+		discard_pile_label.text = "弃牌堆: %d" % DiceBag.discard_pile.size()
 	# 波次信息
 	if wave_label:
 		var waves: Array[Dictionary] = GameManager.battle_waves
@@ -766,7 +766,7 @@ func _refresh_player_status_icons() -> void:
 		child.queue_free()
 	# 护甲 > 0 时显示护甲图标
 	if PlayerState.armor > 0:
-		_add_status_icon("🛡", str(PlayerState.armor), Color(0.42, 0.63, 0.82))
+		_add_status_icon("[A]", str(PlayerState.armor), Color(0.42, 0.63, 0.82))
 	# 遍历所有状态效果
 	for status: StatusEffect in PlayerState.statuses:
 		var icon: String = _get_status_icon(status.type)
@@ -807,7 +807,7 @@ static func _get_status_icon(type: GameTypes.StatusType) -> String:
 		GameTypes.StatusType.VULNERABLE: return "💔"
 		GameTypes.StatusType.STRENGTH: return "💪"
 		GameTypes.StatusType.WEAK: return "📉"
-		GameTypes.StatusType.ARMOR: return "🛡"
+		GameTypes.StatusType.ARMOR: return "[A]"
 		GameTypes.StatusType.FREEZE: return "❄"
 		GameTypes.StatusType.ARCANE_DISRUPTION: return "🌀"
 		_: return "?"

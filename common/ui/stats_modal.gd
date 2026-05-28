@@ -24,7 +24,7 @@ func _build_ui() -> void:
 	
 	# 标题
 	var title := Label.new()
-	title.text = "◆ 战斗统计 ◆"
+	title.text = "* 战斗统计 *"
 	title.add_theme_color_override("font_color", Color("#d4a030"))
 	title.add_theme_font_size_override("font_size", 16)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -85,7 +85,7 @@ func _build_ui() -> void:
 	add_child(_make_row("场均伤害", str(avg_damage), Color("#e09040")))
 	
 	# 出牌统计
-	add_child(_make_section("🎲 出牌统计"))
+	add_child(_make_section("[D] 出牌统计"))
 	add_child(_make_row("总出牌次数", str(s.totalPlays), Color("#4080ff")))
 	add_child(_make_row("总重掷次数", str(s.totalRerolls), Color("#40c040")))
 	

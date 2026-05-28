@@ -90,7 +90,7 @@ func _build_controls() -> void:
 	guide_grid.add_child(stats_btn)
 	
 	var dice_guide_btn := Button.new()
-	dice_guide_btn.text = "🎲 骰子图鉴"
+	dice_guide_btn.text = "[D] 骰子图鉴"
 	dice_guide_btn.pressed.connect(_on_dice_guide_pressed)
 	guide_grid.add_child(dice_guide_btn)
 	

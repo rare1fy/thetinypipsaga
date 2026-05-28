@@ -318,10 +318,10 @@ static func _resolve_via_effect_engine(
 				BattleLog.log_enemy("✦ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), armor_val])
 			else:
 				e.armor += armor_val
-				BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), armor_val])
+				BattleLog.log_enemy("[A] %s 获得护甲（+%d）" % [_get_name(e), armor_val])
 		else:
 			e.armor += armor_val
-			BattleLog.log_enemy("🛡 %s 获得护甲（+%d）" % [_get_name(e), armor_val])
+			BattleLog.log_enemy("[A] %s 获得护甲（+%d）" % [_get_name(e), armor_val])
 		SoundPlayer.play_sound("enemy_skill")
 		if on_shake.is_valid():
 			on_shake.call(3.0, 0.15)
@@ -463,7 +463,7 @@ static func _execute_defend(e: EnemyInstance, value: int, desc: String, on_shake
 		# P2 Trait: Guardian 防御后累计 guardRage
 		EnemyTraits.apply_guard_rage_on_defend(e)
 	var desc_tag: String = "·%s" % desc if desc != "" else ""
-	BattleLog.log_enemy("🛡 %s 举盾防御%s（+%d 护甲）" % [_get_name(e), desc_tag, shield_val])
+	BattleLog.log_enemy("[A] %s 举盾防御%s（+%d 护甲）" % [_get_name(e), desc_tag, shield_val])
 	SoundPlayer.play_sound("enemy_skill")
 	if on_shake.is_valid():
 		on_shake.call(3.0, 0.15)
@@ -674,7 +674,7 @@ static func _resolve_attacker(
 	# v0.5 §1.8.2 嘲讽：覆写为普攻 ×0.7
 	if ControlSystem.is_taunted(e):
 		damage = ControlSystem.get_taunt_damage(damage)
-		BattleLog.log_status("🛡 %s 被嘲讽，伤害降低为 %d" % [_get_name(e), damage])
+		BattleLog.log_status("[A] %s 被嘲讽，伤害降低为 %d" % [_get_name(e), damage])
 
 	# v0.5 §1.8.2 缴械：普攻伤害强制为 1
 	if ControlSystem.is_disarmed(e):
