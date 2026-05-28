@@ -130,7 +130,7 @@ func _build_controls() -> void:
 		int(meta.get("total_victories", 0)),
 	]
 	stats_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	stats_label.add_theme_font_size_override("font_size", 6)
+	stats_label.add_theme_font_size_override("font_size", 4)
 	stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(stats_label)
 
@@ -155,7 +155,7 @@ func _make_slider_row(label_text: String, min_v: float, max_v: float, init_v: fl
 	slider.max_value = max_v
 	slider.step = 0.05
 	slider.value = init_v
-	slider.custom_minimum_size = Vector2(4, 14)
+	slider.custom_minimum_size = Vector2(4, 16)
 	slider.value_changed.connect(func(v: float):
 		value_label.text = "%d%%" % int(v * 100)
 		cb.call(v)
@@ -244,7 +244,7 @@ func _on_view_battle_log_pressed() -> void:
 			var line := Label.new()
 			line.text = String(entry.get("text", ""))
 			line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			line.add_theme_font_size_override("font_size", 6)
+			line.add_theme_font_size_override("font_size", 4)
 			line.add_theme_color_override("font_color", entry.get("color", Color("#b0b8c8")))
 			vbox.add_child(line)
 

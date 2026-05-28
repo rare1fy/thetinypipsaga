@@ -250,7 +250,7 @@ func _phase2_dice_scoring(dice_values: Array[int]) -> void:
 ## 生成单颗骰子的 PanelContainer（42×42，含点数 Label）
 func _make_die_box(value: int) -> PanelContainer:
 	var pc := PanelContainer.new()
-	pc.custom_minimum_size = Vector2(11, 11)
+	pc.custom_minimum_size = Vector2(12, 12)
 	pc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.96, 0.96, 0.88, 1.0)
@@ -268,7 +268,7 @@ func _make_die_box(value: int) -> PanelContainer:
 	lbl.text = str(value)
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl.add_theme_font_size_override("font_size", 6)
+	lbl.add_theme_font_size_override("font_size", 4)
 	lbl.add_theme_color_override("font_color", Color(0.15, 0.12, 0.10, 1.0))
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pc.add_child(lbl)

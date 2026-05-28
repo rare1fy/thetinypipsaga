@@ -63,7 +63,7 @@ func _spawn_icon_button(text: String, tooltip: String, pos: Vector2, callback: C
 	var btn := Button.new()
 	btn.text = text
 	btn.add_theme_font_size_override("font_size", 4)
-	btn.custom_minimum_size = Vector2(9, 5)
+	btn.custom_minimum_size = Vector2(8, 4)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.tooltip_text = tooltip

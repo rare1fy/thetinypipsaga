@@ -85,7 +85,7 @@ func _build_content() -> void:
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intro.add_theme_color_override("font_color", Color("#9aa0ac"))
-	intro.add_theme_font_size_override("font_size", 6)
+	intro.add_theme_font_size_override("font_size", 4)
 	add_child(intro)
 	
 	# 空数据兜底（GameData 未初始化或数据加载失败）
@@ -142,7 +142,7 @@ func _build_group_header(rarity: int, count: int) -> Control:
 	
 	var dot := ColorRect.new()
 	dot.color = color
-	dot.custom_minimum_size = Vector2(4, 10)
+	dot.custom_minimum_size = Vector2(4, 12)
 	header.add_child(dot)
 	
 	var label := Label.new()
@@ -181,19 +181,19 @@ func _build_relic_entry(def: RelicDef) -> Control:
 	
 	var emoji_label := Label.new()
 	emoji_label.text = emoji
-	emoji_label.add_theme_font_size_override("font_size", 7)
+	emoji_label.add_theme_font_size_override("font_size", 8)
 	top.add_child(emoji_label)
 	
 	var name_label := Label.new()
 	name_label.text = def.name
-	name_label.add_theme_font_size_override("font_size", 7)
+	name_label.add_theme_font_size_override("font_size", 8)
 	name_label.add_theme_color_override("font_color", color)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_label)
 	
 	var trigger_label := Label.new()
 	trigger_label.text = TRIGGER_LABEL.get(def.trigger, "")
-	trigger_label.add_theme_font_size_override("font_size", 5)
+	trigger_label.add_theme_font_size_override("font_size", 4)
 	trigger_label.add_theme_color_override("font_color", Color("#7a8090"))
 	top.add_child(trigger_label)
 	
@@ -204,7 +204,7 @@ func _build_relic_entry(def: RelicDef) -> Control:
 		var desc_label := Label.new()
 		desc_label.text = def.description
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 6)
+		desc_label.add_theme_font_size_override("font_size", 4)
 		desc_label.add_theme_color_override("font_color", Color("#c8d0e0"))
 		vbox.add_child(desc_label)
 	

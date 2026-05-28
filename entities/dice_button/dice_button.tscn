@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://entities/dice_button/dice_button.gd" id="1_script"]
 
 [node name="DiceButton" type="Button"]
-custom_minimum_size = Vector2(22, 22)
+custom_minimum_size = Vector2(24, 24)
 focus_mode = 0
 mouse_default_cursor_shape = 2
 clip_contents = false
@@ -48,7 +48,7 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 8
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -63,7 +63,7 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 
 [node name="Badge" type="Label" parent="."]
 unique_name_in_owner = true
@@ -76,5 +76,5 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.941176, 0.752941, 0.25098, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 6
+theme_override_font_sizes/font_size = 4
 text = "*"

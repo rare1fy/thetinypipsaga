@@ -111,7 +111,7 @@ func _build_ui() -> void:
 	# 步骤计数
 	_step_counter = Label.new()
 	_step_counter.add_theme_color_override("font_color", Color("#9aa0ac"))
-	_step_counter.add_theme_font_size_override("font_size", 5)
+	_step_counter.add_theme_font_size_override("font_size", 4)
 	_step_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_step_counter)
 	
@@ -131,7 +131,7 @@ func _build_ui() -> void:
 	# 内容
 	_content_label = Label.new()
 	_content_label.add_theme_color_override("font_color", Color("#b0b8c8"))
-	_content_label.add_theme_font_size_override("font_size", 6)
+	_content_label.add_theme_font_size_override("font_size", 4)
 	_content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_content_label)
 	
@@ -156,7 +156,7 @@ func _build_ui() -> void:
 	var skip_btn := Button.new()
 	skip_btn.text = "跳过教程"
 	skip_btn.add_theme_color_override("font_color", Color("#9aa0ac"))
-	skip_btn.add_theme_font_size_override("font_size", 5)
+	skip_btn.add_theme_font_size_override("font_size", 4)
 	skip_btn.pressed.connect(_on_skip)
 	add_child(skip_btn)
 

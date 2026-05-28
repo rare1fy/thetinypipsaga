@@ -62,7 +62,7 @@ func _build_ui() -> void:
 	add_child(panel)
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(150, 190)
+	scroll.custom_minimum_size = Vector2(152, 192)
 	panel.add_child(scroll)
 
 	var vbox := VBoxContainer.new()
@@ -143,7 +143,7 @@ func _build_ui() -> void:
 	var hint := Label.new()
 	hint.text = "点击任意处关闭"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 5)
+	hint.add_theme_font_size_override("font_size", 4)
 	hint.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
 	vbox.add_child(hint)
 
@@ -191,6 +191,6 @@ func _add_separator(parent: VBoxContainer) -> void:
 func _add_section_title(parent: VBoxContainer, text: String) -> void:
 	var lbl := Label.new()
 	lbl.text = text
-	lbl.add_theme_font_size_override("font_size", 5)
+	lbl.add_theme_font_size_override("font_size", 4)
 	lbl.add_theme_color_override("font_color", Color("aaaaaa"))
 	parent.add_child(lbl)

@@ -91,7 +91,7 @@ func _build_layout() -> void:
 	# 点击按钮（整条）
 	_toggle_btn = Button.new()
 	_toggle_btn.flat = true
-	_toggle_btn.custom_minimum_size = Vector2(4, 15)
+	_toggle_btn.custom_minimum_size = Vector2(4, 16)
 	_toggle_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_toggle_btn.focus_mode = Control.FOCUS_NONE
 	_toggle_btn.pressed.connect(_on_toggle_pressed)
@@ -109,7 +109,7 @@ func _build_layout() -> void:
 	arrow.text = "^"
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.add_theme_color_override("font_color", COLOR_GOLD)
-	arrow.add_theme_font_size_override("font_size", 5)
+	arrow.add_theme_font_size_override("font_size", 4)
 	arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	arrow.name = "Arrow"
 	inner.add_child(arrow)
@@ -118,7 +118,7 @@ func _build_layout() -> void:
 	title.text = "遗物库"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_color", COLOR_GOLD_LIGHT)
-	title.add_theme_font_size_override("font_size", 6)
+	title.add_theme_font_size_override("font_size", 4)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_child(title)
 

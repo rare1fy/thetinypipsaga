@@ -39,7 +39,7 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
 bbcode_enabled = true
-theme_override_font_sizes/normal_font_size = 7
+theme_override_font_sizes/normal_font_size = 8
 
 [node name="RelicContainer" type="HBoxContainer" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true

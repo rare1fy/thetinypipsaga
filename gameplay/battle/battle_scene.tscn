@@ -68,7 +68,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"BodyLabel"
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 text = "金币: 0"
 
 [node name="StageLabel" type="Label" parent="UILayer/Root/TopBar/TopBarHBox"]
@@ -76,7 +76,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"TitleLabel"
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 text = "第 1 层"
 horizontal_alignment = 1
 
@@ -87,7 +87,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.75, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 horizontal_alignment = 1
 
 [node name="DamagePreview" type="PanelContainer" parent="UILayer/Root"]
@@ -149,7 +149,7 @@ text = "[战]"
 
 [node name="HpBar" type="ProgressBar" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 4)
+custom_minimum_size = Vector2(52, 4)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -194,7 +194,7 @@ text = "回合 0"
 
 [node name="PlayerStatusIcons" type="HBoxContainer" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 theme_override_constants/separation = 3
 
@@ -255,20 +255,20 @@ alignment = 1
 
 [node name="RerollBtn" type="Button" parent="UILayer/Root/BottomPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 14)
+custom_minimum_size = Vector2(40, 16)
 layout_mode = 2
 theme_type_variation = &"GoldButton"
 theme_override_fonts/font = ExtResource("3_t4vxl")
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 text = "重投(1)"
 
 [node name="ActionBtn" type="Button" parent="UILayer/Root/BottomPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(70, 14)
+custom_minimum_size = Vector2(72, 16)
 layout_mode = 2
 theme_type_variation = &"GoldButton"
 theme_override_fonts/font = ExtResource("3_t4vxl")
-theme_override_font_sizes/font_size = 5
+theme_override_font_sizes/font_size = 4
 text = "结束回合"
 
 [node name="RelicBar" type="VBoxContainer" parent="UILayer/Root"]

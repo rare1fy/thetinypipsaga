@@ -62,7 +62,7 @@ func _ready() -> void:
 	# 在 DescLabel 和 FacesLabel 之间插入效果列表标签
 	_effects_label = Label.new()
 	_effects_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_effects_label.add_theme_font_size_override("font_size", 5)
+	_effects_label.add_theme_font_size_override("font_size", 4)
 	_effects_label.add_theme_color_override("font_color", Color("#b0d0f0"))
 	_effects_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	_effects_label.add_theme_constant_override("outline_size", 1)

@@ -91,7 +91,7 @@ func _render_choices() -> void:
 		var btn := Button.new()
 		btn.text = "%s\n%s\n-%d HP" % [relic.name, rarity_label, choice.hp_cost]
 		btn.tooltip_text = relic.description
-		btn.custom_minimum_size = Vector2(80, 50)
+		btn.custom_minimum_size = Vector2(80, 52)
 		btn.pressed.connect(_on_relic_selected.bind(i))
 		relic_container.add_child(btn)
 

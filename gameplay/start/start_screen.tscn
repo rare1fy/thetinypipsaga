@@ -74,7 +74,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_outline_size = 2
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/normal_font_size = 12
 bbcode_enabled = true
 text = "[b][center][outline_size=4][outline_color=black][font_size=14][color=#ffffff]一点点[/color][/font_size][font_size=14][color=#ffdd64][wave amp=8.0 freq=2.0 connected=1]史诗[/wave][/color][/font_size][/outline_color][/outline_size][/center][/b]"
 horizontal_alignment = 1
@@ -92,13 +92,13 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/outline_size = 2
 theme_override_constants/shadow_outline_size = 2
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 8
 text = "- The Tiny-Pip Saga -"
 horizontal_alignment = 1
 
 [node name="StartBtn" type="Button" parent="UILayer/Root"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(75, 20)
+custom_minimum_size = Vector2(76, 20)
 layout_mode = 0
 offset_left = 53.0
 offset_top = 229.0
@@ -110,7 +110,7 @@ text = "新的冒险"
 
 [node name="NewRunBtn" type="Button" parent="UILayer/Root"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(75, 20)
+custom_minimum_size = Vector2(76, 20)
 layout_mode = 0
 offset_left = 53.0
 offset_top = 202.0

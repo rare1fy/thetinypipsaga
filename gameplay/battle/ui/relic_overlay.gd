@@ -130,7 +130,7 @@ func _build_header() -> Control:
 	var close_btn := Button.new()
 	close_btn.text = "x"
 	close_btn.flat = true
-	close_btn.custom_minimum_size = Vector2(7, 7)
+	close_btn.custom_minimum_size = Vector2(8, 8)
 	close_btn.add_theme_color_override("font_color", COLOR_TEXT_DIM)
 	close_btn.add_theme_font_size_override("font_size", 4)
 	close_btn.focus_mode = Control.FOCUS_NONE

@@ -80,27 +80,27 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "[G] 魂晶商店"
-	title.add_theme_font_size_override("font_size", 9)
+	title.add_theme_font_size_override("font_size", 8)
 	title.add_theme_color_override("font_color", PURPLE)
 	title.size_flags_horizontal = SIZE_EXPAND_FILL
 	header.add_child(title)
 
 	_balance_label = Label.new()
-	_balance_label.add_theme_font_size_override("font_size", 7)
+	_balance_label.add_theme_font_size_override("font_size", 8)
 	_balance_label.add_theme_color_override("font_color", PURPLE)
 	header.add_child(_balance_label)
 
 	var close_btn := Button.new()
 	close_btn.text = "x"
 	close_btn.flat = true
-	close_btn.add_theme_font_size_override("font_size", 9)
+	close_btn.add_theme_font_size_override("font_size", 8)
 	close_btn.pressed.connect(func(): closed.emit())
 	header.add_child(close_btn)
 
 	# 说明
 	var desc := Label.new()
 	desc.text = "消耗魂晶购买常驻遗物，购买后每次开局自动携带。\n魂晶通过溢出伤害获取，营火可撤离保存。"
-	desc.add_theme_font_size_override("font_size", 5)
+	desc.add_theme_font_size_override("font_size", 4)
 	desc.add_theme_color_override("font_color", Color(0.5, 0.5, 0.6))
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.position = Vector2(0, 52)
@@ -109,7 +109,7 @@ func _build_ui() -> void:
 
 	# Flash 消息
 	_flash_label = Label.new()
-	_flash_label.add_theme_font_size_override("font_size", 6)
+	_flash_label.add_theme_font_size_override("font_size", 4)
 	_flash_label.add_theme_color_override("font_color", PURPLE)
 	_flash_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_flash_label.position = Vector2(0, 92)
@@ -203,7 +203,7 @@ func _make_item_row(relic: RelicDef, cost: int, owned: bool, can_afford: bool) -
 
 	var name_label := Label.new()
 	name_label.text = relic.name
-	name_label.add_theme_font_size_override("font_size", 6)
+	name_label.add_theme_font_size_override("font_size", 4)
 	name_label.add_theme_color_override("font_color", GREEN_OWNED if owned else Color.WHITE)
 	name_row.add_child(name_label)
 
@@ -216,7 +216,7 @@ func _make_item_row(relic: RelicDef, cost: int, owned: bool, can_afford: bool) -
 
 	var desc_label := Label.new()
 	desc_label.text = relic.description
-	desc_label.add_theme_font_size_override("font_size", 5)
+	desc_label.add_theme_font_size_override("font_size", 4)
 	desc_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_child(desc_label)
@@ -225,7 +225,7 @@ func _make_item_row(relic: RelicDef, cost: int, owned: bool, can_afford: bool) -
 	if not owned:
 		var price := Label.new()
 		price.text = "[G] %d" % cost
-		price.add_theme_font_size_override("font_size", 6)
+		price.add_theme_font_size_override("font_size", 4)
 		price.add_theme_color_override("font_color", PURPLE if can_afford else RED_CANT)
 		hbox.add_child(price)
 

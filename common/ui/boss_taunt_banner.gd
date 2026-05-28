@@ -103,7 +103,7 @@ func _build_and_animate() -> void:
 	var name_label := Label.new()
 	name_label.text = "* %s" % _boss_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 7)
+	name_label.add_theme_font_size_override("font_size", 8)
 	name_label.add_theme_color_override("font_color", accent)
 	vbox.add_child(name_label)
 
@@ -111,7 +111,7 @@ func _build_and_animate() -> void:
 	var line_label := Label.new()
 	line_label.text = "「%s」" % _taunt_line
 	line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	line_label.add_theme_font_size_override("font_size", 5)
+	line_label.add_theme_font_size_override("font_size", 4)
 	line_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 0.9))
 	vbox.add_child(line_label)
 

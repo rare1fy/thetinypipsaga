@@ -68,7 +68,7 @@ func _build_content() -> void:
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intro.add_theme_color_override("font_color", Color("#9aa0ac"))
-	intro.add_theme_font_size_override("font_size", 6)
+	intro.add_theme_font_size_override("font_size", 4)
 	add_child(intro)
 	
 	# 可滚动主体
@@ -94,7 +94,7 @@ func _build_group_header(title: String, color_hex: String) -> Control:
 	
 	var dot := ColorRect.new()
 	dot.color = Color(color_hex)
-	dot.custom_minimum_size = Vector2(4, 10)
+	dot.custom_minimum_size = Vector2(4, 12)
 	header.add_child(dot)
 	
 	var label := Label.new()
@@ -142,7 +142,7 @@ func _build_hand_entry(hand_name: String) -> Control:
 	
 	var stats_label := Label.new()
 	stats_label.text = "基础 %d · ×%.1f" % [base_v, mult_v]
-	stats_label.add_theme_font_size_override("font_size", 6)
+	stats_label.add_theme_font_size_override("font_size", 4)
 	stats_label.add_theme_color_override("font_color", Color("#f07050"))
 	top.add_child(stats_label)
 	
@@ -153,7 +153,7 @@ func _build_hand_entry(hand_name: String) -> Control:
 		var desc_label := Label.new()
 		desc_label.text = desc
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 6)
+		desc_label.add_theme_font_size_override("font_size", 4)
 		desc_label.add_theme_color_override("font_color", Color("#9aa0ac"))
 		vbox.add_child(desc_label)
 	
@@ -162,7 +162,7 @@ func _build_hand_entry(hand_name: String) -> Control:
 	if effect_text != "":
 		var effect_label := Label.new()
 		effect_label.text = effect_text
-		effect_label.add_theme_font_size_override("font_size", 6)
+		effect_label.add_theme_font_size_override("font_size", 4)
 		effect_label.add_theme_color_override("font_color", Color("#80c0f0"))
 		vbox.add_child(effect_label)
 	

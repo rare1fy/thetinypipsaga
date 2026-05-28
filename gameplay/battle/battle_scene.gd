@@ -348,8 +348,8 @@ func _spawn_topleft_buttons() -> void:
 	var draw_btn := Button.new()
 	draw_btn.text = "[D]"
 	draw_btn.tooltip_text = "骰子库"
-	draw_btn.add_theme_font_size_override("font_size", 5)
-	draw_btn.custom_minimum_size = Vector2(18, 10)
+	draw_btn.add_theme_font_size_override("font_size", 4)
+	draw_btn.custom_minimum_size = Vector2(20, 12)
 	draw_btn.flat = true
 	draw_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	draw_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
@@ -360,8 +360,8 @@ func _spawn_topleft_buttons() -> void:
 	var discard_btn := Button.new()
 	discard_btn.text = "[R]"
 	discard_btn.tooltip_text = "弃骰库"
-	discard_btn.add_theme_font_size_override("font_size", 5)
-	discard_btn.custom_minimum_size = Vector2(18, 10)
+	discard_btn.add_theme_font_size_override("font_size", 4)
+	discard_btn.custom_minimum_size = Vector2(20, 12)
 	discard_btn.flat = true
 	discard_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	discard_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
@@ -375,7 +375,7 @@ func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Ve
 	btn.text = text
 	btn.tooltip_text = tooltip
 	btn.add_theme_font_size_override("font_size", 4)
-	btn.custom_minimum_size = Vector2(9, 5)
+	btn.custom_minimum_size = Vector2(8, 4)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
@@ -692,7 +692,7 @@ func _show_wave_announcement(wave_num: int) -> void:
 	label.set_anchors_preset(Control.PRESET_CENTER)
 	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	label.grow_vertical = Control.GROW_DIRECTION_BOTH
-	label.custom_minimum_size = Vector2(75, 15)
+	label.custom_minimum_size = Vector2(76, 16)
 	label.modulate = Color(1, 1, 1, 0)
 	label.z_index = 100
 	# 用 CanvasLayer 确保在最上层

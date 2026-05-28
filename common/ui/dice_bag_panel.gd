@@ -88,7 +88,7 @@ func _build_ui() -> void:
 	# 主面板
 	_panel = PanelContainer.new()
 	_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_panel.custom_minimum_size = Vector2(170, 240)
+	_panel.custom_minimum_size = Vector2(172, 240)
 	_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
 	add_child(_panel)
@@ -108,21 +108,21 @@ func _build_ui() -> void:
 	header.add_child(_title_label)
 
 	_count_label = Label.new()
-	_count_label.add_theme_font_size_override("font_size", 5)
+	_count_label.add_theme_font_size_override("font_size", 4)
 	_count_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	header.add_child(_count_label)
 
 	_close_btn = Button.new()
 	_close_btn.text = "x"
 	_close_btn.flat = true
-	_close_btn.add_theme_font_size_override("font_size", 9)
+	_close_btn.add_theme_font_size_override("font_size", 8)
 	_close_btn.pressed.connect(_close)
 	header.add_child(_close_btn)
 
 	# 骰子网格（ScrollContainer 包裹）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(160, 190)
+	scroll.custom_minimum_size = Vector2(160, 192)
 	vbox.add_child(scroll)
 
 	_grid = GridContainer.new()
@@ -135,7 +135,7 @@ func _build_ui() -> void:
 	# Tooltip 面板
 	_tooltip_panel = PanelContainer.new()
 	_tooltip_panel.visible = false
-	_tooltip_panel.custom_minimum_size = Vector2(90, 40)
+	_tooltip_panel.custom_minimum_size = Vector2(92, 40)
 	var tp_style := StyleBoxFlat.new()
 	tp_style.bg_color = Color(0.05, 0.04, 0.08, 0.96)
 	tp_style.border_color = Color("d4a030")
@@ -150,11 +150,11 @@ func _build_ui() -> void:
 	_tooltip_panel.add_child(tp_vbox)
 
 	_tooltip_name = Label.new()
-	_tooltip_name.add_theme_font_size_override("font_size", 6)
+	_tooltip_name.add_theme_font_size_override("font_size", 4)
 	tp_vbox.add_child(_tooltip_name)
 
 	_tooltip_faces = Label.new()
-	_tooltip_faces.add_theme_font_size_override("font_size", 5)
+	_tooltip_faces.add_theme_font_size_override("font_size", 4)
 	_tooltip_faces.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	tp_vbox.add_child(_tooltip_faces)
 
@@ -162,7 +162,7 @@ func _build_ui() -> void:
 	_tooltip_desc.bbcode_enabled = true
 	_tooltip_desc.fit_content = true
 	_tooltip_desc.custom_minimum_size = Vector2(80, 20)
-	_tooltip_desc.add_theme_font_size_override("normal_font_size", 5)
+	_tooltip_desc.add_theme_font_size_override("normal_font_size", 4)
 	tp_vbox.add_child(_tooltip_desc)
 
 
@@ -233,7 +233,7 @@ func _make_dice_card(def: DiceDef) -> PanelContainer:
 	var name_label := Label.new()
 	name_label.text = def.name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 5)
+	name_label.add_theme_font_size_override("font_size", 4)
 	name_label.add_theme_color_override("font_color", RARITY_COLORS.get(def.rarity, Color.WHITE))
 	vbox.add_child(name_label)
 

@@ -25,7 +25,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "— 调试功能 —"
 	title.add_theme_color_override("font_color", Color("#ff6060"))
-	title.add_theme_font_size_override("font_size", 6)
+	title.add_theme_font_size_override("font_size", 4)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -94,7 +94,7 @@ func _build_teleport() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "传送到指定层"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 5)
+	sep_label.add_theme_font_size_override("font_size", 4)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -211,7 +211,7 @@ func _build_relic_manager() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "遗物管理"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 5)
+	sep_label.add_theme_font_size_override("font_size", 4)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -233,7 +233,7 @@ func _build_relic_manager() -> void:
 func _open_add_relic_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(200, 250)
+	scroll.custom_minimum_size = Vector2(200, 252)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
@@ -314,7 +314,7 @@ func _build_dice_manager() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "骰子管理"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 5)
+	sep_label.add_theme_font_size_override("font_size", 4)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -336,7 +336,7 @@ func _build_dice_manager() -> void:
 func _open_add_dice_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(200, 250)
+	scroll.custom_minimum_size = Vector2(200, 252)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)

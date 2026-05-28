@@ -604,7 +604,7 @@ func _update_status_icons() -> void:
 
 	for s: StatusEffect in _enemy.statuses:
 		var icon := Label.new()
-		icon.add_theme_font_size_override("font_size", 5)
+		icon.add_theme_font_size_override("font_size", 4)
 		match s.type:
 			GameTypes.StatusType.POISON:
 				icon.text = "P"

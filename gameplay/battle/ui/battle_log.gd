@@ -137,7 +137,7 @@ func _build_ui() -> void:
 	_toggle_btn = Button.new()
 	_toggle_btn.text = "—"
 	_toggle_btn.flat = true
-	_toggle_btn.custom_minimum_size = Vector2(5, 5)
+	_toggle_btn.custom_minimum_size = Vector2(4, 4)
 	_toggle_btn.add_theme_font_size_override("font_size", 4)
 	_toggle_btn.pressed.connect(_on_toggle)
 	header.add_child(_toggle_btn)
