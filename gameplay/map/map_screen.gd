@@ -126,7 +126,7 @@ func _refresh_map_ui() -> void:
 		btn.size = NODE_SIZE
 		btn.position = pos - NODE_SIZE * 0.5
 		btn.text = NODE_ICONS.get(node.type, "?")
-	btn.add_theme_font_size_override("font_size", 4)
+		btn.add_theme_font_size_override("font_size", 4)
 
 		# 样式
 		var color: Color = NODE_COLORS.get(node.type, Color.WHITE)
