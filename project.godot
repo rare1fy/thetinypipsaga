@@ -45,7 +45,6 @@ gdscript/warnings/shadowed_variable_base_class=0
 
 window/size/viewport_width=360
 window/size/viewport_height=640
-window/size/mode=2
 window/size/window_width_override=1080
 window/size/window_height_override=1920
 window/stretch/mode="canvas_items"

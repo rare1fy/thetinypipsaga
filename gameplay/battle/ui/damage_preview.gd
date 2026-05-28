@@ -35,21 +35,21 @@ func _build_ui() -> void:
 	style.bg_color = Color(0.06, 0.06, 0.09, 0.92)
 	style.border_color = Color("#3c6cc8")
 	style.set_border_width_all(2)
-	style.content_margin_left = 10
-	style.content_margin_right = 10
-	style.content_margin_top = 6
-	style.content_margin_bottom = 6
+	style.content_margin_left = 6
+	style.content_margin_right = 6
+	style.content_margin_top = 3
+	style.content_margin_bottom = 3
 	add_theme_stylebox_override("panel", style)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
 	add_child(vbox)
 	
-	_hand_label = _make_label(16, Color("#f0c850"))
-	_damage_label = _make_label(20, Color("#f07050"))
-	_armor_label = _make_label(13, Color("#60a0e8"))
-	_status_label = _make_label(12, Color("#c090f0"))
-	_aoe_label = _make_label(12, Color("#e8e040"))
+	_hand_label = _make_label(10, Color("#f0c850"))
+	_damage_label = _make_label(12, Color("#f07050"))
+	_armor_label = _make_label(9, Color("#60a0e8"))
+	_status_label = _make_label(9, Color("#c090f0"))
+	_aoe_label = _make_label(9, Color("#e8e040"))
 	
 	vbox.add_child(_hand_label)
 	vbox.add_child(_damage_label)

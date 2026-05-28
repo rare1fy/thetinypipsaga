@@ -79,7 +79,7 @@ static func from_config(config: EnemyConfig, hp_scale: float = 1.0, dmg_scale: f
 	e.drop_relic = config.drop_relic
 	e.reroll_reward = config.drop_reroll_reward
 	e.statuses = []
-	e.distance = 2 if (config.combat_type == GameTypes.EnemyCombatType.WARRIOR or config.combat_type == GameTypes.EnemyCombatType.GUARDIAN) else 3
+	e.distance = 2
 	return e
 
 

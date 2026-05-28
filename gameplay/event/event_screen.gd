@@ -75,11 +75,14 @@ func _on_choice_made(choice: Dictionary, _event: Dictionary) -> void:
 	
 	match action_type:
 		"startBattle":
-			# 事件触发战斗：仿 map_screen._spawn_battle 的 enemy 分支逻辑
+			# 事件触发战斗：单波 1-2 个普通敌人
 			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
 			var wave_ids: Array[String] = []
 			if normals.size() > 0:
 				wave_ids.append(normals[randi() % normals.size()].id)
+				# 50% 概率加第二个敌人（事件战斗比普通战简单）
+				if normals.size() > 1 and randf() < 0.5:
+					wave_ids.append(normals[randi() % normals.size()].id)
 			if wave_ids.is_empty():
 				# 兜底：无敌人可用，退回地图并提示，避免卡死
 				push_warning("[Event] 本章无普通敌人，startBattle 降级为跳过")
@@ -87,6 +90,8 @@ func _on_choice_made(choice: Dictionary, _event: Dictionary) -> void:
 				SoundPlayer.play_sound("event")
 				GameManager.set_phase(GameTypes.GamePhase.MAP)
 				return
+			GameManager.battle_waves = [{"enemies": wave_ids}]
+			GameManager.current_wave_index = 0
 			GameManager.pending_wave = wave_ids
 			SoundPlayer.play_sound("event")
 			GameManager.set_phase(GameTypes.GamePhase.BATTLE)

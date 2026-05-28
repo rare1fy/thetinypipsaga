@@ -5,7 +5,7 @@
 ##   - 根节点 Node2D：作为世界物体存在，支持 position / scale / rotate / z_index
 ##   - VisualRoot：立绘 + 状态（受击/死亡动画挂这里，不污染根节点 transform）
 ##   - ClickArea (Area2D)：点击选中（原 Control 的 gui_input / mouse_entered 替代）
-##   - HeadUI (Control)：挂在 VisualRoot 下，随纵深缩放；无底板漂浮血条
+##   - HeadUI (Control)：根节点直接子节点，不受 VisualRoot 缩放影响；位置通过代码跟随精灵顶部
 ##
 ## 美术替换指引：
 ##   - AvatarShape (ColorRect) / AvatarStyle (Panel)：已被 Sprite2D + 程序动画替代
@@ -17,9 +17,9 @@ extends Node2D
 
 signal enemy_clicked(enemy_uid: String)
 
-# 距离条最多 3 格
-const MAX_DISTANCE_DOTS := 3
-const DISTANCE_DOT_SIZE := Vector2(6, 6)
+# 距离条最多 2 格
+const MAX_DISTANCE_DOTS := 2
+const DISTANCE_DOT_SIZE := Vector2(4, 4)
 const DISTANCE_COLOR_FILLED := Color("#e07830")
 const DISTANCE_COLOR_EMPTY := Color(1, 1, 1, 0.12)
 const RANGED_LABEL_COLOR := Color("#30d8d0")
@@ -151,13 +151,12 @@ func _restore_placeholder_visuals() -> void:
 
 ## ── 程序动画（口袋妖怪风格）──
 
-## 启动待机呼吸弹跳动画：Y轴微弹 + 轻微缩放
+## 启动待机呼吸弹跳动画：仅 Y 轴微弹，不做形变
 func _start_idle_anim() -> void:
 	_stop_idle_anim()
 	if _art_sprite == null or not _has_art:
 		return
-	# 确保 scale 和 modulate 复位
-	_art_sprite.scale = Vector2(1.0, 1.0)
+	# 确保 modulate 复位
 	_art_sprite.modulate = Color(1, 1, 1, 1)
 	_idle_tween = create_tween()
 	_idle_tween.set_loops()
@@ -165,10 +164,8 @@ func _start_idle_anim() -> void:
 	var base_y: float = _art_sprite.position.y
 	# 上弹
 	_idle_tween.tween_property(_art_sprite, "position:y", base_y - 2.0, 0.5)
-	_idle_tween.parallel().tween_property(_art_sprite, "scale", Vector2(1.02, 0.98), 0.5)
 	# 下落
 	_idle_tween.tween_property(_art_sprite, "position:y", base_y, 0.5)
-	_idle_tween.parallel().tween_property(_art_sprite, "scale", Vector2(0.98, 1.02), 0.5)
 
 
 ## 停止待机动画
@@ -176,9 +173,6 @@ func _stop_idle_anim() -> void:
 	if _idle_tween != null and _idle_tween.is_valid():
 		_idle_tween.kill()
 	_idle_tween = null
-	# 复位 sprite transform
-	if _art_sprite != null:
-		_art_sprite.scale = Vector2(1.0, 1.0)
 
 
 ## 播放攻击动画（程序动画：前冲 + 回弹）
@@ -498,6 +492,9 @@ func _update_hp_display() -> void:
 ##   所有参数在 Inspector 面板直接调，代码不做任何插值
 var _depth_tween: Tween = null
 
+## 当前精灵缩放值（用于计算 HeadUI 跟随位置）
+var _current_sprite_scale: float = 1.0
+
 func _update_depth_visuals() -> void:
 	if _slot_index < 0:
 		return
@@ -511,6 +508,7 @@ func _update_depth_visuals() -> void:
 	var target_y: float = visuals.depth_y
 	var target_brightness: float = visuals.depth_brightness
 	z_index = int(visuals.depth_z)
+	_current_sprite_scale = target_scale
 	# 首次设置（无动画）或后续迫近（tween平滑位移）
 	if _depth_tween != null and _depth_tween.is_valid():
 		_depth_tween.kill()
@@ -520,6 +518,7 @@ func _update_depth_visuals() -> void:
 		_visual_root.scale = Vector2(target_scale, target_scale)
 		_visual_root.position.y = target_y
 		_visual_root.modulate = Color(target_brightness, target_brightness, target_brightness, 1.0)
+		_update_head_ui_position()
 	else:
 		# 平滑位移（敌人迫近时的tween动画）
 		_depth_tween = create_tween()
@@ -529,6 +528,9 @@ func _update_depth_visuals() -> void:
 		_depth_tween.tween_property(_visual_root, "scale", Vector2(target_scale, target_scale), 0.35)
 		_depth_tween.tween_property(_visual_root, "position:y", target_y, 0.35)
 		_depth_tween.tween_property(_visual_root, "modulate", Color(target_brightness, target_brightness, target_brightness, 1.0), 0.35)
+		# HeadUI 位置跟随（tween结束后更新）
+		_depth_tween.set_parallel(false)
+		_depth_tween.tween_callback(_update_head_ui_position)
 
 
 ## 获取 BattleScene 引用 — 通过 owner（场景根节点）向上查找
@@ -539,6 +541,19 @@ func _get_battle_scene() -> BattleScene:
 			return node as BattleScene
 		node = node.get_parent()
 	return null
+
+
+## HeadUI 位置跟随：HeadUI 是根节点的直接子节点（不受 VisualRoot 缩放影响）
+## 根据精灵当前缩放计算 UI 应该出现在精灵顶部上方的位置
+func _update_head_ui_position() -> void:
+	var head_ui: Control = %HeadUI
+	if head_ui == null:
+		return
+	# 精灵原始高度64px，中心在 position.y=-32（ArtSprite.position）
+	# 缩放后精灵顶部 = VisualRoot.position.y + (-32 - 32) * scale = VisualRoot.y - 64*scale
+	var sprite_top_y: float = _visual_root.position.y + (-64.0) * _current_sprite_scale
+	# HeadUI 放在精灵顶部上方 6px 处，水平居中
+	head_ui.position = Vector2(-50.0, sprite_top_y - 46.0)
 
 
 func _update_intent() -> void:

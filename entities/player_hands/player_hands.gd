@@ -197,7 +197,8 @@ func _spawn_slash_trail() -> void:
 	if not is_instance_valid(right_hand):
 		return
 	var trail := Sprite2D.new()
-	var src_sprite: Sprite2D = right_hand.get_node_or_null("Sprite2D") as Sprite2D
+	# RightHand 本身就是 Sprite2D，直接取其 texture
+	var src_sprite: Sprite2D = right_hand as Sprite2D
 	if src_sprite != null and src_sprite.texture != null:
 		trail.texture = src_sprite.texture
 		trail.scale = src_sprite.scale

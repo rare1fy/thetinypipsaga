@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://davybf63ammio"
-path="res://.godot/imported/img_player_right_hand.png-811bf93c7656938b6061cefed4b72ab5.ctex"
+uid="uid://cme00hcp4saf0"
+path="res://.godot/imported/ch1_e2_03.png-4f88ee5f709844b99975d47ecdfcb06f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/player/test/img_player_right_hand.png"
-dest_files=["res://.godot/imported/img_player_right_hand.png-811bf93c7656938b6061cefed4b72ab5.ctex"]
+source_file="res://assets/battle_backgrounds/ch1_e2_03.png"
+dest_files=["res://.godot/imported/ch1_e2_03.png-4f88ee5f709844b99975d47ecdfcb06f.ctex"]
 
 [params]
 

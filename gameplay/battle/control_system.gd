@@ -17,7 +17,7 @@ class_name ControlSystem
 enum ControlType {
 	TAUNT,      ## 嘲讽：覆写意图为普攻，伤害×0.7
 	STUN,       ## 眩晕：完全跳过行动
-	KNOCKBACK,  ## 击退：distance+2（上限3）
+	KNOCKBACK,  ## 击退：distance+2（上限2）
 	POLYMORPH,  ## 变羊：50%普通羊/50%羊王，持续2回合
 	BLIND,      ## 致盲：攻击转向友军（单敌人时自伤）
 	DISARM,     ## 缴械：普攻伤害强制为1
@@ -66,8 +66,8 @@ static func apply_control(
 
 	match control_type:
 		ControlType.KNOCKBACK:
-			# §1.8.1：distance += 2，上限 3
-			target.distance = mini(3, target.distance + 2)
+			# §1.8.1：distance += 2，上限 2
+			target.distance = mini(2, target.distance + 2)
 		ControlType.POLYMORPH:
 			# §1.8.2：50/50 普通羊/羊王，持续 2 回合
 			_apply_polymorph(target, actual_duration)

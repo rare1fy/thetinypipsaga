@@ -214,25 +214,90 @@ func _on_node_clicked(node) -> void:
 
 func _spawn_battle(node_type: GameTypes.NodeType) -> void:
 	var battle_type := MapGenerator.get_battle_type(node_type)
-	var wave_ids: Array[String] = []
+	var depth: int = GameManager.current_node
 
 	match battle_type:
-		"enemy":
-			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
-			if normals.size() > 0:
-				var picked := _pick_weighted_enemy(normals)
-				wave_ids.append(picked.id)
-		"elite":
-			var elites := EnemyConfig.get_elites_for_chapter(GameManager.chapter)
-			if elites.size() > 0:
-				wave_ids.append(elites[randi() % elites.size()].id)
 		"boss":
+			# Boss 战：单波单Boss（原版 BOSS-SOLO 规则）
 			var bosses := EnemyConfig.get_bosses_for_chapter(GameManager.chapter)
 			if bosses.size() > 0:
-				wave_ids.append(bosses[randi() % bosses.size()].id)
+				var boss_id: String = bosses[randi() % bosses.size()].id
+				GameManager.battle_waves = [{"enemies": [boss_id]}]
+				GameManager.pending_wave = [boss_id]
+		"elite":
+			# 精英战：精英 + 1 个普通小怪（原版规则）
+			var elites := EnemyConfig.get_elites_for_chapter(GameManager.chapter)
+			var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
+			var wave_enemies: Array[String] = []
+			if elites.size() > 0:
+				wave_enemies.append(elites[randi() % elites.size()].id)
+			if normals.size() > 0:
+				wave_enemies.append(_pick_weighted_enemy(normals).id)
+			GameManager.battle_waves = [{"enemies": wave_enemies}]
+			GameManager.pending_wave = wave_enemies
+		"enemy", _:
+			# 普通战：2-3 波，每波 1-4 个敌人（复刻原版规则）
+			var waves: Array[Dictionary] = _generate_normal_waves(depth)
+			GameManager.battle_waves = waves
+			# pending_wave = 第一波的敌人列表
+			var first_wave: Array[String] = []
+			if waves.size() > 0:
+				var enemies_raw: Array = waves[0].get("enemies", [])
+				for eid in enemies_raw:
+					if eid is String:
+						first_wave.append(eid)
+			GameManager.pending_wave = first_wave
 
-	GameManager.pending_wave = wave_ids
+	GameManager.current_wave_index = 0
+	GameManager.current_node_type = node_type
 	GameManager.set_phase(GameTypes.GamePhase.BATTLE)
+
+
+## 生成普通战斗的多波次敌人（复刻原版 getEnemiesForNode 规则）
+## depth=0 第一场保护：每波 1~2 只
+## depth 1: 40% 1只, 60% 2只
+## depth 2-4: 50% 2只, 50% 3只
+## depth 5-9: 30% 2只, 70% 3只
+## depth 10+: 3~4只
+## 波次数：depth<3 固定2波; depth 3-4 有20%概率3波; depth 5-9 有50%概率3波; depth 10+ 有80%概率3波
+func _generate_normal_waves(depth: int) -> Array[Dictionary]:
+	var three_wave_chance: float = 0.0
+	if depth >= 10:
+		three_wave_chance = 0.8
+	elif depth >= 5:
+		three_wave_chance = 0.5
+	elif depth >= 3:
+		three_wave_chance = 0.2
+	var wave_count: int = 3 if randf() < three_wave_chance else 2
+
+	var normals := EnemyConfig.get_normals_for_chapter(GameManager.chapter)
+	if normals.is_empty():
+		return []
+
+	var waves: Array[Dictionary] = []
+	for w: int in wave_count:
+		var enemy_count: int = _get_enemy_count_for_wave(depth, w)
+		var wave_enemies: Array[String] = []
+		for _i: int in enemy_count:
+			var picked := _pick_weighted_enemy(normals)
+			wave_enemies.append(picked.id)
+		waves.append({"enemies": wave_enemies})
+	return waves
+
+
+## 根据 depth 和波次索引决定每波敌人数量
+func _get_enemy_count_for_wave(depth: int, wave_idx: int) -> int:
+	if depth == 0:
+		# 第一场保护：第一波1只，后续波 50% 1只 / 50% 2只
+		return 1 if wave_idx == 0 else (1 if randf() < 0.5 else 2)
+	elif depth <= 1:
+		return 1 if randf() < 0.4 else 2
+	elif depth <= 4:
+		return 2 if randf() < 0.5 else 3
+	elif depth <= 9:
+		return 2 if randf() < 0.3 else 3
+	else:
+		return mini(4, 3 + int(randf() * 2.0))
 
 
 ## 带权重的敌人选择 — 前期近战权重高，避免全是远程兵

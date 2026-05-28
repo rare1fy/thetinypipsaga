@@ -33,8 +33,8 @@ static func apply_element_effects(enemy: EnemyInstance, selected_dice: Array[Dic
 				enemy.statuses.append(s)
 			"wind":
 				# v0.5 风元素：击退 + 2点基础伤害
-				if enemy.distance < 3:
-					enemy.distance = mini(3, enemy.distance + 1)
+				if enemy.distance < 2:
+					enemy.distance = mini(2, enemy.distance + 1)
 				enemy.hp = maxi(0, enemy.hp - 2)
 			"thunder":
 				for other: EnemyInstance in enemies:

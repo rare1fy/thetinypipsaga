@@ -4,7 +4,7 @@
       "id": "E0001",
       "legacy_key": "forest_ghoul",
       "art_id": "m10001",
-      "name": "食尸鬼",
+      "name": "步兵列兵",
       "chapter": 1,
       "category": "NORMAL",
       "combat_type": "WARRIOR",
@@ -19,66 +19,258 @@
     {
       "id": "E0002",
       "legacy_key": "forest_spider",
-      "art_id": "m10001",
-      "name": "剧毒蛛母",
+      "art_id": "m10002",
+      "name": "矮人火枪手",
       "chapter": 1,
       "category": "NORMAL",
       "combat_type": "RANGER",
-      "base_hp": 18,
-      "base_dmg": 3,
-      "drop_gold": 20,
+      "base_hp": 24,
+      "base_dmg": 9,
+      "drop_gold": 22,
       "drop_relic": false,
       "drop_reroll_reward": 0,
-      "phase_group": "PG0002",
+      "phase_group": "PG0001",
       "quote_group": "QG0002"
     },
     {
       "id": "E0003",
       "legacy_key": "forest_treant",
-      "art_id": "m10001",
-      "name": "腐化树人",
+      "art_id": "m10003",
+      "name": "重甲骑士",
       "chapter": 1,
       "category": "NORMAL",
       "combat_type": "GUARDIAN",
-      "base_hp": 42,
-      "base_dmg": 4,
-      "drop_gold": 20,
+      "base_hp": 40,
+      "base_dmg": 5,
+      "drop_gold": 24,
       "drop_relic": false,
       "drop_reroll_reward": 0,
-      "phase_group": "PG0003",
+      "phase_group": "PG0001",
       "quote_group": "QG0003"
     },
     {
       "id": "E0004",
       "legacy_key": "forest_banshee",
-      "art_id": "m10001",
-      "name": "哀嚎女妖",
+      "art_id": "m10004",
+      "name": "牧师学徒",
       "chapter": 1,
       "category": "NORMAL",
       "combat_type": "CASTER",
-      "base_hp": 16,
-      "base_dmg": 3,
-      "drop_gold": 20,
+      "base_hp": 22,
+      "base_dmg": 8,
+      "drop_gold": 22,
       "drop_relic": false,
       "drop_reroll_reward": 0,
-      "phase_group": "PG0004",
+      "phase_group": "PG0001",
       "quote_group": "QG0004"
     },
     {
       "id": "E0005",
       "legacy_key": "forest_wolf_priest",
-      "art_id": "m10001",
-      "name": "月光狼灵",
+      "art_id": "m10005",
+      "name": "矮人祭司",
       "chapter": 1,
       "category": "NORMAL",
       "combat_type": "PRIEST",
-      "base_hp": 20,
-      "base_dmg": 2,
-      "drop_gold": 20,
+      "base_hp": 26,
+      "base_dmg": 6,
+      "drop_gold": 24,
       "drop_relic": false,
       "drop_reroll_reward": 0,
-      "phase_group": "PG0005",
+      "phase_group": "PG0001",
       "quote_group": "QG0005"
+    },
+    {
+      "id": "E0006",
+      "legacy_key": "forest_bone_reaver",
+      "art_id": "m10006",
+      "name": "狂战步兵",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "WARRIOR",
+      "base_hp": 30,
+      "base_dmg": 9,
+      "drop_gold": 22,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0006"
+    },
+    {
+      "id": "E0007",
+      "legacy_key": "forest_poison_sprite",
+      "art_id": "m10007",
+      "name": "矮人毒弹兵",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "RANGER",
+      "base_hp": 22,
+      "base_dmg": 8,
+      "drop_gold": 22,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0007"
+    },
+    {
+      "id": "E0008",
+      "legacy_key": "forest_moss_golem",
+      "art_id": "m10008",
+      "name": "石盾卫兵",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "GUARDIAN",
+      "base_hp": 44,
+      "base_dmg": 4,
+      "drop_gold": 26,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0008"
+    },
+    {
+      "id": "E0009",
+      "legacy_key": "forest_wraith_cultist",
+      "art_id": "m10009",
+      "name": "暗法学徒",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "CASTER",
+      "base_hp": 20,
+      "base_dmg": 10,
+      "drop_gold": 24,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0009"
+    },
+    {
+      "id": "E0010",
+      "legacy_key": "forest_old_willow",
+      "art_id": "m10010",
+      "name": "圣光司铎",
+      "chapter": 1,
+      "category": "NORMAL",
+      "combat_type": "PRIEST",
+      "base_hp": 30,
+      "base_dmg": 7,
+      "drop_gold": 26,
+      "drop_relic": false,
+      "drop_reroll_reward": 0,
+      "phase_group": "PG0001",
+      "quote_group": "QG0010"
+    },
+    {
+      "id": "E9001",
+      "legacy_key": "elite_necromancer",
+      "art_id": "m10011",
+      "name": "大法师",
+      "chapter": 1,
+      "category": "ELITE",
+      "combat_type": "CASTER",
+      "base_hp": 80,
+      "base_dmg": 12,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 1,
+      "phase_group": "PG9001",
+      "quote_group": "QG9001"
+    },
+    {
+      "id": "E9002",
+      "legacy_key": "elite_alpha_wolf",
+      "art_id": "m10012",
+      "name": "圣骑士队长",
+      "chapter": 1,
+      "category": "ELITE",
+      "combat_type": "WARRIOR",
+      "base_hp": 90,
+      "base_dmg": 10,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 1,
+      "phase_group": "PG9002",
+      "quote_group": "QG9002"
+    },
+    {
+      "id": "E9003",
+      "legacy_key": "elite_phantom_hunter",
+      "art_id": "m10013",
+      "name": "精锐游骑兵",
+      "chapter": 1,
+      "category": "ELITE",
+      "combat_type": "RANGER",
+      "base_hp": 70,
+      "base_dmg": 14,
+      "drop_gold": 60,
+      "drop_relic": true,
+      "drop_reroll_reward": 1,
+      "phase_group": "PG9003",
+      "quote_group": "QG9003"
+    },
+    {
+      "id": "E9101",
+      "legacy_key": "boss_lich_forest",
+      "art_id": "m10014",
+      "name": "大主教",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 160,
+      "base_dmg": 14,
+      "drop_gold": 120,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9101",
+      "quote_group": "QG9101"
+    },
+    {
+      "id": "E9102",
+      "legacy_key": "boss_root_colossus",
+      "art_id": "m10015",
+      "name": "城门巨像",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "GUARDIAN",
+      "base_hp": 200,
+      "base_dmg": 12,
+      "drop_gold": 120,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9102",
+      "quote_group": "QG9102"
+    },
+    {
+      "id": "E9103",
+      "legacy_key": "boss_coven_matriarch",
+      "art_id": "m10016",
+      "name": "女巫审判官",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "CASTER",
+      "base_hp": 150,
+      "base_dmg": 15,
+      "drop_gold": 120,
+      "drop_relic": true,
+      "drop_reroll_reward": 2,
+      "phase_group": "PG9103",
+      "quote_group": "QG9103"
+    },
+    {
+      "id": "E9104",
+      "legacy_key": "boss_ancient_treant",
+      "art_id": "m10017",
+      "name": "人族大元帅",
+      "chapter": 1,
+      "category": "BOSS",
+      "combat_type": "GUARDIAN",
+      "base_hp": 280,
+      "base_dmg": 16,
+      "drop_gold": 200,
+      "drop_relic": true,
+      "drop_reroll_reward": 3,
+      "phase_group": "PG9104",
+      "quote_group": "QG9104"
     },
     {
       "id": "E0101",
@@ -337,38 +529,6 @@
       "quote_group": "QG0404"
     },
     {
-      "id": "E9001",
-      "legacy_key": "elite_necromancer",
-      "art_id": "m10001",
-      "name": "亡灵巫师",
-      "chapter": 1,
-      "category": "ELITE",
-      "combat_type": "CASTER",
-      "base_hp": 85,
-      "base_dmg": 8,
-      "drop_gold": 50,
-      "drop_relic": true,
-      "drop_reroll_reward": 2,
-      "phase_group": "PG9001",
-      "quote_group": "QG9001"
-    },
-    {
-      "id": "E9002",
-      "legacy_key": "elite_alpha_wolf",
-      "art_id": "m10001",
-      "name": "狼人首领",
-      "chapter": 1,
-      "category": "ELITE",
-      "combat_type": "WARRIOR",
-      "base_hp": 100,
-      "base_dmg": 11,
-      "drop_gold": 50,
-      "drop_relic": true,
-      "drop_reroll_reward": 2,
-      "phase_group": "PG9002",
-      "quote_group": "QG9002"
-    },
-    {
       "id": "E9003",
       "legacy_key": "elite_frost_wyrm",
       "art_id": "",
@@ -495,38 +655,6 @@
       "drop_reroll_reward": 2,
       "phase_group": "PG9010",
       "quote_group": "QG9010"
-    },
-    {
-      "id": "E9101",
-      "legacy_key": "boss_lich_forest",
-      "art_id": "m10001",
-      "name": "枯骨巫妖",
-      "chapter": 1,
-      "category": "BOSS",
-      "combat_type": "CASTER",
-      "base_hp": 150,
-      "base_dmg": 10,
-      "drop_gold": 60,
-      "drop_relic": true,
-      "drop_reroll_reward": 0,
-      "phase_group": "PG9101",
-      "quote_group": "QG9101"
-    },
-    {
-      "id": "E9102",
-      "legacy_key": "boss_ancient_treant",
-      "art_id": "m10001",
-      "name": "远古树王",
-      "chapter": 1,
-      "category": "BOSS",
-      "combat_type": "GUARDIAN",
-      "base_hp": 300,
-      "base_dmg": 15,
-      "drop_gold": 0,
-      "drop_relic": false,
-      "drop_reroll_reward": 0,
-      "phase_group": "PG9102",
-      "quote_group": "QG9102"
     },
     {
       "id": "E9103",
@@ -2617,182 +2745,1232 @@
     {
       "quote_group": "QG0001",
       "event": "enter",
-      "text": "嘎嘎……新鲜的肉……"
+      "text": "为了联盟！站住，怪物！"
     },
     {
       "quote_group": "QG0001",
       "event": "enter",
-      "text": "从坟墓里爬出来了……"
+      "text": "哨兵报告——发现入侵者！"
     },
     {
       "quote_group": "QG0001",
       "event": "death",
-      "text": "骨头……散了……"
+      "text": "告诉……我的家人……"
     },
     {
       "quote_group": "QG0001",
       "event": "death",
-      "text": "回到……土里……"
+      "text": "联盟……万岁……"
+    },
+    {
+      "quote_group": "QG0001",
+      "event": "death",
+      "text": "我守住了哨站……"
     },
     {
       "quote_group": "QG0001",
       "event": "attack",
-      "text": "撕！"
+      "text": "冲锋！"
     },
     {
       "quote_group": "QG0001",
       "event": "attack",
-      "text": "咬碎你！"
+      "text": "吃我一剑！"
     },
     {
       "quote_group": "QG0001",
       "event": "attack",
-      "text": "嘎嘎嘎！"
+      "text": "联盟的力量！"
     },
     {
       "quote_group": "QG0001",
       "event": "hurt",
-      "text": "嘎！"
+      "text": "铠甲……被穿透了！"
     },
     {
       "quote_group": "QG0001",
       "event": "hurt",
-      "text": "腐肉……掉了……"
+      "text": "嗬！"
     },
     {
       "quote_group": "QG0001",
       "event": "low_hp",
-      "text": "不……还没吃饱……"
+      "text": "增援……快来增援……"
     },
     {
       "quote_group": "QG0002",
       "event": "enter",
-      "text": "嘶嘶……陷阱已经布好了……"
+      "text": "哈！让老子的火枪来招待你！"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "enter",
+      "text": "（装弹声）"
     },
     {
       "quote_group": "QG0002",
       "event": "death",
-      "text": "嘶……蛛卵……会替我……"
+      "text": "枪……哑火了……"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "death",
+      "text": "（倒地，火枪滚落）"
+    },
+    {
+      "quote_group": "QG0002",
+      "event": "death",
+      "text": "告诉酒馆……我的酒钱……还没付……"
     },
     {
       "quote_group": "QG0002",
       "event": "attack",
-      "text": "毒牙！"
+      "text": "开火！"
     },
     {
       "quote_group": "QG0002",
       "event": "attack",
-      "text": "吐丝！"
+      "text": "吃颗子弹！"
     },
     {
       "quote_group": "QG0002",
       "event": "attack",
-      "text": "缠住你！"
+      "text": "瞄准了！"
     },
     {
       "quote_group": "QG0002",
       "event": "hurt",
-      "text": "嘶！"
+      "text": "嘶！打中我了！"
     },
     {
       "quote_group": "QG0002",
       "event": "hurt",
-      "text": "我的……腿！"
+      "text": "该死的……"
     },
     {
       "quote_group": "QG0002",
       "event": "low_hp",
-      "text": "蛛巢……不会忘记你……"
+      "text": "弹药……快没了……最后一发给你！"
     },
     {
       "quote_group": "QG0003",
       "event": "enter",
-      "text": "这片……森林……不欢迎你……"
+      "text": "以圣光之名……你将被制裁！"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "enter",
+      "text": "（铠甲铿锵声）"
     },
     {
       "quote_group": "QG0003",
       "event": "death",
-      "text": "森林……会记住……"
+      "text": "圣光……指引我……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "death",
+      "text": "倒下了……但誓言……不灭……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "death",
+      "text": "（金属哀鸣）"
     },
     {
       "quote_group": "QG0003",
       "event": "attack",
-      "text": "根须！"
+      "text": "盾击！"
     },
     {
       "quote_group": "QG0003",
       "event": "attack",
-      "text": "大地之力！"
+      "text": "正义审判！"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "attack",
+      "text": "以圣光之名！"
     },
     {
       "quote_group": "QG0003",
       "event": "hurt",
-      "text": "树皮……裂了……"
+      "text": "板甲……凹了……"
+    },
+    {
+      "quote_group": "QG0003",
+      "event": "hurt",
+      "text": "不过是……划痕……"
     },
     {
       "quote_group": "QG0003",
       "event": "low_hp",
-      "text": "我的根……断了……"
+      "text": "只要……盾还在……就不会退！"
     },
     {
       "quote_group": "QG0004",
       "event": "enter",
-      "text": "啊啊啊——！"
+      "text": "圣光啊——赐予我力量驱逐邪恶！"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "enter",
+      "text": "感受圣光的审判吧……"
     },
     {
       "quote_group": "QG0004",
       "event": "death",
-      "text": "终于……安息了……"
+      "text": "圣光……原谅我的无能……"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "death",
+      "text": "（祈祷声渐弱）"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "death",
+      "text": "我会回到圣光的怀抱……"
     },
     {
       "quote_group": "QG0004",
       "event": "attack",
-      "text": "尖叫！"
+      "text": "惩击！"
     },
     {
       "quote_group": "QG0004",
       "event": "attack",
-      "text": "死亡之歌！"
+      "text": "圣光制裁！"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "attack",
+      "text": "颤抖吧！"
     },
     {
       "quote_group": "QG0004",
       "event": "hurt",
-      "text": "（刺耳尖啸）"
+      "text": "（祈祷声中断）"
+    },
+    {
+      "quote_group": "QG0004",
+      "event": "hurt",
+      "text": "信仰……不会动摇……"
     },
     {
       "quote_group": "QG0004",
       "event": "low_hp",
-      "text": "最后……一曲……"
+      "text": "最后……一次祈祷……送你上路！"
     },
     {
       "quote_group": "QG0005",
       "event": "enter",
-      "text": "呜——月光指引着我……"
+      "text": "铁砧城的祝福与你同在——才怪！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "enter",
+      "text": "嗅到了……邪恶的气息……"
     },
     {
       "quote_group": "QG0005",
       "event": "death",
-      "text": "月光……暗了……"
+      "text": "石母……接引我……"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "death",
+      "text": "（倒下）"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "death",
+      "text": "我的胡须……终于可以休息了……"
     },
     {
       "quote_group": "QG0005",
       "event": "attack",
-      "text": "狼牙！"
+      "text": "圣光之锤！"
     },
     {
       "quote_group": "QG0005",
       "event": "attack",
-      "text": "月光之噬！"
+      "text": "净化邪恶！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "attack",
+      "text": "石母审判！"
     },
     {
       "quote_group": "QG0005",
       "event": "hurt",
-      "text": "嗷！"
+      "text": "胡子……被烧了！"
+    },
+    {
+      "quote_group": "QG0005",
+      "event": "hurt",
+      "text": "这……不可能……"
     },
     {
       "quote_group": "QG0005",
       "event": "low_hp",
-      "text": "月光……给我力量……"
+      "text": "石母……给我力量……"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "enter",
+      "text": "双刀——饥渴已久！"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "enter",
+      "text": "（咔咔咔关节作响）"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "death",
+      "text": "倒下……了……"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "death",
+      "text": "荣耀归……联盟……"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "death",
+      "text": "战场上死，不丢人。"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "attack",
+      "text": "劈！"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "attack",
+      "text": "斩！"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "attack",
+      "text": "碾碎你！"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "hurt",
+      "text": "咔！"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "hurt",
+      "text": "皮外伤。"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "hurt",
+      "text": "不算伤。"
+    },
+    {
+      "quote_group": "QG0006",
+      "event": "low_hp",
+      "text": "热血……最后一滴，献给这场厮杀！"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "enter",
+      "text": "（烟雾弥漫）"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "enter",
+      "text": "吸一口……就够了。"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "death",
+      "text": "烟……散了……"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "death",
+      "text": "回铁砧城……"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "death",
+      "text": "下一批弹药，我还会来。"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "attack",
+      "text": "毒弹！"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "attack",
+      "text": "烟雾弹！"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "attack",
+      "text": "呼——"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "hurt",
+      "text": "呃……"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "hurt",
+      "text": "护目镜碎了？"
+    },
+    {
+      "quote_group": "QG0007",
+      "event": "low_hp",
+      "text": "最后一颗毒弹——全扔出去！"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "enter",
+      "text": "……（沉重的脚步）"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "enter",
+      "text": "城墙……不可逾越。"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "death",
+      "text": "碎……"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "death",
+      "text": "归于石……"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "death",
+      "text": "（轰然倒塌）"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "attack",
+      "text": "砸！"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "attack",
+      "text": "碾！"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "attack",
+      "text": "……盾击。"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "hurt",
+      "text": "……（盾面裂缝）"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "hurt",
+      "text": "一点小伤。"
+    },
+    {
+      "quote_group": "QG0008",
+      "event": "low_hp",
+      "text": "最后的石盾……也要还击！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "enter",
+      "text": "奥术……降临！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "enter",
+      "text": "（低声吟诵）"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "death",
+      "text": "咒文……断了……"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "death",
+      "text": "回归法师塔……"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "death",
+      "text": "下一次考试……我还会被召唤……"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "attack",
+      "text": "奥术飞弹！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "attack",
+      "text": "魔力冲击！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "attack",
+      "text": "灵魂剥离！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "hurt",
+      "text": "啊！"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "hurt",
+      "text": "施法……被打断……"
+    },
+    {
+      "quote_group": "QG0009",
+      "event": "low_hp",
+      "text": "法力……收我为仆吧——！"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "enter",
+      "text": "孩子们，饮下圣光之水……"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "enter",
+      "text": "古老的教堂，借我一分力量。"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "death",
+      "text": "经文……枯萎……"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "death",
+      "text": "圣光……缩回……"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "death",
+      "text": "四季终究会再循环……"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "attack",
+      "text": "圣光灌注！"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "attack",
+      "text": "圣鞭！"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "attack",
+      "text": "神圣审判！"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "hurt",
+      "text": "法袍……脱落……"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "hurt",
+      "text": "一点小伤不要紧。"
+    },
+    {
+      "quote_group": "QG0010",
+      "event": "low_hp",
+      "text": "最后一页经文——化作审判！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "enter",
+      "text": "法师塔的力量……不是你能想象的！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "enter",
+      "text": "奥术军团……比你想象的多。"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "enter",
+      "text": "我研究了百年的咒文，全在等这一刻。"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "death",
+      "text": "我的……法力……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "death",
+      "text": "奥术……只是另一个开始……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "death",
+      "text": "法师塔会记住我的名字……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "奥术风暴！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "魔力腐蚀！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "attack",
+      "text": "黑暗吞噬！"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "hurt",
+      "text": "法力护盾……碎了？"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "hurt",
+      "text": "不可能……"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "hurt",
+      "text": "你的招式……我已记下。"
+    },
+    {
+      "quote_group": "QG9001",
+      "event": "low_hp",
+      "text": "用我的法力……召唤最后的奥术！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "enter",
+      "text": "白银之手……绝不容许邪恶存在！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "enter",
+      "text": "嗅到了……恐惧的味道……"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "enter",
+      "text": "以圣光之名，我要审判你！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "death",
+      "text": "圣光……我尽力了……"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "death",
+      "text": "（最后一声怒吼）"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "death",
+      "text": "我的盾……交给后辈……"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "圣光冲击！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "正义之锤！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "attack",
+      "text": "审判！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "hurt",
+      "text": "圣光护盾……承受住了！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "hurt",
+      "text": "嗬！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "hurt",
+      "text": "没关系，我还能再战！"
+    },
+    {
+      "quote_group": "QG9002",
+      "event": "low_hp",
+      "text": "圣光……赐予我……最后的狂暴！"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "enter",
+      "text": "你进入了我的猎场。"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "enter",
+      "text": "（弓弦轻响）"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "enter",
+      "text": "影子替我锁定了你。"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "death",
+      "text": "箭袋……空了……"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "death",
+      "text": "一箭之差……我的狩猎……"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "death",
+      "text": "下一次……我会先瞄准喉咙……"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "attack",
+      "text": "穿林箭！"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "attack",
+      "text": "影刺！"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "attack",
+      "text": "咻——"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "hurt",
+      "text": "擦伤罢了。"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "hurt",
+      "text": "距离还不够近。"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "hurt",
+      "text": "我低估了你。"
+    },
+    {
+      "quote_group": "QG9003",
+      "event": "low_hp",
+      "text": "最后一支箭——必须命中要害。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "enter",
+      "text": "千年的圣光，被你这小小的杂兵惊扰了……不可饶恕。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "enter",
+      "text": "圣骑士们，听令——把他的骨头碾成圣灰。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "我的……圣光宝石……不——！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "这不可能……大主教……不灭的……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "千年的圣光契约……断了……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "不……你以为这就结束了？（笑声渐远）"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "death",
+      "text": "圣灰……终究……要落地……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "attack",
+      "text": "圣光风暴！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "attack",
+      "text": "圣光之矛！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "attack",
+      "text": "让圣光大军吞噬你！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "hurt",
+      "text": "圣光宝石……动摇了……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "hurt",
+      "text": "你……竟能伤到我？"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "hurt",
+      "text": "不该……这法袍不该裂的……"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "hurt",
+      "text": "区区一击，惊不醒圣者。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "low_hp",
+      "text": "圣光宝石……碎裂吧——释放一切圣光之力！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "low_hp",
+      "text": "圣光之墙，给我立起来！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "low_hp",
+      "text": "我的圣骑士大军……全部听令！"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "greet",
+      "text": "千年的圣光，被你这小小的杂兵惊扰了……不可饶恕。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "greet",
+      "text": "又一个不知死活的来客？我的教堂从不嫌信徒多。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "greet",
+      "text": "能踏进这座圣殿的邪物，最后都成了我的净化品。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "dispatch",
+      "text": "圣骑士们，听令——把他的骨头碾成圣灰。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "dispatch",
+      "text": "卫兵，起立。让他先和你们的旧战友打个招呼。"
+    },
+    {
+      "quote_group": "QG9101",
+      "event": "dispatch",
+      "text": "我懒得为你抬手——卫兵已经够多了。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "enter",
+      "text": "飓风城把你交给了我——这片城墙上，每一块石头都记得我的名字。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "enter",
+      "text": "石像们，起。把他缠住——我走一步，城墙就长一尺。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "城墙……断开……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "回归大地……养育下一代……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "石壁……会再次凝聚……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "这场战斗……滋养了城池……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "death",
+      "text": "倒下的是我……活下来的是城……"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "attack",
+      "text": "石拳重击！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "attack",
+      "text": "大地摇动！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "attack",
+      "text": "城墙崩裂！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "hurt",
+      "text": "表皮裂开——里面还是石头。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "hurt",
+      "text": "一层剥落，十层依旧。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "hurt",
+      "text": "小伤。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "hurt",
+      "text": "城墙的厚度，超出你想象。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "low_hp",
+      "text": "城墙最深处——释放全部力量！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "low_hp",
+      "text": "大地之心——为我加压！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "low_hp",
+      "text": "和这座城一起压碎他！"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "greet",
+      "text": "飓风城把你交给了我——这片城墙上，每一块石头都记得我的名字。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "greet",
+      "text": "从城门的基石里生长出来，就是为了处理你们这样的访客。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "greet",
+      "text": "你踏的每一步石板，都会在我脚下凝成壁垒。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "dispatch",
+      "text": "石像们，起。把他缠住——我走一步，城墙就长一尺。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "dispatch",
+      "text": "石卫士——上前。我很久没亲自挥拳了。"
+    },
+    {
+      "quote_group": "QG9102",
+      "event": "dispatch",
+      "text": "先让他在城墙里挣扎片刻。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "enter",
+      "text": "我审判了这座城里所有的异端，也审判了每一个入侵者。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "enter",
+      "text": "审判官们——起舞。让他看看圣光真正的模样。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "审判……反噬了我自己……"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "（咳出金色的光）"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "姐妹们……记住这个名字……"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "法杖……断了……"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "death",
+      "text": "我会在圣光里等你……下次相见……"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "attack",
+      "text": "审判爆发！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "attack",
+      "text": "圣光灼烧！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "attack",
+      "text": "千锁缠绕！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "hurt",
+      "text": "扰我施法……代价不小。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "hurt",
+      "text": "法袍破了一角——无妨。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "hurt",
+      "text": "一点皮肉伤。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "hurt",
+      "text": "审判尚未结束。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "low_hp",
+      "text": "全部的圣光——融入最后一击！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "low_hp",
+      "text": "审判的精华——凝成一刀！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "low_hp",
+      "text": "我与教堂同归于尽也无所谓！"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "greet",
+      "text": "我审判了这座城里所有的异端，也审判了每一个入侵者。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "greet",
+      "text": "你闻到的每一缕焚香，都是我的亲手点燃。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "greet",
+      "text": "三百年前，我把第一个闯入者绑上了火刑架。今晚——轮到你了。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "dispatch",
+      "text": "审判官们——起舞。让他看看圣光真正的模样。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "dispatch",
+      "text": "我的爪牙早已饥渴——先给他们一点开胃菜。"
+    },
+    {
+      "quote_group": "QG9103",
+      "event": "dispatch",
+      "text": "我的指甲不屑沾这种血。姐妹们，你们上。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "enter",
+      "text": "这座城从我执剑的那一刻起，就吞噬了无数像你这样的来客。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "enter",
+      "text": "卫兵，缠住他。弓箭手，蒙住他的眼。让他成为城墙的一部分。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "飓风城……终将……重建……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "你……是第一个……击败我的人……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "剑锋……回归大地……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "下一任元帅……不再属于我……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "death",
+      "text": "让我倒下吧……城池需要新的守护者……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "attack",
+      "text": "大地之怒！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "attack",
+      "text": "剑锋绞杀！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "attack",
+      "text": "千年之力！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "不过是……铠甲划痕……"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "千年元帅……岂会轻倒？"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "入侵者……我已见过太多。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "每一刀，我都会记下来。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "hurt",
+      "text": "你的剑锋……还不够利。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "low_hp",
+      "text": "飓风城啊——赐予我最后的力量！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "low_hp",
+      "text": "千年元帅，岂会倒于你手！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "low_hp",
+      "text": "卫兵，缠住他！决不能让他离开城池！"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "greet",
+      "text": "这座城从我执剑的那一刻起，就吞噬了无数像你这样的来客。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "greet",
+      "text": "我用千年守护，你却想用几个回合攻破我？可笑。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "greet",
+      "text": "你脚下的石板，曾埋葬过一百个像你这样的入侵者。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "dispatch",
+      "text": "卫兵，缠住他。弓箭手，蒙住他的眼。让他成为城墙的一部分。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "dispatch",
+      "text": "城中的子嗣们——上前。让他听见石板下亡魂的低语。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "dispatch",
+      "text": "我从不亲自动手——飓风城会替我处理一切。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "phase2_taunt",
+      "text": "划痕？你以为能击败我？——下一刀你会记得更深。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "phase2_taunt",
+      "text": "这点刀伤，我千年前就开始愈合了。"
+    },
+    {
+      "quote_group": "QG9104",
+      "event": "phase2_taunt",
+      "text": "你激怒了我。飓风城会把你困在此刻，直到你耗尽。"
     },
     {
       "quote_group": "QG0101",
@@ -3290,106 +4468,6 @@
       "text": "圣光……赐予我……"
     },
     {
-      "quote_group": "QG9001",
-      "event": "enter",
-      "text": "死者……听从我的召唤！"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "death",
-      "text": "我的……亡灵们……"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "attack",
-      "text": "亡灵术！"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "attack",
-      "text": "腐蚀！"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "attack",
-      "text": "黑暗吞噬！"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "hurt",
-      "text": "骨盾……碎了？"
-    },
-    {
-      "quote_group": "QG9001",
-      "event": "low_hp",
-      "text": "用我的骸骨……召唤最后的亡灵！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "enter",
-      "text": "月光之下……狼群为王！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "death",
-      "text": "狼王……倒下了……"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "attack",
-      "text": "撕碎！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "attack",
-      "text": "狂暴！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "attack",
-      "text": "嗷——！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "hurt",
-      "text": "疼痛……让我更愤怒！"
-    },
-    {
-      "quote_group": "QG9002",
-      "event": "low_hp",
-      "text": "月光……赐予我……"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "enter",
-      "text": "（冰冷的咆哮响彻山谷）"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "death",
-      "text": "（碎裂成无数冰晶）"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "attack",
-      "text": "冰息！"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "attack",
-      "text": "冻住吧！"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "hurt",
-      "text": "龙鳞……裂了？"
-    },
-    {
-      "quote_group": "QG9003",
-      "event": "low_hp",
-      "text": "最后的……寒冰吐息……"
-    },
-    {
       "quote_group": "QG9004",
       "event": "enter",
       "text": "渺小的生物……敢闯冰封王座？"
@@ -3603,126 +4681,6 @@
       "quote_group": "QG9010",
       "event": "low_hp",
       "text": "虚空的全部力量……释放！"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "enter",
-      "text": "哈哈哈……又一个活人，送上门来了。"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "death",
-      "text": "我的……灵魂宝石……不——！"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "attack",
-      "text": "亡灵风暴！"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "attack",
-      "text": "骸骨之矛！"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "hurt",
-      "text": "灵魂宝石……动摇了……"
-    },
-    {
-      "quote_group": "QG9101",
-      "event": "low_hp",
-      "text": "灵魂宝石……碎裂吧——！"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "enter",
-      "text": "千年……未曾有人……走到这里。"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "death",
-      "text": "你……是第一个……砍倒我的人……"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "attack",
-      "text": "大地之怒！"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "attack",
-      "text": "根须绞杀！"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "hurt",
-      "text": "不过是……树皮划痕……"
-    },
-    {
-      "quote_group": "QG9102",
-      "event": "low_hp",
-      "text": "大地啊……赐予我……最后的力量——！"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "enter",
-      "text": "冰封山脉的女王……亲自迎接你。"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "death",
-      "text": "（冰雕碎裂）"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "attack",
-      "text": "暴风雪！"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "attack",
-      "text": "冰封！"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "hurt",
-      "text": "我的冰甲……裂了？"
-    },
-    {
-      "quote_group": "QG9103",
-      "event": "low_hp",
-      "text": "冰封……整个世界吧——！"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "enter",
-      "text": "跪下……在巫妖王面前。"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "death",
-      "text": "永恒的寒冬……终结了？"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "attack",
-      "text": "霜之哀伤！"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "attack",
-      "text": "臣服于寒冰！"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "hurt",
-      "text": "不过是……暖风拂面。"
-    },
-    {
-      "quote_group": "QG9104",
-      "event": "low_hp",
-      "text": "所有人……都将臣服于寒冰王座——！"
     },
     {
       "quote_group": "QG9105",

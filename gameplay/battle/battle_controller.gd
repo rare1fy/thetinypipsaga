@@ -57,7 +57,7 @@ var _is_resolving: bool = false
 func _ready() -> void:
 	# 初始化 WorldLayer 和 EnemyContainer 引用
 	# 场景结构：BattleScene > WorldLayer > EnemyContainer（Node2D 世界层，承载敌人与震屏）
-	#          BattleScene > UILayer > Root > VBox（状态栏 / Spacer占位 / 手牌区）
+#          BattleScene > UILayer > Root（TopBar + BottomPanel 锚点定位）
 	world_layer = get_node_or_null("%WorldLayer")
 	if world_layer == null:
 		push_warning("[BattleController] 未找到 WorldLayer 节点，震屏将作用于自身")
@@ -220,14 +220,15 @@ func start_battle(encounter: Dictionary = {}) -> void:
 		# 通过工厂按 enemy_id 加载对应 tscn（独立 tscn 优先，兜底 enemy_view.tscn）
 		var view: EnemyView = EnemyFactory.create(enemy_id)
 		enemy_container.add_child(view)  # 先加入树触发 _ready() 构建 UI
-		view.set_slot_index(i)           # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
+		var slot_idx: int = BattleScene.get_slot_assignment(enemies.size(), i)
+		view.set_slot_index(slot_idx)    # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
 		view.init(enemy_id)             # 再绑定数据
 		# 设初始位置：用 enemy 真实 distance 查表
 		var battle_scene := owner as BattleScene
 		if battle_scene != null:
 			var e_inst: EnemyInstance = view.get_enemy_instance()
 			var real_dist: int = e_inst.distance if e_inst else 1
-			var init_visuals: Dictionary = battle_scene.get_slot_visuals(i, real_dist)
+			var init_visuals: Dictionary = battle_scene.get_slot_visuals(slot_idx, real_dist)
 			view.position = init_visuals.position
 		view.enemy_clicked.connect(_on_enemy_clicked)
 		enemy_views.append(view)

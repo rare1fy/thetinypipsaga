@@ -22,61 +22,58 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 ## ========================================================
 
 @export_group("敌人透视·Slot0(中)")
-@export var 中_距离1坐标: Vector2 = Vector2(0, 150)
-@export var 中_距离1缩放: float = 0.95
-@export var 中_距离1纵深Y偏移: float = -5.0
+@export var 中_距离1坐标: Vector2 = Vector2(0, 60)
+@export var 中_距离1缩放: float = 1.2
+@export var 中_距离1纵深Y偏移: float = 0.0
 @export var 中_距离1亮度: float = 1.0
 @export var 中_距离1渲染层级: int = 7
 
-@export var 中_距离2坐标: Vector2 = Vector2(0, 40)
-@export var 中_距离2缩放: float = 0.75
-@export var 中_距离2纵深Y偏移: float = -25.0
-@export var 中_距离2亮度: float = 0.9
+@export var 中_距离2坐标: Vector2 = Vector2(0, 20)
+@export var 中_距离2缩放: float = 0.9
+@export var 中_距离2纵深Y偏移: float = 0.0
+@export var 中_距离2亮度: float = 0.88
 @export var 中_距离2渲染层级: int = 5
 
-@export var 中_距离3坐标: Vector2 = Vector2(0, -66)
-@export var 中_距离3缩放: float = 0.6
-@export var 中_距离3纵深Y偏移: float = -50.0
-@export var 中_距离3亮度: float = 0.82
-@export var 中_距离3渲染层级: int = 3
-
 @export_group("敌人透视·Slot1(左)")
-@export var 左_距离1坐标: Vector2 = Vector2(-192, 13)
-@export var 左_距离1缩放: float = 0.95
-@export var 左_距离1纵深Y偏移: float = -5.0
+@export var 左_距离1坐标: Vector2 = Vector2(-80, 60)
+@export var 左_距离1缩放: float = 1.2
+@export var 左_距离1纵深Y偏移: float = 0.0
 @export var 左_距离1亮度: float = 1.0
 @export var 左_距离1渲染层级: int = 7
 
-@export var 左_距离2坐标: Vector2 = Vector2(-154, -1)
-@export var 左_距离2缩放: float = 0.75
-@export var 左_距离2纵深Y偏移: float = -25.0
-@export var 左_距离2亮度: float = 0.9
+@export var 左_距离2坐标: Vector2 = Vector2(-60, 20)
+@export var 左_距离2缩放: float = 0.9
+@export var 左_距离2纵深Y偏移: float = 0.0
+@export var 左_距离2亮度: float = 0.88
 @export var 左_距离2渲染层级: int = 5
 
-@export var 左_距离3坐标: Vector2 = Vector2(-131, -9)
-@export var 左_距离3缩放: float = 0.6
-@export var 左_距离3纵深Y偏移: float = -50.0
-@export var 左_距离3亮度: float = 0.82
-@export var 左_距离3渲染层级: int = 3
-
 @export_group("敌人透视·Slot2(右)")
-@export var 右_距离1坐标: Vector2 = Vector2(192, 15)
-@export var 右_距离1缩放: float = 0.95
-@export var 右_距离1纵深Y偏移: float = -5.0
+@export var 右_距离1坐标: Vector2 = Vector2(80, 60)
+@export var 右_距离1缩放: float = 1.2
+@export var 右_距离1纵深Y偏移: float = 0.0
 @export var 右_距离1亮度: float = 1.0
 @export var 右_距离1渲染层级: int = 7
 
-@export var 右_距离2坐标: Vector2 = Vector2(154, 0)
-@export var 右_距离2缩放: float = 0.75
-@export var 右_距离2纵深Y偏移: float = -25.0
-@export var 右_距离2亮度: float = 0.9
+@export var 右_距离2坐标: Vector2 = Vector2(60, 20)
+@export var 右_距离2缩放: float = 0.9
+@export var 右_距离2纵深Y偏移: float = 0.0
+@export var 右_距离2亮度: float = 0.88
 @export var 右_距离2渲染层级: int = 5
 
-@export var 右_距离3坐标: Vector2 = Vector2(131, -9)
-@export var 右_距离3缩放: float = 0.6
-@export var 右_距离3纵深Y偏移: float = -50.0
-@export var 右_距离3亮度: float = 0.82
-@export var 右_距离3渲染层级: int = 3
+
+## Slot 分配策略：根据敌人总数决定每个敌人的 slot 位置
+## 1个敌人 → [0] (中)
+## 2个敌人 → [1, 2] (左, 右)
+## 3个敌人 → [1, 0, 2] (左, 中, 右)
+## 4个敌人 → [1, 0, 2, 0] (左, 中, 右, 中偏移 — 兜底)
+static func get_slot_assignment(enemy_count: int, enemy_index: int) -> int:
+	match enemy_count:
+		1:
+			return 0  # 中
+		2:
+			return [1, 2][enemy_index] if enemy_index < 2 else 0
+		3, _:
+			return [1, 0, 2][enemy_index] if enemy_index < 3 else 0
 
 
 ## 查表接口：根据 slot_index 和 distance 返回该档位的全部透视参数
@@ -84,7 +81,7 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 ## distance: 就是 enemy.distance 的值，敌人头上显示"距N"就传 N
 ## 返回: { position, depth_scale, depth_y, depth_brightness, depth_z }
 func get_slot_visuals(slot_index: int, distance: int) -> Dictionary:
-	var d: int = clampi(distance, 1, 3)
+	var d: int = clampi(distance, 1, 2)
 	var prefix: String = ["中", "左", "右"][clampi(slot_index, 0, 2)]
 	var d_suffix: String = "距离%d" % d
 	var pos: Vector2 = _get_export_vec2(prefix, d_suffix, "坐标")
@@ -145,23 +142,26 @@ func _ready() -> void:
 	_bootstrap_from_pending_wave()
 
 
-## 根据当前关卡深度加载对应的静态战斗背景（CH1 有 6 张场景图按进度固定分配）
-## 场景分配规则：
-##   depth 0~6  普通/精英战 → scene_01（艾林森林）/ scene_02（荒野农场）交替
-##   depth 7    中层Boss   → scene_03（飓风城外城门）
-##   depth 8~13 普通/精英战 → scene_04（飓风城街道）/ scene_05（飓风城监狱）交替
-##   depth 14   终极Boss   → scene_06（飓风城王座大厅）
+## 配置表驱动的战斗背景加载（24张场景图 + 防重复）
+## 通过 BattleBgConfig 根据节点类型和 depth 从对应池中随机选取
+var _last_bg_path: String = ""  ## 防重复：记录上一次使用的背景路径
+
 func _apply_static_background() -> void:
 	var bg_node: Node2D = get_node_or_null("%SceneBG")
 	if bg_node == null:
 		return
 	var depth: int = GameManager.current_node
-	var scene_index: int = _get_scene_index_for_depth(depth)
-	var bg_path: String = "res://assets/scene/scene_ch1_%02d.png" % scene_index
+	var node_type: GameTypes.NodeType = GameManager.current_node_type
+	# 从配置表获取随机背景（带防重复）
+	var bg_path: String = _pick_bg_no_repeat(node_type, depth)
+	if bg_path.is_empty():
+		push_warning("[BattleScene] 无可用背景，node_type=%s depth=%d" % [node_type, depth])
+		return
 	var tex: Texture2D = load(bg_path) as Texture2D
 	if tex == null:
 		push_warning("[BattleScene] 背景加载失败: %s" % bg_path)
 		return
+	_last_bg_path = bg_path
 	# 隐藏 Sky / FarView / MidView，只用 GroundBase 铺满整个视口
 	var sky: Sprite2D = bg_node.get_node_or_null("Sky") as Sprite2D
 	var far: Sprite2D = bg_node.get_node_or_null("FarView") as Sprite2D
@@ -175,36 +175,27 @@ func _apply_static_background() -> void:
 		mid.visible = false
 	if ground != null:
 		ground.texture = tex
-		# 根据实际视口大小动态计算 scale，确保背景铺满整个视口
 		var vp_size: Vector2 = get_viewport_rect().size
 		var tex_size: Vector2 = Vector2(tex.get_width(), tex.get_height())
-		# 取较大的缩放比例确保完全覆盖（cover 模式）
 		var scale_x: float = vp_size.x / tex_size.x
 		var scale_y: float = vp_size.y / tex_size.y
 		var final_scale: float = maxf(scale_x, scale_y)
 		ground.scale = Vector2(final_scale, final_scale)
-		ground.position = Vector2(vp_size.x * 0.5, vp_size.y * 0.5)  # 视口中心
+		ground.position = Vector2(vp_size.x * 0.5, vp_size.y * 0.5)
 		ground.z_index = -40
-		# 同步更新 BgParallax 的基准 Y（它在子节点 _ready 时已快照旧值）
 		var bg_script: BgParallax = bg_node as BgParallax
 		if bg_script != null:
 			bg_script._base_y_ground = vp_size.y * 0.5
 
 
-## 根据 depth 决定使用哪张场景背景（返回 1~6）
-func _get_scene_index_for_depth(depth: int) -> int:
-	if depth <= 6:
-		# 中Boss前：普通战A/B交替（scene_01 艾林森林 / scene_02 荒野农场）
-		return 1 if GameManager.nodes_visited % 2 == 0 else 2
-	elif depth == 7:
-		# 中层Boss（scene_03 飓风城外城门）
-		return 3
-	elif depth <= 13:
-		# 中Boss后：普通战C/D交替（scene_04 飓风城街道 / scene_05 飓风城监狱）
-		return 4 if GameManager.nodes_visited % 2 == 0 else 5
-	else:
-		# 终极Boss depth=14（scene_06 飓风城王座大厅）
-		return 6
+## 防重复选取：最多重试 5 次避免连续两场相同背景
+func _pick_bg_no_repeat(node_type: GameTypes.NodeType, depth: int) -> String:
+	var path: String = BattleBgConfig.get_random_bg(node_type, depth)
+	var attempts: int = 0
+	while path == _last_bg_path and attempts < 5:
+		path = BattleBgConfig.get_random_bg(node_type, depth)
+		attempts += 1
+	return path
 
 
 ## 玩家双手系统 — 接入受击 / 死亡 动画
@@ -325,17 +316,19 @@ func _bootstrap_from_pending_wave() -> void:
 	# 用完即清，防止下一次战斗复用旧数据
 	GameManager.pending_wave = []
 
-	# Boss 入场演出：检查波次中是否有 Boss 级敌人
-	var boss_enemy: EnemyInstance = null
-	for e in wave:
-		if e is EnemyInstance and EliteEnhancer.is_boss(e):
-			boss_enemy = e
-			break
+	# Boss 入场演出：检查波次中是否有 Boss 级敌人（通过 EnemyConfig 查 category）
+	var boss_name: String = ""
+	for e_id in wave:
+		if e_id is String:
+			var cfg: EnemyConfig = EnemyConfig.get_config(e_id)
+			if cfg != null and cfg.category == EnemyConfig.EnemyCategory.BOSS:
+				boss_name = cfg.name
+				break
 
-	if boss_enemy != null:
-		var depth: int = GameManager.current_depth
+	if boss_name != "":
+		var depth: int = GameManager.current_node
 		var is_final: bool = depth >= GameBalance.MAP_CONFIG.totalLayers - 1
-		BossEntrance.play(self, boss_enemy.display_name, GameManager.chapter, is_final, func():
+		BossEntrance.play(self, boss_name, GameManager.chapter, is_final, func():
 			controller.start_battle({"enemies": wave})
 		)
 	else:
@@ -532,14 +525,15 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 		# 通过工厂按 enemy_id 加载对应 tscn（独立 tscn 优先，兜底 enemy_view.tscn）
 		var view: EnemyView = EnemyFactory.create(enemy_id)
 		controller.enemy_container.add_child(view)
-		view.set_slot_index(i)           # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
+		var slot_idx: int = BattleScene.get_slot_assignment(next_enemy_ids.size(), i)
+		view.set_slot_index(slot_idx)    # 先设 slot，再 init（init→setup→_refresh_visual 会读 _slot_index）
 		view.init(enemy_id)
 		# 设初始位置：用 enemy 真实 distance 查表
 		var battle_scene_ref := owner as BattleScene
 		if battle_scene_ref != null:
 			var e_inst: EnemyInstance = view.get_enemy_instance()
 			var real_dist: int = e_inst.distance if e_inst else 1
-			var init_vis: Dictionary = battle_scene_ref.get_slot_visuals(i, real_dist)
+			var init_vis: Dictionary = battle_scene_ref.get_slot_visuals(slot_idx, real_dist)
 			view.position = init_vis.position
 		view.enemy_clicked.connect(controller._on_enemy_clicked)
 		controller.enemy_views.append(view)

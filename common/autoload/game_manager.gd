@@ -233,6 +233,9 @@ var current_node: int:
 	get: return PlayerState.current_node
 	set(v): PlayerState.current_node = v
 
+## 当前战斗节点类型（进入战斗时由 map_screen 设置）
+var current_node_type: GameTypes.NodeType = GameTypes.NodeType.ENEMY
+
 var map_nodes: Array[MapGenerator.MapNode]:
 	get: return PlayerState.map_nodes
 	set(v): PlayerState.map_nodes = v

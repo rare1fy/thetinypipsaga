@@ -22,27 +22,33 @@ const CELL_SIZE := 64
 
 ## art_id → (row, col) 在 spritesheet 中的位置
 ## 顺序与精灵图表中实际排列一致
+## spritesheet 布局（10列×4行）：
+##   Row 3: 10 sprites (普通小怪) — cols 0-9
+##   Row 1-2: 5 sprites (精英/中Boss) — Row1 cols 0-2, Row2 cols 0-1
+##   Row 0: 2 sprites (Boss级) — cols 0-1
 const _ART_GRID_MAP: Dictionary = {
-	# 数值 ID 映射（JSON 配置表使用）
-	"m10001":            Vector2i(0, 0),
-	# 语义 ID 映射（兼容旧代码）
-	"human_footman":     Vector2i(0, 0),
-	"dwarf_musketeer":   Vector2i(1, 0),
-	"heavy_knight":      Vector2i(1, 1),
-	"priest_apprentice": Vector2i(1, 2),
-	"dwarf_priest":      Vector2i(2, 0),
-	"berserker_footman": Vector2i(2, 1),
-	"dwarf_bomber":      Vector2i(2, 2),
-	"stone_guardian":    Vector2i(3, 0),
-	"dark_apprentice":   Vector2i(3, 1),
-	"holy_inquisitor":   Vector2i(3, 2),
-	"elite_archmage":    Vector2i(3, 3),
-	"elite_paladin":     Vector2i(3, 4),
-	"elite_ranger":      Vector2i(3, 5),
-	"boss_archbishop":   Vector2i(3, 6),
-	"boss_gate_colossus": Vector2i(3, 7),
-	"boss_witch_judge":  Vector2i(3, 8),
-	"boss_grand_marshal": Vector2i(3, 9),
+	# ── CH1 普通敌人（Row 3 的 10 个小怪精灵）──
+	"m10001": Vector2i(3, 0),   # 步兵列兵 (forest_ghoul) — 人类步兵
+	"m10002": Vector2i(3, 1),   # 矮人火枪手 (forest_spider) — 矮人火枪
+	"m10003": Vector2i(3, 2),   # 重甲骑士 (forest_treant) — 人类重甲
+	"m10004": Vector2i(3, 3),   # 牧师学徒 (forest_banshee) — 人类牧师
+	"m10005": Vector2i(3, 4),   # 矮人祭司 (forest_wolf_priest) — 矮人祭司
+	"m10006": Vector2i(3, 5),   # 狂战步兵 (forest_bone_reaver) — 人类狂战
+	"m10007": Vector2i(3, 6),   # 矮人毒弹兵 (forest_poison_sprite) — 矮人投弹
+	"m10008": Vector2i(3, 7),   # 石盾卫兵 (forest_moss_golem) — 人类盾卫
+	"m10009": Vector2i(3, 8),   # 暗法学徒 (forest_wraith_cultist) — 人类法师
+	"m10010": Vector2i(3, 9),   # 圣光司铎 (forest_old_willow) — 人类司铎
+
+	# ── CH1 精英敌人（Row 1 的中型精灵）──
+	"m10011": Vector2i(1, 0),   # 大法师 (elite_necromancer) — 人类大法师
+	"m10012": Vector2i(1, 1),   # 圣骑士队长 (elite_alpha_wolf) — 人类圣骑士
+	"m10013": Vector2i(1, 2),   # 精锐游骑兵 (elite_phantom_hunter) — 人类游侠
+
+	# ── CH1 Boss（Row 2 + Row 0 的大型精灵）──
+	"m10014": Vector2i(2, 0),   # 大主教 (boss_lich_forest) — 中Boss
+	"m10015": Vector2i(2, 1),   # 城门巨像 (boss_root_colossus) — 中Boss
+	"m10016": Vector2i(0, 0),   # 女巫审判官 (boss_coven_matriarch) — 中Boss
+	"m10017": Vector2i(0, 1),   # 人族大元帅 (boss_ancient_treant) — 终极Boss
 }
 
 ## 缓存已加载的 AtlasTexture（避免重复创建）

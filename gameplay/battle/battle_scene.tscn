@@ -10,52 +10,27 @@
 [ext_resource type="Theme" uid="uid://bv80qovuttmwt" path="res://data/dungeon_theme.tres" id="11_theme"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y8pa6"]
-load_path = "res://.godot/imported/img_scene_sky.png-cc0c3a88ba720f4b42fc3c5372e11f2c.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oiajq"]
-load_path = "res://.godot/imported/img_scene_far_view.png-eaa1255eadc500243889388d36074858.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ahca1"]
-load_path = "res://.godot/imported/img_scene_mid_view.png-2f29a645592eaaf6154f71aafebdc3e8.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kncta"]
-load_path = "res://.godot/imported/img_scene_ground.png-363d4c333284dd59d272f388ee343d25.ctex"
 
 [node name="BattleScene" type="Node2D"]
 script = ExtResource("1")
-"中_距离1坐标" = Vector2(0, 50)
-"中_距离1缩放" = 3.0
-"中_距离1纵深Y偏移" = 0.0
-"中_距离2坐标" = Vector2(0, 30)
+"中_距离1坐标" = Vector2(0, 160)
+"中_距离1缩放" = 4.0
+"中_距离2坐标" = Vector2(0, 100)
 "中_距离2缩放" = 2.0
-"中_距离2纵深Y偏移" = 0.0
-"中_距离2亮度" = 0.88
-"中_距离3坐标" = Vector2(0, -10)
-"中_距离3缩放" = 1.0
-"中_距离3纵深Y偏移" = 0.0
-"中_距离3亮度" = 0.8
-"左_距离1坐标" = Vector2(-100, 55)
-"左_距离1缩放" = 3.0
-"左_距离1纵深Y偏移" = 0.0
-"左_距离2坐标" = Vector2(-80, 10)
+"左_距离1坐标" = Vector2(-70, 160)
+"左_距离1缩放" = 4.0
+"左_距离2坐标" = Vector2(-55, 100)
 "左_距离2缩放" = 2.0
-"左_距离2纵深Y偏移" = 0.0
-"左_距离2亮度" = 0.88
-"左_距离3坐标" = Vector2(-65, -30)
-"左_距离3缩放" = 1.0
-"左_距离3纵深Y偏移" = 0.0
-"左_距离3亮度" = 0.8
-"右_距离1坐标" = Vector2(100, 55)
-"右_距离1缩放" = 3.0
-"右_距离1纵深Y偏移" = 0.0
-"右_距离2坐标" = Vector2(80, 10)
+"右_距离1坐标" = Vector2(70, 160)
+"右_距离1缩放" = 4.0
+"右_距离2坐标" = Vector2(55, 100)
 "右_距离2缩放" = 2.0
-"右_距离2纵深Y偏移" = 0.0
-"右_距离2亮度" = 0.88
-"右_距离3坐标" = Vector2(65, -30)
-"右_距离3缩放" = 1.0
-"右_距离3纵深Y偏移" = 0.0
-"右_距离3亮度" = 0.8
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 10
@@ -71,7 +46,75 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("11_theme")
 
-[node name="VBox" type="VBoxContainer" parent="UILayer/Root"]
+[node name="TopBar" type="PanelContainer" parent="UILayer/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 26.0
+grow_horizontal = 2
+theme_type_variation = &"PixelPanelDark"
+
+[node name="TopBarHBox" type="HBoxContainer" parent="UILayer/Root/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="GoldLabel" type="Label" parent="UILayer/Root/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"BodyLabel"
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 9
+text = "金币: 0"
+
+[node name="StageLabel" type="Label" parent="UILayer/Root/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 9
+text = "第 1 层"
+horizontal_alignment = 1
+
+[node name="WaveLabel" type="Label" parent="UILayer/Root/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.75, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1
+
+[node name="DamagePreview" type="PanelContainer" parent="UILayer/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -168.0
+offset_right = 70.0
+offset_bottom = -140.0
+grow_horizontal = 2
+script = ExtResource("3_8v9mz")
+
+[node name="BottomPanel" type="Control" parent="UILayer/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -136.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="BgPanel" type="Panel" parent="UILayer/Root/BottomPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -79,95 +122,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="TopBar" type="PanelContainer" parent="UILayer/Root/VBox"]
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
 theme_type_variation = &"PixelPanelDark"
 
-[node name="TopBarHBox" type="HBoxContainer" parent="UILayer/Root/VBox/TopBar"]
-layout_mode = 2
-theme_override_constants/separation = 16
+[node name="PlayerStatusBar" type="HBoxContainer" parent="UILayer/Root/BottomPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = 20.0
+theme_override_constants/separation = 4
 alignment = 1
 
-[node name="TopBarLeftPad" type="Control" parent="UILayer/Root/VBox/TopBar/TopBarHBox"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-
-[node name="GoldLabel" type="Label" parent="UILayer/Root/VBox/TopBar/TopBarHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"BodyLabel"
-theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
-theme_override_font_sizes/font_size = 14
-text = "金币: 0"
-
-[node name="StageLabel" type="Label" parent="UILayer/Root/VBox/TopBar/TopBarHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"TitleLabel"
-theme_override_font_sizes/font_size = 22
-text = "第 1 层"
-horizontal_alignment = 1
-
-[node name="TopBarRightPad" type="Control" parent="UILayer/Root/VBox/TopBar/TopBarHBox"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-
-[node name="WaveLabel" type="Label" parent="UILayer/Root/VBox/TopBar/TopBarHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.75, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 16
-horizontal_alignment = 1
-
-[node name="Spacer" type="Control" parent="UILayer/Root/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="DamagePreview" type="PanelContainer" parent="UILayer/Root/VBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 56)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-script = ExtResource("3_8v9mz")
-
-[node name="PlayerHUD" type="PanelContainer" parent="UILayer/Root/VBox"]
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
-theme_type_variation = &"PixelPanelDark"
-
-[node name="PlayerStatusBar" type="HBoxContainer" parent="UILayer/Root/VBox/PlayerHUD"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
-
-[node name="PlayerInfo" type="HBoxContainer" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="ClassIcon" type="Label" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar/PlayerInfo"]
+[node name="ClassIcon" type="Label" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"BodyLabel"
 theme_override_colors/font_color = Color(0.95, 0.82, 0.45, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 8
 text = "[战]"
 
-[node name="HpBar" type="ProgressBar" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar/PlayerInfo"]
+[node name="HpBar" type="ProgressBar" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 22)
+custom_minimum_size = Vector2(100, 8)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -175,7 +154,7 @@ theme_type_variation = &"HpBar"
 value = 100.0
 show_percentage = false
 
-[node name="HpLabel" type="Label" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar/PlayerInfo/HpBar"]
+[node name="HpLabel" type="Label" parent="UILayer/Root/BottomPanel/PlayerStatusBar/HpBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -183,111 +162,122 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -40.0
-offset_top = -9.0
-offset_right = 40.0
-offset_bottom = 9.0
+offset_left = -28.0
+offset_top = -6.0
+offset_right = 28.0
+offset_bottom = 6.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("3_t4vxl")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 8
 text = "100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ArmorLabel" type="Label" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar/PlayerInfo"]
+[node name="ArmorLabel" type="Label" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"BodyLabel"
 theme_override_colors/font_color = Color(0.42, 0.63, 0.82, 1)
+theme_override_font_sizes/font_size = 8
 
-[node name="TurnLabel" type="Label" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar"]
+[node name="TurnLabel" type="Label" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 8
 text = "回合 0"
 
-[node name="PlayerStatusIcons" type="HBoxContainer" parent="UILayer/Root/VBox/PlayerHUD/PlayerStatusBar"]
+[node name="PlayerStatusIcons" type="HBoxContainer" parent="UILayer/Root/BottomPanel/PlayerStatusBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 3
 
-[node name="HandPanel" type="PanelContainer" parent="UILayer/Root/VBox"]
-custom_minimum_size = Vector2(0, 160)
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"PixelPanel"
-
-[node name="HandVBox" type="VBoxContainer" parent="UILayer/Root/VBox/HandPanel"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 14
-alignment = 1
-
-[node name="DiceContainer" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel/HandVBox"]
+[node name="DeckInfoRow" type="HBoxContainer" parent="UILayer/Root/BottomPanel"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 65)
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="DeckInfoRow" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel/HandVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 22.0
+offset_right = -8.0
+offset_bottom = 34.0
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="DrawPileLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/DeckInfoRow"]
+[node name="DrawPileLabel" type="Label" parent="UILayer/Root/BottomPanel/DeckInfoRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.85, 1, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 8
 text = "🎲 抽牌堆: 0"
 
-[node name="DiscardPileLabel" type="Label" parent="UILayer/Root/VBox/HandPanel/HandVBox/DeckInfoRow"]
+[node name="DiscardPileLabel" type="Label" parent="UILayer/Root/BottomPanel/DeckInfoRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.6, 0.3, 0.9)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 8
 text = "♻ 弃牌堆: 0"
 
-[node name="BtnBar" type="HBoxContainer" parent="UILayer/Root/VBox/HandPanel"]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-size_flags_vertical = 8
+[node name="DiceContainer" type="HBoxContainer" parent="UILayer/Root/BottomPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 38.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="BtnBar" type="HBoxContainer" parent="UILayer/Root/BottomPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 98.0
+offset_right = -16.0
+offset_bottom = 130.0
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="RerollBtn" type="Button" parent="UILayer/Root/VBox/HandPanel/BtnBar"]
+[node name="RerollBtn" type="Button" parent="UILayer/Root/BottomPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 42)
+custom_minimum_size = Vector2(80, 28)
 layout_mode = 2
 theme_type_variation = &"GoldButton"
 theme_override_fonts/font = ExtResource("3_t4vxl")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 9
 text = "重投(1)"
 
-[node name="ActionBtn" type="Button" parent="UILayer/Root/VBox/HandPanel/BtnBar"]
+[node name="ActionBtn" type="Button" parent="UILayer/Root/BottomPanel/BtnBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 42)
+custom_minimum_size = Vector2(140, 28)
 layout_mode = 2
 theme_type_variation = &"GoldButton"
 theme_override_fonts/font = ExtResource("3_t4vxl")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 9
 text = "结束回合"
 
-[node name="RelicBar" type="VBoxContainer" parent="UILayer/Root/VBox"]
+[node name="RelicBar" type="VBoxContainer" parent="UILayer/Root"]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -140.0
+offset_bottom = -136.0
+grow_horizontal = 2
 theme_override_constants/separation = 0
 
 [node name="WorldLayer" type="Node2D" parent="."]
@@ -307,34 +297,34 @@ follow_ground_nodes = Array[NodePath]([NodePath("../EnemyContainer")])
 [node name="Sky" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -40
 z_as_relative = false
-position = Vector2(180, 364)
+position = Vector2(180, 280)
 scale = Vector2(0.276, 0.276)
 texture = SubResource("CompressedTexture2D_y8pa6")
 
 [node name="FarView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -30
 z_as_relative = false
-position = Vector2(180, 363)
+position = Vector2(180, 280)
 scale = Vector2(0.276, 0.276)
 texture = SubResource("CompressedTexture2D_oiajq")
 
 [node name="MidView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -20
 z_as_relative = false
-position = Vector2(180, 338.415)
+position = Vector2(180, 260)
 scale = Vector2(0.276, 0.276)
 texture = SubResource("CompressedTexture2D_ahca1")
 
 [node name="GroundBase" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -10
 z_as_relative = false
-position = Vector2(181, 334)
+position = Vector2(180, 260)
 scale = Vector2(0.276, 0.276)
 texture = SubResource("CompressedTexture2D_kncta")
 
 [node name="EnemyContainer" type="Node2D" parent="WorldLayer"]
 unique_name_in_owner = true
-position = Vector2(180, 360)
+position = Vector2(180, 240)
 
 [node name="SettlementPlayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
@@ -345,7 +335,7 @@ layer = 2
 
 [node name="PlayerHands" parent="PlayerHandsLayer" instance=ExtResource("5_hands")]
 unique_name_in_owner = true
-position = Vector2(180, 362)
+position = Vector2(180, 320)
 scale = Vector2(0.667, 0.667)
 left_hand_base_pos = Vector2(-40, 0)
 right_hand_base_pos = Vector2(60, 0)
