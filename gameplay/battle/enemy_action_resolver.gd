@@ -33,7 +33,7 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 	var wr: WeakRef = weakref(controller)
 	# v0.5 §1.8.2 眩晕：完全跳过行动
 	if ControlSystem.should_skip_action(e):
-		BattleLog.log_status("💫 %s 被眩晕，跳过行动" % e.name)
+		BattleLog.log_status("* %s 被眩晕，跳过行动" % e.name)
 		EnemyMgr.refresh_enemy_views(controller.enemy_views)
 		controller.get_tree().create_timer(0.3).timeout.connect(
 			func() -> void:
@@ -55,8 +55,8 @@ static func run_turn(controller: Node, living: Array[EnemyInstance], index: int 
 				var sheep_dmg: int = e.attack_dmg
 				PlayerState.take_damage(sheep_dmg)
 				e.attack_count += 1
-				var sheep_type: String = "羊王" if sheep_dmg >= 20 else "🐑"
-				BattleLog.log_enemy("⚔ %s（%s）攻击 → %d 伤害" % [_get_name(e), sheep_type, sheep_dmg])
+				var sheep_type: String = "羊王" if sheep_dmg >= 20 else "S"
+				BattleLog.log_enemy("X %s（%s）攻击 → %d 伤害" % [_get_name(e), sheep_type, sheep_dmg])
 				SoundPlayer.play_sound("enemy")
 				var on_shake_p: Callable = func(strength: float, duration: float) -> void:
 					var cc: Node = wr_poly.get_ref() as Node
@@ -263,10 +263,10 @@ static func _resolve_via_effect_engine(
 			blind_dmg = int(float(blind_dmg) * blind_trait_mul)
 		if blind_target.uid == e.uid:
 			blind_target.hp = maxi(0, blind_target.hp - blind_dmg)
-			BattleLog.log_status("👁 %s 致盲 → 自伤 %d！" % [_get_name(e), blind_dmg])
+			BattleLog.log_status("E %s 致盲 → 自伤 %d！" % [_get_name(e), blind_dmg])
 		else:
 			blind_target.hp = maxi(0, blind_target.hp - blind_dmg)
-			BattleLog.log_status("👁 %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), blind_dmg])
+			BattleLog.log_status("E %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), blind_dmg])
 		VFX.show_toast("致盲!", "debuff")
 		e.attack_count += 1
 		return
@@ -294,7 +294,7 @@ static func _resolve_via_effect_engine(
 			final_dmg = 1
 		PlayerState.take_damage(final_dmg)
 		e.attack_count += 1
-		BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), final_dmg])
+		BattleLog.log_enemy("X %s 攻击 → %d 伤害" % [_get_name(e), final_dmg])
 		SoundPlayer.play_sound("enemy")
 		if on_shake.is_valid():
 			on_shake.call(5.0, 0.2)
@@ -315,7 +315,7 @@ static func _resolve_via_effect_engine(
 			if allies.size() > 0:
 				var target: EnemyInstance = allies[randi() % allies.size()]
 				target.armor += armor_val
-				BattleLog.log_enemy("✦ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), armor_val])
+				BattleLog.log_enemy("+ %s 为 %s 施加护甲（+%d）" % [_get_name(e), _get_name(target), armor_val])
 			else:
 				e.armor += armor_val
 				BattleLog.log_enemy("[A] %s 获得护甲（+%d）" % [_get_name(e), armor_val])
@@ -346,7 +346,7 @@ static func _resolve_via_effect_engine(
 				heal_target = wounded[0]  # _find_wounded_allies 已按血量排序
 		heal_target.hp = mini(heal_target.max_hp, heal_target.hp + result.heal)
 		SoundPlayer.play_sound("heal")
-		BattleLog.log_enemy("✚ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(heal_target), result.heal])
+		BattleLog.log_enemy("+ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(heal_target), result.heal])
 
 	# 状态效果（施加给玩家）
 	if not result.apply_statuses.is_empty():
@@ -367,7 +367,7 @@ static func _resolve_via_effect_engine(
 				var st_type: int = _status_name_to_game_type(st_name)
 				if st_type >= 0:
 					GameManager.add_status(st_type, st_value, st_duration)
-					BattleLog.log_status("✦ %s 施加 %s %d" % [_get_name(e), st_name, st_value])
+					BattleLog.log_status("+ %s 施加 %s %d" % [_get_name(e), st_name, st_value])
 		# Caster DOT 施放后累加 dotAmplifier
 		if has_dot:
 			EnemyTraits.bump_dot_amplifier(e)
@@ -391,7 +391,7 @@ static func _resolve_via_effect_engine(
 				DiceBag.owned_dice.append({"defId": die_id, "level": 1})
 				DiceBag.dice_bag.append(die_id)
 			VFX.show_toast("%s 诅咒: %s +%d" % [_get_name(e), die_id, count], "damage")
-			BattleLog.log_status("✦ %s 施加 %s x%d" % [_get_name(e), die_id, count])
+			BattleLog.log_status("+ %s 施加 %s x%d" % [_get_name(e), die_id, count])
 		SoundPlayer.play_sound("enemy_skill")
 
 	# 替换玩家骰子
@@ -410,7 +410,7 @@ static func _resolve_via_effect_engine(
 					break
 			if replaced:
 				VFX.show_toast("%s 替换骰子 → %s" % [_get_name(e), to_id], "damage")
-				BattleLog.log_status("✦ %s 替换骰子 %s → %s" % [_get_name(e), from_id, to_id])
+				BattleLog.log_status("+ %s 替换骰子 %s → %s" % [_get_name(e), from_id, to_id])
 		SoundPlayer.play_sound("enemy_skill")
 
 	# 偷取金币
@@ -419,7 +419,7 @@ static func _resolve_via_effect_engine(
 		if actual_steal > 0:
 			PlayerState.gold -= actual_steal
 			VFX.show_toast("%s 偷取 %d 金币" % [_get_name(e), actual_steal], "damage")
-			BattleLog.log_status("✦ %s 偷取 %d 金币" % [_get_name(e), actual_steal])
+			BattleLog.log_status("+ %s 偷取 %d 金币" % [_get_name(e), actual_steal])
 			SoundPlayer.play_sound("enemy_skill")
 
 	# 偷取护甲
@@ -429,7 +429,7 @@ static func _resolve_via_effect_engine(
 			PlayerState.armor -= actual_steal_armor
 			e.armor += actual_steal_armor
 			VFX.show_toast("%s 偷取 %d 护甲" % [_get_name(e), actual_steal_armor], "damage")
-			BattleLog.log_status("✦ %s 偷取 %d 护甲" % [_get_name(e), actual_steal_armor])
+			BattleLog.log_status("+ %s 偷取 %d 护甲" % [_get_name(e), actual_steal_armor])
 			SoundPlayer.play_sound("enemy_skill")
 
 
@@ -485,7 +485,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
 				PlayerState.take_damage(damage)
 				e.attack_count += 1
-				BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])
+				BattleLog.log_enemy("X %s 攻击 → %d 伤害" % [_get_name(e), damage])
 		return
 
 	# 有 description 时按字典派发
@@ -502,10 +502,10 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 			dot_val = maxi(1, int(float(dot_val) * dot_mul))
 		if dot_type == "burn":
 			GameManager.add_status(GameTypes.StatusType.BURN, dot_val, 3)
-			BattleLog.log_status("🔥 %s 施放【%s】→ 灼烧 %d" % [_get_name(e), desc, dot_val])
+			BattleLog.log_status("F %s 施放【%s】→ 灼烧 %d" % [_get_name(e), desc, dot_val])
 		else:
 			GameManager.add_status(GameTypes.StatusType.POISON, dot_val, 3)
-			BattleLog.log_status("☠ %s 施放【%s】→ 中毒 %d" % [_get_name(e), desc, dot_val])
+			BattleLog.log_status("P %s 施放【%s】→ 中毒 %d" % [_get_name(e), desc, dot_val])
 		# P2 Trait: Caster 施放 DOT 后累加 dotAmplifier
 		EnemyTraits.bump_dot_amplifier(e)
 	elif ctl_type != "":
@@ -514,13 +514,13 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 		match ctl_type:
 			"weak":
 				GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
-				BattleLog.log_status("✦ %s 施放【%s】→ 虚弱" % [_get_name(e), desc])
+				BattleLog.log_status("+ %s 施放【%s】→ 虚弱" % [_get_name(e), desc])
 			"vulnerable":
 				GameManager.add_status(GameTypes.StatusType.VULNERABLE, 1, 2)
-				BattleLog.log_status("✦ %s 施放【%s】→ 易伤" % [_get_name(e), desc])
+				BattleLog.log_status("+ %s 施放【%s】→ 易伤" % [_get_name(e), desc])
 			"freeze":
 				GameManager.add_status(GameTypes.StatusType.FREEZE, 1, 1)
-				BattleLog.log_status("✦ %s 施放【%s】→ 冻结" % [_get_name(e), desc])
+				BattleLog.log_status("+ %s 施放【%s】→ 冻结" % [_get_name(e), desc])
 	elif _is_armor_bless_desc(desc):
 		# 护甲祝福
 		SoundPlayer.play_sound("enemy_skill")
@@ -529,7 +529,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 			var target: EnemyInstance = all_living[randi() % all_living.size()]
 			var armor_val: int = maxi(1, value)
 			target.armor += armor_val
-			BattleLog.log_enemy("✦ %s 施放【%s】→ %s +%d 护甲" % [_get_name(e), desc, _get_name(target), armor_val])
+			BattleLog.log_enemy("+ %s 施放【%s】→ %s +%d 护甲" % [_get_name(e), desc, _get_name(target), armor_val])
 	else:
 		# 未识别的 description → fallback 到 archetype 行为
 		match e.combat_type:
@@ -542,7 +542,7 @@ static func _execute_skill(e: EnemyInstance, value: int, desc: String) -> void:
 				var damage: int = AttackCalc.get_effective_attack_dmg(e, PlayerState.statuses, e.attack_count)
 				PlayerState.take_damage(damage)
 				e.attack_count += 1
-				BattleLog.log_enemy("⚔ %s【%s】→ %d 伤害" % [_get_name(e), desc, damage])
+				BattleLog.log_enemy("X %s【%s】→ %d 伤害" % [_get_name(e), desc, damage])
 
 
 ## 从 description 提取 DOT 类型（对齐原版 getDotFromDescription）
@@ -586,7 +586,7 @@ static func _resolve_priest(e: EnemyInstance) -> void:
 		var heal_amount: int = int(e.attack_dmg * 4.0)
 		target.hp = mini(target.max_hp, target.hp + heal_amount)
 		SoundPlayer.play_sound("heal")
-		BattleLog.log_enemy("✚ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(target), heal_amount])
+		BattleLog.log_enemy("+ %s 治疗 %s（+%d HP）" % [_get_name(e), _get_name(target), heal_amount])
 		return
 
 	# P2: 自疗（自己受伤时）
@@ -594,7 +594,7 @@ static func _resolve_priest(e: EnemyInstance) -> void:
 		var self_heal: int = int(e.attack_dmg * 3.0)
 		e.hp = mini(e.max_hp, e.hp + self_heal)
 		SoundPlayer.play_sound("heal")
-		BattleLog.log_enemy("✚ %s 自疗（+%d HP）" % [_get_name(e), self_heal])
+		BattleLog.log_enemy("+ %s 自疗（+%d HP）" % [_get_name(e), self_heal])
 		return
 
 	# P3: 护甲祝福（给随机友军加护甲，无受伤目标时）
@@ -608,23 +608,23 @@ static func _resolve_priest(e: EnemyInstance) -> void:
 		var armor_val: int = int(e.attack_dmg * 1.5)
 		target.armor += armor_val
 		SoundPlayer.play_sound("enemy_skill")
-		BattleLog.log_enemy("✦ %s 为 %s 施加护甲祝福（+%d 护甲）" % [_get_name(e), _get_name(target), armor_val])
+		BattleLog.log_enemy("+ %s 为 %s 施加护甲祝福（+%d 护甲）" % [_get_name(e), _get_name(target), armor_val])
 		return
 
 	# P4: 减益兜底（对齐原版：50% weak / 30% vulnerable / 20% 塞诅咒骰）
 	var debuff_roll: float = randf()
 	if debuff_roll < 0.5:
 		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
-		BattleLog.log_status("✦ %s 施加虚弱" % _get_name(e))
+		BattleLog.log_status("+ %s 施加虚弱" % _get_name(e))
 	elif debuff_roll < 0.8:
 		GameManager.add_status(GameTypes.StatusType.VULNERABLE, 1, 2)
-		BattleLog.log_status("✦ %s 施加易伤" % _get_name(e))
+		BattleLog.log_status("+ %s 施加易伤" % _get_name(e))
 	else:
 		# 塞诅咒骰（原版 Priest debuff 兜底分支）
 		DiceBag.owned_dice.append({"defId": "cursed", "level": 1})
 		DiceBag.dice_bag.append("cursed")
 		VFX.show_toast("%s 诅咒: 诅咒骰 +1" % _get_name(e), "damage")
-		BattleLog.log_status("✦ %s 施加诅咒骰" % _get_name(e))
+		BattleLog.log_status("+ %s 施加诅咒骰" % _get_name(e))
 		SoundPlayer.play_sound("enemy_skill")
 
 
@@ -640,18 +640,18 @@ static func _resolve_caster(e: EnemyInstance) -> void:
 		# 毒雾：施加中毒
 		var poison_val: int = maxi(2, int(float(e.attack_dmg) * 0.4 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.POISON, poison_val, 3)
-		BattleLog.log_status("☠ %s 施加中毒 %d" % [_get_name(e), poison_val])
+		BattleLog.log_status("P %s 施加中毒 %d" % [_get_name(e), poison_val])
 	elif roll < 0.7:
 		# 火球：施加灼烧
 		var burn_val: int = maxi(1, int(float(e.attack_dmg) * 0.3 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.BURN, burn_val, 3)
-		BattleLog.log_status("🔥 %s 施加灼烧 %d" % [_get_name(e), burn_val])
+		BattleLog.log_status("F %s 施加灼烧 %d" % [_get_name(e), burn_val])
 	else:
 		# 诅咒：毒素 + 虚弱双 debuff（对齐原版 cursemaster 分支）
 		var curse_poison: int = maxi(1, int(float(e.attack_dmg) * 0.25 * dot_mul))
 		GameManager.add_status(GameTypes.StatusType.POISON, curse_poison, 3)
 		GameManager.add_status(GameTypes.StatusType.WEAK, 1, 2)
-		BattleLog.log_status("✦ %s 施放诅咒（毒素 %d + 虚弱）" % [_get_name(e), curse_poison])
+		BattleLog.log_status("+ %s 施放诅咒（毒素 %d + 虚弱）" % [_get_name(e), curse_poison])
 	# P2 Trait: 施放 DOT 后累加 dotAmplifier
 	EnemyTraits.bump_dot_amplifier(e)
 
@@ -679,7 +679,7 @@ static func _resolve_attacker(
 	# v0.5 §1.8.2 缴械：普攻伤害强制为 1
 	if ControlSystem.is_disarmed(e):
 		damage = 1
-		BattleLog.log_status("🔒 %s 被缴械，伤害降为 1" % _get_name(e))
+		BattleLog.log_status("L %s 被缴械，伤害降为 1" % _get_name(e))
 		VFX.show_toast("%s 缴械!" % _get_name(e), "debuff")
 
 	# v0.5 §1.8.2 致盲：攻击转向友军/自伤
@@ -688,12 +688,12 @@ static func _resolve_attacker(
 		if blind_target.uid == e.uid:
 			# 单敌人：自伤
 			blind_target.hp = maxi(0, blind_target.hp - damage)
-			BattleLog.log_status("👁 %s 致盲 → 自伤 %d！" % [_get_name(e), damage])
+			BattleLog.log_status("E %s 致盲 → 自伤 %d！" % [_get_name(e), damage])
 			VFX.show_toast("致盲自伤!", "debuff")
 		else:
 			# 多敌人：攻击友军
 			blind_target.hp = maxi(0, blind_target.hp - damage)
-			BattleLog.log_status("👁 %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), damage])
+			BattleLog.log_status("E %s 致盲 → 误伤 %s %d！" % [_get_name(e), _get_name(blind_target), damage])
 			VFX.show_toast("致盲误伤!", "debuff")
 		e.attack_count += 1
 		if on_shake.is_valid():
@@ -707,7 +707,7 @@ static func _resolve_attacker(
 	# 正常攻击玩家
 	PlayerState.take_damage(damage)
 	e.attack_count += 1
-	BattleLog.log_enemy("⚔ %s 攻击 → %d 伤害" % [_get_name(e), damage])
+	BattleLog.log_enemy("X %s 攻击 → %d 伤害" % [_get_name(e), damage])
 	if on_shake.is_valid():
 		on_shake.call(5.0, 0.2)
 	if on_hp_pulse.is_valid():
@@ -716,7 +716,7 @@ static func _resolve_attacker(
 	if e.combat_type == GameTypes.EnemyCombatType.RANGER and PlayerState.hp > 0:
 		var follow_up: int = AttackCalc.get_ranger_follow_up_dmg(e, e.attack_count)
 		PlayerState.take_damage(follow_up)
-		BattleLog.log_enemy("⚔ %s 追击 → %d 伤害" % [_get_name(e), follow_up])
+		BattleLog.log_enemy("X %s 追击 → %d 伤害" % [_get_name(e), follow_up])
 		if on_shake.is_valid():
 			on_shake.call(3.0, 0.15)
 	# P2 Trait: Guardian 攻击后清空 guardRage

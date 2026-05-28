@@ -12,7 +12,7 @@ extends EditorScript
 func _run() -> void:
 	var err := DungeonThemeBuilder.build_and_save()
 	if err == OK:
-		print("[run_build_theme] ✅ dungeon_theme.tres 已重新生成")
+		print("[run_build_theme] OK dungeon_theme.tres 已重新生成")
 		# 自动刷新 FileSystem，避免编辑器缓存
 		EditorInterface.get_resource_filesystem().scan()
 	else:

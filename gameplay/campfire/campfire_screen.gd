@@ -147,7 +147,7 @@ func _show_dice_list(is_upgrade: bool) -> void:
 		
 		var btn := Button.new()
 		btn.text = "%s Lv.%d [%s]" % [dice_name, dice_level, _faces_to_str(dice_faces)]
-		btn.custom_minimum_size = Vector2(280, 32)
+	btn.custom_minimum_size = Vector2(70, 8)
 		btn.pressed.connect(_on_dice_selected.bind(i))
 		dice_list.add_child(btn)
 

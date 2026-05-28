@@ -18,7 +18,7 @@ const SOLO_DAMAGE_MULT: float = 1.4
 static func activate(enemy_uid: String) -> void:
 	PlayerState.solo_seal_target = enemy_uid
 	PlayerState.solo_seal_turns = 2  # 本回合剩余 + 下个敌方回合
-	BattleLog.log_player("⚔ 单挑！→ %s" % enemy_uid)
+	BattleLog.log_player("X 单挑！→ %s" % enemy_uid)
 
 
 ## ============================================================

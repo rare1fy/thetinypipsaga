@@ -51,7 +51,7 @@ func _build_ui() -> void:
 	# 主面板
 	var panel := PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(320, 400)
+	panel.custom_minimum_size = Vector2(160, 200)
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.08, 0.06, 0.04, 0.96)
 	panel_style.border_color = Color("d4a030")
@@ -62,7 +62,7 @@ func _build_ui() -> void:
 	add_child(panel)
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(300, 380)
+	scroll.custom_minimum_size = Vector2(150, 190)
 	panel.add_child(scroll)
 
 	var vbox := VBoxContainer.new()
@@ -72,9 +72,9 @@ func _build_ui() -> void:
 
 	# 标题
 	var title := Label.new()
-	title.text = "⚔ 伤害计算详情"
+	title.text = "X 伤害计算详情"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", 8)
 	title.add_theme_color_override("font_color", Color("d4a030"))
 	vbox.add_child(title)
 
@@ -143,7 +143,7 @@ func _build_ui() -> void:
 	var hint := Label.new()
 	hint.text = "点击任意处关闭"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 10)
+	hint.add_theme_font_size_override("font_size", 5)
 	hint.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
 	vbox.add_child(hint)
 
@@ -191,6 +191,6 @@ func _add_separator(parent: VBoxContainer) -> void:
 func _add_section_title(parent: VBoxContainer, text: String) -> void:
 	var lbl := Label.new()
 	lbl.text = text
-	lbl.add_theme_font_size_override("font_size", 11)
+	lbl.add_theme_font_size_override("font_size", 5)
 	lbl.add_theme_color_override("font_color", Color("aaaaaa"))
 	parent.add_child(lbl)

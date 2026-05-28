@@ -51,19 +51,19 @@ func _ready() -> void:
 # ============================================================
 func _spawn_topright_buttons() -> void:
 	# 设置按钮（最右）
-	_spawn_icon_button("⚙", "设置", Vector2(-26, 6), _on_settings_pressed)
+	_spawn_icon_button("SET", "设置", Vector2(-22, 3), _on_settings_pressed)
 	# 牌型图鉴按钮
-	_spawn_icon_button("📖", "牌型图鉴", Vector2(-50, 6), _on_hand_guide_pressed)
+	_spawn_icon_button("HND", "牌型图鉴", Vector2(-42, 3), _on_hand_guide_pressed)
 	# 遗物图鉴按钮
-	_spawn_icon_button("🏺", "遗物图鉴", Vector2(-74, 6), _on_relic_guide_pressed)
+	_spawn_icon_button("REL", "遗物图鉴", Vector2(-62, 3), _on_relic_guide_pressed)
 	# 魂晶商店按钮
-	_spawn_icon_button("💎", "魂晶商店", Vector2(-98, 6), _on_soul_shop_pressed)
+	_spawn_icon_button("SHP", "魂晶商店", Vector2(-82, 3), _on_soul_shop_pressed)
 
 func _spawn_icon_button(text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
 	var btn := Button.new()
 	btn.text = text
-	btn.add_theme_font_size_override("font_size", 10)
-	btn.custom_minimum_size = Vector2(20, 20)
+	btn.add_theme_font_size_override("font_size", 4)
+	btn.custom_minimum_size = Vector2(9, 5)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.tooltip_text = tooltip
@@ -78,7 +78,7 @@ func _on_settings_pressed() -> void:
 	ModalHubRef.open(
 		SettingsPanelRef.new(),
 		"设置",
-		{"size": Vector2(420, 520), "close_on_backdrop": true}
+		{"size": Vector2(160, 260), "close_on_backdrop": true}
 	)
 
 
@@ -87,7 +87,7 @@ func _on_hand_guide_pressed() -> void:
 	ModalHubRef.open(
 		HandGuideRef.new(),
 		"牌型图鉴",
-		{"size": Vector2(560, 780), "close_on_backdrop": true}
+		{"size": Vector2(170, 300), "close_on_backdrop": true}
 	)
 
 
@@ -96,7 +96,7 @@ func _on_relic_guide_pressed() -> void:
 	ModalHubRef.open(
 		RelicGuideRef.new(),
 		"遗物图鉴",
-		{"size": Vector2(560, 780), "close_on_backdrop": true}
+		{"size": Vector2(170, 300), "close_on_backdrop": true}
 	)
 
 
@@ -105,7 +105,7 @@ func _on_soul_shop_pressed() -> void:
 	ModalHubRef.open(
 		SoulShopRef.new(),
 		"魂晶商店",
-		{"size": Vector2(440, 520), "close_on_backdrop": true}
+		{"size": Vector2(160, 260), "close_on_backdrop": true}
 	)
 
 
@@ -140,7 +140,7 @@ func _spawn_stars() -> void:
 		var star := ColorRect.new()
 		star.color = colors[i % colors.size()]
 		star.size = Vector2(2, 2)
-		star.position = Vector2(randf_range(20, 340), randf_range(50, 400))
+		star.position = Vector2(randf_range(10, 170), randf_range(25, 200))
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		ui_root.add_child(star)
 		# 移到最底层（标题后面）

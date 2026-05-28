@@ -75,7 +75,7 @@ static func _stuff_dice(e: EnemyInstance, def_id: String, toast_msg: String) -> 
 	DiceBag.owned_dice.append({"defId": def_id, "level": 1})
 	DiceBag.dice_bag.append(def_id)
 	VFX.show_toast(toast_msg, "damage")
-	BattleLog.log_enemy("⚠ %s" % toast_msg)
+	BattleLog.log_enemy("! %s" % toast_msg)
 	SoundPlayer.play_sound("enemy_skill")
 
 

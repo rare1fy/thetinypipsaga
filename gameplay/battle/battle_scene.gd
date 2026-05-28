@@ -23,7 +23,7 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 @export_group("敌人透视·Slot0(中)")
 @export var 中_距离1坐标: Vector2 = Vector2(0, 40)
-@export var 中_距离1缩放: float = 1.5
+@export var 中_距离1缩放: float = 2.0
 @export var 中_距离1纵深Y偏移: float = 0.0
 @export var 中_距离1亮度: float = 1.0
 @export var 中_距离1渲染层级: int = 7
@@ -36,7 +36,7 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 @export_group("敌人透视·Slot1(左)")
 @export var 左_距离1坐标: Vector2 = Vector2(-35, 40)
-@export var 左_距离1缩放: float = 1.5
+@export var 左_距离1缩放: float = 2.0
 @export var 左_距离1纵深Y偏移: float = 0.0
 @export var 左_距离1亮度: float = 1.0
 @export var 左_距离1渲染层级: int = 7
@@ -49,7 +49,7 @@ const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 @export_group("敌人透视·Slot2(右)")
 @export var 右_距离1坐标: Vector2 = Vector2(35, 40)
-@export var 右_距离1缩放: float = 1.5
+@export var 右_距离1缩放: float = 2.0
 @export var 右_距离1纵深Y偏移: float = 0.0
 @export var 右_距离1亮度: float = 1.0
 @export var 右_距离1渲染层级: int = 7
@@ -341,31 +341,31 @@ func _spawn_topleft_buttons() -> void:
 	if root == null:
 		push_warning("[BattleScene] 未找到 %Root 节点，图鉴按钮未挂载")
 		return
-	_spawn_guide_button(root, "📖", "牌型图鉴", Vector2(8, 8), _on_hand_guide_pressed)
-	_spawn_guide_button(root, "🏺", "遗物图鉴", Vector2(48, 8), _on_relic_guide_pressed)
-	_spawn_guide_button(root, "⚙", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
+	_spawn_guide_button(root, "[B]", "牌型图鉴", Vector2(4, 4), _on_hand_guide_pressed)
+	_spawn_guide_button(root, "[R]", "遗物图鉴", Vector2(24, 4), _on_relic_guide_pressed)
+	_spawn_guide_button(root, "[S]", "设置 / 战斗日志", Vector2(44, 4), _on_settings_pressed)
 	# 骰子库/弃骰库按钮（右上角）
 	var draw_btn := Button.new()
 	draw_btn.text = "[D]"
 	draw_btn.tooltip_text = "骰子库"
-	draw_btn.add_theme_font_size_override("font_size", 16)
-	draw_btn.custom_minimum_size = Vector2(32, 32)
+	draw_btn.add_theme_font_size_override("font_size", 5)
+	draw_btn.custom_minimum_size = Vector2(18, 10)
 	draw_btn.flat = true
 	draw_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	draw_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	draw_btn.position = Vector2(-80, 8)
+	draw_btn.position = Vector2(-40, 4)
 	draw_btn.pressed.connect(_on_draw_pile_pressed)
 	root.add_child(draw_btn)
 
 	var discard_btn := Button.new()
 	discard_btn.text = "[R]"
 	discard_btn.tooltip_text = "弃骰库"
-	discard_btn.add_theme_font_size_override("font_size", 16)
-	discard_btn.custom_minimum_size = Vector2(32, 32)
+	discard_btn.add_theme_font_size_override("font_size", 5)
+	discard_btn.custom_minimum_size = Vector2(18, 10)
 	discard_btn.flat = true
 	discard_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	discard_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	discard_btn.position = Vector2(-40, 8)
+	discard_btn.position = Vector2(-20, 4)
 	discard_btn.pressed.connect(_on_discard_pile_pressed)
 	root.add_child(discard_btn)
 
@@ -374,8 +374,8 @@ func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Ve
 	var btn := Button.new()
 	btn.text = text
 	btn.tooltip_text = tooltip
-	btn.add_theme_font_size_override("font_size", 16)
-	btn.custom_minimum_size = Vector2(32, 32)
+	btn.add_theme_font_size_override("font_size", 4)
+	btn.custom_minimum_size = Vector2(9, 5)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
@@ -549,7 +549,7 @@ func _begin_wave_transition(next_wave_idx: int) -> void:
 	GameManager.target_enemy_uid = target_uid
 	GameManager.taunt_enemy_uid = ""
 
-	BattleLog.log_write("⚔ 第 %d 波敌人来袭！" % (next_wave_idx + 1))
+	BattleLog.log_write("X 第 %d 波敌人来袭！" % (next_wave_idx + 1))
 
 	# 波次切换全屏公告
 	_show_wave_announcement(next_wave_idx + 1)
@@ -610,7 +610,7 @@ func _handle_victory() -> void:
 	var XpSystemScript := preload("res://common/autoload/xp_system.gd")
 	var xp_gain: int = XpSystemScript.roll_kill_xp(node_type_str)
 	XpSystem.apply_xp_gain(xp_gain)
-	BattleLog.log_write("✨ 获得 %d 经验值" % xp_gain)
+	BattleLog.log_write("* 获得 %d 经验值" % xp_gain)
 
 	# 5. 遗物 tick：incrementFloorsCleared + tickHourglass
 	# （简化：当前 Godot 版遗物 tick 机制与原版不同，跳过复杂逻辑）
@@ -634,7 +634,7 @@ func _handle_victory() -> void:
 	if node_type_str == "elite":
 		var elite_bonus_gold: int = 15 + randi() % 16  # 15-30 额外金币
 		GameManager.gold += elite_bonus_gold
-		BattleLog.log_write("💰 精英战额外奖励：+%d 金币" % elite_bonus_gold)
+		BattleLog.log_write("G 精英战额外奖励：+%d 金币" % elite_bonus_gold)
 
 	# 胜利特效：全屏奖励爆发
 	var viewport_center: Vector2 = get_viewport().get_visible_rect().size * 0.5
@@ -684,7 +684,7 @@ func _show_wave_announcement(wave_num: int) -> void:
 	label.text = "第 %d 波" % wave_num
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 32)
+	label.add_theme_font_size_override("font_size", 8)
 	label.add_theme_color_override("font_color", Color("#ffffff"))
 	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	label.add_theme_constant_override("shadow_offset_x", 2)
@@ -692,7 +692,7 @@ func _show_wave_announcement(wave_num: int) -> void:
 	label.set_anchors_preset(Control.PRESET_CENTER)
 	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	label.grow_vertical = Control.GROW_DIRECTION_BOTH
-	label.custom_minimum_size = Vector2(300, 60)
+	label.custom_minimum_size = Vector2(75, 15)
 	label.modulate = Color(1, 1, 1, 0)
 	label.z_index = 100
 	# 用 CanvasLayer 确保在最上层

@@ -35,13 +35,13 @@ var _sfx_toggle: CheckBox
 
 func _build_controls() -> void:
 	# 音乐音量
-	add_child(_make_slider_row("🎵 音乐音量", 0.0, 1.0, SoundPlayer.music_volume, func(v: float):
+	add_child(_make_slider_row("[M] 音乐音量", 0.0, 1.0, SoundPlayer.music_volume, func(v: float):
 		SoundPlayer.set_music_volume(v)
 		_save_audio_meta()
 	, "music"))
 	
 	# 音效音量
-	add_child(_make_slider_row("🔊 音效音量", 0.0, 1.0, SoundPlayer.sfx_volume, func(v: float):
+	add_child(_make_slider_row("[V] 音效音量", 0.0, 1.0, SoundPlayer.sfx_volume, func(v: float):
 		SoundPlayer.set_sfx_volume(v)
 		SoundPlayer.play_sound("click")
 		_save_audio_meta()
@@ -72,7 +72,7 @@ func _build_controls() -> void:
 	# 战斗日志查看入口（战斗场景中才显示）
 	if BattleLog.has_instance():
 		var log_btn := Button.new()
-		log_btn.text = "📜 查看战斗日志"
+		log_btn.text = "[L] 查看战斗日志"
 		log_btn.pressed.connect(_on_view_battle_log_pressed)
 		add_child(log_btn)
 
@@ -85,7 +85,7 @@ func _build_controls() -> void:
 	guide_grid.add_theme_constant_override("v_separation", 6)
 	
 	var stats_btn := Button.new()
-	stats_btn.text = "📊 战斗统计"
+	stats_btn.text = "[T] 战斗统计"
 	stats_btn.pressed.connect(_on_stats_pressed)
 	guide_grid.add_child(stats_btn)
 	
@@ -95,12 +95,12 @@ func _build_controls() -> void:
 	guide_grid.add_child(dice_guide_btn)
 	
 	var enemy_guide_btn := Button.new()
-	enemy_guide_btn.text = "👹 敌人图鉴"
+	enemy_guide_btn.text = "[M] 敌人图鉴"
 	enemy_guide_btn.pressed.connect(_on_enemy_guide_pressed)
 	guide_grid.add_child(enemy_guide_btn)
 	
 	var tutorial_btn := Button.new()
-	tutorial_btn.text = "📖 新手引导"
+	tutorial_btn.text = "[B] 新手引导"
 	tutorial_btn.pressed.connect(_on_tutorial_pressed)
 	guide_grid.add_child(tutorial_btn)
 	
@@ -109,7 +109,7 @@ func _build_controls() -> void:
 	# 危险区：放弃当前冒险
 	if SaveManager.has_run_save():
 		var abandon_btn := Button.new()
-		abandon_btn.text = "🏳 放弃当前冒险（回到主菜单）"
+		abandon_btn.text = "[Q] 放弃当前冒险（回到主菜单）"
 		abandon_btn.add_theme_color_override("font_color", Color("#ff8080"))
 		abandon_btn.pressed.connect(_on_abandon_pressed)
 		add_child(abandon_btn)
@@ -117,7 +117,7 @@ func _build_controls() -> void:
 	# GM 调试面板入口
 	add_child(HSeparator.new())
 	var gm_btn := Button.new()
-	gm_btn.text = "🔧 GM 调试面板"
+	gm_btn.text = "[D] GM 调试面板"
 	gm_btn.add_theme_color_override("font_color", Color("#ff6060"))
 	gm_btn.pressed.connect(_on_gm_debug_pressed)
 	add_child(gm_btn)
@@ -130,7 +130,7 @@ func _build_controls() -> void:
 		int(meta.get("total_victories", 0)),
 	]
 	stats_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	stats_label.add_theme_font_size_override("font_size", 12)
+	stats_label.add_theme_font_size_override("font_size", 6)
 	stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(stats_label)
 
@@ -155,7 +155,7 @@ func _make_slider_row(label_text: String, min_v: float, max_v: float, init_v: fl
 	slider.max_value = max_v
 	slider.step = 0.05
 	slider.value = init_v
-	slider.custom_minimum_size = Vector2(0, 28)
+	slider.custom_minimum_size = Vector2(4, 14)
 	slider.value_changed.connect(func(v: float):
 		value_label.text = "%d%%" % int(v * 100)
 		cb.call(v)
@@ -244,14 +244,14 @@ func _on_view_battle_log_pressed() -> void:
 			var line := Label.new()
 			line.text = String(entry.get("text", ""))
 			line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			line.add_theme_font_size_override("font_size", 12)
+			line.add_theme_font_size_override("font_size", 6)
 			line.add_theme_color_override("font_color", entry.get("color", Color("#b0b8c8")))
 			vbox.add_child(line)
 
 	# 包一层 ScrollContainer
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(440, 520)
+	scroll.custom_minimum_size = Vector2(220, 260)
 	scroll.add_child(vbox)
 
 	ModalHubRef.open(scroll, "战斗日志", {"size": Vector2(480, 600), "close_on_backdrop": true})

@@ -584,7 +584,7 @@ static func soul_burst(parent: Node, from_pos: Vector2, to_pos: Vector2, count: 
 	var colors: Array[Color] = [Color(0.7, 0.3, 1.0), Color(0.9, 0.5, 1.0), Color(1.0, 0.7, 1.0)]
 	for i: int in count:
 		var dot := ColorRect.new()
-		dot.custom_minimum_size = Vector2(5, 5)
+		dot.custom_minimum_size = Vector2(4, 4)
 		dot.size = Vector2(5, 5)
 		dot.color = colors[i % colors.size()]
 		dot.position = from_pos + Vector2(randf_range(-15, 15), randf_range(-10, 10))

@@ -39,14 +39,14 @@ static func apply_control(
 
 	# §1.6 + §1.8.1：Boss/精英 100% 豁免变羊 → fizzle，不消耗 ccImmunity
 	if control_type == ControlType.POLYMORPH and _is_boss_or_elite(target):
-		BattleLog.log_status("⚡ %s 豁免变羊！" % target.name)
+		BattleLog.log_status("! %s 豁免变羊！" % target.name)
 		VFX.show_toast("%s 豁免！" % target.name, "warning")
 		return false  # 不 +1 ccImmunity
 
 	# §1.8.2：已变羊目标不可重复变羊 → fizzle，但仍 +1 ccImmunity
 	if control_type == ControlType.POLYMORPH and target.is_polymorphed:
 		target.cc_immunity += 1
-		BattleLog.log_status("⚡ %s 已变羊，无法重复施加！" % target.name)
+		BattleLog.log_status("! %s 已变羊，无法重复施加！" % target.name)
 		return false
 
 	# §1.9.2 ccImmunity 梯度判定
@@ -56,7 +56,7 @@ static func apply_control(
 	target.cc_immunity += 1
 
 	if not success:
-		BattleLog.log_status("⚡ %s 抵抗了 %s！（免控 %d 层）" % [target.name, _type_name(control_type), target.cc_immunity])
+		BattleLog.log_status("! %s 抵抗了 %s！（免控 %d 层）" % [target.name, _type_name(control_type), target.cc_immunity])
 		VFX.show_toast("%s 抵抗！" % target.name, "warning")
 		return false
 
@@ -74,7 +74,7 @@ static func apply_control(
 		_:
 			target.cc_turns[cc_key] = maxi(target.cc_turns.get(cc_key, 0), actual_duration)
 
-	BattleLog.log_player("🎯 %s 被施加 %s（%d回合）" % [target.name, _type_name(control_type), actual_duration])
+	BattleLog.log_player("> %s 被施加 %s（%d回合）" % [target.name, _type_name(control_type), actual_duration])
 	return true
 
 
@@ -109,15 +109,15 @@ static func _apply_polymorph(target: EnemyInstance, duration: int) -> void:
 		# 普通羊：attack=1, hp=原hp（锁死不能被治疗）
 		target.attack_dmg = 1
 		# hp 和 max_hp 保持不变（锁死当前值）
-		BattleLog.log_status("🐑 %s 变成了普通羊！" % target.name)
-		VFX.show_toast("🐑 变羊！", "debuff")
+		BattleLog.log_status("S %s 变成了普通羊！" % target.name)
+		VFX.show_toast("S 变羊！", "debuff")
 	else:
 		# 羊王：attack=20, hp=6, maxHp=6
 		target.attack_dmg = 20
 		target.hp = mini(target.hp, 6)
 		target.max_hp = 6
-		BattleLog.log_status("👑🐑 %s 变成了羊王！" % target.name)
-		VFX.show_toast("👑 羊王！", "damage")
+		BattleLog.log_status("*S %s 变成了羊王！" % target.name)
+		VFX.show_toast("* 羊王！", "damage")
 
 	target.cc_turns["polymorph"] = duration
 
@@ -134,7 +134,7 @@ static func restore_polymorph(target: EnemyInstance) -> void:
 	target.max_hp = original_max_hp
 	target.hp = mini(target.hp, original_max_hp)
 	target.pre_polymorph_snapshot = {}
-	BattleLog.log_status("✨ %s 恢复了原形！" % target.name)
+	BattleLog.log_status("* %s 恢复了原形！" % target.name)
 
 
 ## ============================================================

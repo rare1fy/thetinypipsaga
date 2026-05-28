@@ -26,7 +26,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "* 战斗统计 *"
 	title.add_theme_color_override("font_color", Color("#d4a030"))
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", 8)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -37,7 +37,7 @@ func _build_ui() -> void:
 		current_depth = 0
 	depth_label.text = "第 %d 层" % (current_depth + 1)
 	depth_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	depth_label.add_theme_font_size_override("font_size", 11)
+	depth_label.add_theme_font_size_override("font_size", 5)
 	depth_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(depth_label)
 	
@@ -67,20 +67,20 @@ func _build_ui() -> void:
 	var dmg_title := Label.new()
 	dmg_title.text = "TOTAL DAMAGE"
 	dmg_title.add_theme_color_override("font_color", Color("#e04040"))
-	dmg_title.add_theme_font_size_override("font_size", 10)
+	dmg_title.add_theme_font_size_override("font_size", 5)
 	dmg_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	dmg_vbox.add_child(dmg_title)
 	var dmg_value := Label.new()
 	dmg_value.text = _format_number(s.totalDamageDealt)
 	dmg_value.add_theme_color_override("font_color", Color("#e04040"))
-	dmg_value.add_theme_font_size_override("font_size", 24)
+	dmg_value.add_theme_font_size_override("font_size", 12)
 	dmg_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	dmg_vbox.add_child(dmg_value)
 	dmg_panel.add_child(dmg_vbox)
 	add_child(dmg_panel)
 	
 	# 伤害总览
-	add_child(_make_section("⚔ 伤害总览"))
+	add_child(_make_section("X 伤害总览"))
 	add_child(_make_row("单次最高伤害", str(s.maxSingleHit), Color("#e04040")))
 	add_child(_make_row("场均伤害", str(avg_damage), Color("#e09040")))
 	
@@ -90,20 +90,20 @@ func _build_ui() -> void:
 	add_child(_make_row("总重掷次数", str(s.totalRerolls), Color("#40c040")))
 	
 	# 战斗统计
-	add_child(_make_section("💀 战斗统计"))
+	add_child(_make_section("D 战斗统计"))
 	add_child(_make_row("已完成战斗", str(s.battlesWon), Color("#e09040")))
 	add_child(_make_row("击杀敌人", str(s.enemiesKilled), Color("#e04040")))
 	add_child(_make_row("精英战胜利", str(s.elitesWon), Color("#9060d0")))
 	add_child(_make_row("Boss战胜利", str(s.bossesWon), Color("#d4a030")))
 	
 	# 生存统计
-	add_child(_make_section("❤ 生存统计"))
+	add_child(_make_section("H 生存统计"))
 	add_child(_make_row("累计受到伤害", str(s.totalDamageTaken), Color("#e04040")))
 	add_child(_make_row("累计回复量", str(s.totalHealing), Color("#40c040")))
 	add_child(_make_row("累计获得护甲", str(s.totalArmorGained), Color("#4080ff")))
 	
 	# 经济统计
-	add_child(_make_section("💰 经济统计"))
+	add_child(_make_section("G 经济统计"))
 	add_child(_make_row("累计获得金币", str(s.goldEarned), Color("#d4a030")))
 	add_child(_make_row("累计花费金币", str(s.goldSpent), Color("#d4a030")))
 
@@ -116,7 +116,7 @@ func _make_section(title: String) -> Label:
 	var label := Label.new()
 	label.text = title
 	label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_font_size_override("font_size", 5)
 	return label
 
 
@@ -125,13 +125,13 @@ func _make_row(label_text: String, value_text: String, color: Color) -> HBoxCont
 	var label := Label.new()
 	label.text = label_text
 	label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_font_size_override("font_size", 6)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(label)
 	var value := Label.new()
 	value.text = value_text
 	value.add_theme_color_override("font_color", color)
-	value.add_theme_font_size_override("font_size", 13)
+	value.add_theme_font_size_override("font_size", 6)
 	row.add_child(value)
 	return row
 

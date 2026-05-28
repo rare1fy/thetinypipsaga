@@ -196,15 +196,15 @@ func _build_title_bar(title: String, show_close_btn: bool, modal_id: int) -> Con
 	var title_label := Label.new()
 	title_label.text = title
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.add_theme_font_size_override("font_size", 18)
+	title_label.add_theme_font_size_override("font_size", 9)
 	title_label.add_theme_color_override("font_color", Color("#e6e8f0"))
 	bar.add_child(title_label)
 	
 	if show_close_btn:
 		var close_btn := Button.new()
 		close_btn.text = "×"
-		close_btn.custom_minimum_size = Vector2(32, 32)
-		close_btn.add_theme_font_size_override("font_size", 20)
+		close_btn.custom_minimum_size = Vector2(16, 16)
+		close_btn.add_theme_font_size_override("font_size", 10)
 		close_btn.pressed.connect(func(): close(modal_id))
 		bar.add_child(close_btn)
 	

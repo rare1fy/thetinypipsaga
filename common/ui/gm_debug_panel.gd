@@ -25,7 +25,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "— 调试功能 —"
 	title.add_theme_color_override("font_color", Color("#ff6060"))
-	title.add_theme_font_size_override("font_size", 12)
+	title.add_theme_font_size_override("font_size", 6)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -55,21 +55,21 @@ func _build_quick_actions() -> void:
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
 	
-	grid.add_child(_make_btn("❤ 满血", Color("#40a040"), func():
+	grid.add_child(_make_btn("H 满血", Color("#40a040"), func():
 		PlayerState.hp = PlayerState.max_hp
 		GameManager.hp_changed.emit(PlayerState.hp, PlayerState.max_hp)
 		VFX.show_toast("GM: 满血", "buff")
 	))
-	grid.add_child(_make_btn("💔 HP=1", Color("#e04040"), func():
+	grid.add_child(_make_btn("V HP=1", Color("#e04040"), func():
 		PlayerState.hp = 1
 		GameManager.hp_changed.emit(PlayerState.hp, PlayerState.max_hp)
 		VFX.show_toast("GM: HP=1", "warn")
 	))
-	grid.add_child(_make_btn("💰 +500金", Color("#d4a030"), func():
+	grid.add_child(_make_btn("G +500金", Color("#d4a030"), func():
 		PlayerState.add_gold(500)
 		VFX.show_toast("GM: +500金", "buff")
 	))
-	grid.add_child(_make_btn("💎 +100魂晶", Color("#9060d0"), func():
+	grid.add_child(_make_btn("[G] +100魂晶", Color("#9060d0"), func():
 		PlayerState.souls += 100
 		VFX.show_toast("GM: +100魂晶", "buff")
 	))
@@ -94,7 +94,7 @@ func _build_teleport() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "传送到指定层"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 11)
+	sep_label.add_theme_font_size_override("font_size", 5)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -152,7 +152,7 @@ func _build_battle_actions() -> void:
 		TurnManager.max_plays = 99
 		VFX.show_toast("GM: 99次出牌", "buff")
 	))
-	grid.add_child(_make_btn("🔄 99重掷", Color("#60c0e0"), func():
+	grid.add_child(_make_btn("R 99重掷", Color("#60c0e0"), func():
 		TurnManager.free_rerolls_left = 99
 		TurnManager.free_rerolls_per_turn = 99
 		VFX.show_toast("GM: 99重掷", "buff")
@@ -161,7 +161,7 @@ func _build_battle_actions() -> void:
 	add_child(grid)
 	
 	# 杀死当前波次
-	add_child(_make_btn("💀 杀死当前波次", Color("#e04040"), func():
+	add_child(_make_btn("D 杀死当前波次", Color("#e04040"), func():
 		if TurnManager.phase == GameTypes.GamePhase.BATTLE:
 			# 通过信号通知 BattleController 杀死所有敌人
 			for enemy: EnemyInstance in GameManager.current_enemies:
@@ -177,7 +177,7 @@ func _build_battle_actions() -> void:
 	grid2.add_theme_constant_override("h_separation", 6)
 	grid2.add_theme_constant_override("v_separation", 6)
 	
-	grid2.add_child(_make_btn("⚔ 立即胜利", Color("#d4a030"), func():
+	grid2.add_child(_make_btn("X 立即胜利", Color("#d4a030"), func():
 		if TurnManager.phase == GameTypes.GamePhase.BATTLE:
 			# 标记当前节点完成
 			for node: MapGenerator.MapNode in PlayerState.map_nodes:
@@ -211,7 +211,7 @@ func _build_relic_manager() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "遗物管理"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 11)
+	sep_label.add_theme_font_size_override("font_size", 5)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -233,7 +233,7 @@ func _build_relic_manager() -> void:
 func _open_add_relic_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(400, 500)
+	scroll.custom_minimum_size = Vector2(200, 250)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
@@ -271,7 +271,7 @@ func _open_add_relic_panel() -> void:
 func _open_remove_relic_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(400, 400)
+	scroll.custom_minimum_size = Vector2(200, 200)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
@@ -314,7 +314,7 @@ func _build_dice_manager() -> void:
 	var sep_label := Label.new()
 	sep_label.text = "骰子管理"
 	sep_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	sep_label.add_theme_font_size_override("font_size", 11)
+	sep_label.add_theme_font_size_override("font_size", 5)
 	sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sep_label)
 	
@@ -336,7 +336,7 @@ func _build_dice_manager() -> void:
 func _open_add_dice_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(400, 500)
+	scroll.custom_minimum_size = Vector2(200, 250)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
@@ -361,7 +361,7 @@ func _open_add_dice_panel() -> void:
 func _open_remove_dice_panel() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(400, 400)
+	scroll.custom_minimum_size = Vector2(200, 200)
 	
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)

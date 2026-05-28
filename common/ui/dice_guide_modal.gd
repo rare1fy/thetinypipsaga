@@ -51,7 +51,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "* 骰子图鉴 *"
 	title.add_theme_color_override("font_color", Color("#e6e8f0"))
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", 8)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -62,7 +62,7 @@ func _build_ui() -> void:
 	for cat: Dictionary in CATEGORIES:
 		var btn := Button.new()
 		btn.text = String(cat.label)
-		btn.add_theme_font_size_override("font_size", 11)
+		btn.add_theme_font_size_override("font_size", 5)
 		var cat_id: String = String(cat.id)
 		btn.pressed.connect(func():
 			_active_category = cat_id
@@ -78,7 +78,7 @@ func _build_ui() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(0, 400)
+	scroll.custom_minimum_size = Vector2(4, 200)
 	
 	_content_container = VBoxContainer.new()
 	_content_container.add_theme_constant_override("separation", 6)
@@ -139,7 +139,7 @@ func _refresh_list() -> void:
 		var cat_label := Label.new()
 		cat_label.text = "— %s —" % String(cat_info.get("label", cat_id))
 		cat_label.add_theme_color_override("font_color", cat_info.get("color", Color.WHITE) as Color)
-		cat_label.add_theme_font_size_override("font_size", 12)
+		cat_label.add_theme_font_size_override("font_size", 6)
 		cat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_content_container.add_child(cat_label)
 		
@@ -157,7 +157,7 @@ func _refresh_list() -> void:
 			var rarity_label := Label.new()
 			rarity_label.text = _rarity_label(rarity)
 			rarity_label.add_theme_color_override("font_color", _rarity_color(rarity))
-			rarity_label.add_theme_font_size_override("font_size", 10)
+			rarity_label.add_theme_font_size_override("font_size", 5)
 			_content_container.add_child(rarity_label)
 			
 			# 骰子条目
@@ -174,7 +174,7 @@ func _build_dice_row(def: DiceDef, is_owned: bool) -> HBoxContainer:
 	var name_label := Label.new()
 	name_label.text = def.name
 	name_label.add_theme_color_override("font_color", Color("#e6e8f0") if is_owned else Color("#666666"))
-	name_label.add_theme_font_size_override("font_size", 12)
+	name_label.add_theme_font_size_override("font_size", 6)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(name_label)
 	
@@ -182,15 +182,15 @@ func _build_dice_row(def: DiceDef, is_owned: bool) -> HBoxContainer:
 	var faces_label := Label.new()
 	faces_label.text = "[%s]" % ",".join(def.faces.map(func(f: int): return str(f)))
 	faces_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	faces_label.add_theme_font_size_override("font_size", 10)
+	faces_label.add_theme_font_size_override("font_size", 5)
 	row.add_child(faces_label)
 	
 	# 拥有标记
 	if is_owned:
 		var owned_label := Label.new()
-		owned_label.text = "✓"
+		owned_label.text = "v"
 		owned_label.add_theme_color_override("font_color", Color("#40c040"))
-		owned_label.add_theme_font_size_override("font_size", 12)
+		owned_label.add_theme_font_size_override("font_size", 6)
 		row.add_child(owned_label)
 	
 	# 效果描述（tooltip 风格）
@@ -198,7 +198,7 @@ func _build_dice_row(def: DiceDef, is_owned: bool) -> HBoxContainer:
 		var desc_label := Label.new()
 		desc_label.text = def.get_display_description()
 		desc_label.add_theme_color_override("font_color", Color("#8090a0"))
-		desc_label.add_theme_font_size_override("font_size", 10)
+		desc_label.add_theme_font_size_override("font_size", 5)
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(desc_label)

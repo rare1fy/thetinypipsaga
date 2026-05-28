@@ -293,7 +293,7 @@ static func create_effect(
 
 ## 每种 EffectType 的必填 params 字段注册表（EffectEngine 校验用）
 ## 配置方必须提供这些字段，缺一个就报错
-## ⚠️ 维护提醒：新增/修改效果类型时，必须同步更新此表和枚举旁注释，保持一致
+## ! 维护提醒：新增/修改效果类型时，必须同步更新此表和枚举旁注释，保持一致
 ## 注释中标 ? 的参数 = 可选扩展（不填=该子功能不启用），不在此表中
 const REQUIRED_PARAMS: Dictionary = {
 	EffectType.BONUS_DAMAGE: ["value"],

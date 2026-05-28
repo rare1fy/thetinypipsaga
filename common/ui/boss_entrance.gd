@@ -56,7 +56,7 @@ func _build_ui() -> void:
 	# 警告横条
 	var warning_bar := ColorRect.new()
 	warning_bar.color = Color(accent, 0.8)
-	warning_bar.custom_minimum_size = Vector2(0, 4)
+	warning_bar.custom_minimum_size = Vector2(4, 4)
 	warning_bar.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	warning_bar.offset_top = 200
 	warning_bar.offset_bottom = 204
@@ -64,7 +64,7 @@ func _build_ui() -> void:
 
 	var warning_bar2 := ColorRect.new()
 	warning_bar2.color = Color(accent, 0.8)
-	warning_bar2.custom_minimum_size = Vector2(0, 4)
+	warning_bar2.custom_minimum_size = Vector2(4, 4)
 	warning_bar2.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	warning_bar2.offset_top = 360
 	warning_bar2.offset_bottom = 364
@@ -82,16 +82,16 @@ func _build_ui() -> void:
 	# WARNING 标签
 	if _is_final:
 		var final_label := Label.new()
-		final_label.text = "⚡ FINAL BATTLE ⚡"
+		final_label.text = "! FINAL BATTLE !"
 		final_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		final_label.add_theme_font_size_override("font_size", 14)
+		final_label.add_theme_font_size_override("font_size", 7)
 		final_label.add_theme_color_override("font_color", Color("c060ff"))
 		center.add_child(final_label)
 
 	var warning_label := Label.new()
-	warning_label.text = "⚠ WARNING ⚠"
+	warning_label.text = "! WARNING !"
 	warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	warning_label.add_theme_font_size_override("font_size", 12)
+	warning_label.add_theme_font_size_override("font_size", 6)
 	warning_label.add_theme_color_override("font_color", accent)
 	center.add_child(warning_label)
 
@@ -99,7 +99,7 @@ func _build_ui() -> void:
 	var name_label := Label.new()
 	name_label.text = _boss_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 28)
+	name_label.add_theme_font_size_override("font_size", 14)
 	name_label.add_theme_color_override("font_color", Color.WHITE)
 	center.add_child(name_label)
 
@@ -108,7 +108,7 @@ func _build_ui() -> void:
 	var sub_label := Label.new()
 	sub_label.text = subtitle
 	sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub_label.add_theme_font_size_override("font_size", 13)
+	sub_label.add_theme_font_size_override("font_size", 6)
 	sub_label.add_theme_color_override("font_color", Color(accent, 0.8))
 	center.add_child(sub_label)
 

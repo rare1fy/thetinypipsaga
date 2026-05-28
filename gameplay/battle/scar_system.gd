@@ -20,7 +20,7 @@ static func add_from_self_damage(hp_lost: int) -> void:
 	if PlayerState.player_class != "warrior":
 		return
 	PlayerState.scar_stacks += hp_lost
-	BattleLog.log_player("🩸 伤痕 +%d（当前 %d 层）" % [hp_lost, PlayerState.scar_stacks])
+	BattleLog.log_player("B 伤痕 +%d（当前 %d 层）" % [hp_lost, PlayerState.scar_stacks])
 
 
 ## ============================================================

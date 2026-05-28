@@ -88,7 +88,7 @@ static func settle_enemy_deaths(enemies: Array[EnemyInstance], new_enemies_out: 
 				var depth_mult: float = GameBalance.get_soul_crystal_mult(GameManager.current_node, 1.0) + XpSystem.level_soul_bonus
 				var soul_gain: int = maxi(1, ceili(capped_overkill * depth_mult * GameBalance.SOUL_CRYSTAL_CONFIG.conversionRate))
 				GameManager.souls += soul_gain
-				BattleLog.log_write("💎 +%d 魂晶 (溢出%d × %.0f%%倍率)" % [soul_gain, capped_overkill, depth_mult * 100])
+				BattleLog.log_write("[G] +%d 魂晶 (溢出%d × %.0f%%倍率)" % [soul_gain, capped_overkill, depth_mult * 100])
 				VFX.show_toast("+%d 魂晶" % soul_gain, "buff")
 			e.hp = -9999
 			settled.append(e.uid)

@@ -241,7 +241,7 @@ func start_battle(encounter: Dictionary = {}) -> void:
 
 	# 战斗日志：开局
 	BattleLog.clear()
-	BattleLog.log_write("⚔ 第 %d 章 · 第 %d 波 开战" % [GameManager.chapter, GameManager.current_node + 1])
+	BattleLog.log_write("X 第 %d 章 · 第 %d 波 开战" % [GameManager.chapter, GameManager.current_node + 1])
 	var enemy_names: Array[String] = []
 	for enemy_id: String in enemies:
 		var cfg: EnemyConfig = EnemyConfig.get_config(enemy_id)
@@ -778,21 +778,21 @@ func _refresh_player_status_icons() -> void:
 	# 职业专属状态
 	if PlayerState.player_class == "warrior":
 		if PlayerState.scar_stacks > 0:
-			_add_status_icon("🩸", str(PlayerState.scar_stacks), Color(0.8, 0.2, 0.2))
+			_add_status_icon("B", str(PlayerState.scar_stacks), Color(0.8, 0.2, 0.2))
 		if PlayerState.berserk_turns > 0:
-			_add_status_icon("💢", str(PlayerState.berserk_turns), Color(1.0, 0.3, 0.1))
+			_add_status_icon("!", str(PlayerState.berserk_turns), Color(1.0, 0.3, 0.1))
 	elif PlayerState.player_class == "mage":
 		if PlayerState.charge_stacks > 0:
-			_add_status_icon("⚡", str(PlayerState.charge_stacks), Color(0.6, 0.4, 1.0))
+			_add_status_icon("!", str(PlayerState.charge_stacks), Color(0.6, 0.4, 1.0))
 	elif PlayerState.player_class == "rogue":
 		if PlayerState.combo_count > 0:
-			_add_status_icon("🗡", str(PlayerState.combo_count), Color(0.2, 0.9, 0.4))
+			_add_status_icon("C", str(PlayerState.combo_count), Color(0.2, 0.9, 0.4))
 
 
 func _add_status_icon(icon: String, text: String, color: Color) -> void:
 	var lbl := Label.new()
 	lbl.text = icon + text
-	lbl.add_theme_font_size_override("font_size", 11)
+	lbl.add_theme_font_size_override("font_size", 4)
 	lbl.add_theme_color_override("font_color", color)
 	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 	lbl.add_theme_constant_override("outline_size", 2)
@@ -801,15 +801,15 @@ func _add_status_icon(icon: String, text: String, color: Color) -> void:
 
 static func _get_status_icon(type: GameTypes.StatusType) -> String:
 	match type:
-		GameTypes.StatusType.POISON: return "☠"
-		GameTypes.StatusType.BURN: return "🔥"
-		GameTypes.StatusType.DODGE: return "💨"
-		GameTypes.StatusType.VULNERABLE: return "💔"
-		GameTypes.StatusType.STRENGTH: return "💪"
-		GameTypes.StatusType.WEAK: return "📉"
+		GameTypes.StatusType.POISON: return "P"
+		GameTypes.StatusType.BURN: return "F"
+		GameTypes.StatusType.DODGE: return "~"
+		GameTypes.StatusType.VULNERABLE: return "V"
+		GameTypes.StatusType.STRENGTH: return "S"
+		GameTypes.StatusType.WEAK: return "W"
 		GameTypes.StatusType.ARMOR: return "[A]"
-		GameTypes.StatusType.FREEZE: return "❄"
-		GameTypes.StatusType.ARCANE_DISRUPTION: return "🌀"
+		GameTypes.StatusType.FREEZE: return "I"
+		GameTypes.StatusType.ARCANE_DISRUPTION: return "@"
 		_: return "?"
 
 

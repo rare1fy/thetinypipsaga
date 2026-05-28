@@ -42,10 +42,10 @@ const RARITY_COLOR: Dictionary = {
 
 # 稀有度 → emoji 前缀（无素材时的视觉层级）
 const RARITY_EMOJI: Dictionary = {
-	GameTypes.RelicRarity.COMMON: "⚪",
-	GameTypes.RelicRarity.UNCOMMON: "🔵",
-	GameTypes.RelicRarity.RARE: "🟣",
-	GameTypes.RelicRarity.LEGENDARY: "🟠",
+	GameTypes.RelicRarity.COMMON: "o",
+	GameTypes.RelicRarity.UNCOMMON: "o",
+	GameTypes.RelicRarity.RARE: "o",
+	GameTypes.RelicRarity.LEGENDARY: "o",
 }
 
 # 触发时机 → 中文标签
@@ -85,7 +85,7 @@ func _build_content() -> void:
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intro.add_theme_color_override("font_color", Color("#9aa0ac"))
-	intro.add_theme_font_size_override("font_size", 12)
+	intro.add_theme_font_size_override("font_size", 6)
 	add_child(intro)
 	
 	# 空数据兜底（GameData 未初始化或数据加载失败）
@@ -142,12 +142,12 @@ func _build_group_header(rarity: int, count: int) -> Control:
 	
 	var dot := ColorRect.new()
 	dot.color = color
-	dot.custom_minimum_size = Vector2(4, 20)
+	dot.custom_minimum_size = Vector2(4, 10)
 	header.add_child(dot)
 	
 	var label := Label.new()
 	label.text = "%s（%d）" % [label_text, count]
-	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_font_size_override("font_size", 8)
 	label.add_theme_color_override("font_color", color)
 	header.add_child(label)
 	
@@ -156,7 +156,7 @@ func _build_group_header(rarity: int, count: int) -> Control:
 
 func _build_relic_entry(def: RelicDef) -> Control:
 	var color: Color = RARITY_COLOR.get(def.rarity, Color.WHITE)
-	var emoji: String = RARITY_EMOJI.get(def.rarity, "⚪")
+	var emoji: String = RARITY_EMOJI.get(def.rarity, "o")
 	
 	var row := PanelContainer.new()
 	var style := StyleBoxFlat.new()
@@ -181,19 +181,19 @@ func _build_relic_entry(def: RelicDef) -> Control:
 	
 	var emoji_label := Label.new()
 	emoji_label.text = emoji
-	emoji_label.add_theme_font_size_override("font_size", 14)
+	emoji_label.add_theme_font_size_override("font_size", 7)
 	top.add_child(emoji_label)
 	
 	var name_label := Label.new()
 	name_label.text = def.name
-	name_label.add_theme_font_size_override("font_size", 15)
+	name_label.add_theme_font_size_override("font_size", 7)
 	name_label.add_theme_color_override("font_color", color)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_label)
 	
 	var trigger_label := Label.new()
 	trigger_label.text = TRIGGER_LABEL.get(def.trigger, "")
-	trigger_label.add_theme_font_size_override("font_size", 11)
+	trigger_label.add_theme_font_size_override("font_size", 5)
 	trigger_label.add_theme_color_override("font_color", Color("#7a8090"))
 	top.add_child(trigger_label)
 	
@@ -204,7 +204,7 @@ func _build_relic_entry(def: RelicDef) -> Control:
 		var desc_label := Label.new()
 		desc_label.text = def.description
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 12)
+		desc_label.add_theme_font_size_override("font_size", 6)
 		desc_label.add_theme_color_override("font_color", Color("#c8d0e0"))
 		vbox.add_child(desc_label)
 	

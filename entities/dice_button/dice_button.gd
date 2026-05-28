@@ -117,11 +117,11 @@ func _element_color(elem: String) -> Color:
 
 func _element_icon_text(elem: String) -> String:
 	match elem:
-		"fire": return "🔥"
-		"wind": return "🌪"
-		"thunder": return "⚡"
-		"poison": return "☠"
-		"holy": return "✦"
+		"fire": return "F"
+		"wind": return "W"
+		"thunder": return "!"
+		"poison": return "P"
+		"holy": return "+"
 		"shadow": return "◈"
 		_: return ""
 

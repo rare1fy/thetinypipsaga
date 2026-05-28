@@ -6,13 +6,13 @@ extends Node2D
 
 # 事件图标映射
 const ICON_MAP: Dictionary = {
-	"skull": "💀",
+	"skull": "D",
 	"star": "⭐",
-	"flame": "🔥",
-	"heart": "❤️",
-	"shopBag": "🛍️",
-	"refresh": "🔄",
-	"question": "❓",
+	"flame": "F",
+	"heart": "H",
+	"shopBag": "$",
+	"refresh": "R",
+	"question": "?",
 }
 
 
@@ -40,7 +40,7 @@ func _show_random_event() -> void:
 		child.queue_free()
 	
 	# 显示事件标题和描述
-	var icon: String = ICON_MAP.get(event.get("icon_id", "question"), "❓")
+	var icon: String = ICON_MAP.get(event.get("icon_id", "question"), "?")
 	event_label.text = "%s [b]%s[/b]\n\n%s" % [icon, event.title, event.desc]
 	
 	# 生成选项按钮

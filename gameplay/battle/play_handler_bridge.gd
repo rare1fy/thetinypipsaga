@@ -36,10 +36,10 @@ func execute(controller: BattleController) -> void:
 	var can_multi_normal: bool = class_def != null and class_def.normal_attack_multi_select
 	if is_pure_normal and selected_dice.size() > 1:
 		if not can_multi_normal:
-			BattleLog.log_status("⚠️ 不成牌型时只能出 1 颗骰子")
+			BattleLog.log_status("! 不成牌型时只能出 1 颗骰子")
 			return
 		else:
-			BattleLog.log_status("⚔️ 多选普通攻击：特殊骰子效果将被禁用！")
+			BattleLog.log_status("X️ 多选普通攻击：特殊骰子效果将被禁用！")
 
 	# §6.5 第 5 级：skipOnPlay = 战士多选普攻
 	var skip_on_play: bool = can_multi_normal and is_pure_normal and selected_dice.size() > 1
@@ -199,7 +199,7 @@ func _apply_damage_and_after(
 					var st_type: int = _status_name_to_type(st_name)
 					if st_type >= 0:
 						StatusService.add(target_inst.statuses, st_type, st_value, 3)
-						BattleLog.log_status("✦ 牌型效果: %s x%d" % [st_name, st_value])
+						BattleLog.log_status("+ 牌型效果: %s x%d" % [st_name, st_value])
 		PlayerState.pending_hand_statuses.clear()
 
 	# 2. 伤害应用（含受击动画 + 飘字）
@@ -208,7 +208,7 @@ func _apply_damage_and_after(
 	if hand_effect_result.true_damage > 0 or hand_effect_result.ignore_taunt:
 		# 真实伤害 = 无视护甲，用极大 pierce 值实现
 		effective_pierce = 99999
-		BattleLog.log_dice("✦ 牌型效果: 真实伤害（无视护甲）")
+		BattleLog.log_dice("+ 牌型效果: 真实伤害（无视护甲）")
 	BattlePlayHandler.apply_damage_to_enemies(
 		total_damage, selected_dice, hand_result, dice_effect_result,
 		EnemyMgr.get_living_enemies(controller.enemy_views), EnemyMgr.get_target_enemy(controller.enemy_views),

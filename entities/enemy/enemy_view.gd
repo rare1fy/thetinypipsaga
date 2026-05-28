@@ -328,7 +328,7 @@ func _check_boss_phase_switch(prev_hp: int) -> void:
 				tw.tween_property(_visual_root, "modulate", Color(1, 1, 1, 1), 0.15)
 				tw.tween_property(_visual_root, "modulate", Color(1.5, 0.3, 0.3, 1.0), 0.15)
 				tw.tween_property(_visual_root, "modulate", Color(1, 1, 1, 1), 0.15)
-			BattleLog.log_write("⚠ %s 进入狂暴阶段！" % _enemy.name)
+			BattleLog.log_write("! %s 进入狂暴阶段！" % _enemy.name)
 			break
 
 
@@ -568,20 +568,20 @@ func _update_intent() -> void:
 	var intent_color: Color
 	match action_type:
 		"攻击":
-			intent_text = "⚔ %d" % value if desc == "" else "⚔ %s %d" % [desc, value]
+			intent_text = "X %d" % value if desc == "" else "X %s %d" % [desc, value]
 			intent_color = Color("#e04040")
 		"防御":
 			intent_text = "[A] %d" % value if desc == "" else "[A] %s %d" % [desc, value]
 			intent_color = Color("#4080e0")
 		"技能":
-			intent_text = "✦ %s" % desc if desc != "" else "✦ 施法"
+			intent_text = "+ %s" % desc if desc != "" else "+ 施法"
 			intent_color = Color("#c040e0")
 		_:
 			intent_text = "?"
 			intent_color = Color.GRAY
 
 	if _enemy.is_frozen():
-		intent_text = "❄ 冻结"
+		intent_text = "I 冻结"
 		intent_color = Color("#80d0ff")
 
 	_intent_label.text = intent_text
@@ -604,22 +604,22 @@ func _update_status_icons() -> void:
 
 	for s: StatusEffect in _enemy.statuses:
 		var icon := Label.new()
-		icon.add_theme_font_size_override("font_size", 10)
+		icon.add_theme_font_size_override("font_size", 5)
 		match s.type:
 			GameTypes.StatusType.POISON:
-				icon.text = "☠"
+				icon.text = "P"
 				icon.add_theme_color_override("font_color", Color("#50e050"))
 			GameTypes.StatusType.BURN:
-				icon.text = "🔥"
+				icon.text = "F"
 				icon.add_theme_color_override("font_color", Color("#e08030"))
 			GameTypes.StatusType.WEAK:
-				icon.text = "💪"
+				icon.text = "S"
 				icon.add_theme_color_override("font_color", Color("#e0e040"))
 			GameTypes.StatusType.VULNERABLE:
-				icon.text = "💔"
+				icon.text = "V"
 				icon.add_theme_color_override("font_color", Color("#e04040"))
 			GameTypes.StatusType.FREEZE:
-				icon.text = "❄"
+				icon.text = "I"
 				icon.add_theme_color_override("font_color", Color("#80d0ff"))
 			_:
 				icon.text = "?"
@@ -669,7 +669,7 @@ func _build_tooltip_text() -> String:
 		match cfg.category:
 			EnemyConfig.EnemyCategory.BOSS:
 				var rank_str: String = "终焉Boss" if cfg.boss_rank == EnemyConfig.BossRank.FINAL else "Boss"
-				name_str = "👑 %s [%s]" % [name_str, rank_str]
+				name_str = "* %s [%s]" % [name_str, rank_str]
 			EnemyConfig.EnemyCategory.ELITE:
 				name_str = "⭐ %s [精英]" % name_str
 	lines.append("【%s】" % name_str)
@@ -695,9 +695,9 @@ func _build_tooltip_text() -> String:
 	# Boss 特殊能力提示
 	if cfg and cfg.summons != null:
 		lines.append("")
-		lines.append("⚠ 可召唤援军")
+		lines.append("! 可召唤援军")
 	if cfg and cfg.revive != null:
-		lines.append("⚠ 死亡时分裂")
+		lines.append("! 死亡时分裂")
 	return "\n".join(lines)
 
 

@@ -84,14 +84,14 @@ func notify_collapsed() -> void:
 func _build_layout() -> void:
 	# 顶部分隔线（替代原版 border-top）
 	var sep := HSeparator.new()
-	sep.custom_minimum_size = Vector2(0, 2)
+	sep.custom_minimum_size = Vector2(4, 4)
 	sep.add_theme_color_override("separator", Color(0.31, 0.27, 0.21, 0.6))
 	add_child(sep)
 
 	# 点击按钮（整条）
 	_toggle_btn = Button.new()
 	_toggle_btn.flat = true
-	_toggle_btn.custom_minimum_size = Vector2(0, 30)
+	_toggle_btn.custom_minimum_size = Vector2(4, 15)
 	_toggle_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_toggle_btn.focus_mode = Control.FOCUS_NONE
 	_toggle_btn.pressed.connect(_on_toggle_pressed)
@@ -109,7 +109,7 @@ func _build_layout() -> void:
 	arrow.text = "^"
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.add_theme_color_override("font_color", COLOR_GOLD)
-	arrow.add_theme_font_size_override("font_size", 10)
+	arrow.add_theme_font_size_override("font_size", 5)
 	arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	arrow.name = "Arrow"
 	inner.add_child(arrow)
@@ -118,14 +118,14 @@ func _build_layout() -> void:
 	title.text = "遗物库"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_color", COLOR_GOLD_LIGHT)
-	title.add_theme_font_size_override("font_size", 12)
+	title.add_theme_font_size_override("font_size", 6)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_child(title)
 
 	_count_label = Label.new()
 	_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_count_label.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	_count_label.add_theme_font_size_override("font_size", 9)
+	_count_label.add_theme_font_size_override("font_size", 4)
 	_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_child(_count_label)
 

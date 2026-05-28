@@ -14,13 +14,13 @@ const TUTORIAL_STEPS: Array[Dictionary] = [
 	{
 		"id": "welcome",
 		"title": "* 欢迎来到六面史诗 *",
-		"icon": "★",
+		"icon": "*",
 		"content": "在这片被永夜笼罩的大陆上，你将用骰子组合牌型，击败沿途的敌人，穿越5个大关，拯救世界。",
 	},
 	{
 		"id": "map",
 		"title": "* 地图探索 *",
-		"icon": "📖",
+		"icon": "[B]",
 		"content": "每个大关有一张随机生成的地图。节点类型包括：\n[战] — 击败敌人获取金币\n[精] — 强敌，奖励丰厚\n[BOSS] — 关卡守关者\n[商] — 购买遗物和骰子\n[火] — 回复生命或升级牌型\n[事] — 随机遭遇\n[箱] — 免费获取奖励",
 	},
 	{
@@ -44,25 +44,25 @@ const TUTORIAL_STEPS: Array[Dictionary] = [
 	{
 		"id": "relics",
 		"title": "* 遗物系统 *",
-		"icon": "⚡",
+		"icon": "!",
 		"content": "遗物是你的被动能力，打出特定牌型时自动触发。\n击败精英和Boss后可获得遗物，商店也能购买。\n\n战斗中，伤害预览卡片下方会显示当前牌型激活了哪些遗物。\n点「遗物库」按钮可查看你的全部遗物。",
 	},
 	{
 		"id": "combat",
 		"title": "* 战斗要点 *",
-		"icon": "⚔",
+		"icon": "X",
 		"content": "• 注意敌人头顶的意图图标（攻击/防御/施法）\n• 护甲在敌人攻击前抵挡伤害，每回合刷新\n• 元素效果：火破甲、冰冻结、雷AOE、毒持续、圣回血\n• Boss战分多波，每波击败后自动进入下一波\n• 击败Boss获得额外手牌上限+1",
 	},
 	{
 		"id": "economy",
 		"title": "* 经济与构筑 *",
-		"icon": "💰",
+		"icon": "G",
 		"content": "• 金币 — 在商店购买遗物和骰子\n• 骰子构筑 — 每场战斗后可选取新骰子\n• 同种骰子重复获取可升级（最高Lv.3）\n• 合理搭配骰子+遗物，打造你的专属流派！",
 	},
 	{
 		"id": "ready",
 		"title": "* 准备出发 *",
-		"icon": "🔥",
+		"icon": "F",
 		"content": "穿越幽暗森林、冰封山脉、熔岩深渊、暗影要塞，直到永恒之巅。\n\n每一关都有独特的敌人和Boss等待着你。\n骰运亨通，勇士！",
 	},
 ]
@@ -104,34 +104,34 @@ func _build_ui() -> void:
 	_progress_bar.min_value = 0
 	_progress_bar.max_value = TUTORIAL_STEPS.size()
 	_progress_bar.value = 1
-	_progress_bar.custom_minimum_size = Vector2(0, 8)
+	_progress_bar.custom_minimum_size = Vector2(4, 4)
 	_progress_bar.show_percentage = false
 	add_child(_progress_bar)
 	
 	# 步骤计数
 	_step_counter = Label.new()
 	_step_counter.add_theme_color_override("font_color", Color("#9aa0ac"))
-	_step_counter.add_theme_font_size_override("font_size", 10)
+	_step_counter.add_theme_font_size_override("font_size", 5)
 	_step_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_step_counter)
 	
 	# 图标
 	_icon_label = Label.new()
-	_icon_label.add_theme_font_size_override("font_size", 32)
+	_icon_label.add_theme_font_size_override("font_size", 16)
 	_icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_icon_label)
 	
 	# 标题
 	_title_label = Label.new()
 	_title_label.add_theme_color_override("font_color", Color("#d4a030"))
-	_title_label.add_theme_font_size_override("font_size", 16)
+	_title_label.add_theme_font_size_override("font_size", 8)
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_title_label)
 	
 	# 内容
 	_content_label = Label.new()
 	_content_label.add_theme_color_override("font_color", Color("#b0b8c8"))
-	_content_label.add_theme_font_size_override("font_size", 12)
+	_content_label.add_theme_font_size_override("font_size", 6)
 	_content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_content_label)
 	
@@ -156,7 +156,7 @@ func _build_ui() -> void:
 	var skip_btn := Button.new()
 	skip_btn.text = "跳过教程"
 	skip_btn.add_theme_color_override("font_color", Color("#9aa0ac"))
-	skip_btn.add_theme_font_size_override("font_size", 10)
+	skip_btn.add_theme_font_size_override("font_size", 5)
 	skip_btn.pressed.connect(_on_skip)
 	add_child(skip_btn)
 

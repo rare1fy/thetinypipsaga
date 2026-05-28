@@ -109,7 +109,7 @@ func _rebuild() -> void:
 	_button_by_id.clear()
 
 	if _map_nodes.is_empty():
-		custom_minimum_size = Vector2(720, 400)
+		custom_minimum_size = Vector2(360, 200)
 		return
 
 	# 计算画布高度 = 层数 × layer_height + margins

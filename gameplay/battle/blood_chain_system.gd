@@ -18,7 +18,7 @@ static func bind(enemy_uid: String) -> void:
 	if enemy_uid not in PlayerState.blood_chain_targets:
 		PlayerState.blood_chain_targets.append(enemy_uid)
 	PlayerState.blood_chain_turns = 2  # 本回合剩余 + 下个敌方回合
-	BattleLog.log_player("🔗 血锁链绑定 → %s" % enemy_uid)
+	BattleLog.log_player("- 血锁链绑定 → %s" % enemy_uid)
 
 
 ## AOE 绑定（顺子打出时与所有命中敌人绑定）
@@ -28,7 +28,7 @@ static func bind_all(enemy_uids: Array[String]) -> void:
 		if not uid.is_empty():
 			PlayerState.blood_chain_targets.append(uid)
 	PlayerState.blood_chain_turns = 2
-	BattleLog.log_player("🔗 血锁链 AOE 绑定 %d 个目标" % enemy_uids.size())
+	BattleLog.log_player("- 血锁链 AOE 绑定 %d 个目标" % enemy_uids.size())
 
 
 ## ============================================================

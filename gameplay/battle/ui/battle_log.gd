@@ -17,8 +17,8 @@ extends PanelContainer
 
 
 const MAX_LINES: int = 200            ## 最多保留条数，超出删最旧的
-const LINE_FONT_SIZE: int = 12
-const PANEL_WIDTH: float = 240.0
+const LINE_FONT_SIZE: int = 6
+const PANEL_WIDTH: float = 120.0
 
 ## 预设颜色
 const COLOR_PLAYER: Color = Color("#f0c850")
@@ -129,7 +129,7 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "战斗日志"
-	title.add_theme_font_size_override("font_size", 12)
+	title.add_theme_font_size_override("font_size", 4)
 	title.add_theme_color_override("font_color", Color("#c8d0e8"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -137,14 +137,14 @@ func _build_ui() -> void:
 	_toggle_btn = Button.new()
 	_toggle_btn.text = "—"
 	_toggle_btn.flat = true
-	_toggle_btn.custom_minimum_size = Vector2(20, 20)
-	_toggle_btn.add_theme_font_size_override("font_size", 12)
+	_toggle_btn.custom_minimum_size = Vector2(5, 5)
+	_toggle_btn.add_theme_font_size_override("font_size", 4)
 	_toggle_btn.pressed.connect(_on_toggle)
 	header.add_child(_toggle_btn)
 
 	# 内容滚动区
 	_scroll = ScrollContainer.new()
-	_scroll.custom_minimum_size = Vector2(PANEL_WIDTH - 20, 240)
+	_scroll.custom_minimum_size = Vector2(PANEL_WIDTH - 10, 120)
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	outer.add_child(_scroll)
 
@@ -168,7 +168,7 @@ func _append(text: String, color: Color) -> void:
 	line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	line.add_theme_font_size_override("font_size", LINE_FONT_SIZE)
 	line.add_theme_color_override("font_color", color)
-	line.custom_minimum_size = Vector2(PANEL_WIDTH - 30, 0)
+	line.custom_minimum_size = Vector2(PANEL_WIDTH - 15, 0)
 	_vbox.add_child(line)
 	while _vbox.get_child_count() > MAX_LINES:
 		_vbox.get_child(0).queue_free()

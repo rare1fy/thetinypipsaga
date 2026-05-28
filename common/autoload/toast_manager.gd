@@ -84,7 +84,7 @@ func _build_toast_node(msg: String, type: String) -> Control:
 	
 	var label := Label.new()
 	label.text = msg
-	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_font_size_override("font_size", 6)
 	label.add_theme_color_override("font_color", _text_color_for_type(type))
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 2)

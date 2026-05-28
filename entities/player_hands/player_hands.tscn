@@ -10,17 +10,17 @@ script = ExtResource("1_pahnd")
 [node name="LeftHand" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-20, 0)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(1.0, 1.0)
 texture = ExtResource("2_lefthand")
 
 [node name="DiceAnchor" type="Marker2D" parent="LeftHand"]
-position = Vector2(0, -50)
+position = Vector2(0, -100)
 
 [node name="RightHand" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(30, 0)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(1.0, 1.0)
 texture = ExtResource("3_righthand")
 
 [node name="DiceAnchor" type="Marker2D" parent="RightHand"]
-position = Vector2(0, -50)
+position = Vector2(0, -100)

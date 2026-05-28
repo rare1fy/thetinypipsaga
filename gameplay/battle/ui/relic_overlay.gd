@@ -28,7 +28,7 @@ const COLOR_PANEL_BORDER: Color = Color(0.231, 0.251, 0.314, 1)
 const ANIM_DURATION: float = 0.28
 const HEIGHT_RATIO: float = 0.55  # 占屏高 55%
 const COLUMNS: int = 6
-const SLOT_SIZE: Vector2 = Vector2(48, 52)
+const SLOT_SIZE: Vector2 = Vector2(24, 26)
 
 var _panel: PanelContainer
 var _grid: GridContainer
@@ -123,16 +123,16 @@ func _build_header() -> Control:
 
 	_title_label = Label.new()
 	_title_label.add_theme_color_override("font_color", COLOR_GOLD)
-	_title_label.add_theme_font_size_override("font_size", 14)
+	_title_label.add_theme_font_size_override("font_size", 4)
 	_title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_title_label)
 
 	var close_btn := Button.new()
-	close_btn.text = "✕"
+	close_btn.text = "x"
 	close_btn.flat = true
-	close_btn.custom_minimum_size = Vector2(28, 28)
+	close_btn.custom_minimum_size = Vector2(7, 7)
 	close_btn.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	close_btn.add_theme_font_size_override("font_size", 16)
+	close_btn.add_theme_font_size_override("font_size", 4)
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.pressed.connect(_on_close_pressed)
 	header.add_child(close_btn)
@@ -156,7 +156,7 @@ func _refresh() -> void:
 		var empty := Label.new()
 		empty.text = "暂无遗物"
 		empty.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-		empty.add_theme_font_size_override("font_size", 11)
+		empty.add_theme_font_size_override("font_size", 4)
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		# 填 COLUMNS 列让它居中占位
@@ -201,7 +201,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 	var icon := Label.new()
 	icon.text = _rarity_emoji(def.rarity)
 	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	icon.add_theme_font_size_override("font_size", 18)
+	icon.add_theme_font_size_override("font_size", 4)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(icon)
 
@@ -213,7 +213,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 	name_label.text = short_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	name_label.add_theme_font_size_override("font_size", 8)
+	name_label.add_theme_font_size_override("font_size", 4)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(name_label)
 
@@ -224,7 +224,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 		badge.text = "%d%s" % [counter, instance.get("counterLabel", "")]
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.add_theme_color_override("font_color", Color("#f9a066"))
-		badge.add_theme_font_size_override("font_size", 8)
+		badge.add_theme_font_size_override("font_size", 4)
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		col.add_child(badge)
 
@@ -236,14 +236,14 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 func _rarity_emoji(rarity: int) -> String:
 	match rarity:
 		GameTypes.RelicRarity.COMMON:
-			return "⚪"
+			return "o"
 		GameTypes.RelicRarity.UNCOMMON:
-			return "🔵"
+			return "o"
 		GameTypes.RelicRarity.RARE:
-			return "🟣"
+			return "o"
 		GameTypes.RelicRarity.LEGENDARY:
-			return "🟠"
-	return "⚪"
+			return "o"
+	return "o"
 
 
 # ── 交互 ─────────────────────────────────────────

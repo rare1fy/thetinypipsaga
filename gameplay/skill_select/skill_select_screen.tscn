@@ -29,23 +29,23 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 30.0
-offset_right = -20.0
-offset_bottom = -30.0
+offset_left = 10.0
+offset_top = 15.0
+offset_right = -10.0
+offset_bottom = -15.0
 
 [node name="DescLabel" type="RichTextLabel" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 40)
 bbcode_enabled = true
-theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/normal_font_size = 7
 
 [node name="RelicContainer" type="HBoxContainer" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 16
+theme_override_constants/separation = 8
 
 [node name="SkipBtn" type="Button" parent="UILayer/Root/VBox"]
 unique_name_in_owner = true
