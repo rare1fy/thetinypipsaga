@@ -338,7 +338,7 @@ layer = 2
 
 [node name="PlayerHands" parent="PlayerHandsLayer" instance=ExtResource("5_hands")]
 unique_name_in_owner = true
-position = Vector2(90, 160)
+position = Vector2(90, 260)
 scale = Vector2(1.0, 1.0)
 left_hand_base_pos = Vector2(-20, 0)
 right_hand_base_pos = Vector2(30, 0)
