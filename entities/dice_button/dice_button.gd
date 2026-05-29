@@ -1,11 +1,6 @@
 ## 骰子按钮组件 — 对应原版 DiceSelectCard.tsx
 ## 节点结构和样式都在 dice_button.tscn 中定义
-## 三层视觉：底色（元素） + 边框（选中态） + 角标（选中标记）
-##
-## 美术替换指引：
-##   - BgRect (ColorRect)：未来可换成 TextureRect/Sprite2D 承载骰子面
-##   - ValueLabel (Label)：未来可替换为点数图形
-##   - ElementIcon (Label emoji)：未来换成元素 icon 资源
+## 三层视觉：骰子精灵图（底） + 边框（选中态） + 角标（选中标记）
 
 class_name DiceButton
 extends Button
@@ -26,20 +21,49 @@ var _is_candidate: bool = false
 
 # tscn 中的节点引用
 @onready var _border_rect: ColorRect = %BorderRect
-@onready var _bg_rect: ColorRect = %BgRect
+@onready var _bg_rect: TextureRect = %BgRect
 @onready var _value_label: Label = %ValueLabel
 @onready var _element_icon: Label = %ElementIcon
 @onready var _badge: Label = %Badge
 
+# ============================================================
+# 精灵图配置
+# ============================================================
+
+## 精灵图纹理（128×64，4×2 网格，每格 32×32）
+const DICE_SHEET_PATH := "res://assets/art/generated/dice/standard_dice.png"
+const FRAME_W := 32
+const FRAME_H := 32
+const COLS := 4
+
+## defId → 精灵图帧索引映射
+## Row 1: standard(0), blade(1), amplify(2), chaos(3)
+## Row 2: cursed(4), heavy(5), cracked(6), joker(7)
+static var _frame_map: Dictionary = {
+	"standard": 0,
+	"blade": 1,
+	"amplify": 2,
+	"chaos": 3,
+	"cursed": 4,
+	"heavy": 5,
+	"cracked": 6,
+	"joker": 7,
+}
+
+## 缓存：已创建的 AtlasTexture（按帧索引缓存，避免重复创建）
+static var _atlas_cache: Dictionary = {}
+static var _sheet_texture: Texture2D = null
+
 # 视觉规格
 const BORDER_WIDTH := 3
 const SELECTED_BORDER_WIDTH := 5
-const SELECTED_BORDER_COLOR := Color("#f0c040")
-const UNSELECTED_BORDER_COLOR := Color(1, 1, 1, 0.15)
-const CANDIDATE_BORDER_COLOR := Color("#40a0e8")
+var SELECTED_BORDER_COLOR := Color("#f0c040")
+var UNSELECTED_BORDER_COLOR := Color(1, 1, 1, 0.15)
+var CANDIDATE_BORDER_COLOR := Color("#40a0e8")
 
 func _ready() -> void:
 	pressed.connect(_on_self_pressed)
+	_ensure_sheet_loaded()
 	if not _die.is_empty():
 		_refresh_visual()
 
@@ -77,6 +101,7 @@ func _refresh_visual() -> void:
 	var selected: bool = _die.get("selected", false)
 	var rolling: bool = _die.get("rolling", false)
 	var elem: String = _die.get("collapsedElement", _die.get("element", "normal"))
+	var def_id: String = _die.get("defId", "standard")
 	
 	_value_label.text = str(value) if not rolling else "?"
 	
@@ -85,8 +110,13 @@ func _refresh_visual() -> void:
 	_element_icon.visible = elem != "normal"
 	_element_icon.add_theme_color_override("font_color", _element_color(elem).lightened(0.3))
 	
-	# 底色：始终按元素色显示
-	_bg_rect.color = _element_color(elem)
+	# 骰子精灵图：根据 defId 设置对应帧
+	_bg_rect.texture = _get_frame_texture(def_id)
+	# 元素骰子叠加色调
+	if elem != "normal":
+		_bg_rect.modulate = _element_color(elem).lightened(0.4)
+	else:
+		_bg_rect.modulate = Color.WHITE
 	
 	# 边框：选中=金色加粗框 > 候选=蓝框 > 默认=浅灰细线
 	if selected:
@@ -104,6 +134,34 @@ func _refresh_visual() -> void:
 	
 	modulate = Color(1, 1, 1, 1)
 	disabled = rolling
+
+
+# ============================================================
+# 精灵图帧切割
+# ============================================================
+
+## 确保精灵图纹理已加载
+static func _ensure_sheet_loaded() -> void:
+	if _sheet_texture == null:
+		_sheet_texture = load(DICE_SHEET_PATH)
+
+
+## 获取指定 defId 对应的 AtlasTexture
+func _get_frame_texture(def_id: String) -> AtlasTexture:
+	var frame_idx: int = _frame_map.get(def_id, 0)  # fallback 到 standard
+	
+	if _atlas_cache.has(frame_idx):
+		return _atlas_cache[frame_idx]
+	
+	_ensure_sheet_loaded()
+	var atlas := AtlasTexture.new()
+	atlas.atlas = _sheet_texture
+	var col: int = frame_idx % COLS
+	var row: int = frame_idx / COLS
+	atlas.region = Rect2(col * FRAME_W, row * FRAME_H, FRAME_W, FRAME_H)
+	_atlas_cache[frame_idx] = atlas
+	return atlas
+
 
 func _element_color(elem: String) -> Color:
 	match elem:

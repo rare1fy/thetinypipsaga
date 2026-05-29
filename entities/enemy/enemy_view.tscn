@@ -95,6 +95,7 @@ vertical_alignment = 1
 
 [node name="HeadUI" type="Control" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = -25.0

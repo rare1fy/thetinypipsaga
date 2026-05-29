@@ -1,0 +1,15 @@
+Generate a sprite sheet of 8 different six-sided cube dice arranged in a 4x2 grid on a pure black background. Each die is a standard cubic D6 shape shown from a slight 3/4 top-down angle (showing top face and two side faces clearly). No dots, no pips, no numbers on any face. Each die is isolated with clear spacing between them. Dark fantasy dungeon aesthetic, moody lighting, detailed material textures. Each die approximately 200x200 pixels in its cell.
+
+Row 1, from left to right:
+1. STANDARD DIE - Plain ivory-white bone/stone cube. Slightly worn edges, subtle warm highlight on top face. Clean, simple, weathered surface texture like old carved bone.
+2. BLADE DIE - Metallic silver steel cube with sharp angular beveled edges resembling sword blades. Cold blue-gray polished metal material, fine scratches on surface. Corners are razor-sharp.
+3. AMPLIFY DIE - Polished golden cube with faintly carved arcane runes on each visible face. Warm amber/gold material, luxurious finish. The runes are subtle engravings, not glowing.
+4. CHAOS DIE - Cube split diagonally: one half pure obsidian black, the other half bone white. A thin cracked seam where the two materials meet. Yin-yang duality theme.
+
+Row 2, from left to right:
+5. CURSED DIE - Pitch black cube with dark purple veins crawling across the surface. Corroded, decayed edges. Sickly green tint visible in deep cracks. Looks evil and corrupted.
+6. HEAVY DIE - Dense dark iron/lead cube. Gunmetal gray, industrial forged look. Small rivets on corners. Bottom-heavy shading suggesting extreme weight. Scratched worn metal.
+7. CRACKED DIE - Fractured cube barely holding together. Deep fissures across all faces with red-orange color visible inside the cracks (like lava). Chipped corners with missing fragments.
+8. JOKER DIE - Colorful jester-themed cube with purple and gold diamond/harlequin pattern painted on faces. A tiny jester bell attached to one corner. Playful, carnival aesthetic.
+
+Style: realistic 3D rendered look, dramatic side lighting from upper left, each die casts a subtle shadow. Materials should look physically convincing - metal looks like metal, bone looks like bone, etc. NOT pixel art, NOT cartoon. Photorealistic material rendering with fantasy flair.

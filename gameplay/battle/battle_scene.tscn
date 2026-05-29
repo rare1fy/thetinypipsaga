@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://k3rief1ge1hd"]
+[gd_scene load_steps=15 format=3 uid="uid://k3rief1ge1hd"]
 
 [ext_resource type="Script" uid="uid://cm2inv87j4igv" path="res://gameplay/battle/battle_scene.gd" id="1"]
 [ext_resource type="Script" uid="uid://d06pecgrappe2" path="res://gameplay/battle/battle_controller.gd" id="2_7u8ly"]
@@ -6,7 +6,9 @@
 [ext_resource type="FontFile" uid="uid://daka4vfi861an" path="res://fonts/fusion-pixel-12px-monospaced-latin.woff2" id="3_t4vxl"]
 [ext_resource type="Script" uid="uid://cokr3bsquuylm" path="res://gameplay/battle/settlement/settlement_player.gd" id="4_settle"]
 [ext_resource type="PackedScene" uid="uid://cbpdyue7ujvi7" path="res://entities/player_hands/player_hands.tscn" id="5_hands"]
+[ext_resource type="PackedScene" uid="uid://c8hq3ev7dk2bt" path="res://entities/dice_button/dice_button.tscn" id="9_ahca1"]
 [ext_resource type="Script" uid="uid://ic2i4bv6goal" path="res://gameplay/battle/bg_parallax.gd" id="10_bgpar"]
+[ext_resource type="Script" uid="uid://k3oj60iqjcyw" path="res://entities/dice_button/dice_button.gd" id="10_kncta"]
 [ext_resource type="Theme" uid="uid://bv80qovuttmwt" path="res://data/dungeon_theme.tres" id="11_theme"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y8pa6"]
@@ -22,6 +24,7 @@ script = ExtResource("1")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 10
+visible = false
 
 [node name="Root" type="Control" parent="UILayer"]
 unique_name_in_owner = true
@@ -270,6 +273,7 @@ anchor_bottom = 1.0
 offset_top = -140.0
 offset_bottom = -136.0
 grow_horizontal = 2
+grow_vertical = 0
 theme_override_constants/separation = 0
 
 [node name="WorldLayer" type="Node2D" parent="."]
@@ -321,14 +325,10 @@ texture = SubResource("CompressedTexture2D_kncta")
 
 [node name="EnemyContainer" type="Node2D" parent="WorldLayer"]
 unique_name_in_owner = true
-position = Vector2(0, 0)
 
 [node name="PlayerHands" parent="WorldLayer" instance=ExtResource("5_hands")]
 unique_name_in_owner = true
-position = Vector2(90, 260)
-scale = Vector2(1.0, 1.0)
-left_hand_base_pos = Vector2(-20, 0)
-right_hand_base_pos = Vector2(30, 0)
+position = Vector2(90, 330)
 attack_swing_distance = 20.0
 
 [node name="SettlementPlayer" type="CanvasLayer" parent="."]
@@ -337,3 +337,10 @@ script = ExtResource("4_settle")
 
 [node name="BattleController" type="Node2D" parent="."]
 script = ExtResource("2_7u8ly")
+
+[node name="DiceButton" type="Button" parent="." instance=ExtResource("9_ahca1")]
+custom_minimum_size = Vector2(48, 48)
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+script = ExtResource("10_kncta")

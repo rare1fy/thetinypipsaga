@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcr78b5eane1g"
-path="res://.godot/imported/scene_ch1_05.png-c8a647cc30848a2aefb337728b54879f.ctex"
+uid="uid://17l5o3hqvcc5"
+path="res://.godot/imported/dice_sheet_realistic.png-3aa6d587dd483a467e45fd798cb545c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/scene/scene_ch1_05.png"
-dest_files=["res://.godot/imported/scene_ch1_05.png-c8a647cc30848a2aefb337728b54879f.ctex"]
+source_file="res://prompts/dice_sheet_realistic.png"
+dest_files=["res://.godot/imported/dice_sheet_realistic.png-3aa6d587dd483a467e45fd798cb545c6.ctex"]
 
 [params]
 
