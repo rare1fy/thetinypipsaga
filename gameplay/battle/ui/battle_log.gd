@@ -129,7 +129,7 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "战斗日志"
-	title.add_theme_font_size_override("font_size", 4)
+	title.add_theme_font_size_override("font_size", 12)
 	title.add_theme_color_override("font_color", Color("#c8d0e8"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -138,7 +138,7 @@ func _build_ui() -> void:
 	_toggle_btn.text = "—"
 	_toggle_btn.flat = true
 	_toggle_btn.custom_minimum_size = Vector2(4, 4)
-	_toggle_btn.add_theme_font_size_override("font_size", 4)
+	_toggle_btn.add_theme_font_size_override("font_size", 12)
 	_toggle_btn.pressed.connect(_on_toggle)
 	header.add_child(_toggle_btn)
 

@@ -26,7 +26,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "* 战斗统计 *"
 	title.add_theme_color_override("font_color", Color("#d4a030"))
-	title.add_theme_font_size_override("font_size", 8)
+	title.add_theme_font_size_override("font_size", 12)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -37,7 +37,7 @@ func _build_ui() -> void:
 		current_depth = 0
 	depth_label.text = "第 %d 层" % (current_depth + 1)
 	depth_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	depth_label.add_theme_font_size_override("font_size", 4)
+	depth_label.add_theme_font_size_override("font_size", 12)
 	depth_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(depth_label)
 	
@@ -67,7 +67,7 @@ func _build_ui() -> void:
 	var dmg_title := Label.new()
 	dmg_title.text = "TOTAL DAMAGE"
 	dmg_title.add_theme_color_override("font_color", Color("#e04040"))
-	dmg_title.add_theme_font_size_override("font_size", 4)
+	dmg_title.add_theme_font_size_override("font_size", 12)
 	dmg_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	dmg_vbox.add_child(dmg_title)
 	var dmg_value := Label.new()
@@ -116,7 +116,7 @@ func _make_section(title: String) -> Label:
 	var label := Label.new()
 	label.text = title
 	label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	label.add_theme_font_size_override("font_size", 4)
+	label.add_theme_font_size_override("font_size", 12)
 	return label
 
 
@@ -125,13 +125,13 @@ func _make_row(label_text: String, value_text: String, color: Color) -> HBoxCont
 	var label := Label.new()
 	label.text = label_text
 	label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	label.add_theme_font_size_override("font_size", 4)
+	label.add_theme_font_size_override("font_size", 12)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(label)
 	var value := Label.new()
 	value.text = value_text
 	value.add_theme_color_override("font_color", color)
-	value.add_theme_font_size_override("font_size", 4)
+	value.add_theme_font_size_override("font_size", 12)
 	row.add_child(value)
 	return row
 

@@ -76,7 +76,7 @@ func _animate() -> void:
 	# 阶段 2：坠落（画面下移）
 	tw.tween_method(func(t: float) -> void:
 		if viewport:
-			viewport.canvas_transform = original_transform.translated(Vector2(0, t * 320.0))
+			viewport.canvas_transform = original_transform.translated(Vector2(0, t * 640.0))
 	, 0.0, 1.0, FALL_DURATION).set_ease(Tween.EASE_IN)
 
 	# 阶段 3：黑幕 fade

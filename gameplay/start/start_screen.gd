@@ -36,7 +36,7 @@ func _ready() -> void:
 	
 	# 标题弹入
 	VFX.pop_in(title_label, 0.6, 0.2, 1.3)
-	VFX.slide_in_from_bottom(start_btn, 30.0, 0.4, 0.5)
+	VFX.slide_in_from_bottom(start_btn, 60.0, 0.4, 0.5)
 	VFX.fade_in(version_label, 0.3, 0.6)
 	
 	# 背景星星
@@ -51,19 +51,19 @@ func _ready() -> void:
 # ============================================================
 func _spawn_topright_buttons() -> void:
 	# 设置按钮（最右）
-	_spawn_icon_button("SET", "设置", Vector2(-22, 3), _on_settings_pressed)
+	_spawn_icon_button("SET", "设置", Vector2(-44, 6), _on_settings_pressed)
 	# 牌型图鉴按钮
-	_spawn_icon_button("HND", "牌型图鉴", Vector2(-42, 3), _on_hand_guide_pressed)
+	_spawn_icon_button("HND", "牌型图鉴", Vector2(-84, 6), _on_hand_guide_pressed)
 	# 遗物图鉴按钮
-	_spawn_icon_button("REL", "遗物图鉴", Vector2(-62, 3), _on_relic_guide_pressed)
+	_spawn_icon_button("REL", "遗物图鉴", Vector2(-124, 6), _on_relic_guide_pressed)
 	# 魂晶商店按钮
-	_spawn_icon_button("SHP", "魂晶商店", Vector2(-82, 3), _on_soul_shop_pressed)
+	_spawn_icon_button("SHP", "魂晶商店", Vector2(-164, 6), _on_soul_shop_pressed)
 
 func _spawn_icon_button(text: String, tooltip: String, pos: Vector2, callback: Callable) -> void:
 	var btn := Button.new()
 	btn.text = text
-	btn.add_theme_font_size_override("font_size", 4)
-	btn.custom_minimum_size = Vector2(8, 4)
+	btn.add_theme_font_size_override("font_size", 12)
+	btn.custom_minimum_size = Vector2(16, 8)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.tooltip_text = tooltip
@@ -78,7 +78,7 @@ func _on_settings_pressed() -> void:
 	ModalHubRef.open(
 		SettingsPanelRef.new(),
 		"设置",
-		{"size": Vector2(160, 260), "close_on_backdrop": true}
+		{"size": Vector2(320, 520), "close_on_backdrop": true}
 	)
 
 
@@ -87,7 +87,7 @@ func _on_hand_guide_pressed() -> void:
 	ModalHubRef.open(
 		HandGuideRef.new(),
 		"牌型图鉴",
-		{"size": Vector2(170, 300), "close_on_backdrop": true}
+		{"size": Vector2(340, 600), "close_on_backdrop": true}
 	)
 
 
@@ -96,7 +96,7 @@ func _on_relic_guide_pressed() -> void:
 	ModalHubRef.open(
 		RelicGuideRef.new(),
 		"遗物图鉴",
-		{"size": Vector2(170, 300), "close_on_backdrop": true}
+		{"size": Vector2(340, 600), "close_on_backdrop": true}
 	)
 
 
@@ -105,7 +105,7 @@ func _on_soul_shop_pressed() -> void:
 	ModalHubRef.open(
 		SoulShopRef.new(),
 		"魂晶商店",
-		{"size": Vector2(160, 260), "close_on_backdrop": true}
+		{"size": Vector2(320, 520), "close_on_backdrop": true}
 	)
 
 
@@ -139,8 +139,8 @@ func _spawn_stars() -> void:
 	for i in 6:
 		var star := ColorRect.new()
 		star.color = colors[i % colors.size()]
-		star.size = Vector2(2, 2)
-		star.position = Vector2(randf_range(10, 170), randf_range(25, 200))
+		star.size = Vector2(4, 4)
+		star.position = Vector2(randf_range(20, 340), randf_range(50, 400))
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		ui_root.add_child(star)
 		# 移到最底层（标题后面）

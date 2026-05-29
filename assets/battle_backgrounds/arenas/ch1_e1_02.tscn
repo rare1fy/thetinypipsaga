@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://5t3sjqcab24s"]
+
+[ext_resource type="Script" uid="uid://ce74vc1mr3jl" path="res://assets/battle_backgrounds/arenas/battle_arena.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bxdfgyworqyv6" path="res://assets/battle_backgrounds/ch1_e1_02.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://rufcw6tiuj0a" path="res://assets/characters/enemies/spritesheet_enemies_ch1.png" id="3_sheet"]
+
+[sub_resource type="AtlasTexture" id="atlas_0"]
+atlas = ExtResource("3_sheet")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("3_sheet")
+region = Rect2(64, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("3_sheet")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("3_sheet")
+region = Rect2(64, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("3_sheet")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("3_sheet")
+region = Rect2(64, 192, 64, 64)
+
+[node name="Arena_ch1_e1_02" type="Node2D"]
+script = ExtResource("1_script")
+arena_tag = "graveyard"
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -50
+position = Vector2(90, 160)
+texture = ExtResource("2_bg")
+
+[node name="Slot0_Dist1" type="Marker2D" parent="."]
+position = Vector2(90, 252)
+scale = Vector2(2, 2)
+
+[node name="Preview" type="Sprite2D" parent="Slot0_Dist1"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_0")
+offset = Vector2(0, -32)
+
+[node name="Slot0_Dist2" type="Marker2D" parent="."]
+position = Vector2(90, 195)
+
+[node name="Preview" type="Sprite2D" parent="Slot0_Dist2"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_1")
+offset = Vector2(0, -32)
+
+[node name="Slot1_Dist1" type="Marker2D" parent="."]
+position = Vector2(60, 252)
+scale = Vector2(2, 2)
+
+[node name="Preview" type="Sprite2D" parent="Slot1_Dist1"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_2")
+offset = Vector2(0, -32)
+
+[node name="Slot1_Dist2" type="Marker2D" parent="."]
+position = Vector2(66, 195)
+
+[node name="Preview" type="Sprite2D" parent="Slot1_Dist2"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_3")
+offset = Vector2(0, -32)
+
+[node name="Slot2_Dist1" type="Marker2D" parent="."]
+position = Vector2(120, 252)
+scale = Vector2(2, 2)
+
+[node name="Preview" type="Sprite2D" parent="Slot2_Dist1"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_4")
+offset = Vector2(0, -32)
+
+[node name="Slot2_Dist2" type="Marker2D" parent="."]
+position = Vector2(114, 195)
+
+[node name="Preview" type="Sprite2D" parent="Slot2_Dist2"]
+modulate = Color(1, 1, 1, 0.5)
+texture = SubResource("atlas_5")
+offset = Vector2(0, -32)

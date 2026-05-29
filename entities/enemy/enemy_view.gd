@@ -486,10 +486,7 @@ func _update_hp_display() -> void:
 
 
 ## 纵深视觉（缩放/亮度/z-index + 位置查表）
-## 位置契约（所见即所得·Inspector 配置）：
-##   battle_scene.gd 的 @export 定义 3×4=12 个坐标 + 对应缩放/Y偏移/亮度/z_index
-##   distance 的值就是属性名中的数字，敌人头上显示"距N"就对应"距离N"这组参数
-##   所有参数在 Inspector 面板直接调，代码不做任何插值
+## 位置由 Arena 预制件的 Marker2D 决定，通过 battle_scene.get_slot_visuals() 获取
 var _depth_tween: Tween = null
 
 ## 当前精灵缩放值（用于计算 HeadUI 跟随位置）
@@ -543,17 +540,20 @@ func _get_battle_scene() -> BattleScene:
 	return null
 
 
-## HeadUI 位置跟随：HeadUI 是根节点的直接子节点（不受 VisualRoot 缩放影响）
-## 根据精灵当前缩放计算 UI 应该出现在精灵顶部上方的位置
+## HeadUI 位置跟随：根据精灵当前缩放，将 UI 放在精灵顶部上方
+## 简化逻辑：精灵脚底在 position(0,0)，精灵向上绘制（ArtSprite.position.y = -32）
+## 精灵顶部 = VisualRoot.y + ArtSprite.y*scale - (sprite_half_height * scale)
+## 即：顶部 = visual_root.y + (-32 - 32) * scale = visual_root.y - 64*scale
+## HeadUI 宽度100px，居中需要 x=-50
+const _HEAD_UI_WIDTH: float = 100.0
+const _HEAD_UI_GAP: float = 4.0  # UI 与精灵顶部的间距
+
 func _update_head_ui_position() -> void:
 	var head_ui: Control = %HeadUI
 	if head_ui == null:
 		return
-	# 精灵原始高度64px，中心在 position.y=-32（ArtSprite.position）
-	# 缩放后精灵顶部 = VisualRoot.position.y + (-32 - 32) * scale = VisualRoot.y - 64*scale
-	var sprite_top_y: float = _visual_root.position.y + (-64.0) * _current_sprite_scale
-	# HeadUI 放在精灵顶部上方 6px 处，水平居中
-	head_ui.position = Vector2(-50.0, sprite_top_y - 46.0)
+	var sprite_top_y: float = _visual_root.position.y - 64.0 * _current_sprite_scale
+	head_ui.position = Vector2(-_HEAD_UI_WIDTH * 0.5, sprite_top_y - _HEAD_UI_GAP - head_ui.size.y)
 
 
 func _update_intent() -> void:
@@ -604,7 +604,7 @@ func _update_status_icons() -> void:
 
 	for s: StatusEffect in _enemy.statuses:
 		var icon := Label.new()
-		icon.add_theme_font_size_override("font_size", 4)
+		icon.add_theme_font_size_override("font_size", 12)
 		match s.type:
 			GameTypes.StatusType.POISON:
 				icon.text = "P"

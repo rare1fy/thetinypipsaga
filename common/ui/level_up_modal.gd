@@ -43,7 +43,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "* LEVEL UP · Lv%d *" % _current_level
 	title.add_theme_color_override("font_color", Color("#d4a030"))
-	title.add_theme_font_size_override("font_size", 8)
+	title.add_theme_font_size_override("font_size", 12)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -51,7 +51,7 @@ func _build_ui() -> void:
 	var hint := Label.new()
 	hint.text = "选择一项永久成长"
 	hint.add_theme_color_override("font_color", Color("#b0b8c8"))
-	hint.add_theme_font_size_override("font_size", 4)
+	hint.add_theme_font_size_override("font_size", 12)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(hint)
 	
@@ -64,7 +64,7 @@ func _build_ui() -> void:
 		var queue_hint := Label.new()
 		queue_hint.text = "还有 %d 次升级待领取" % (XpSystem.pending_level_ups.size() - 1)
 		queue_hint.add_theme_color_override("font_color", Color("#9aa0ac"))
-		queue_hint.add_theme_font_size_override("font_size", 4)
+		queue_hint.add_theme_font_size_override("font_size", 12)
 		queue_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		add_child(queue_hint)
 
@@ -97,7 +97,7 @@ func _build_reward_card(reward: Variant) -> Control:
 	icon_box.custom_minimum_size = Vector2(20, 20)
 	var icon_label := Label.new()
 	icon_label.text = _get_category_icon(reward.category)
-	icon_label.add_theme_font_size_override("font_size", 8)
+	icon_label.add_theme_font_size_override("font_size", 12)
 	icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	icon_box.add_child(icon_label)
@@ -112,21 +112,21 @@ func _build_reward_card(reward: Variant) -> Control:
 	var cat_label := Label.new()
 	cat_label.text = XpSystem.get_category_label(reward.category)
 	cat_label.add_theme_color_override("font_color", cat_color)
-	cat_label.add_theme_font_size_override("font_size", 4)
+	cat_label.add_theme_font_size_override("font_size", 12)
 	text_vbox.add_child(cat_label)
 	
 	# 标题
 	var title_lbl := Label.new()
 	title_lbl.text = reward.title
 	title_lbl.add_theme_color_override("font_color", cat_color.lightened(0.3))
-	title_lbl.add_theme_font_size_override("font_size", 8)
+	title_lbl.add_theme_font_size_override("font_size", 12)
 	text_vbox.add_child(title_lbl)
 	
 	# 描述
 	var desc := Label.new()
 	desc.text = reward.description
 	desc.add_theme_color_override("font_color", Color("#b0b8c8"))
-	desc.add_theme_font_size_override("font_size", 4)
+	desc.add_theme_font_size_override("font_size", 12)
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text_vbox.add_child(desc)
 	

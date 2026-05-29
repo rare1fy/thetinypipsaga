@@ -109,7 +109,7 @@ func _build_layout() -> void:
 	arrow.text = "^"
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.add_theme_color_override("font_color", COLOR_GOLD)
-	arrow.add_theme_font_size_override("font_size", 4)
+	arrow.add_theme_font_size_override("font_size", 12)
 	arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	arrow.name = "Arrow"
 	inner.add_child(arrow)
@@ -118,14 +118,14 @@ func _build_layout() -> void:
 	title.text = "遗物库"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_color", COLOR_GOLD_LIGHT)
-	title.add_theme_font_size_override("font_size", 4)
+	title.add_theme_font_size_override("font_size", 12)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_child(title)
 
 	_count_label = Label.new()
 	_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_count_label.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	_count_label.add_theme_font_size_override("font_size", 4)
+	_count_label.add_theme_font_size_override("font_size", 12)
 	_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_child(_count_label)
 

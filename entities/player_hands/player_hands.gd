@@ -3,7 +3,7 @@
 ## 布局（对齐概念图）：
 ##   - 左手（LeftHand）在屏幕左下，持骰子
 ##   - 右手（RightHand）在屏幕右下，持武器/剑
-## 挂载位置：BattleScene → PlayerHandsLayer(CanvasLayer) → PlayerHands(根)
+## 挂载位置：BattleScene → WorldViewportContainer/WorldViewport/WorldLayer → PlayerHands(根)
 ## 根类型：Node2D（手要做位置/旋转/缩放动画，Control 打架）
 
 class_name PlayerHands
@@ -11,12 +11,6 @@ extends Node2D
 
 signal attack_finished
 signal roll_dice_finished
-
-@export_group("基准位置")
-## 左手基准位置（Node2D 本地坐标，相对于 PlayerHands 根）
-@export var left_hand_base_pos: Vector2 = Vector2(0, 0)
-## 右手基准位置
-@export var right_hand_base_pos: Vector2 = Vector2(0, 0)
 
 @export_group("受击动作")
 ## 受击时双手下沉距离（px）
@@ -38,6 +32,11 @@ signal roll_dice_finished
 ## 左右手相位差（弧度，让呼吸不同步）
 @export var idle_breath_phase_offset: float = 0.5
 
+## 左手基准位置（运行时从预制件中快照，预制件里拖的位置就是最终位置）
+var left_hand_base_pos: Vector2 = Vector2.ZERO
+## 右手基准位置
+var right_hand_base_pos: Vector2 = Vector2.ZERO
+
 @onready var left_hand: Node2D = %LeftHand
 @onready var right_hand: Node2D = %RightHand
 
@@ -51,10 +50,10 @@ var _base_scale: Vector2 = Vector2.ONE
 
 
 func _ready() -> void:
-	# 初始化到基准位置（防止美术拖拽后运行时漂移）
-	left_hand.position = left_hand_base_pos
-	right_hand.position = right_hand_base_pos
-	_base_scale = scale  # 快照场景里拖的 scale（通常 2,2）
+	# 快照预制件中拖好的位置作为基准（不覆盖，预制件里的位置就是最终位置）
+	left_hand_base_pos = left_hand.position
+	right_hand_base_pos = right_hand.position
+	_base_scale = scale
 	# Idle 呼吸默认开启
 	set_process(true)
 

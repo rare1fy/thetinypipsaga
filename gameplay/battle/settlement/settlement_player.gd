@@ -268,7 +268,7 @@ func _make_die_box(value: int) -> PanelContainer:
 	lbl.text = str(value)
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl.add_theme_font_size_override("font_size", 4)
+	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", Color(0.15, 0.12, 0.10, 1.0))
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pc.add_child(lbl)

@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	_label = Label.new()
 	_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_label.custom_minimum_size = Vector2(MAX_WIDTH - PADDING_X * 2, 0)
-	_label.add_theme_font_size_override("font_size", 4)
+	_label.add_theme_font_size_override("font_size", 12)
 	_label.add_theme_color_override("font_color", Color("#e0e4ec"))
 	add_child(_label)
 

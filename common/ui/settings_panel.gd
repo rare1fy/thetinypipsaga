@@ -130,7 +130,7 @@ func _build_controls() -> void:
 		int(meta.get("total_victories", 0)),
 	]
 	stats_label.add_theme_color_override("font_color", Color("#9aa0ac"))
-	stats_label.add_theme_font_size_override("font_size", 4)
+	stats_label.add_theme_font_size_override("font_size", 12)
 	stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(stats_label)
 
@@ -244,7 +244,7 @@ func _on_view_battle_log_pressed() -> void:
 			var line := Label.new()
 			line.text = String(entry.get("text", ""))
 			line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			line.add_theme_font_size_override("font_size", 4)
+			line.add_theme_font_size_override("font_size", 12)
 			line.add_theme_color_override("font_color", entry.get("color", Color("#b0b8c8")))
 			vbox.add_child(line)
 

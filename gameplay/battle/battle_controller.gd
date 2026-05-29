@@ -792,7 +792,7 @@ func _refresh_player_status_icons() -> void:
 func _add_status_icon(icon: String, text: String, color: Color) -> void:
 	var lbl := Label.new()
 	lbl.text = icon + text
-	lbl.add_theme_font_size_override("font_size", 4)
+	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", color)
 	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 	lbl.add_theme_constant_override("outline_size", 2)

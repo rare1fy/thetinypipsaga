@@ -8,11 +8,11 @@ extends Control
 @onready var map_canvas: Control = %MapCanvas
 
 ## 布局常量
-const LAYER_HEIGHT: float = 70.0    ## 每层间距（像素）
-const CANVAS_WIDTH: float = 176.0   ## 画布宽度（= viewport 宽度）
-const NODE_SIZE: Vector2 = Vector2(14, 14)
-const MARGIN_TOP: float = 30.0
-const MARGIN_BOTTOM: float = 20.0
+const LAYER_HEIGHT: float = 140.0    ## 每层间距（像素）
+const CANVAS_WIDTH: float = 352.0   ## 画布宽度（= viewport 宽度）
+const NODE_SIZE: Vector2 = Vector2(28, 28)
+const MARGIN_TOP: float = 60.0
+const MARGIN_BOTTOM: float = 40.0
 
 ## 节点图标映射
 const NODE_ICONS: Dictionary = {
@@ -126,7 +126,7 @@ func _refresh_map_ui() -> void:
 		btn.size = NODE_SIZE
 		btn.position = pos - NODE_SIZE * 0.5
 		btn.text = NODE_ICONS.get(node.type, "?")
-		btn.add_theme_font_size_override("font_size", 4)
+		btn.add_theme_font_size_override("font_size", 12)
 
 		# 样式
 		var color: Color = NODE_COLORS.get(node.type, Color.WHITE)

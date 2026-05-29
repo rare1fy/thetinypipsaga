@@ -68,7 +68,7 @@ func _build_content() -> void:
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intro.add_theme_color_override("font_color", Color("#9aa0ac"))
-	intro.add_theme_font_size_override("font_size", 4)
+	intro.add_theme_font_size_override("font_size", 12)
 	add_child(intro)
 	
 	# 可滚动主体
@@ -99,7 +99,7 @@ func _build_group_header(title: String, color_hex: String) -> Control:
 	
 	var label := Label.new()
 	label.text = title
-	label.add_theme_font_size_override("font_size", 8)
+	label.add_theme_font_size_override("font_size", 12)
 	label.add_theme_color_override("font_color", Color(color_hex))
 	header.add_child(label)
 	
@@ -135,14 +135,14 @@ func _build_hand_entry(hand_name: String) -> Control:
 	
 	var name_label := Label.new()
 	name_label.text = hand_name
-	name_label.add_theme_font_size_override("font_size", 8)
+	name_label.add_theme_font_size_override("font_size", 12)
 	name_label.add_theme_color_override("font_color", Color("#f0e8c8"))
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_label)
 	
 	var stats_label := Label.new()
 	stats_label.text = "基础 %d · ×%.1f" % [base_v, mult_v]
-	stats_label.add_theme_font_size_override("font_size", 4)
+	stats_label.add_theme_font_size_override("font_size", 12)
 	stats_label.add_theme_color_override("font_color", Color("#f07050"))
 	top.add_child(stats_label)
 	
@@ -153,7 +153,7 @@ func _build_hand_entry(hand_name: String) -> Control:
 		var desc_label := Label.new()
 		desc_label.text = desc
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 4)
+		desc_label.add_theme_font_size_override("font_size", 12)
 		desc_label.add_theme_color_override("font_color", Color("#9aa0ac"))
 		vbox.add_child(desc_label)
 	
@@ -162,7 +162,7 @@ func _build_hand_entry(hand_name: String) -> Control:
 	if effect_text != "":
 		var effect_label := Label.new()
 		effect_label.text = effect_text
-		effect_label.add_theme_font_size_override("font_size", 4)
+		effect_label.add_theme_font_size_override("font_size", 12)
 		effect_label.add_theme_color_override("font_color", Color("#80c0f0"))
 		vbox.add_child(effect_label)
 	

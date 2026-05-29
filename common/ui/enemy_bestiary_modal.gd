@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "敌人图鉴"
 	title.add_theme_color_override("font_color", Color("#e6e8f0"))
-	title.add_theme_font_size_override("font_size", 8)
+	title.add_theme_font_size_override("font_size", 12)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	
@@ -72,7 +72,7 @@ func _build_ui() -> void:
 	for i: int in chapter_names.size():
 		var btn := Button.new()
 		btn.text = String(chapter_names[i])
-		btn.add_theme_font_size_override("font_size", 4)
+		btn.add_theme_font_size_override("font_size", 12)
 		var ch: int = i + 1
 		btn.pressed.connect(func():
 			_current_chapter = ch
@@ -131,7 +131,7 @@ func _refresh_list() -> void:
 		var hint := Label.new()
 		hint.text = "该章节暂无敌人数据"
 		hint.add_theme_color_override("font_color", Color("#9aa0ac"))
-		hint.add_theme_font_size_override("font_size", 4)
+		hint.add_theme_font_size_override("font_size", 12)
 		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_content_container.add_child(hint)
 
@@ -148,7 +148,7 @@ func _add_category_section(enemies: Array[Dictionary], category: String, title: 
 	var section_label := Label.new()
 	section_label.text = title
 	section_label.add_theme_color_override("font_color", color)
-	section_label.add_theme_font_size_override("font_size", 4)
+	section_label.add_theme_font_size_override("font_size", 12)
 	section_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_content_container.add_child(section_label)
 	
@@ -175,7 +175,7 @@ func _build_enemy_row(enemy: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.text = "[%s] %s  %s  HP:%d ATK:%d" % [String(ct.label), enemy_name, cat_label, base_hp, base_dmg]
 	btn.add_theme_color_override("font_color", ct.color as Color)
-	btn.add_theme_font_size_override("font_size", 4)
+	btn.add_theme_font_size_override("font_size", 12)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.pressed.connect(func():
 		_show_enemy_detail(enemy)
@@ -204,7 +204,7 @@ func _show_enemy_detail(enemy: Dictionary) -> void:
 	var title := Label.new()
 	title.text = enemy_name
 	title.add_theme_color_override("font_color", Color("#e6e8f0"))
-	title.add_theme_font_size_override("font_size", 8)
+	title.add_theme_font_size_override("font_size", 12)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
 	
@@ -277,14 +277,14 @@ func _add_detail_section(parent: VBoxContainer, title: String, lines: Array) -> 
 	var section_title := Label.new()
 	section_title.text = "— %s —" % title
 	section_title.add_theme_color_override("font_color", Color("#d4a030"))
-	section_title.add_theme_font_size_override("font_size", 4)
+	section_title.add_theme_font_size_override("font_size", 12)
 	parent.add_child(section_title)
 	
 	for line in lines:
 		var label := Label.new()
 		label.text = String(line)
 		label.add_theme_color_override("font_color", Color("#b0b8c8"))
-		label.add_theme_font_size_override("font_size", 4)
+		label.add_theme_font_size_override("font_size", 12)
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		parent.add_child(label)
 

@@ -104,18 +104,18 @@ func _build_ui() -> void:
 
 	_title_label = Label.new()
 	_title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_title_label.add_theme_font_size_override("font_size", 8)
+	_title_label.add_theme_font_size_override("font_size", 12)
 	header.add_child(_title_label)
 
 	_count_label = Label.new()
-	_count_label.add_theme_font_size_override("font_size", 4)
+	_count_label.add_theme_font_size_override("font_size", 12)
 	_count_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	header.add_child(_count_label)
 
 	_close_btn = Button.new()
 	_close_btn.text = "x"
 	_close_btn.flat = true
-	_close_btn.add_theme_font_size_override("font_size", 8)
+	_close_btn.add_theme_font_size_override("font_size", 12)
 	_close_btn.pressed.connect(_close)
 	header.add_child(_close_btn)
 
@@ -150,11 +150,11 @@ func _build_ui() -> void:
 	_tooltip_panel.add_child(tp_vbox)
 
 	_tooltip_name = Label.new()
-	_tooltip_name.add_theme_font_size_override("font_size", 4)
+	_tooltip_name.add_theme_font_size_override("font_size", 12)
 	tp_vbox.add_child(_tooltip_name)
 
 	_tooltip_faces = Label.new()
-	_tooltip_faces.add_theme_font_size_override("font_size", 4)
+	_tooltip_faces.add_theme_font_size_override("font_size", 12)
 	_tooltip_faces.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	tp_vbox.add_child(_tooltip_faces)
 
@@ -162,7 +162,7 @@ func _build_ui() -> void:
 	_tooltip_desc.bbcode_enabled = true
 	_tooltip_desc.fit_content = true
 	_tooltip_desc.custom_minimum_size = Vector2(80, 20)
-	_tooltip_desc.add_theme_font_size_override("normal_font_size", 4)
+	_tooltip_desc.add_theme_font_size_override("normal_font_size", 12)
 	tp_vbox.add_child(_tooltip_desc)
 
 
@@ -233,7 +233,7 @@ func _make_dice_card(def: DiceDef) -> PanelContainer:
 	var name_label := Label.new()
 	name_label.text = def.name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 4)
+	name_label.add_theme_font_size_override("font_size", 12)
 	name_label.add_theme_color_override("font_color", RARITY_COLORS.get(def.rarity, Color.WHITE))
 	vbox.add_child(name_label)
 
@@ -241,7 +241,7 @@ func _make_dice_card(def: DiceDef) -> PanelContainer:
 	var faces_label := Label.new()
 	faces_label.text = str(def.faces)
 	faces_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	faces_label.add_theme_font_size_override("font_size", 4)
+	faces_label.add_theme_font_size_override("font_size", 12)
 	faces_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	vbox.add_child(faces_label)
 

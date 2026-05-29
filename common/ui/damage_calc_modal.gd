@@ -74,7 +74,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "X 伤害计算详情"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 8)
+	title.add_theme_font_size_override("font_size", 12)
 	title.add_theme_color_override("font_color", Color("d4a030"))
 	vbox.add_child(title)
 
@@ -143,7 +143,7 @@ func _build_ui() -> void:
 	var hint := Label.new()
 	hint.text = "点击任意处关闭"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 4)
+	hint.add_theme_font_size_override("font_size", 12)
 	hint.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
 	vbox.add_child(hint)
 
@@ -191,6 +191,6 @@ func _add_separator(parent: VBoxContainer) -> void:
 func _add_section_title(parent: VBoxContainer, text: String) -> void:
 	var lbl := Label.new()
 	lbl.text = text
-	lbl.add_theme_font_size_override("font_size", 4)
+	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", Color("aaaaaa"))
 	parent.add_child(lbl)

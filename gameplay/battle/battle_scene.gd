@@ -14,52 +14,12 @@ const RelicOverlayRef := preload("res://gameplay/battle/ui/relic_overlay.gd")
 const EnemyMgr := preload("res://gameplay/battle/battle_enemy_manager.gd")
 
 ## ========================================================
-## 敌人透视参数 — Inspector 直接配置，所见即所得
-## 3 个 Slot × 3 档距离 × (坐标 + 缩放 + Y偏移 + 亮度 + 渲染层级) = 45 个参数
-## 命名 = enemy.distance 的值，敌人头上显示"距N"就对应"距离N"这组参数
-## 距离范围 1~3，1=贴脸（近战攻击距离），3=最远
-## 坐标为 EnemyContainer 局部坐标
+## 敌人透视参数 — 由 BattleArena 预制件提供（6 个 Marker2D 点位）
+## 3 个 Slot × 2 档距离 = 6 个点位
+## Slot0=中, Slot1=左, Slot2=右
+## 距离1=近(贴脸), 距离2=远
+## 运行时从 _current_arena.get_slot_visuals() 读取
 ## ========================================================
-
-@export_group("敌人透视·Slot0(中)")
-@export var 中_距离1坐标: Vector2 = Vector2(0, 40)
-@export var 中_距离1缩放: float = 2.0
-@export var 中_距离1纵深Y偏移: float = 0.0
-@export var 中_距离1亮度: float = 1.0
-@export var 中_距离1渲染层级: int = 7
-
-@export var 中_距离2坐标: Vector2 = Vector2(0, 10)
-@export var 中_距离2缩放: float = 1.0
-@export var 中_距离2纵深Y偏移: float = 0.0
-@export var 中_距离2亮度: float = 0.88
-@export var 中_距离2渲染层级: int = 5
-
-@export_group("敌人透视·Slot1(左)")
-@export var 左_距离1坐标: Vector2 = Vector2(-35, 40)
-@export var 左_距离1缩放: float = 2.0
-@export var 左_距离1纵深Y偏移: float = 0.0
-@export var 左_距离1亮度: float = 1.0
-@export var 左_距离1渲染层级: int = 7
-
-@export var 左_距离2坐标: Vector2 = Vector2(-28, 10)
-@export var 左_距离2缩放: float = 1.0
-@export var 左_距离2纵深Y偏移: float = 0.0
-@export var 左_距离2亮度: float = 0.88
-@export var 左_距离2渲染层级: int = 5
-
-@export_group("敌人透视·Slot2(右)")
-@export var 右_距离1坐标: Vector2 = Vector2(35, 40)
-@export var 右_距离1缩放: float = 2.0
-@export var 右_距离1纵深Y偏移: float = 0.0
-@export var 右_距离1亮度: float = 1.0
-@export var 右_距离1渲染层级: int = 7
-
-@export var 右_距离2坐标: Vector2 = Vector2(28, 10)
-@export var 右_距离2缩放: float = 1.0
-@export var 右_距离2纵深Y偏移: float = 0.0
-@export var 右_距离2亮度: float = 0.88
-@export var 右_距离2渲染层级: int = 5
-
 
 ## Slot 分配策略：根据敌人总数决定每个敌人的 slot 位置
 ## 1个敌人 → [0] (中)
@@ -77,46 +37,22 @@ static func get_slot_assignment(enemy_count: int, enemy_index: int) -> int:
 
 
 ## 查表接口：根据 slot_index 和 distance 返回该档位的全部透视参数
-## slot_index: 0=中 1=左 2=右
-## distance: 就是 enemy.distance 的值，敌人头上显示"距N"就传 N
-## 返回: { position, depth_scale, depth_y, depth_brightness, depth_z }
+## 优先从当前 Arena 预制件读取；无 Arena 时使用硬编码兜底
 func get_slot_visuals(slot_index: int, distance: int) -> Dictionary:
-	var d: int = clampi(distance, 1, 2)
-	var prefix: String = ["中", "左", "右"][clampi(slot_index, 0, 2)]
-	var d_suffix: String = "距离%d" % d
-	var pos: Vector2 = _get_export_vec2(prefix, d_suffix, "坐标")
-	return {
-		"position": pos,
-		"depth_scale": _get_export_float(prefix, d_suffix, "缩放"),
-		"depth_y": _get_export_float(prefix, d_suffix, "纵深Y偏移"),
-		"depth_brightness": _get_export_float(prefix, d_suffix, "亮度"),
-		"depth_z": _get_export_int(prefix, d_suffix, "渲染层级"),
-	}
+	if _current_arena != null:
+		return _current_arena.get_slot_visuals(slot_index, distance)
+	# 兜底：无 Arena 时的默认值
+	return _fallback_slot_visuals(slot_index, distance)
 
 
-## 反射查表辅助 — 根据 "左_距离2缩放" 这种命名规则读取 @export 值
-func _get_export_vec2(prefix: String, d_suffix: String, field: String) -> Vector2:
-	var prop_name: String = "%s_%s%s" % [prefix, d_suffix, field]
-	if prop_name in self:
-		return self[prop_name] as Vector2
-	push_warning("[BattleScene] 未找到 @export 属性: %s" % prop_name)
-	return Vector2.ZERO
-
-
-func _get_export_float(prefix: String, d_suffix: String, field: String) -> float:
-	var prop_name: String = "%s_%s%s" % [prefix, d_suffix, field]
-	if prop_name in self:
-		return float(self[prop_name])
-	push_warning("[BattleScene] 未找到 @export 属性: %s" % prop_name)
-	return 0.0
-
-
-func _get_export_int(prefix: String, d_suffix: String, field: String) -> int:
-	var prop_name: String = "%s_%s%s" % [prefix, d_suffix, field]
-	if prop_name in self:
-		return int(self[prop_name])
-	push_warning("[BattleScene] 未找到 @export 属性: %s" % prop_name)
-	return 0
+## 硬编码兜底参数（无 Arena 时的默认值，视口绝对坐标 180×320）
+func _fallback_slot_visuals(slot_index: int, distance: int) -> Dictionary:
+	var x_centers: Array[float] = [90.0, 55.0, 125.0]  # 中/左/右
+	var x: float = x_centers[clampi(slot_index, 0, 2)]
+	if distance == 1:
+		return {"position": Vector2(x, 195), "depth_scale": 2.0, "depth_y": 0.0, "depth_brightness": 1.0, "depth_z": 7}
+	else:
+		return {"position": Vector2(x, 140), "depth_scale": 1.0, "depth_y": 0.0, "depth_brightness": 0.88, "depth_z": 5}
 
 
 @onready var controller: BattleController = $BattleController
@@ -142,9 +78,10 @@ func _ready() -> void:
 	_bootstrap_from_pending_wave()
 
 
-## 配置表驱动的战斗背景加载（24张场景图 + 防重复）
-## 通过 BattleBgConfig 根据节点类型和 depth 从对应池中随机选取
+## 配置表驱动的战斗背景加载（Arena 预制件系统）
+## 每张背景封装为 BattleArena 场景，内含敌人锚点、分层、动画等
 var _last_bg_path: String = ""  ## 防重复：记录上一次使用的背景路径
+var _current_arena: BattleArena = null  ## 当前加载的 Arena 实例
 
 func _apply_static_background() -> void:
 	var bg_node: Node2D = get_node_or_null("%SceneBG")
@@ -152,16 +89,68 @@ func _apply_static_background() -> void:
 		return
 	var depth: int = GameManager.current_node
 	var node_type: GameTypes.NodeType = GameManager.current_node_type
-	# 从配置表获取随机背景（带防重复）
+
+	# 1. 从配置表获取随机背景路径（带防重复）
 	var bg_path: String = _pick_bg_no_repeat(node_type, depth)
 	if bg_path.is_empty():
 		push_warning("[BattleScene] 无可用背景，node_type=%s depth=%d" % [node_type, depth])
 		return
+	_last_bg_path = bg_path
+
+	# 2. 查找对应的 Arena 预制件
+	var arena_path: String = ArenaRegistry.get_arena_path(bg_path)
+
+	if arena_path != "":
+		# ── Arena 模式：加载预制件，读取敌人锚点 ──
+		var arena_scene: PackedScene = load(arena_path) as PackedScene
+		if arena_scene != null:
+			_load_arena(bg_node, arena_scene)
+			return
+
+	# ── 降级模式：无 Arena 预制件，用旧逻辑铺满背景 ──
+	_apply_fallback_background(bg_node, bg_path)
+
+
+## 加载 Arena 预制件
+func _load_arena(bg_node: Node2D, arena_scene: PackedScene) -> void:
+	# 清理旧 Arena
+	if _current_arena != null:
+		_current_arena.queue_free()
+		_current_arena = null
+
+	# 隐藏旧的分层节点
+	for child_name: String in ["Sky", "FarView", "MidView", "GroundBase"]:
+		var child: Node = bg_node.get_node_or_null(child_name)
+		if child != null:
+			child.visible = false
+
+	# 实例化新 Arena
+	_current_arena = arena_scene.instantiate() as BattleArena
+	if _current_arena == null:
+		push_warning("[BattleScene] Arena 实例化失败")
+		return
+	bg_node.add_child(_current_arena)
+
+	# EnemyContainer 位置归零 — 点位坐标已经是 Arena 局部坐标
+	# Arena 作为 SceneBG 的子节点，Marker2D 的 position 就是相对于 Arena 根的坐标
+	# EnemyContainer 也在 WorldLayer 下，需要与 Arena 对齐
+	var enemy_container: Node2D = get_node_or_null("%EnemyContainer")
+	if enemy_container != null:
+		# EnemyContainer 的位置 = Arena 在 WorldLayer 中的全局偏移
+		# 由于 Arena 挂在 SceneBG 下，而 SceneBG 和 EnemyContainer 都在 WorldLayer 下
+		# 所以 EnemyContainer.position 应该与 Arena 的 position 对齐（通常都是 0,0）
+		enemy_container.position = Vector2.ZERO
+
+	# 播放进场动画（隐藏预览精灵）
+	_current_arena.play_enter_anim()
+
+
+## 降级背景加载（无 Arena 预制件时的旧逻辑）
+func _apply_fallback_background(bg_node: Node2D, bg_path: String) -> void:
 	var tex: Texture2D = load(bg_path) as Texture2D
 	if tex == null:
 		push_warning("[BattleScene] 背景加载失败: %s" % bg_path)
 		return
-	_last_bg_path = bg_path
 	# 隐藏 Sky / FarView / MidView，只用 GroundBase 铺满整个视口
 	var sky: Sprite2D = bg_node.get_node_or_null("Sky") as Sprite2D
 	var far: Sprite2D = bg_node.get_node_or_null("FarView") as Sprite2D
@@ -175,7 +164,8 @@ func _apply_static_background() -> void:
 		mid.visible = false
 	if ground != null:
 		ground.texture = tex
-		var vp_size: Vector2 = get_viewport_rect().size
+		# 游戏世界在 SubViewport 中，尺寸固定 180×320
+		var vp_size := Vector2(180.0, 320.0)
 		var tex_size: Vector2 = Vector2(tex.get_width(), tex.get_height())
 		var scale_x: float = vp_size.x / tex_size.x
 		var scale_y: float = vp_size.y / tex_size.y
@@ -341,31 +331,31 @@ func _spawn_topleft_buttons() -> void:
 	if root == null:
 		push_warning("[BattleScene] 未找到 %Root 节点，图鉴按钮未挂载")
 		return
-	_spawn_guide_button(root, "[B]", "牌型图鉴", Vector2(4, 4), _on_hand_guide_pressed)
-	_spawn_guide_button(root, "[R]", "遗物图鉴", Vector2(24, 4), _on_relic_guide_pressed)
-	_spawn_guide_button(root, "[S]", "设置 / 战斗日志", Vector2(44, 4), _on_settings_pressed)
+	_spawn_guide_button(root, "[B]", "牌型图鉴", Vector2(8, 8), _on_hand_guide_pressed)
+	_spawn_guide_button(root, "[R]", "遗物图鉴", Vector2(48, 8), _on_relic_guide_pressed)
+	_spawn_guide_button(root, "[S]", "设置 / 战斗日志", Vector2(88, 8), _on_settings_pressed)
 	# 骰子库/弃骰库按钮（右上角）
 	var draw_btn := Button.new()
 	draw_btn.text = "[D]"
 	draw_btn.tooltip_text = "骰子库"
-	draw_btn.add_theme_font_size_override("font_size", 4)
-	draw_btn.custom_minimum_size = Vector2(20, 12)
+	draw_btn.add_theme_font_size_override("font_size", 12)
+	draw_btn.custom_minimum_size = Vector2(40, 24)
 	draw_btn.flat = true
 	draw_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	draw_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	draw_btn.position = Vector2(-40, 4)
+	draw_btn.position = Vector2(-80, 8)
 	draw_btn.pressed.connect(_on_draw_pile_pressed)
 	root.add_child(draw_btn)
 
 	var discard_btn := Button.new()
 	discard_btn.text = "[R]"
 	discard_btn.tooltip_text = "弃骰库"
-	discard_btn.add_theme_font_size_override("font_size", 4)
-	discard_btn.custom_minimum_size = Vector2(20, 12)
+	discard_btn.add_theme_font_size_override("font_size", 12)
+	discard_btn.custom_minimum_size = Vector2(40, 24)
 	discard_btn.flat = true
 	discard_btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	discard_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	discard_btn.position = Vector2(-20, 4)
+	discard_btn.position = Vector2(-40, 8)
 	discard_btn.pressed.connect(_on_discard_pile_pressed)
 	root.add_child(discard_btn)
 
@@ -374,8 +364,8 @@ func _spawn_guide_button(parent: Control, text: String, tooltip: String, pos: Ve
 	var btn := Button.new()
 	btn.text = text
 	btn.tooltip_text = tooltip
-	btn.add_theme_font_size_override("font_size", 4)
-	btn.custom_minimum_size = Vector2(8, 4)
+	btn.add_theme_font_size_override("font_size", 12)
+	btn.custom_minimum_size = Vector2(16, 8)
 	btn.flat = true
 	btn.add_theme_color_override("font_color", Color("#c8d0e8"))
 	btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
@@ -389,7 +379,7 @@ func _on_hand_guide_pressed() -> void:
 	ModalHubRef.open(
 		HandGuideRef.new(),
 		"牌型图鉴",
-		{"size": Vector2(560, 780), "close_on_backdrop": true}
+		{"size": Vector2(340, 600), "close_on_backdrop": true}
 	)
 
 
@@ -398,7 +388,7 @@ func _on_relic_guide_pressed() -> void:
 	ModalHubRef.open(
 		RelicGuideRef.new(),
 		"遗物图鉴",
-		{"size": Vector2(560, 780), "close_on_backdrop": true}
+		{"size": Vector2(340, 600), "close_on_backdrop": true}
 	)
 
 
@@ -407,7 +397,7 @@ func _on_settings_pressed() -> void:
 	ModalHubRef.open(
 		SettingsPanelRef.new(),
 		"设置",
-		{"size": Vector2(480, 680), "close_on_backdrop": true}
+		{"size": Vector2(320, 520), "close_on_backdrop": true}
 	)
 
 
@@ -636,7 +626,7 @@ func _handle_victory() -> void:
 		GameManager.gold += elite_bonus_gold
 		BattleLog.log_write("G 精英战额外奖励：+%d 金币" % elite_bonus_gold)
 
-	# 胜利特效：全屏奖励爆发
+	# 胜利特效：全屏奖励爆发（在主 viewport 360×640 坐标系下）
 	var viewport_center: Vector2 = get_viewport().get_visible_rect().size * 0.5
 	VFX.reward_explosion(self, viewport_center, 20)
 
@@ -684,7 +674,7 @@ func _show_wave_announcement(wave_num: int) -> void:
 	label.text = "第 %d 波" % wave_num
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 8)
+	label.add_theme_font_size_override("font_size", 12)
 	label.add_theme_color_override("font_color", Color("#ffffff"))
 	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	label.add_theme_constant_override("shadow_offset_x", 2)
@@ -700,9 +690,9 @@ func _show_wave_announcement(wave_num: int) -> void:
 	canvas.layer = 50
 	add_child(canvas)
 	canvas.add_child(label)
-	# 居中定位
+	# 居中定位（主 viewport 360×640）
 	label.position = Vector2(
-		(get_viewport().get_visible_rect().size.x - 300) * 0.5,
+		(get_viewport().get_visible_rect().size.x - 76) * 0.5,
 		get_viewport().get_visible_rect().size.y * 0.35
 	)
 	# 动画：淡入 → 停留 → 淡出
@@ -716,20 +706,21 @@ func _show_wave_announcement(wave_num: int) -> void:
 ## ── 敌人点击检测 ──────────────────────────────────────────
 ## Area2D.input_event 被 UILayer(CanvasLayer layer=10) 拦截，
 ## 改用 _input + 手动碰撞检测 + UI 区域排除
+## 注意：主 viewport 是 360×640（UI 层），游戏世界在 SubViewport 180×320
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton
 	if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
 		return
-	# 排除 UI 区域（TopBar 和 PlayerHUD 占据的屏幕顶部/底部）
+	# 排除 UI 区域（TopBar 和 BottomPanel 占据的屏幕顶部/底部）
 	var screen_pos: Vector2 = mb.position
-	var vp_size: Vector2 = get_viewport().get_visible_rect().size
-	# TopBar 高度约 48px，PlayerHUD + DamagePreview 约 134px
-	if screen_pos.y < 48.0 or screen_pos.y > vp_size.y - 134.0:
+	var vp_size: Vector2 = get_viewport().get_visible_rect().size  # 360×640
+	# TopBar 高度约 26px，BottomPanel 约 136px（在 360×640 坐标系下）
+	if screen_pos.y < 26.0 or screen_pos.y > vp_size.y - 136.0:
 		return
-	# 将屏幕坐标转换为世界坐标
-	var world_pos: Vector2 = get_global_mouse_position()
+	# 将屏幕坐标转换为 SubViewport 的世界坐标（÷2 映射）
+	var world_pos: Vector2 = screen_pos * 0.5  # 360×640 → 180×320
 	# 遍历所有存活的敌人视图，检查点击是否命中其 ClickArea
 	var hit_view: EnemyView = _find_clicked_enemy(world_pos)
 	if hit_view:

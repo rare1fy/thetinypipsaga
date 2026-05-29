@@ -123,7 +123,7 @@ func _build_header() -> Control:
 
 	_title_label = Label.new()
 	_title_label.add_theme_color_override("font_color", COLOR_GOLD)
-	_title_label.add_theme_font_size_override("font_size", 4)
+	_title_label.add_theme_font_size_override("font_size", 12)
 	_title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_title_label)
 
@@ -132,7 +132,7 @@ func _build_header() -> Control:
 	close_btn.flat = true
 	close_btn.custom_minimum_size = Vector2(8, 8)
 	close_btn.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	close_btn.add_theme_font_size_override("font_size", 4)
+	close_btn.add_theme_font_size_override("font_size", 12)
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.pressed.connect(_on_close_pressed)
 	header.add_child(close_btn)
@@ -156,7 +156,7 @@ func _refresh() -> void:
 		var empty := Label.new()
 		empty.text = "暂无遗物"
 		empty.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-		empty.add_theme_font_size_override("font_size", 4)
+		empty.add_theme_font_size_override("font_size", 12)
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		# 填 COLUMNS 列让它居中占位
@@ -201,7 +201,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 	var icon := Label.new()
 	icon.text = _rarity_emoji(def.rarity)
 	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	icon.add_theme_font_size_override("font_size", 4)
+	icon.add_theme_font_size_override("font_size", 12)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(icon)
 
@@ -213,7 +213,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 	name_label.text = short_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.add_theme_color_override("font_color", COLOR_TEXT_DIM)
-	name_label.add_theme_font_size_override("font_size", 4)
+	name_label.add_theme_font_size_override("font_size", 12)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(name_label)
 
@@ -224,7 +224,7 @@ func _build_slot(def: RelicDef, instance: Dictionary) -> Control:
 		badge.text = "%d%s" % [counter, instance.get("counterLabel", "")]
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.add_theme_color_override("font_color", Color("#f9a066"))
-		badge.add_theme_font_size_override("font_size", 4)
+		badge.add_theme_font_size_override("font_size", 12)
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		col.add_child(badge)
 
