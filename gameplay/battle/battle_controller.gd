@@ -20,7 +20,7 @@ signal battle_won
 signal battle_lost
 
 # ── 节点引用
-# WorldLayer：敌人 VFX 震屏层（Node2D，挂在 BattleScene 根节点下，与 UILayer 同级）
+# WorldLayer：游戏世界层（Node2D，挂在 BattleScene 根节点下，Camera2D 在其中）
 var world_layer: Node = null
 var enemy_container: Node2D = null
 
@@ -56,7 +56,7 @@ var _is_resolving: bool = false
 
 func _ready() -> void:
 	# 初始化 WorldLayer 和 EnemyContainer 引用
-	# 场景结构：BattleScene > WorldLayer > EnemyContainer（Node2D 世界层，承载敌人与震屏）
+	# 场景结构：BattleScene > WorldLayer(含Camera2D) > EnemyContainer（Node2D 世界层，承载敌人与震屏）
 #          BattleScene > UILayer > Root（TopBar + BottomPanel 锚点定位）
 	world_layer = get_node_or_null("%WorldLayer")
 	if world_layer == null:

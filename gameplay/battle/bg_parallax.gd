@@ -2,7 +2,7 @@
 ## 职责：4 层背景（Sky/FarView/MidView/GroundBase）的待机呼吸 + 攻击推拉 + 受击反弹
 ## 第一人称视角：摄像机呼吸让远景动作微、近景动作大，模拟纵深感
 ##
-## 挂载：作为 WorldLayer/SceneBG 根节点的脚本（不改场景层级，只给 Node2D 根挂脚本）
+## 挂载：作为 WorldLayer/SceneBG 根节点的脚本（Camera2D 在 WorldLayer 下，不改场景层级）
 ## 节点要求：Sky / FarView / MidView / GroundBase 四个子 Sprite2D（按命名查询）
 
 class_name BgParallax

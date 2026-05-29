@@ -3,7 +3,7 @@
 ## 布局（对齐概念图）：
 ##   - 左手（LeftHand）在屏幕左下，持骰子
 ##   - 右手（RightHand）在屏幕右下，持武器/剑
-## 挂载位置：BattleScene → WorldViewportContainer/WorldViewport/WorldLayer → PlayerHands(根)
+## 挂载位置：BattleScene → WorldLayer → PlayerHands(根)
 ## 根类型：Node2D（手要做位置/旋转/缩放动画，Control 打架）
 
 class_name PlayerHands

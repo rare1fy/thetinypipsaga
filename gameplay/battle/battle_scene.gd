@@ -136,9 +136,7 @@ func _load_arena(bg_node: Node2D, arena_scene: PackedScene) -> void:
 	# EnemyContainer 也在 WorldLayer 下，需要与 Arena 对齐
 	var enemy_container: Node2D = get_node_or_null("%EnemyContainer")
 	if enemy_container != null:
-		# EnemyContainer 的位置 = Arena 在 WorldLayer 中的全局偏移
-		# 由于 Arena 挂在 SceneBG 下，而 SceneBG 和 EnemyContainer 都在 WorldLayer 下
-		# 所以 EnemyContainer.position 应该与 Arena 的 position 对齐（通常都是 0,0）
+		# EnemyContainer 的位置与 Arena 对齐（通常都是 0,0）
 		enemy_container.position = Vector2.ZERO
 
 	# 播放进场动画（隐藏预览精灵）
@@ -164,7 +162,7 @@ func _apply_fallback_background(bg_node: Node2D, bg_path: String) -> void:
 		mid.visible = false
 	if ground != null:
 		ground.texture = tex
-		# 游戏世界在 SubViewport 中，尺寸固定 180×320
+		# 游戏世界坐标系为 180×320（Camera2D zoom=2 看到的区域）
 		var vp_size := Vector2(180.0, 320.0)
 		var tex_size: Vector2 = Vector2(tex.get_width(), tex.get_height())
 		var scale_x: float = vp_size.x / tex_size.x
@@ -706,7 +704,7 @@ func _show_wave_announcement(wave_num: int) -> void:
 ## ── 敌人点击检测 ──────────────────────────────────────────
 ## Area2D.input_event 被 UILayer(CanvasLayer layer=10) 拦截，
 ## 改用 _input + 手动碰撞检测 + UI 区域排除
-## 注意：主 viewport 是 360×640（UI 层），游戏世界在 SubViewport 180×320
+## 游戏世界通过 Camera2D(zoom=2) 显示，坐标需要通过 Camera 转换
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
 		return
@@ -719,8 +717,8 @@ func _input(event: InputEvent) -> void:
 	# TopBar 高度约 26px，BottomPanel 约 136px（在 360×640 坐标系下）
 	if screen_pos.y < 26.0 or screen_pos.y > vp_size.y - 136.0:
 		return
-	# 将屏幕坐标转换为 SubViewport 的世界坐标（÷2 映射）
-	var world_pos: Vector2 = screen_pos * 0.5  # 360×640 → 180×320
+	# 将屏幕坐标转换为游戏世界坐标（通过 Camera2D 的 canvas transform）
+	var world_pos: Vector2 = get_global_mouse_position()
 	# 遍历所有存活的敌人视图，检查点击是否命中其 ClickArea
 	var hit_view: EnemyView = _find_clicked_enemy(world_pos)
 	if hit_view:

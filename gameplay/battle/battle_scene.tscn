@@ -272,25 +272,15 @@ offset_bottom = -136.0
 grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="WorldViewportContainer" type="SubViewportContainer" parent="."]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 640)
-offset_right = 360.0
-offset_bottom = 640.0
-stretch = true
-texture_filter = 0
-
-[node name="WorldViewport" type="SubViewport" parent="WorldViewportContainer"]
-unique_name_in_owner = true
-size = Vector2i(180, 320)
-size_2d_override = Vector2i(180, 320)
-render_target_update_mode = 4
-canvas_item_default_texture_filter = 0
-
-[node name="WorldLayer" type="Node2D" parent="WorldViewportContainer/WorldViewport"]
+[node name="WorldLayer" type="Node2D" parent="."]
 unique_name_in_owner = true
 
-[node name="SceneBG" type="Node2D" parent="WorldViewportContainer/WorldViewport/WorldLayer"]
+[node name="GameCamera" type="Camera2D" parent="WorldLayer"]
+unique_name_in_owner = true
+position = Vector2(90, 160)
+zoom = Vector2(2, 2)
+
+[node name="SceneBG" type="Node2D" parent="WorldLayer"]
 unique_name_in_owner = true
 z_index = -40
 z_as_relative = false
@@ -301,39 +291,39 @@ mid_idle_amp = 2.0
 ground_idle_amp = 4.0
 follow_ground_nodes = Array[NodePath]([NodePath("../EnemyContainer")])
 
-[node name="Sky" type="Sprite2D" parent="WorldViewportContainer/WorldViewport/WorldLayer/SceneBG"]
+[node name="Sky" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -40
 z_as_relative = false
 position = Vector2(90, 140)
 scale = Vector2(0.138, 0.138)
 texture = SubResource("CompressedTexture2D_y8pa6")
 
-[node name="FarView" type="Sprite2D" parent="WorldViewportContainer/WorldViewport/WorldLayer/SceneBG"]
+[node name="FarView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -30
 z_as_relative = false
 position = Vector2(90, 140)
 scale = Vector2(0.138, 0.138)
 texture = SubResource("CompressedTexture2D_oiajq")
 
-[node name="MidView" type="Sprite2D" parent="WorldViewportContainer/WorldViewport/WorldLayer/SceneBG"]
+[node name="MidView" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -20
 z_as_relative = false
 position = Vector2(90, 130)
 scale = Vector2(0.138, 0.138)
 texture = SubResource("CompressedTexture2D_ahca1")
 
-[node name="GroundBase" type="Sprite2D" parent="WorldViewportContainer/WorldViewport/WorldLayer/SceneBG"]
+[node name="GroundBase" type="Sprite2D" parent="WorldLayer/SceneBG"]
 z_index = -10
 z_as_relative = false
 position = Vector2(90, 130)
 scale = Vector2(0.138, 0.138)
 texture = SubResource("CompressedTexture2D_kncta")
 
-[node name="EnemyContainer" type="Node2D" parent="WorldViewportContainer/WorldViewport/WorldLayer"]
+[node name="EnemyContainer" type="Node2D" parent="WorldLayer"]
 unique_name_in_owner = true
 position = Vector2(0, 0)
 
-[node name="PlayerHands" parent="WorldViewportContainer/WorldViewport/WorldLayer" instance=ExtResource("5_hands")]
+[node name="PlayerHands" parent="WorldLayer" instance=ExtResource("5_hands")]
 unique_name_in_owner = true
 position = Vector2(90, 260)
 scale = Vector2(1.0, 1.0)
